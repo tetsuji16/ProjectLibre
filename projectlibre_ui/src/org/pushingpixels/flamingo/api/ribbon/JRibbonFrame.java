@@ -603,23 +603,26 @@ public class JRibbonFrame extends JFrame {
 						setLegacyIconImages(Arrays.asList(image16));
 					}
 					if (image128 != null) {
-						try {
-							Class appClass = Class
-									.forName("com.apple.eawt.Application");
-							if (appClass != null) {
-								Object appInstance = appClass.newInstance();
-								Method setDockImageMethod = appClass
-										.getDeclaredMethod("setDockIconImage",
-												Image.class);
-								if (setDockImageMethod != null) {
-									setDockImageMethod.invoke(appInstance,
-											image128);
-								}
-							}
-						} catch (Throwable t) {
-							t.printStackTrace();
-							// give up
-						}
+						//deprecated, removed in Java 9
+//						try {
+//							Class appClass = Class
+//									.forName("com.apple.eawt.Application");
+//							if (appClass != null) {
+//								Object appInstance = appClass.newInstance();
+//								Method setDockImageMethod = appClass
+//										.getDeclaredMethod("setDockIconImage",
+//												Image.class);
+//								if (setDockImageMethod != null) {
+//									setDockImageMethod.invoke(appInstance,
+//											image128);
+//								}
+//							}
+//						} catch (Throwable t) {
+//							t.printStackTrace();
+//							// give up
+//						}
+						//This a the new method introduced in Java 9
+						Taskbar.getTaskbar().setIconImage(image128);
 					}
 					setMainAppIcon(icon);
 				}

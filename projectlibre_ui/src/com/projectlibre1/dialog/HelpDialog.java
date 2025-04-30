@@ -82,10 +82,12 @@ import com.projectlibre1.util.VersionUtils;
 public final class HelpDialog extends AbstractDialog {
 	private static final long serialVersionUID = 1L;
 	private static final String helpUrl = "https://www.projectlibre.com/projectlibre-documentation"; //$NON-NLS-1$
-	private static final String helpLoginUrl = "https://www.projectlibre.com/user/login";
+	private static final String trialUrl = "https://www.projectlibre.com/trial/";
+	private static final String helpLoginUrl = "https://www.projectlibre.com/login/";
 	private static final String videosUrl = Settings.SITE_HOME; //$NON-NLS-1$
 	public static final String donateUrl = "https://www.projectlibre.com";
 	JButton link;
+	JButton trial;
 	JButton registerToHelp;
     JButton videos;
     JButton tipOfTheDay;
@@ -108,8 +110,18 @@ public final class HelpDialog extends AbstractDialog {
 				BrowserControl.displayURL(helpUrl);
 			}
 		});
-		
-		
+
+		trial = new JButton(Messages.getString("HelpDialog.GoToCloudTrial"));
+		trial.setEnabled(true);
+		trial.setToolTipText(trialUrl);
+		trial.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				BrowserControl.displayURL(trialUrl);
+			}
+		});
+
+
+
 		registerToHelp = new JButton(Messages.getString("HelpDialog.RegisterToOnlineHelp")); //$NON-NLS-1$
 		registerToHelp.setEnabled(true);
 		registerToHelp.setToolTipText(helpUrl);
@@ -163,9 +175,9 @@ public final class HelpDialog extends AbstractDialog {
 		// Separating the component initialization and configuration
 		// from the layout code makes both parts easier to read.
 		//TODO set minimum size
-		FormLayout layout = new FormLayout("120px,180px,120px" , // cols //$NON-NLS-1$
+		FormLayout layout = new FormLayout("250px,300px,250px" , // cols //$NON-NLS-1$
 			
-				"p, 6dlu, p, 6dlu, p, 1dlu, p, 6dlu, p, 6dlu, p, 6dlu, p, 10dlu, p, 6dlu, p, 6dlu, p"); // rows //$NON-NLS-1$
+				"p, 6dlu, p, 6dlu, p, 6dlu, p, 1dlu, p, 1dlu, p, 1dlu, p, 1dlu, p, 6dlu, p, 6dlu, p, 6dlu, p, 10dlu, p, 6dlu, p, 6dlu, p"); // rows //$NON-NLS-1$
 
 		// Create a builder that assists in adding components to the container.
 		// Wrap the panel with a standardized border.
@@ -184,11 +196,21 @@ public final class HelpDialog extends AbstractDialog {
 		builder.append(link);
 		builder.nextLine(2);
 		builder.nextColumn();
-		builder.addLabel(Messages.getString("HelpDialog.RegisterToOnlineHelp1"),cc.xyw(1,  5, 3));
+		builder.append(trial);
 		builder.nextLine(2);
 		builder.nextColumn();
-		builder.addLabel(Messages.getString("HelpDialog.RegisterToOnlineHelp2"),cc.xyw(1,  7, 3));
+		builder.addLabel(Messages.getString("HelpDialog.RegisterToOnlineHelp1"),cc.xyw(1,  7, 3));
 		builder.nextLine(2);
+		builder.nextColumn();
+		builder.addLabel(Messages.getString("HelpDialog.RegisterToOnlineHelp2"),cc.xyw(1,  9, 3));
+		builder.nextLine(2);
+		builder.nextColumn();
+		builder.addLabel(Messages.getString("HelpDialog.RegisterToOnlineHelp3"),cc.xyw(1,  11, 3));
+		builder.nextLine(2);
+		builder.nextColumn();
+		builder.addLabel(Messages.getString("HelpDialog.RegisterToOnlineHelp4"),cc.xyw(1,  13, 3));
+		builder.nextLine(2);
+
 		builder.nextColumn();
 		builder.append(registerToHelp);
 
@@ -205,9 +227,9 @@ public final class HelpDialog extends AbstractDialog {
 		
 		builder.nextLine(2);
 		String version=VersionUtils.getVersion();
-		builder.addLabel(Messages.getContextString("Text.ShortTitle")+" "+"Version "+(version==null?"Unknown":version),cc.xyw(1,  15, 3));
+		builder.addLabel(Messages.getContextString("Text.ShortTitle")+" "+"Version "+(version==null?"Unknown":version),cc.xyw(1,  21, 3));
 		builder.nextLine(2);
-		builder.addLabel(Messages.getString("AboutDialog.copyright"),cc.xyw(1,  17, 3));
+		builder.addLabel(Messages.getString("AboutDialog.copyright"),cc.xyw(1,  23, 3));
 
 		
 		if (false || Environment.isProjectLibre()) { // removed donation link

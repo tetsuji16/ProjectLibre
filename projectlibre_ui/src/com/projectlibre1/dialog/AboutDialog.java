@@ -123,10 +123,10 @@ public final class AboutDialog extends AbstractDialog {
 		builder.append("Version "+(version==null?"Unknown":version)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$		
 		builder.nextLine(2);
 		builder.append(Messages.getString("AboutDialog.copyright")); //$NON-NLS-1$
-		if (Environment.isProjectLibre()) {
-			builder.nextLine(2);
-			builder.append(Main.getRunSinceMessage()); //$NON-NLS-1$
-		}
+//		if (Environment.isProjectLibre()) {
+//			builder.nextLine(2);
+//			builder.append(Main.getRunSinceMessage()); //$NON-NLS-1$
+//		}
 		return builder.getPanel();
 	}
 	protected boolean hasCloseButton() {

@@ -81,8 +81,8 @@
 			classpathref="compile.class.path"
 			debug="off"
 			nowarn="on"
-			source="1.6"
-			target="1.6">
+			source="21"
+			target="21">
 				<src path="src" />
 				<include name="**/*" />
 		</javac>
@@ -172,10 +172,10 @@
 			<else>
 				<jar jarfile="projectlibre-script.jar">
 					<zipgroupfileset file="tmp/projectlibre-script-tmp.jar" /> 
-					<zipgroupfileset file="lib/groovy/groovy.jar" /> 
-					<zipgroupfileset file="lib/groovy/antlr.jar" /> 
-					<zipgroupfileset file="lib/groovy/asm-attrs.jar" /> 
-					<zipgroupfileset file="lib/groovy/asm.jar" /> 
+					<zipgroupfileset file="lib/groovy/groovy-2.4.21.jar" />
+					<zipgroupfileset file="lib/groovy/ant-antlr-1.9.15.jar" />
+					<!--zipgroupfileset file="lib/groovy/asm-attrs.jar" /-->
+					<!--zipgroupfileset file="lib/groovy/asm.jar" /-->
 					<zipgroupfileset file="lib/commons-lang.jar" /> 
 				</jar>
 			</else>

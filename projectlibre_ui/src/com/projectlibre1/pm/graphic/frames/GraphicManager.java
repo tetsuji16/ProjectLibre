@@ -54,17 +54,8 @@
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.frames;
-import java.applet.Applet;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GridLayout;
-import java.awt.HeadlessException;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.desktop.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -102,7 +93,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
-import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -226,7 +216,6 @@ import com.projectlibre1.util.Environment;
 import com.projectlibre1.workspace.SavableToWorkspace;
 import com.projectlibre1.workspace.WorkspaceSetting;
 
-import apple.dts.samplecode.osxadapter.OSXAdapter;
 
 
 /**
@@ -350,8 +339,8 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		this.container=container;
 		if (container instanceof Frame)
 			frame=(Frame)container;
-		else if (container instanceof JApplet)
-			frame = JOptionPane.getFrameForComponent(container);
+//		else if (container instanceof JApplet)
+//			frame = JOptionPane.getFrameForComponent(container);
 		if (container instanceof FrameHolder)
 			((FrameHolder)container).setGraphicManager(this);
 //		else if (container instanceof BootstrapApplet){
@@ -2376,7 +2365,8 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 
 
     public boolean isApplet() {
-    	return container instanceof Applet;
+    	return false;
+		//return container instanceof Applet;
     }
     
     public void setRibbon(JRibbonFrame frame, MenuManager menuManger){
@@ -2753,35 +2743,35 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 	public class FullScreenAction extends MenuActionsMap.GlobalMenuAction {
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent arg0) {
-			setMeAsLastGraphicManager();
-			encodeWorkspace(); // so new window takes this one's preferences
-			// see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5029025
-			try {
-				Class cl=Class.forName("netscape.javascript.JSObject");
-				Object win=cl.getMethod("getWindow", new Class[]{Applet.class}).invoke(null, new Object[]{container});
-		        //JSObject win = JSObject.getWindow((Applet) container);
-		        cl.getMethod("call", new Class[]{String.class,(new Object[]{}).getClass()}).invoke(win, new Object[]{"fullScreen",null} );
-				//win.call("fullScreen", null);		  	     // Call f() in HTML page //$NON-NLS-1$
-
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			setMeAsLastGraphicManager();
+//			encodeWorkspace(); // so new window takes this one's preferences
+//			// see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5029025
+//			try {
+//				Class cl=Class.forName("netscape.javascript.JSObject");
+//				Object win=cl.getMethod("getWindow", new Class[]{Applet.class}).invoke(null, new Object[]{container});
+//		        //JSObject win = JSObject.getWindow((Applet) container);
+//		        cl.getMethod("call", new Class[]{String.class,(new Object[]{}).getClass()}).invoke(win, new Object[]{"fullScreen",null} );
+//				//win.call("fullScreen", null);		  	     // Call f() in HTML page //$NON-NLS-1$
+//
+//			} catch (IllegalArgumentException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (SecurityException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IllegalAccessException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (InvocationTargetException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (NoSuchMethodException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (ClassNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 		}
 	}
 	public class RefreshAction extends MenuActionsMap.GlobalMenuAction {
@@ -3039,52 +3029,47 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 
 
     public void registerForMacOSXEvents() {
-        if (Environment.isMac()) {
-        	
-        	
-//        	try {
-//				//new method to access Mac menu
-//				java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
-//
-//				desktop.setAboutHandler(new java.awt.desktop.AboutHandler() {
-//					
-//					@Override
-//					public void handleAbout(java.awt.desktop.AboutEvent e) {
-//						showAboutDialog();						
-//					}
-//				});
-//				
-//				desktop.setQuitHandler(new java.awt.desktop.QuitHandler() {
-//					
-//					@Override
-//					public void handleQuitRequestWith(java.awt.desktop.QuitEvent e, java.awt.desktop.QuitResponse response) {
-//						try {
-//							closeApplication();
-//						} catch (Exception e1) {
-//							// TODO Auto-generated catch block
-//							e1.printStackTrace();
-//						}						
-//					}
-//				});
-//			} catch (Exception e1) {
-//				e1.printStackTrace();
-//			}
 
-        	
-        	
-        	try {	            
-        		// Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
-        		// use as delegates for various com.apple.eawt.ApplicationListener methods
-        		OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quitApplication", (Class[])null));
-        		OSXAdapter.setAboutHandler(this, getClass().getDeclaredMethod("showAboutDialog", (Class[])null));
-        		//OSXAdapter.setPreferencesHandler(this, getClass().getDeclaredMethod("preferences", (Class[])null));
-        		if (Environment.getStandAlone()) OSXAdapter.setFileHandler(this, getClass().getDeclaredMethod("openFile", new Class[] { String.class }));
-        	} catch (Exception e) {
-        		System.err.println("Error while loading the OSXAdapter:");
-        		e.printStackTrace();
-        	}
+		if (Desktop.isDesktopSupported()) { //Mac OS X
+			Desktop desktop = Desktop.getDesktop();
 
-        }
+			// Check if AboutHandler is supported
+			if (desktop.isSupported(Desktop.Action.APP_ABOUT)) {
+				desktop.setAboutHandler(new AboutHandler() {
+					@Override
+					public void handleAbout(AboutEvent e) {
+						showAboutDialog();
+					}
+				});
+			}
+			if (desktop.isSupported(Desktop.Action.APP_QUIT_HANDLER)) {
+				desktop.setQuitHandler(new QuitHandler() {
+					@Override
+					public void handleQuitRequestWith(QuitEvent e, QuitResponse response){
+                        try {
+                            boolean continueQuit=quitApplication();
+							if (continueQuit) response.performQuit();
+							else response.cancelQuit();
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    }
+				});
+			}
+
+			if (Environment.getStandAlone() &&
+			desktop.isSupported(Desktop.Action.APP_OPEN_FILE)) {
+				desktop.setOpenFileHandler(new OpenFilesHandler() {
+					@Override
+					public void openFiles(OpenFilesEvent e){
+						if (e.getFiles()!=null && !e.getFiles().isEmpty()) {
+							openFile(e.getFiles().getFirst().getPath());
+						}
+					}
+				});
+			}
+
+		}
     }
 
     protected String lastFileName;

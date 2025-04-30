@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jlfgr">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/projectlibre_contrib/lib/jlfgr.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

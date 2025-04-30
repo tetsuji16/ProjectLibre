@@ -585,14 +585,16 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			}
 
 		if (container!=null){
-			//scale2 separation lines
-			TimeIterator i=coord.getTimeIterator(bounds.getX(), bounds.getMaxX(),true);
-			g2.setPaint(new PredefinedPaint(PredefinedPaint.DOT_LINE2,Color.GRAY,g2.getBackground()));
-			while (i.hasNext()){
-				TimeInterval interval=i.next();
-				int startX=(int)Math.round(coord.toX(interval.getStart()));
-				g2.drawLine(startX,bounds.y,startX,bounds.y+bounds.height);
-			}
+
+//Slow with with Java >6
+//			//scale2 separation lines
+//			TimeIterator i=coord.getTimeIterator(bounds.getX(), bounds.getMaxX(),true);
+//			g2.setPaint(new PredefinedPaint(PredefinedPaint.DOT_LINE2,Color.GRAY,g2.getBackground()));
+//			while (i.hasNext()){
+//				TimeInterval interval=i.next();
+//				int startX=(int)Math.round(coord.toX(interval.getStart()));
+//				g2.drawLine(startX,bounds.y,startX,bounds.y+bounds.height);
+//			}
 
 			//project start
 			int projectStartX=(int)Math.round(coord.toX(project.getStart()));

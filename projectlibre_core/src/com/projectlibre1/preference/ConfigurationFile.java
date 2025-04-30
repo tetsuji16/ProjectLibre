@@ -223,7 +223,8 @@ public class ConfigurationFile {
 		}
 //		if (directory==null)
 //			directory=getConfDir();
-			
+		if (directory == null)
+			return null;
 		try {
 			URL[] urls={directory.toURI().toURL()};
 			ClassLoader cl=new URLClassLoader(urls);

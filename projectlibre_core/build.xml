@@ -73,8 +73,8 @@
 			classpathref="compile.class.path"
 			debug="off"
 			nowarn="on"
-			source="1.5"
-			target="1.5">
+			source="21"
+			target="21">
 				<src path="${src}" />
 				<include name="**/*" />
 				<exclude name="**/version.properties" />

@@ -53,9 +53,8 @@
     logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
     logo it must direct them back to http://www.projectlibre.com. 
  -->
-<project name="projectlibre" default="dist" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
+<project name="projectlibre" default="dist" basedir="." >
 
-	<property file="build-override.properties"/>
 	<property file="build.properties"/>
 
 	<path id="compile.class.path">
@@ -99,8 +98,8 @@
 					classpathref="compile.class.path"
 					debug="off"
 					nowarn="on"
-					source="1.6"
-					target="1.6">
+					source="21"
+					target="21">
 						<src path="${src_core}" />
 						<src path="${src_ui}" />
 						<src path="${src_reports}" />
@@ -116,8 +115,8 @@
 					classpathref="compile-no_contrib_built.class.path"
 					debug="off"
 					nowarn="on"
-					source="1.6"
-					target="1.6">
+					source="21"
+					target="21">
 						<src path="${src_core}" />
 						<src path="${src_ui}" />
 						<src path="${src_reports}" />
@@ -204,6 +203,9 @@
 	</target>
 
 
+
+
+
 	<target name="dist" depends="lib">
 		<if>
  			<equals arg1="${build_contrib}" arg2="true" />
@@ -217,6 +219,54 @@
 			</then>
   		</if>
 	</target>
+
+	<target name="fatjar"  depends="dist">
+
+		<jar destfile="${packages}/projectlibre-${version}.jar">
+			<zipgroupfileset dir="${dist}" includes="**/*.jar"/>
+			<zipfileset dir="." >
+				<include name="license/**" />
+			</zipfileset>
+			<manifest>
+				<attribute name="Main-Class" value="com.projectlibre1.main.Main"/>
+			</manifest>
+
+			<metainf dir="license">
+				<include name="**" />
+			</metainf>
+		</jar>
+
+		<!--jar jarfile="projectlibre.jar">
+			<zipfileset dir="${build}" >
+				<include name="**/*" />
+			</zipfileset>
+			<zipfileset dir="." >
+				<include name="license/**" />
+			</zipfileset>
+			<zipgroupfileset dir="${dist}">
+				<include name="${dist}/lib/*.jar"/>
+			</zipgroupfileset>
+
+
+			<manifest>
+				<attribute name="Main-Class" value="com.projectlibre1.main.Main"/>
+			</manifest>
+
+			<metainf dir="license">
+				<include name="**" />
+			</metainf>
+		</jar>
+
+
+		<jar destfile="projectlibre.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="com.projectlibre1.main.Main"/>
+			</manifest>
+
+
+		</jar-->
+	</target>
+
 
 	<target name="dir" depends="dist">
 		<copy todir="${packages}/projectlibre-${version}">
@@ -245,7 +295,7 @@
 			<arg value="+x"/>
 			<arg value="${packages}/projectlibre-${version}/projectlibre.sh"/>
 		</exec>
-		<exec executable="/usr/local/bin/gtar"> <!-- to preserve permissions also add export COPYFILE_DISABLE=true -->
+		<exec executable="/opt/homebrew/bin/gtar"> <!-- to preserve permissions also add export COPYFILE_DISABLE=true -->
 			<arg value="--numeric-owner"/>
 			<arg value="--owner=0"/>
 			<arg value="--group=0"/>
@@ -694,6 +744,110 @@
 
 	</target>
 
+	<target name="jpackage-dmg" depends="dist, fatjar">
+
+		<copy todir="${packages}/jpackage-dmg/" file="${resources}/mac/jpackage/Info.plist" >
+			<filterset>
+				<filter token="version" value="${numericVersion3}"/>
+			</filterset>
+		</copy>
+		<copy todir="${packages}/jpackage-dmg/" file="${resources}/mac/jpackage/entitlements.plist" />
+
+
+		<copy todir="${packages}/jpackage-dmg/" file="${resources}/mac/jpackage/background.png" />
+
+
+		<mkdir dir="${packages}/jpackage-dmg/source" />
+		<copy todir="${packages}/jpackage-dmg/source" >
+			<fileset dir="${packages}">
+				<include name="projectlibre-${version}.jar"/>
+			</fileset>
+			<fileset dir="${resources}/mac">
+				<include name="projectlibre.icns"/>
+			</fileset>
+			<fileset dir=".">
+				<include name="license/**"/>
+			</fileset>
+		</copy>
+
+
+
+		<copy todir="${packages}/jpackage-dmg/" file="${resources}/mac/jpackage/make.sh" >
+			<filterset>
+				<filter token="version" value="${numericVersion3}"/>
+			</filterset>
+		</copy>
+		<exec executable="chmod"> <!-- remove group write permissions -->
+			<arg value="a+x"/>
+			<arg value="${packages}/jpackage-dmg/make.sh"/>
+		</exec>
+
+	</target>
+
+
+	<target name="jpackage-deb" depends="dist, fatjar">
+
+		<mkdir dir="${packages}/jpackage-deb/source" />
+		<copy todir="${packages}/jpackage-deb/source" >
+			<fileset dir="${packages}">
+				<include name="projectlibre-${version}.jar"/>
+			</fileset>
+			<fileset dir="${resources}">
+				<include name="projectlibre.png"/>
+			</fileset>
+			<fileset dir=".">
+				<include name="license/**"/>
+			</fileset>
+		</copy>
+
+
+
+		<copy todir="${packages}/jpackage-deb/" file="${resources}/jpackage_deb/make.sh" >
+			<filterset>
+				<filter token="version" value="${numericVersion3}"/>
+			</filterset>
+		</copy>
+		<exec executable="chmod"> <!-- remove group write permissions -->
+			<arg value="a+x"/>
+			<arg value="${packages}/jpackage-deb/make.sh"/>
+		</exec>
+
+	</target>
+
+
+
+	<target name="jpackage-msi" depends="dist, fatjar">
+		<mkdir dir="${packages}/jpackage-msi/source" />
+		<copy todir="${packages}/jpackage-msi/source" >
+			<fileset dir="${packages}">
+				<include name="projectlibre-${version}.jar"/>
+			</fileset>
+			<fileset dir="${resources}/wix/msi_images">
+				<include name="projectlibre.ico"/>
+			</fileset>
+			<fileset dir=".">
+				<include name="license/**"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${packages}/jpackage-msi" >
+			<fileset dir="resources/win/">
+				<include name="*.properties"/>
+			</fileset>
+		</copy>
+
+
+
+		<copy todir="${packages}/jpackage-msi/" file="resources/win/make.ps1" >
+			<filterset>
+				<filter token="version" value="${numericVersion3}"/>
+			</filterset>
+		</copy>
+
+
+	</target>
+
+
 	<target name="mac-new" depends="dist">
 		<mkdir dir="${packages}/mac-new/${macapp}" />
 		<mkdir dir="${packages}/mac-new/${macapp}/Contents" />
@@ -737,148 +891,6 @@
 
 	</target>
 	
-    <target name="fxwindows" depends="build">
-        <!-- Requires Inno Setup 5 -->
-                <property environment="env"/>
-                <var name="bundled_jdk" value="${bundled_jdk_windows}"/>
-                <if>
-                        <equals arg1="${bundled_jdk}" arg2="" />
-                        <then>
-                                <var name="bundled_jdk" value="${env.JAVA_HOME}"/>
-                        </then>
-                </if>
-        <echo>Fx using java_home: ${bundled_jdk}</echo>
-
-        <path id="fxant">
-                        <filelist>
-                        <file name="resources/fx"/>
-                <file name="C:\Program Files\Java\jdk1.8.0_202\lib\ant-javafx.jar"/>
-                 </filelist>
-        </path>
-
-        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
-                 uri="javafx:com.sun.javafx.tools.ant"
-                        classpathref="fxant"/>
-
-        <delete dir="${packages}/fxwindows"/>
-                <mkdir dir="${packages}/fxwindows"/>
-
-        <fx:deploy width="1000" height="700"
-                   nativeBundles="exe"
-                   outdir="${packages}/fxwindows" outfile="projectlibre"
-                verbose="true">
-            <fx:application name="ProjectLibre"
-                mainClass="com.projectlibre1.main.Main"
-                toolkit="swing"
-                version="${version}"/>
-            <fx:resources>
-                <fx:fileset dir="${dist}" includes="**/*"/>
-                        <fx:fileset dir="." includes="license/**"/>
-                <fx:fileset type="license" dir="license" includes="license2.rtf"/>
-            </fx:resources>
-            <fx:info title="ProjectLibre"
-                vendor="ProjectLibre"
-                copyright="2012-2018 ProjectLibre Inc."
-                license="CPAL">
-                <fx:icon href="${resources}/wix/msi_images/projectlibre.ico"/>
-                <fx:association extension="pod" mimetype="application/projectlibre" description="ProjectLibre" icon="projectlibre.ico"/>
-                <fx:association extension="mpp" mimetype="application/vnd.ms-project" description="ProjectLibre" icon="projectlibre.ico"/>
-                <fx:association extension="xml" mimetype="application/xml" description="ProjectLibre" icon="projectlibre.ico"/>
-        </fx:info>
-                <fx:preferences shortcut="true"
-                        menu="true"
-                    install="true" />
-                <fx:platform j2se="6.0"/>
-            <!--fx:platform>
-                <fx:jvmuserarg name="-Xms" value="512m"/>
-                <fx:jvmuserarg name="-Xmx" value="1024m"/>
-            </fx:platform-->
-        </fx:deploy>
-        </target>
-
-
-
-    <target name="fxmac" depends="build">
-   		<property environment="env"/>
-		<var name="bundled_jdk" value="${bundled_jdk_mac}"/>
-		<if>
-			<equals arg1="${bundled_jdk}" arg2="" />
-			<then>
-				<var name="bundled_jdk" value="${env.JAVA_HOME}"/>
-			</then>
-		</if>
-     	<echo>Fx using java_home: ${bundled_jdk}</echo>
- 
-    	<path id="fxant">
-    	  		<filelist>
-  	    		<file name="resources/fx"/>
-    	    	<file name="${bundled_jdk_mac}/lib/ant-javafx.jar"/>
-     	 	 </filelist>
-    	</path>
-     	
-        <taskdef resource="com/sun/javafx/tools/ant/antlib.xml"
-                 uri="javafx:com.sun.javafx.tools.ant"
-        		classpathref="fxant"/>
-    	
-    	<delete dir="${packages}/fxmac"/>
-		<mkdir dir="${packages}/fxmac"/>
-
-    		<unjar dest="${packages}/fxmac/contrib_build">
-    	  		<fileset dir="../projectlibre_contrib/" includes="*.jar" />
-    		</unjar>
-  				<fx:jar destfile="${packages}/fxmac/projectlibre.jar">
-  					 <fx:application name="ProjectLibre"
-  		    	    	mainClass="com.projectlibre1.main.Main"
-  		    	    	toolkit="swing"
-  		    	    	version="${version}"/>
-					<fileset dir="${packages}/fxmac/contrib_build" >
- 						<include name="**/*" />
- 					</fileset>
- 					<fileset dir="${build}" >
- 						<include name="**/*" />
- 					</fileset>
-  					<fileset dir="." >
- 						<include name="license/**" />
- 					</fileset>
-					<!--fx:fileset dir="../projectlibre_contrib/" includes="*.jar"/>
-					<fx:resources>
- 						<fx:fileset dir="../projectlibre_contrib/" includes="*.jar"/>
-					</fx:resources-->
- 					<!--manifest>
- 						<attribute name="Class-Path" value="lib/projectlibre-contrib.jar lib/projectlibre-script.jar lib/projectlibre-reports.jar"/>
- 					</manifest-->
-  				</fx:jar>
-    	
-
-    	<fx:deploy width="1000" height="700"
-    	           nativeBundles="dmg"
-    	           outdir="${packages}/fxmac/deploy" outfile="projectlibre"
-    			verbose="true">
-    	    <fx:application name="ProjectLibre"
-    	    	mainClass="com.projectlibre1.main.Main"
-    	    	toolkit="swing"
-    	    	version="${version}"/>
-    	    <fx:resources>
-    	        <fx:fileset dir="${packages}/fxmac/" includes="projectlibre.jar"/>
-    			<fx:fileset dir="." includes="license/**"/>
-    	    	<fx:fileset type="license" dir="license" includes="license.txt"/>
-    	    </fx:resources>
-    	    <fx:info title="ProjectLibre"
-    	    	vendor="ProjectLibre"
-    	    	copyright="2012-2018 ProjectLibre Inc."
-    	    	license="CPAL">
-    	    	<fx:icon href="${resources}/mac/projectlibre.icns"/>
-    	    	<fx:association extension="pod" description="ProjectLibre" icon="projectlibre.icns"/>
-    	    	<fx:association extension="mpp" description="ProjectLibre" icon="projectlibre.icns"/>
-	    		<fx:association extension="xml" description="ProjectLibre" icon="projectlibre.icns"/>
-    	    </fx:info>
-    		<fx:platform basedir="${bundled_jdk_mac}"/>
-           <!--fx:platform>
-                <fx:jvmuserarg name="-Xms" value="512m"/>
-                <fx:jvmuserarg name="-Xmx" value="1024m"/>
-            </fx:platform-->
-    	</fx:deploy>
-    </target>
 
 
 	<target name="mac-tar" depends="mac-old">
