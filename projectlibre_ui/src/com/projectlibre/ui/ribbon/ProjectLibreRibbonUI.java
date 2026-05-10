@@ -234,13 +234,18 @@ public class ProjectLibreRibbonUI extends RibbonUI {
 
 	protected int heightToReduce = 20;
 
-	protected int helpSpaceWidth = 30;
+protected int helpSpaceWidth = 30;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.plaf.ComponentUI#createUI(javax.swing.JComponent)
-	 */
+// Cached paint objects for performance optimization
+protected GradientPaint ribbonBackgroundGradient = null;
+protected GradientPaint taskAreaGradient = null;
+protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients = new HashMap<>();
+
+/*
+ * (non-Javadoc)
+ * 
+ * @see javax.swing.plaf.ComponentUI#createUI(javax.swing.JComponent)
+ */
 	public static ComponentUI createUI(JComponent c) {
 		return new ProjectLibreRibbonUI();
 	}
@@ -635,8 +640,12 @@ public class ProjectLibreRibbonUI extends RibbonUI {
 		int h=66;
 		g2d.setColor(background1);
 		g2d.fillRect(0, 0, this.ribbon.getWidth(), this.ribbon.getHeight());
-		Paint gradient = new GradientPaint(0,0,RIBBON_MENU_DARK_COLOR,200, 0,background1);
-		g2d.setPaint(gradient);
+		
+		// Use cached gradient or create new one if needed
+		if (ribbonBackgroundGradient == null) {
+			ribbonBackgroundGradient = new GradientPaint(0,0,RIBBON_MENU_DARK_COLOR,200, 0,background1);
+		}
+		g2d.setPaint(ribbonBackgroundGradient);
 		g2d.fillRect(0, 0, w, h);
 		
 		g2d.setColor(background1);
@@ -652,7 +661,7 @@ public class ProjectLibreRibbonUI extends RibbonUI {
 		
 		
 		
-
+		
 		g2d.dispose();
 	}
 
@@ -716,10 +725,16 @@ public class ProjectLibreRibbonUI extends RibbonUI {
 			int topY = ins.top + getTaskbarHeight();
 			int bottomY = topY + 5;
 			Color hueColor = contextualGroup.getHueColor();
-			Paint paint = new GradientPaint(0, topY,
-					FlamingoUtilities.getAlphaColor(hueColor,
-							(int) (255 * RibbonContextualTaskGroup.HUE_ALPHA)),
-					0, bottomY, FlamingoUtilities.getAlphaColor(hueColor, 0));
+			
+			// Use cached gradient or create new one if needed
+			GradientPaint paint = contextualGroupGradients.get(contextualGroup);
+			if (paint == null) {
+				paint = new GradientPaint(0, topY,
+						FlamingoUtilities.getAlphaColor(hueColor,
+								(int) (255 * RibbonContextualTaskGroup.HUE_ALPHA)),
+						0, bottomY, FlamingoUtilities.getAlphaColor(hueColor, 0));
+				contextualGroupGradients.put(contextualGroup, paint);
+			}
 			g2d.setPaint(paint);
 			g2d.clip(outerContour);
 			g2d.fillRect(0, topY, width, bottomY - topY + 1);
