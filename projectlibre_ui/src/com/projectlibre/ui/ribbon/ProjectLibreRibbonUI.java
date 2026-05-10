@@ -1289,16 +1289,22 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 					Rectangle taskGroupBounds = getContextualTaskGroupBounds(taskGroup);
 
 					Color hueColor = taskGroup.getHueColor();
-					Paint paint = new GradientPaint(
-							0,
-							0,
-							FlamingoUtilities.getAlphaColor(hueColor, 0),
-							0,
-							height,
-							FlamingoUtilities
-									.getAlphaColor(
-											hueColor,
-											(int) (255 * RibbonContextualTaskGroup.HUE_ALPHA)));
+					
+					// Use cached gradient or create new one if needed
+					Paint paint = contextualGroupGradients.get(taskGroup);
+					if (paint == null) {
+						paint = new GradientPaint(
+								0,
+								0,
+								FlamingoUtilities.getAlphaColor(hueColor, 0),
+								0,
+								height,
+								FlamingoUtilities
+										.getAlphaColor(
+												hueColor,
+												(int) (255 * RibbonContextualTaskGroup.HUE_ALPHA)));
+						contextualGroupGradients.put(taskGroup, paint);
+					}
 					// translucent gradient paint
 					g2d.setPaint(paint);
 					int startX = ltr ? taskGroupBounds.x : Math.min(
