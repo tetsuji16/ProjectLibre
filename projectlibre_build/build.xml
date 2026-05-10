@@ -94,40 +94,42 @@
 		<if>
  			<equals arg1="${build_contrib}" arg2="true" />
  			<then>
-				<javac destdir="${build}"
-					classpathref="compile.class.path"
-					debug="off"
-					nowarn="on"
-					source="21"
-					target="21">
-						<src path="${src_core}" />
-						<src path="${src_ui}" />
-						<src path="${src_reports}" />
-						<src path="${src_exchange}" />
-						<src path="${src_ext}" />
-						<include name="**/*.java" />
-						<!--exclude name="**/version.properties" / -->
-						<exclude name="test/**" />
-				</javac>
-			</then>
- 			<else>
-				<javac destdir="${build}"
-					classpathref="compile-no_contrib_built.class.path"
-					debug="off"
-					nowarn="on"
-					source="21"
-					target="21">
-						<src path="${src_core}" />
-						<src path="${src_ui}" />
-						<src path="${src_reports}" />
-						<src path="${src_exchange}" />
-						<src path="${src_ext}" />
-						<src path="${src_contrib}" />
-						<include name="**/*.java" />
-						<!--exclude name="**/version.properties" / -->
-						<exclude name="test/**" />
-				</javac>
-			</else>
+<javac destdir="${build}"
+				classpathref="compile.class.path"
+				debug="off"
+				nowarn="on"
+				encoding="UTF-8"
+				source="21"
+				target="21">
+					<src path="${src_core}" />
+					<src path="${src_ui}" />
+					<src path="${src_reports}" />
+					<src path="${src_exchange}" />
+					<src path="${src_ext}" />
+					<include name="**/*.java" />
+					<!--exclude name="**/version.properties" / -->
+					<exclude name="test/**" />
+			</javac>
+		</then>
+  		<else>
+			<javac destdir="${build}"
+				classpathref="compile-no_contrib_built.class.path"
+				debug="off"
+				nowarn="on"
+				encoding="UTF-8"
+				source="21"
+				target="21">
+					<src path="${src_core}" />
+					<src path="${src_ui}" />
+					<src path="${src_reports}" />
+					<src path="${src_exchange}" />
+					<src path="${src_ext}" />
+					<src path="${src_contrib}" />
+					<include name="**/*.java" />
+					<!--exclude name="**/version.properties" / -->
+					<exclude name="test/**" />
+			</javac>
+		</else>
   		</if>
 	</target>
 	
