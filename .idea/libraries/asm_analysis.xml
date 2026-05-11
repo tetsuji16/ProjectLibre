@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="asm-analysis">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/projectlibre_contrib/lib/groovy/asm-analysis.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
