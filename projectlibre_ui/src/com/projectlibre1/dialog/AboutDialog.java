@@ -113,7 +113,7 @@ public final class AboutDialog extends AbstractDialog {
 		logo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		logo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
-				BrowserControl.displayURL("http://www.projectlibre.com");//$NON-NLS-1$
+				BrowserControl.displayURL("https://github.com/tetsuji16/ProjectLibre");//$NON-NLS-1$
 			}});
 		builder.append(logo); 
 		builder.nextLine(2);

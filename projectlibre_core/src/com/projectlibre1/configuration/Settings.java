@@ -71,9 +71,9 @@ import com.projectlibre1.strings.Messages;
 public class Settings {
 	public static final boolean CLUSTERED=true;
 	public static final String CLUSTER_NODES="jnp://localhost:1100";
-	public static final String SITE_HOME = "http://www.projectlibre.com";
+	public static final String SITE_HOME = "https://github.com/tetsuji16/ProjectLibre";
 //	public static final String HELP_HOME = "http://projectlibre.org/wiki/index.php?title=";
-	public static final String HELP_HOME = "http://www.projectlibre.com/projectlibre-documentation";
+	public static final String HELP_HOME = "https://github.com/tetsuji16/ProjectLibre";
 	public static final String WEB_APP= "web";
 	public static final String WEB_HOME = SITE_HOME + "/" + WEB_APP;
 	
