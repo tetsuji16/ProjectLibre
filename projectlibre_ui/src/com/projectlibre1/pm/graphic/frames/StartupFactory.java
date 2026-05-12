@@ -163,7 +163,7 @@ public abstract class StartupFactory {
 //		System.out.println("---------- StartupFactory instanceFromNewSession#1 main");
 		Environment.setClientSide(true);
 
-		System.setSecurityManager(null);
+		// System.setSecurityManager(null); // DISABLED for Java 17+ compatibility
 		Thread loadConfigThread=new Thread("loadConfig"){
 			public void run() {
 				long t=System.currentTimeMillis();

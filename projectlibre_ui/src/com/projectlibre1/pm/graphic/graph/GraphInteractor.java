@@ -68,11 +68,15 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.Component;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
 import com.projectlibre1.dialog.DependencyDialog;
@@ -277,7 +281,21 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
 
     //Mouse
     public void mouseClicked(MouseEvent e){}
-    public void mouseWheelMoved(MouseWheelEvent e){}
+    public void mouseWheelMoved(MouseWheelEvent e){
+        // Directly scroll the parent scroll pane by manipulating its vertical scrollbar
+        Component comp = getGraph();
+        while (comp != null && !(comp instanceof JScrollPane)) {
+            comp = comp.getParent();
+        }
+        if (comp instanceof JScrollPane) {
+            JScrollPane sp = (JScrollPane) comp;
+            JScrollBar bar = sp.getVerticalScrollBar();
+            int rotation = e.getWheelRotation();
+            int increment = (rotation < 0) ? -bar.getUnitIncrement() : bar.getUnitIncrement();
+            bar.setValue(bar.getValue() + increment);
+            e.consume();
+        }
+    }
 
 
     public void mousePressed(MouseEvent e){

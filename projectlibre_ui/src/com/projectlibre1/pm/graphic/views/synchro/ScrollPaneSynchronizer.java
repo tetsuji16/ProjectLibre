@@ -57,6 +57,8 @@ package com.projectlibre1.pm.graphic.views.synchro;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -137,29 +139,48 @@ public class ScrollPaneSynchronizer {
 				scrollPane2
 						.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-				scrollPane1.getViewport().addChangeListener(new ChangeListener() {
-					public void stateChanged(ChangeEvent e) {
-						JViewport vp1 = scrollPane1.getViewport();
-						JViewport vp2 = scrollPane2.getViewport();
-						Point p1 = vp1.getViewPosition();
-						Point p2 = vp2.getViewPosition();
-						p2.setLocation((int) p2.getX(), (int) p1.getY());
-						vp2.setViewPosition(p2);
-						vp2.revalidate();
-					}
-				});
+		scrollPane1.getViewport().addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				JViewport vp1 = scrollPane1.getViewport();
+				JViewport vp2 = scrollPane2.getViewport();
+				Point p1 = vp1.getViewPosition();
+				Point p2 = vp2.getViewPosition();
+				p2.setLocation((int) p2.getX(), (int) p1.getY());
+				vp2.setViewPosition(p2);
+				vp2.revalidate();
+			}
+		});
 
-				scrollPane2.getViewport().addChangeListener(new ChangeListener() {
-					public void stateChanged(ChangeEvent e) {
-						JViewport vp1 = scrollPane1.getViewport();
-						JViewport vp2 = scrollPane2.getViewport();
-						Point p1 = vp1.getViewPosition();
-						Point p2 = vp2.getViewPosition();
-						p1.setLocation((int) p1.getX(), (int) p2.getY());
-						vp1.setViewPosition(p1);
-						vp1.revalidate();
-					}
-				});
+		scrollPane2.getViewport().addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				JViewport vp1 = scrollPane1.getViewport();
+				JViewport vp2 = scrollPane2.getViewport();
+				Point p1 = vp1.getViewPosition();
+				Point p2 = vp2.getViewPosition();
+				p1.setLocation((int) p1.getX(), (int) p2.getY());
+				vp1.setViewPosition(p1);
+				vp1.revalidate();
+			}
+		});
+		
+		// Fix for task table horizontal scrolling: add mouse wheel listener to left pane
+		scrollPane1.addMouseWheelListener(new MouseWheelListener() {
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				// Redirect wheel events to vertical scrolling of the left pane
+				// This will be synchronized to the right pane via viewport change listeners
+				int notch = e.getWheelRotation();
+				if (notch < 0) {
+					// Wheel up - scroll up
+					scrollPane1.getVerticalScrollBar().setValue(
+						scrollPane1.getVerticalScrollBar().getValue() - scrollPane1.getVerticalScrollBar().getUnitIncrement());
+				} else if (notch > 0) {
+					// Wheel down - scroll down
+					scrollPane1.getVerticalScrollBar().setValue(
+						scrollPane1.getVerticalScrollBar().getValue() + scrollPane1.getVerticalScrollBar().getUnitIncrement());
+				}
+				e.consume(); // Prevent further processing
+			}
+		});
 
 			} else if (orientation == VERTICAL) {
 				defaultScrollBarPolicy1 = scrollPane1
