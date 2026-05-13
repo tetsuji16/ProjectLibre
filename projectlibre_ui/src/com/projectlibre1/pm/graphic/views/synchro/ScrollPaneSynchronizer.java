@@ -190,13 +190,21 @@ public class ScrollPaneSynchronizer {
 
 			scrollPane1WheelListener = new MouseWheelListener() {
 				public void mouseWheelMoved(MouseWheelEvent e) {
-					scrollVertically(scrollPane2, e);
+					if (e.isShiftDown()) {
+						scrollHorizontally(scrollPane1, e);
+					} else {
+						scrollVertically(scrollPane2, e);
+					}
 					e.consume();
 				}
 			};
 			scrollPane2WheelListener = new MouseWheelListener() {
 				public void mouseWheelMoved(MouseWheelEvent e) {
-					scrollVertically(scrollPane2, e);
+					if (e.isShiftDown()) {
+						scrollHorizontally(scrollPane2, e);
+					} else {
+						scrollVertically(scrollPane2, e);
+					}
 					e.consume();
 				}
 			};
@@ -288,6 +296,29 @@ public class ScrollPaneSynchronizer {
 			newValue = max;
 		}
 		scrollPane.getVerticalScrollBar().setValue(newValue);
+	}
+
+	private void scrollHorizontally(JScrollPane scrollPane, MouseWheelEvent e) {
+		double rotation = e.getPreciseWheelRotation();
+		int units = (int) Math.round(rotation * e.getScrollAmount() * 4.0d);
+		if (units == 0 && rotation != 0.0d) {
+			units = rotation > 0.0d ? 1 : -1;
+		}
+		if (units == 0) {
+			return;
+		}
+
+		int direction = units > 0 ? 1 : -1;
+		int scrollAmount = Math.abs(units) * scrollPane.getHorizontalScrollBar().getUnitIncrement(direction);
+		int newValue = scrollPane.getHorizontalScrollBar().getValue() + (units > 0 ? scrollAmount : -scrollAmount);
+		int min = scrollPane.getHorizontalScrollBar().getMinimum();
+		int max = scrollPane.getHorizontalScrollBar().getMaximum() - scrollPane.getHorizontalScrollBar().getVisibleAmount();
+		if (newValue < min) {
+			newValue = min;
+		} else if (newValue > max) {
+			newValue = max;
+		}
+		scrollPane.getHorizontalScrollBar().setValue(newValue);
 	}
 
 	private void registerMouseWheelTargets(JScrollPane scrollPane, MouseWheelListener listener, ArrayList targets) {
