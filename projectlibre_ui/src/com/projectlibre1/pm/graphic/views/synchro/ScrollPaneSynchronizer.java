@@ -55,10 +55,13 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.views.synchro;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -87,11 +90,21 @@ public class ScrollPaneSynchronizer {
 
 	protected ChangeListener scrollPane2Listener = null;
 
-	protected MouseWheelListener mouseWheelListener = null;
+	protected MouseWheelListener scrollPane1WheelListener = null;
+
+	protected MouseWheelListener scrollPane2WheelListener = null;
+
+	protected ArrayList scrollPane1WheelTargets = new ArrayList();
+
+	protected ArrayList scrollPane2WheelTargets = new ArrayList();
 
 	protected int defaultScrollBarPolicy1;
 
 	protected int defaultScrollBarPolicy2;
+
+	protected boolean defaultWheelScrollingEnabled1;
+
+	protected boolean defaultWheelScrollingEnabled2;
 	
 	protected boolean bottomBarActivated=true;
 	protected boolean bottomBarEnabled=false;
@@ -141,10 +154,14 @@ public class ScrollPaneSynchronizer {
 		if (orientation == HORIZONTAL) {
 			defaultScrollBarPolicy1 = scrollPane1.getVerticalScrollBarPolicy();
 			defaultScrollBarPolicy2 = scrollPane2.getVerticalScrollBarPolicy();
+			defaultWheelScrollingEnabled1 = scrollPane1.isWheelScrollingEnabled();
+			defaultWheelScrollingEnabled2 = scrollPane2.isWheelScrollingEnabled();
 			scrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 			scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 			scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 			scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+			scrollPane1.setWheelScrollingEnabled(false);
+			scrollPane2.setWheelScrollingEnabled(false);
 
 			scrollPane1Listener = new ChangeListener() {
 				public void stateChanged(ChangeEvent e) {
@@ -171,14 +188,20 @@ public class ScrollPaneSynchronizer {
 			scrollPane1.getViewport().addChangeListener(scrollPane1Listener);
 			scrollPane2.getViewport().addChangeListener(scrollPane2Listener);
 
-			mouseWheelListener = new MouseWheelListener() {
+			scrollPane1WheelListener = new MouseWheelListener() {
 				public void mouseWheelMoved(MouseWheelEvent e) {
-					scrollVertically(scrollPane1, e);
+					scrollVertically(scrollPane2, e);
 					e.consume();
 				}
 			};
-			scrollPane1.addMouseWheelListener(mouseWheelListener);
-			scrollPane2.addMouseWheelListener(mouseWheelListener);
+			scrollPane2WheelListener = new MouseWheelListener() {
+				public void mouseWheelMoved(MouseWheelEvent e) {
+					scrollVertically(scrollPane2, e);
+					e.consume();
+				}
+			};
+			registerMouseWheelTargets(scrollPane1, scrollPane1WheelListener, scrollPane1WheelTargets);
+			registerMouseWheelTargets(scrollPane2, scrollPane2WheelListener, scrollPane2WheelTargets);
 
 		} else if (orientation == VERTICAL) {
 			defaultScrollBarPolicy1 = scrollPane1.getHorizontalScrollBarPolicy();
@@ -225,11 +248,12 @@ public class ScrollPaneSynchronizer {
 				scrollPane2.getViewport().removeChangeListener(scrollPane2Listener);
 				scrollPane2Listener = null;
 			}
-			if (mouseWheelListener != null) {
-				scrollPane1.removeMouseWheelListener(mouseWheelListener);
-				scrollPane2.removeMouseWheelListener(mouseWheelListener);
-				mouseWheelListener = null;
-			}
+			unregisterMouseWheelTargets(scrollPane1WheelTargets, scrollPane1WheelListener);
+			unregisterMouseWheelTargets(scrollPane2WheelTargets, scrollPane2WheelListener);
+			scrollPane1WheelListener = null;
+			scrollPane2WheelListener = null;
+			scrollPane1.setWheelScrollingEnabled(defaultWheelScrollingEnabled1);
+			scrollPane2.setWheelScrollingEnabled(defaultWheelScrollingEnabled2);
 			scrollPane1.setVerticalScrollBarPolicy(defaultScrollBarPolicy1);
 			scrollPane2.setVerticalScrollBarPolicy(defaultScrollBarPolicy2);
 		} else if (orientation == VERTICAL) {
@@ -244,9 +268,10 @@ public class ScrollPaneSynchronizer {
 	}
 
 	private void scrollVertically(JScrollPane scrollPane, MouseWheelEvent e) {
-		int units = (int) Math.round(e.getPreciseWheelRotation() * e.getScrollAmount());
+		double rotation = e.getPreciseWheelRotation();
+		int units = (int) Math.round(rotation * e.getScrollAmount() * 4.0d);
 		if (units == 0 && e.getPreciseWheelRotation() != 0.0d) {
-			units = e.getPreciseWheelRotation() > 0.0d ? 1 : -1;
+			units = rotation > 0.0d ? 1 : -1;
 		}
 		if (units == 0) {
 			return;
@@ -263,6 +288,42 @@ public class ScrollPaneSynchronizer {
 			newValue = max;
 		}
 		scrollPane.getVerticalScrollBar().setValue(newValue);
+	}
+
+	private void registerMouseWheelTargets(JScrollPane scrollPane, MouseWheelListener listener, ArrayList targets) {
+		registerMouseWheelTargets(scrollPane.getViewport() == null ? null : scrollPane.getViewport().getView(), listener, targets);
+		if (scrollPane.getRowHeader() != null) {
+			registerMouseWheelTargets(scrollPane.getRowHeader().getView(), listener, targets);
+		}
+		if (scrollPane.getColumnHeader() != null) {
+			registerMouseWheelTargets(scrollPane.getColumnHeader().getView(), listener, targets);
+		}
+	}
+
+	private void registerMouseWheelTargets(Component component, MouseWheelListener listener, ArrayList targets) {
+		if (component == null || listener == null) {
+			return;
+		}
+		component.addMouseWheelListener(listener);
+		targets.add(component);
+		if (component instanceof Container) {
+			Component[] children = ((Container) component).getComponents();
+			for (int i = 0; i < children.length; i++) {
+				registerMouseWheelTargets(children[i], listener, targets);
+			}
+		}
+	}
+
+	private void unregisterMouseWheelTargets(ArrayList targets, MouseWheelListener listener) {
+		if (listener == null) {
+			targets.clear();
+			return;
+		}
+		for (int i = 0; i < targets.size(); i++) {
+			Component component = (Component) targets.get(i);
+			component.removeMouseWheelListener(listener);
+		}
+		targets.clear();
 	}
 
     /**
