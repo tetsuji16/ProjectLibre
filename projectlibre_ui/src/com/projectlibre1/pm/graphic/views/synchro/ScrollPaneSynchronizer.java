@@ -322,11 +322,14 @@ public class ScrollPaneSynchronizer {
 	}
 
 	private void registerMouseWheelTargets(JScrollPane scrollPane, MouseWheelListener listener, ArrayList targets) {
+		registerMouseWheelTargets(scrollPane.getViewport(), listener, targets);
 		registerMouseWheelTargets(scrollPane.getViewport() == null ? null : scrollPane.getViewport().getView(), listener, targets);
 		if (scrollPane.getRowHeader() != null) {
+			registerMouseWheelTargets(scrollPane.getRowHeader(), listener, targets);
 			registerMouseWheelTargets(scrollPane.getRowHeader().getView(), listener, targets);
 		}
 		if (scrollPane.getColumnHeader() != null) {
+			registerMouseWheelTargets(scrollPane.getColumnHeader(), listener, targets);
 			registerMouseWheelTargets(scrollPane.getColumnHeader().getView(), listener, targets);
 		}
 	}
