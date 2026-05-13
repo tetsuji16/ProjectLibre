@@ -83,12 +83,20 @@ public class ScrollPaneSynchronizer {
 
 	protected ChangeListener listener = null;
 
+	protected ChangeListener scrollPane1Listener = null;
+
+	protected ChangeListener scrollPane2Listener = null;
+
+	protected MouseWheelListener mouseWheelListener = null;
+
 	protected int defaultScrollBarPolicy1;
 
 	protected int defaultScrollBarPolicy2;
 	
 	protected boolean bottomBarActivated=true;
 	protected boolean bottomBarEnabled=false;
+
+	protected boolean active = false;
 	/**
 	 * @param scrollPane1
 	 * @param scrollPane2
@@ -126,114 +134,135 @@ public class ScrollPaneSynchronizer {
 		this.bottomBarEnabled = bottomBarEnabled;
 	}
 	public void activateSynchro() {
-		if (listener == null) {
-			if (orientation == HORIZONTAL) {
-				defaultScrollBarPolicy1 = scrollPane1
-						.getVerticalScrollBarPolicy();
-				defaultScrollBarPolicy2 = scrollPane2
-						.getVerticalScrollBarPolicy();
-				scrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-				scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-				scrollPane1
-						.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-				scrollPane2
-						.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		if (active) {
+			return;
+		}
+		active = true;
+		if (orientation == HORIZONTAL) {
+			defaultScrollBarPolicy1 = scrollPane1.getVerticalScrollBarPolicy();
+			defaultScrollBarPolicy2 = scrollPane2.getVerticalScrollBarPolicy();
+			scrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			scrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+			scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-		scrollPane1.getViewport().addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				JViewport vp1 = scrollPane1.getViewport();
-				JViewport vp2 = scrollPane2.getViewport();
-				Point p1 = vp1.getViewPosition();
-				Point p2 = vp2.getViewPosition();
-				p2.setLocation((int) p2.getX(), (int) p1.getY());
-				vp2.setViewPosition(p2);
-				vp2.revalidate();
-			}
-		});
-
-		scrollPane2.getViewport().addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
-				JViewport vp1 = scrollPane1.getViewport();
-				JViewport vp2 = scrollPane2.getViewport();
-				Point p1 = vp1.getViewPosition();
-				Point p2 = vp2.getViewPosition();
-				p1.setLocation((int) p1.getX(), (int) p2.getY());
-				vp1.setViewPosition(p1);
-				vp1.revalidate();
-			}
-		});
-		
-		// Fix for task table horizontal scrolling: add mouse wheel listener to left pane
-		scrollPane1.addMouseWheelListener(new MouseWheelListener() {
-			public void mouseWheelMoved(MouseWheelEvent e) {
-				// Redirect wheel events to vertical scrolling of the left pane
-				// This will be synchronized to the right pane via viewport change listeners
-				int notch = e.getWheelRotation();
-				if (notch < 0) {
-					// Wheel up - scroll up
-					scrollPane1.getVerticalScrollBar().setValue(
-						scrollPane1.getVerticalScrollBar().getValue() - scrollPane1.getVerticalScrollBar().getUnitIncrement());
-				} else if (notch > 0) {
-					// Wheel down - scroll down
-					scrollPane1.getVerticalScrollBar().setValue(
-						scrollPane1.getVerticalScrollBar().getValue() + scrollPane1.getVerticalScrollBar().getUnitIncrement());
+			scrollPane1Listener = new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JViewport vp1 = scrollPane1.getViewport();
+					JViewport vp2 = scrollPane2.getViewport();
+					Point p1 = vp1.getViewPosition();
+					Point p2 = vp2.getViewPosition();
+					p2.setLocation((int) p2.getX(), (int) p1.getY());
+					vp2.setViewPosition(p2);
+					vp2.revalidate();
 				}
-				e.consume(); // Prevent further processing
-			}
-		});
+			};
+			scrollPane2Listener = new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JViewport vp1 = scrollPane1.getViewport();
+					JViewport vp2 = scrollPane2.getViewport();
+					Point p1 = vp1.getViewPosition();
+					Point p2 = vp2.getViewPosition();
+					p1.setLocation((int) p1.getX(), (int) p2.getY());
+					vp1.setViewPosition(p1);
+					vp1.revalidate();
+				}
+			};
+			scrollPane1.getViewport().addChangeListener(scrollPane1Listener);
+			scrollPane2.getViewport().addChangeListener(scrollPane2Listener);
 
-			} else if (orientation == VERTICAL) {
-				defaultScrollBarPolicy1 = scrollPane1
-						.getHorizontalScrollBarPolicy();
-				defaultScrollBarPolicy2 = scrollPane2
-						.getHorizontalScrollBarPolicy();
-				scrollPane1
-						.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-				scrollPane2
-						.setHorizontalScrollBarPolicy((bottomBarActivated)?JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS:JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-				scrollPane2.getHorizontalScrollBar().setEnabled(bottomBarEnabled);
-				
-				listener = new ChangeListener() {
-					public void stateChanged(ChangeEvent e) {
-						JViewport vp1 = scrollPane1.getViewport();
-						JViewport vp2 = scrollPane2.getViewport();
-						
-						Point p1 = vp1.getViewPosition();
-						Point p2 = vp2.getViewPosition();
-						p2.setLocation((int) p1.getX(), (int) p2.getY());
-						vp2.setViewPosition(p2);
-						
-						//test
-						Dimension d1 = vp1.getViewSize();
-						Dimension d2 = vp2.getViewSize();
-						d2.setSize((int) d1.getWidth(), (int) d2.getHeight());
-						
-						vp2.setViewSize(d2);
-						((JComponent)vp2.getView()).setPreferredSize(d2);
-						
-						vp2.revalidate();
-					}
-				};
-				scrollPane1.getViewport().addChangeListener(listener);
+			mouseWheelListener = new MouseWheelListener() {
+				public void mouseWheelMoved(MouseWheelEvent e) {
+					scrollVertically(scrollPane1, e);
+					e.consume();
+				}
+			};
+			scrollPane1.addMouseWheelListener(mouseWheelListener);
+			scrollPane2.addMouseWheelListener(mouseWheelListener);
 
-			}
+		} else if (orientation == VERTICAL) {
+			defaultScrollBarPolicy1 = scrollPane1.getHorizontalScrollBarPolicy();
+			defaultScrollBarPolicy2 = scrollPane2.getHorizontalScrollBarPolicy();
+			scrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+			scrollPane2.setHorizontalScrollBarPolicy((bottomBarActivated) ? JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS : JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			scrollPane2.getHorizontalScrollBar().setEnabled(bottomBarEnabled);
+
+			listener = new ChangeListener() {
+				public void stateChanged(ChangeEvent e) {
+					JViewport vp1 = scrollPane1.getViewport();
+					JViewport vp2 = scrollPane2.getViewport();
+
+					Point p1 = vp1.getViewPosition();
+					Point p2 = vp2.getViewPosition();
+					p2.setLocation((int) p1.getX(), (int) p2.getY());
+					vp2.setViewPosition(p2);
+
+					Dimension d1 = vp1.getViewSize();
+					Dimension d2 = vp2.getViewSize();
+					d2.setSize((int) d1.getWidth(), (int) d2.getHeight());
+
+					vp2.setViewSize(d2);
+					((JComponent) vp2.getView()).setPreferredSize(d2);
+
+					vp2.revalidate();
+				}
+			};
+			scrollPane1.getViewport().addChangeListener(listener);
 		}
 	}
 
 	public void deactivateSynchro() {
-		if (listener != null) {
-			scrollPane2.getViewport().removeChangeListener(listener);
-			if (orientation == HORIZONTAL) {
-				scrollPane1.setVerticalScrollBarPolicy(defaultScrollBarPolicy1);
-				scrollPane2.setVerticalScrollBarPolicy(defaultScrollBarPolicy2);
-			} else if (orientation == VERTICAL) {
-				scrollPane1
-						.setHorizontalScrollBarPolicy(defaultScrollBarPolicy1);
-				scrollPane2
-						.setHorizontalScrollBarPolicy(defaultScrollBarPolicy2);
-				scrollPane2.getHorizontalScrollBar().setEnabled(true);
-			}
+		if (!active) {
+			return;
 		}
+		active = false;
+		if (orientation == HORIZONTAL) {
+			if (scrollPane1Listener != null) {
+				scrollPane1.getViewport().removeChangeListener(scrollPane1Listener);
+				scrollPane1Listener = null;
+			}
+			if (scrollPane2Listener != null) {
+				scrollPane2.getViewport().removeChangeListener(scrollPane2Listener);
+				scrollPane2Listener = null;
+			}
+			if (mouseWheelListener != null) {
+				scrollPane1.removeMouseWheelListener(mouseWheelListener);
+				scrollPane2.removeMouseWheelListener(mouseWheelListener);
+				mouseWheelListener = null;
+			}
+			scrollPane1.setVerticalScrollBarPolicy(defaultScrollBarPolicy1);
+			scrollPane2.setVerticalScrollBarPolicy(defaultScrollBarPolicy2);
+		} else if (orientation == VERTICAL) {
+			if (listener != null) {
+				scrollPane1.getViewport().removeChangeListener(listener);
+				listener = null;
+			}
+			scrollPane1.setHorizontalScrollBarPolicy(defaultScrollBarPolicy1);
+			scrollPane2.setHorizontalScrollBarPolicy(defaultScrollBarPolicy2);
+			scrollPane2.getHorizontalScrollBar().setEnabled(true);
+		}
+	}
+
+	private void scrollVertically(JScrollPane scrollPane, MouseWheelEvent e) {
+		int units = (int) Math.round(e.getPreciseWheelRotation() * e.getScrollAmount());
+		if (units == 0 && e.getPreciseWheelRotation() != 0.0d) {
+			units = e.getPreciseWheelRotation() > 0.0d ? 1 : -1;
+		}
+		if (units == 0) {
+			return;
+		}
+
+		int direction = units > 0 ? 1 : -1;
+		int scrollAmount = Math.abs(units) * scrollPane.getVerticalScrollBar().getUnitIncrement(direction);
+		int newValue = scrollPane.getVerticalScrollBar().getValue() + (units > 0 ? scrollAmount : -scrollAmount);
+		int min = scrollPane.getVerticalScrollBar().getMinimum();
+		int max = scrollPane.getVerticalScrollBar().getMaximum() - scrollPane.getVerticalScrollBar().getVisibleAmount();
+		if (newValue < min) {
+			newValue = min;
+		} else if (newValue > max) {
+			newValue = max;
+		}
+		scrollPane.getVerticalScrollBar().setValue(newValue);
 	}
 
     /**
