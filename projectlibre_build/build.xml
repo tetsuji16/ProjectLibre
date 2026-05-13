@@ -99,8 +99,8 @@
 				debug="off"
 				nowarn="on"
 				encoding="UTF-8"
-				source="21"
-				target="21">
+				source="26"
+				target="26">
 					<src path="${src_core}" />
 					<src path="${src_ui}" />
 					<src path="${src_reports}" />
@@ -117,8 +117,8 @@
 				debug="off"
 				nowarn="on"
 				encoding="UTF-8"
-				source="21"
-				target="21">
+				source="26"
+				target="26">
 					<src path="${src_core}" />
 					<src path="${src_ui}" />
 					<src path="${src_reports}" />
@@ -843,10 +843,49 @@
 		<copy todir="${packages}/jpackage-msi/" file="resources/win/make.ps1" >
 			<filterset>
 				<filter token="version" value="${numericVersion3}"/>
+				<filter token="jpackage_modules" value="${jpackage_modules}"/>
+				<filter token="bundled_jdk_windows" value="${bundled_jdk_windows}"/>
 			</filterset>
 		</copy>
 
 
+	</target>
+
+	<target name="jpackage-win" depends="dist">
+		<delete dir="${dist}/jpackage_input"/>
+		<delete dir="${dist}/app"/>
+		<mkdir dir="${dist}/jpackage_input"/>
+		<mkdir dir="${dist}/app"/>
+		<copy todir="${dist}/jpackage_input">
+			<fileset dir="${dist}">
+				<include name="projectlibre.jar"/>
+				<include name="lib/*.jar"/>
+			</fileset>
+			<fileset dir="${resources}/wix/msi_images">
+				<include name="projectlibre.ico"/>
+			</fileset>
+		</copy>
+		<exec executable="${java.home}/bin/jpackage.exe">
+			<arg value="--type"/>
+			<arg value="app-image"/>
+			<arg value="--name"/>
+			<arg value="ProjectLibre"/>
+			<arg value="--app-version"/>
+			<arg value="${version}"/>
+			<arg value="--input"/>
+			<arg value="${dist}/jpackage_input"/>
+			<arg value="--main-jar"/>
+			<arg value="projectlibre.jar"/>
+			<arg value="--main-class"/>
+			<arg value="com.projectlibre1.main.Main"/>
+			<arg value="--icon"/>
+			<arg value="${dist}/jpackage_input/projectlibre.ico"/>
+			<arg value="--add-modules"/>
+			<arg value="${jpackage_modules}"/>
+			<arg value="--dest"/>
+			<arg value="${dist}/app"/>
+			<arg value="--verbose"/>
+		</exec>
 	</target>
 
 
