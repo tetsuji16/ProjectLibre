@@ -1,10 +1,19 @@
+param(
+    [ValidateSet("msi", "app-image")]
+    [string]$PackageType = "msi",
+    [string]$OutputDir = "app",
+    [string]$JavaHome = $env:JAVA_HOME
+)
+
 $AppVersion = "@version@"
-$OutputDir = "app"
+$RuntimeModules = "@jpackage_modules@"
+$BundledJavaHome = "@bundled_jdk_windows@"
 
-$env:JAVA_HOME = "C:\Program Files\Java\jdk-21"
+if ([string]::IsNullOrWhiteSpace($JavaHome)) {
+    $JavaHome = $BundledJavaHome
+}
 
-
-$JpackagePath = Join-Path $env:JAVA_HOME "bin\jpackage.exe"
+$JpackagePath = Join-Path $JavaHome "bin\jpackage.exe"
 
 if (-not (Test-Path $JpackagePath)) {
     Write-Error "jpackage not found. Make sure JAVA_HOME is set to a valid JDK 14+ path."
@@ -16,21 +25,30 @@ if (-not (Test-Path $OutputDir)) {
     New-Item -ItemType Directory -Path $OutputDir | Out-Null
 }
 
-& $JpackagePath `
-    --type msi `
-    --name ProjectLibre `
-    --app-version $AppVersion `
-    --input source `
-    --main-jar projectlibre-$AppVersion.jar `
-    --icon source/projectlibre.ico `
-    --license-file source/license/license.txt `
-    --file-associations "pod.properties" `
-    --file-associations "mpp.properties" `
-    --file-associations "xml.properties" `
-    --dest $OutputDir `
-    --win-menu `
-    --win-shortcut `
-    --win-dir-chooser `
-    --verbose
+$jpackageArgs = @(
+    "--type", $PackageType,
+    "--name", "ProjectLibre",
+    "--app-version", $AppVersion,
+    "--input", "source",
+    "--main-jar", "projectlibre-$AppVersion.jar",
+    "--icon", "source/projectlibre.ico",
+    "--license-file", "source/license/license.txt",
+    "--add-modules", $RuntimeModules,
+    "--dest", $OutputDir,
+    "--verbose"
+)
 
-Write-Host "MSI installer created in '$OutputDir'" -ForegroundColor Green
+if ($PackageType -eq "msi") {
+    $jpackageArgs += @(
+        "--file-associations", "pod.properties",
+        "--file-associations", "mpp.properties",
+        "--file-associations", "xml.properties",
+        "--win-menu",
+        "--win-shortcut",
+        "--win-dir-chooser"
+    )
+}
+
+& $JpackagePath @jpackageArgs
+
+Write-Host "$PackageType package created in '$OutputDir'" -ForegroundColor Green
