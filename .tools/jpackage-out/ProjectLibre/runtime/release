@@ -1,0 +1,2 @@
+JAVA_VERSION="26.0.1"
+MODULES="java.base jdk.charsets"

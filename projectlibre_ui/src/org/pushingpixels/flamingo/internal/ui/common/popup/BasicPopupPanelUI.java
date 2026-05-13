@@ -29,7 +29,6 @@
  */
 package org.pushingpixels.flamingo.internal.ui.common.popup;
 
-import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
@@ -619,7 +618,7 @@ public class BasicPopupPanelUI extends PopupPanelUI {
 		 */
 		boolean isInPopupPanel(Component src) {
 			for (Component c = src; c != null; c = c.getParent()) {
-				if (c instanceof Applet || c instanceof Window) {
+				if (c instanceof Window) {
 					break;
 				} else if (c instanceof JPopupPanel) {
 					return true;

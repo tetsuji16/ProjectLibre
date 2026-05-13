@@ -1291,9 +1291,9 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 					Color hueColor = taskGroup.getHueColor();
 					
 					// Use cached gradient or create new one if needed
-					Paint paint = contextualGroupGradients.get(taskGroup);
-					if (paint == null) {
-						paint = new GradientPaint(
+					GradientPaint gradientPaint = contextualGroupGradients.get(taskGroup);
+					if (gradientPaint == null) {
+						gradientPaint = new GradientPaint(
 								0,
 								0,
 								FlamingoUtilities.getAlphaColor(hueColor, 0),
@@ -1303,8 +1303,9 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 										.getAlphaColor(
 												hueColor,
 												(int) (255 * RibbonContextualTaskGroup.HUE_ALPHA)));
-						contextualGroupGradients.put(taskGroup, paint);
+						contextualGroupGradients.put(taskGroup, gradientPaint);
 					}
+					Paint paint = gradientPaint;
 					// translucent gradient paint
 					g2d.setPaint(paint);
 					int startX = ltr ? taskGroupBounds.x : Math.min(
