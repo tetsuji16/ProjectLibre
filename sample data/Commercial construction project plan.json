@@ -1,0 +1,3082 @@
+{
+  "version": 1,
+  "snapshot": {
+    "start_date": "2000-01-03",
+    "end_date": "2001-04-26",
+    "status_date": null,
+    "tasks": [
+      {
+        "number": 0,
+        "name": "Commercial Construction",
+        "start": "2000-01-03",
+        "finish": "2001-04-26",
+        "progress": 0.0,
+        "indent": 0,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "344.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 1,
+        "name": "Three-story Office Building (76,000 square feet)",
+        "start": "2000-01-03",
+        "finish": "2001-04-26",
+        "progress": 0.0,
+        "indent": 0,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "344.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 2,
+        "name": "General Conditions",
+        "start": "2000-01-03",
+        "finish": "2000-01-25",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "17.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 3,
+        "name": "Receive notice to proceed and sign contract",
+        "start": "2000-01-03",
+        "finish": "2000-01-05",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [
+          "G.C. General Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 4,
+        "name": "Submit bond and insurance documents",
+        "start": "2000-01-06",
+        "finish": "2000-01-07",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          3
+        ],
+        "resource_names": [
+          "G.C. Project Management",
+          "G.C. General Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 5,
+        "name": "Prepare and submit project schedule",
+        "start": "2000-01-10",
+        "finish": "2000-01-11",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          4
+        ],
+        "resource_names": [
+          "G.C. Project Management",
+          "G.C. Scheduler"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 6,
+        "name": "Prepare and submit schedule of values",
+        "start": "2000-01-12",
+        "finish": "2000-01-13",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          5
+        ],
+        "resource_names": [
+          "G.C. General Management",
+          "G.C. Project Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 7,
+        "name": "Obtain building permits",
+        "start": "2000-01-06",
+        "finish": "2000-01-11",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          3
+        ],
+        "resource_names": [
+          "G.C. Project Management",
+          "G.C. Procurement"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 8,
+        "name": "Submit preliminary shop drawings",
+        "start": "2000-01-12",
+        "finish": "2000-01-25",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          7
+        ],
+        "resource_names": [
+          "G.C. Project Management",
+          "G.C. Procurement"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 9,
+        "name": "Submit monthly requests for payment",
+        "start": "2000-01-06",
+        "finish": "2000-01-06",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          3
+        ],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "Monthly requests for payment can be entered as a recurring task. See the Help topic \"Enter a recurring task.\"\n",
+        "deadline": null
+      },
+      {
+        "number": 10,
+        "name": "Long Lead Procurement",
+        "start": "2000-01-07",
+        "finish": "2000-04-13",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "70.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 11,
+        "name": "Submit shop drawings and order long lead items - steel",
+        "start": "2000-01-07",
+        "finish": "2000-01-20",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          9
+        ],
+        "resource_names": [
+          "Steel Erection Contractor Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 12,
+        "name": "Submit shop drawings and order long lead items - roofing",
+        "start": "2000-01-26",
+        "finish": "2000-02-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          8
+        ],
+        "resource_names": [
+          "Roofing Contractor Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 13,
+        "name": "Submit shop drawings and order long lead items - elevator",
+        "start": "2000-01-26",
+        "finish": "2000-02-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          8
+        ],
+        "resource_names": [
+          "Elevator Contractor Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 14,
+        "name": "Submit shop drawings and order long lead items - plumbing",
+        "start": "2000-01-26",
+        "finish": "2000-02-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          8
+        ],
+        "resource_names": [
+          "Plumbing Contractor Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 15,
+        "name": "Submit shop drawings and order long lead items - electric",
+        "start": "2000-01-26",
+        "finish": "2000-02-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          8
+        ],
+        "resource_names": [
+          "Electric Contractor Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 16,
+        "name": "Submit shop drawings and order long lead items - HVAC",
+        "start": "2000-01-26",
+        "finish": "2000-02-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          8
+        ],
+        "resource_names": [
+          "HVAC Contractor Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 17,
+        "name": "Detail, fabricate and deliver steel",
+        "start": "2000-01-21",
+        "finish": "2000-04-13",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          11
+        ],
+        "resource_names": [
+          "Steel Erection Contractor Management",
+          "Steel Erection Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "12.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 18,
+        "name": "Mobilize on Site",
+        "start": "2000-01-06",
+        "finish": "2000-01-19",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "10.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 19,
+        "name": "Install temporary power",
+        "start": "2000-01-06",
+        "finish": "2000-01-07",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          3
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 20,
+        "name": "Install temporary water service",
+        "start": "2000-01-06",
+        "finish": "2000-01-07",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          3
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 21,
+        "name": "Set up site office",
+        "start": "2000-01-10",
+        "finish": "2000-01-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          19,
+          20
+        ],
+        "resource_names": [
+          "G.C. Superintendent",
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 22,
+        "name": "Set line and grade benchmarks",
+        "start": "2000-01-13",
+        "finish": "2000-01-17",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          21
+        ],
+        "resource_names": [
+          "G.C. Survey Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 23,
+        "name": "Prepare site - lay down yard and temporary fencing",
+        "start": "2000-01-18",
+        "finish": "2000-01-19",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          22
+        ],
+        "resource_names": [
+          "Site Grading Contractor",
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 24,
+        "name": "Site Grading and Utilities",
+        "start": "2000-01-20",
+        "finish": "2000-03-08",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "35.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 25,
+        "name": "Clear and grub site",
+        "start": "2000-01-20",
+        "finish": "2000-01-24",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          21,
+          23
+        ],
+        "resource_names": [
+          "Site Grading Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 26,
+        "name": "Stone site access and temporary parking area",
+        "start": "2000-01-25",
+        "finish": "2000-01-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          25,
+          23
+        ],
+        "resource_names": [
+          "Site Grading Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 27,
+        "name": "Rough grade site (cut and fill)",
+        "start": "2000-01-27",
+        "finish": "2000-02-02",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          26
+        ],
+        "resource_names": [
+          "Site Grading Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 28,
+        "name": "Install storm drainage",
+        "start": "2000-02-03",
+        "finish": "2000-02-16",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          27
+        ],
+        "resource_names": [
+          "Site Grading Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 29,
+        "name": "Install exterior fire line and building fire riser",
+        "start": "2000-02-03",
+        "finish": "2000-02-16",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          27
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 30,
+        "name": "Perform final site grading",
+        "start": "2000-02-17",
+        "finish": "2000-03-01",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          28,
+          29
+        ],
+        "resource_names": [
+          "Site Grading Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 31,
+        "name": "Erect building batter boards and layout building",
+        "start": "2000-03-02",
+        "finish": "2000-03-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          30
+        ],
+        "resource_names": [
+          "G.C. Survey Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 32,
+        "name": "Foundations",
+        "start": "2000-03-09",
+        "finish": "2000-04-24",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "33.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 33,
+        "name": "Excavate foundations",
+        "start": "2000-03-09",
+        "finish": "2000-03-22",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          31
+        ],
+        "resource_names": [
+          "Site Grading Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 34,
+        "name": "Excavate elevator pit",
+        "start": "2000-03-09",
+        "finish": "2000-03-10",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          31
+        ],
+        "resource_names": [
+          "Site Grading Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 35,
+        "name": "Form column piers and spread foundations",
+        "start": "2000-03-23",
+        "finish": "2000-03-28",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          33
+        ],
+        "resource_names": [
+          "G.C. Rough Carpenter Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 36,
+        "name": "Rough-in electric and plumbing in elevator",
+        "start": "2000-03-13",
+        "finish": "2000-03-16",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          34
+        ],
+        "resource_names": [
+          "Plumbing Contractor",
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 37,
+        "name": "Form elevator pit walls",
+        "start": "2000-03-17",
+        "finish": "2000-03-22",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          36
+        ],
+        "resource_names": [
+          "G.C. Rough Carpenter Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 38,
+        "name": "Set reinforcing and anchor bolts",
+        "start": "2000-03-29",
+        "finish": "2000-04-03",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          35
+        ],
+        "resource_names": [
+          "G.C. Rough Carpenter Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 39,
+        "name": "Pour column piers and foundations",
+        "start": "2000-04-04",
+        "finish": "2000-04-10",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          38
+        ],
+        "resource_names": [
+          "G.C. Concrete Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 40,
+        "name": "Pour concrete elevator walls",
+        "start": "2000-03-23",
+        "finish": "2000-03-23",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          37
+        ],
+        "resource_names": [
+          "G.C. Concrete Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 41,
+        "name": "Cure elevator wall concrete",
+        "start": "2000-03-24",
+        "finish": "2000-04-03",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          40
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "7.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 42,
+        "name": "Cure piers and foundations",
+        "start": "2000-04-11",
+        "finish": "2000-04-19",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          39
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "7.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 43,
+        "name": "Strip wall forms",
+        "start": "2000-04-04",
+        "finish": "2000-04-04",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          41
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 44,
+        "name": "Strip column piers and foundation forms",
+        "start": "2000-04-20",
+        "finish": "2000-04-24",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          42
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 45,
+        "name": "Install pneumatic tube in elevator pit",
+        "start": "2000-04-05",
+        "finish": "2000-04-07",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          43
+        ],
+        "resource_names": [
+          "Elevator Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 46,
+        "name": "Prepare and pour concrete floor in elevator pit",
+        "start": "2000-04-10",
+        "finish": "2000-04-10",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          45
+        ],
+        "resource_names": [
+          "G.C. Concrete Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 47,
+        "name": "Steel Erection",
+        "start": "2000-04-25",
+        "finish": "2000-06-26",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "45.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 48,
+        "name": "Erect steel columns, beams and joist - 1st and 2nd floors",
+        "start": "2000-04-25",
+        "finish": "2000-05-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          44,
+          17
+        ],
+        "resource_names": [
+          "Steel Erection Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 49,
+        "name": "Erect steel columns, beams and joist - 3rd floor and roof",
+        "start": "2000-05-09",
+        "finish": "2000-05-22",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          48
+        ],
+        "resource_names": [
+          "Steel Erection Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 50,
+        "name": "Install miscellaneous iron and bracing - 1st and 2nd floors",
+        "start": "2000-05-09",
+        "finish": "2000-05-22",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          48
+        ],
+        "resource_names": [
+          "Steel Erection Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 51,
+        "name": "Install miscellaneous iron and bracing - 3rd floor and roof",
+        "start": "2000-05-23",
+        "finish": "2000-06-05",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          49
+        ],
+        "resource_names": [
+          "Steel Erection Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 52,
+        "name": "Install stairs and miscellaneous iron railing",
+        "start": "2000-06-06",
+        "finish": "2000-06-19",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          51
+        ],
+        "resource_names": [
+          "Steel Erection Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 53,
+        "name": "Touch-up paint on steel",
+        "start": "2000-06-20",
+        "finish": "2000-06-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          52
+        ],
+        "resource_names": [
+          "Steel Erection Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 54,
+        "name": "Form and Pour Concrete - Floors and Roof",
+        "start": "2000-05-09",
+        "finish": "2000-09-04",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "85.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 55,
+        "name": "Form 2nd floor including all floor openings",
+        "start": "2000-06-27",
+        "finish": "2000-07-03",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          53,
+          14,
+          15,
+          16,
+          48
+        ],
+        "resource_names": [
+          "G.C. Rough Carpenter Crew",
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 56,
+        "name": "Install rebar and in-floor utilities (including mechanical, electrical, plumbing)",
+        "start": "2000-05-09",
+        "finish": "2000-05-15",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          48
+        ],
+        "resource_names": [
+          "G.C. Labor Crew",
+          "Plumbing Contractor",
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 57,
+        "name": "Pour 2nd floor slab",
+        "start": "2000-07-04",
+        "finish": "2000-07-07",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          56,
+          55
+        ],
+        "resource_names": [
+          "G.C. Concrete Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 58,
+        "name": "Cure 2nd floor slab",
+        "start": "2000-07-10",
+        "finish": "2000-07-18",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          57
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "7.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 59,
+        "name": "Strip forms from 2nd floor slab",
+        "start": "2000-07-19",
+        "finish": "2000-07-20",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          58
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 60,
+        "name": "Form 3rd floor including all floor openings",
+        "start": "2000-07-19",
+        "finish": "2000-07-25",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          58
+        ],
+        "resource_names": [
+          "G.C. Rough Carpenter Crew",
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 61,
+        "name": "Install rebar and in-floor utilities (including mechanical, electrical, plumbing)",
+        "start": "2000-07-19",
+        "finish": "2000-07-25",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          58
+        ],
+        "resource_names": [
+          "G.C. Labor Crew",
+          "Plumbing Contractor",
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 62,
+        "name": "Pour 3rd floor slab",
+        "start": "2000-07-26",
+        "finish": "2000-07-31",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          61,
+          60
+        ],
+        "resource_names": [
+          "G.C. Concrete Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 63,
+        "name": "Cure 3rd floor slab",
+        "start": "2000-08-01",
+        "finish": "2000-08-09",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          62
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "7.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 64,
+        "name": "Strip forms from 3rd floor slab",
+        "start": "2000-08-10",
+        "finish": "2000-08-11",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          63
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 65,
+        "name": "Form roof slab including all floor openings",
+        "start": "2000-08-10",
+        "finish": "2000-08-16",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          63
+        ],
+        "resource_names": [
+          "G.C. Rough Carpenter Crew",
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 66,
+        "name": "Install rebar and in-floor utilities (including mechanical, electrical, plumbing)",
+        "start": "2000-08-10",
+        "finish": "2000-08-16",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          63
+        ],
+        "resource_names": [
+          "G.C. Labor Crew",
+          "Plumbing Contractor",
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 67,
+        "name": "Pour roof slab",
+        "start": "2000-08-17",
+        "finish": "2000-08-22",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          66,
+          65
+        ],
+        "resource_names": [
+          "G.C. Concrete Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 68,
+        "name": "Cure roof slab",
+        "start": "2000-08-23",
+        "finish": "2000-08-31",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          67
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "7.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 69,
+        "name": "Strip forms from roof slab",
+        "start": "2000-09-01",
+        "finish": "2000-09-04",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          68
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 70,
+        "name": "Form 1st floor",
+        "start": "2000-07-21",
+        "finish": "2000-07-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          59
+        ],
+        "resource_names": [
+          "G.C. Rough Carpenter Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 71,
+        "name": "Install electrical underground",
+        "start": "2000-07-21",
+        "finish": "2000-07-27",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          59
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 72,
+        "name": "Install plumbing underground",
+        "start": "2000-07-21",
+        "finish": "2000-07-27",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          59
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 73,
+        "name": "Install rebar and in-floor utilities",
+        "start": "2000-07-21",
+        "finish": "2000-07-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          59
+        ],
+        "resource_names": [
+          "G.C. Labor Crew",
+          "Plumbing Contractor",
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 74,
+        "name": "Pour 1st floor slab",
+        "start": "2000-07-28",
+        "finish": "2000-08-02",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          70,
+          73,
+          71,
+          72
+        ],
+        "resource_names": [
+          "G.C. Concrete Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 75,
+        "name": "Cure 1st floor slab",
+        "start": "2000-08-03",
+        "finish": "2000-08-11",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          74
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "7.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 76,
+        "name": "Strip forms from 1st floor slab",
+        "start": "2000-08-14",
+        "finish": "2000-08-15",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          75
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 77,
+        "name": "Carpentry Work",
+        "start": "2000-09-05",
+        "finish": "2000-09-25",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "15.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 78,
+        "name": "Install exterior sheathing and metal studs",
+        "start": "2000-09-05",
+        "finish": "2000-09-25",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          64,
+          69
+        ],
+        "resource_names": [
+          "Drywall Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 79,
+        "name": "Masonry Work",
+        "start": "2000-06-06",
+        "finish": "2000-11-06",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "110.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 80,
+        "name": "Rough-in plumbing at toilets and masonry walls",
+        "start": "2000-08-16",
+        "finish": "2000-09-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          76,
+          14
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 81,
+        "name": "Lay masonry at core, mechanical, and toilets",
+        "start": "2000-06-06",
+        "finish": "2000-07-03",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          50,
+          51
+        ],
+        "resource_names": [
+          "Masonry Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 82,
+        "name": "Install exterior masonry work",
+        "start": "2000-09-26",
+        "finish": "2000-10-30",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          78
+        ],
+        "resource_names": [
+          "Masonry Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 83,
+        "name": "Install roof drains",
+        "start": "2000-10-31",
+        "finish": "2000-11-01",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          82
+        ],
+        "resource_names": [
+          "Roofing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 84,
+        "name": "Install tile in toilet rooms",
+        "start": "2000-09-13",
+        "finish": "2000-09-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          80
+        ],
+        "resource_names": [
+          "Tile Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 85,
+        "name": "Clean masonry",
+        "start": "2000-10-31",
+        "finish": "2000-11-06",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          82
+        ],
+        "resource_names": [
+          "Masonry Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 86,
+        "name": "Clean toilet room tile",
+        "start": "2000-09-27",
+        "finish": "2000-10-03",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          84
+        ],
+        "resource_names": [
+          "Tile Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 87,
+        "name": "Roofing",
+        "start": "2000-10-31",
+        "finish": "2000-12-12",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "31.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 88,
+        "name": "Install flashing at parapet walls",
+        "start": "2000-10-31",
+        "finish": "2000-11-03",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          82
+        ],
+        "resource_names": [
+          "Roofing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 89,
+        "name": "Pour lightweight concrete roof fill",
+        "start": "2000-11-06",
+        "finish": "2000-11-07",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          12,
+          83,
+          88
+        ],
+        "resource_names": [
+          "Roofing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 90,
+        "name": "Install seamless roofing material",
+        "start": "2000-11-15",
+        "finish": "2000-11-21",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          89
+        ],
+        "resource_names": [
+          "Roofing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 91,
+        "name": "Spread stone ballast on seamless roof",
+        "start": "2000-11-22",
+        "finish": "2000-11-28",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          90
+        ],
+        "resource_names": [
+          "Roofing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 92,
+        "name": "Set rooftop equipment",
+        "start": "2000-11-29",
+        "finish": "2000-12-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          91
+        ],
+        "resource_names": [
+          "HVAC Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 93,
+        "name": "Window wall and store front closures",
+        "start": "2000-10-31",
+        "finish": "2001-01-22",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "60.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 94,
+        "name": "Install window wall aluminum and glass",
+        "start": "2000-10-31",
+        "finish": "2000-12-04",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          82
+        ],
+        "resource_names": [
+          "Window Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 95,
+        "name": "Install interior stud walls and drywall",
+        "start": "2000-12-05",
+        "finish": "2001-01-08",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          94
+        ],
+        "resource_names": [
+          "Drywall Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "5.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 96,
+        "name": "Install interior doors and hardware",
+        "start": "2001-01-09",
+        "finish": "2001-01-22",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          95
+        ],
+        "resource_names": [
+          "G.C. Finish Carpenter Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 97,
+        "name": "Install store front doors and hardware",
+        "start": "2000-10-31",
+        "finish": "2000-11-20",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          82
+        ],
+        "resource_names": [
+          "Window Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 98,
+        "name": "Building Finishes",
+        "start": "2000-12-05",
+        "finish": "2001-03-26",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "80.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 99,
+        "name": "Install millwork and wood trim",
+        "start": "2001-01-09",
+        "finish": "2001-01-29",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          97,
+          95
+        ],
+        "resource_names": [
+          "G.C. Finish Carpenter Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 100,
+        "name": "Paint walls and woodwork",
+        "start": "2001-01-30",
+        "finish": "2001-02-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          99,
+          96
+        ],
+        "resource_names": [
+          "Painting Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 101,
+        "name": "Install conduit at ceiling plenum space",
+        "start": "2000-12-05",
+        "finish": "2000-12-25",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          94
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 102,
+        "name": "Install duct in ceiling plenum space",
+        "start": "2001-01-09",
+        "finish": "2001-01-29",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          95,
+          101
+        ],
+        "resource_names": [
+          "HVAC Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 103,
+        "name": "Install ceiling grid",
+        "start": "2001-01-30",
+        "finish": "2001-02-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          95,
+          102
+        ],
+        "resource_names": [
+          "Drywall Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 104,
+        "name": "Install ceiling tile",
+        "start": "2001-02-13",
+        "finish": "2001-02-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          103
+        ],
+        "resource_names": [
+          "Drywall Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 105,
+        "name": "Hang wallpaper",
+        "start": "2001-02-13",
+        "finish": "2001-02-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          103
+        ],
+        "resource_names": [
+          "Painting Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 106,
+        "name": "Install building carpet",
+        "start": "2001-02-27",
+        "finish": "2001-03-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          100
+        ],
+        "resource_names": [
+          "Carpet Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 107,
+        "name": "Install hardware and accessories",
+        "start": "2001-02-27",
+        "finish": "2001-03-19",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          100
+        ],
+        "resource_names": [
+          "G.C. Finish Carpenter Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 108,
+        "name": "Complete interior and exterior sod and plantings",
+        "start": "2001-02-27",
+        "finish": "2001-03-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          100
+        ],
+        "resource_names": [
+          "Landscape Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 109,
+        "name": "Pave, curb, and stripe parking lot",
+        "start": "2001-03-13",
+        "finish": "2001-03-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          108
+        ],
+        "resource_names": [
+          "Paving Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 110,
+        "name": "Elevators",
+        "start": "2000-07-04",
+        "finish": "2000-08-28",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "40.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 111,
+        "name": "Set elevator equipment in shafts",
+        "start": "2000-07-04",
+        "finish": "2000-07-31",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          81,
+          46,
+          13
+        ],
+        "resource_names": [
+          "Elevator Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 112,
+        "name": "Set equipment in mechanical room",
+        "start": "2000-08-01",
+        "finish": "2000-08-14",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          111
+        ],
+        "resource_names": [
+          "Elevator Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 113,
+        "name": "Test and align doors and equipment",
+        "start": "2000-08-15",
+        "finish": "2000-08-28",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          112
+        ],
+        "resource_names": [
+          "Elevator Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 114,
+        "name": "Plumbing",
+        "start": "2000-11-07",
+        "finish": "2001-03-12",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "90.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 115,
+        "name": "Rough-in plumbing in drywall walls",
+        "start": "2000-12-05",
+        "finish": "2001-01-01",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          94
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 116,
+        "name": "Tie-in fire line riser and set valves",
+        "start": "2000-11-07",
+        "finish": "2000-11-20",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          85
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 117,
+        "name": "Set plumbing fixtures and trim",
+        "start": "2001-01-02",
+        "finish": "2001-01-22",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          86,
+          115,
+          80
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 118,
+        "name": "Flush, test, and clean piping and fixtures",
+        "start": "2001-02-27",
+        "finish": "2001-03-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          100,
+          116,
+          117
+        ],
+        "resource_names": [
+          "Plumbing Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 119,
+        "name": "Electrical",
+        "start": "2000-08-16",
+        "finish": "2001-02-26",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "139.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 120,
+        "name": "Rough-in electrical in masonry walls",
+        "start": "2000-08-16",
+        "finish": "2000-09-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          76,
+          15
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 121,
+        "name": "Rough-in electrical in drywall walls",
+        "start": "2000-12-05",
+        "finish": "2001-01-01",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          94
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 122,
+        "name": "Pull wire in conduit and set area transformers",
+        "start": "2000-12-26",
+        "finish": "2001-01-15",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          120,
+          101
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 123,
+        "name": "Install and terminate electrical devices",
+        "start": "2001-01-16",
+        "finish": "2001-02-05",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          122,
+          121
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 124,
+        "name": "Make electrical terminations for HVAC equipment",
+        "start": "2001-01-16",
+        "finish": "2001-01-17",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          122,
+          92
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 125,
+        "name": "Install light fixtures - test and clean",
+        "start": "2001-02-13",
+        "finish": "2001-02-26",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          103,
+          123
+        ],
+        "resource_names": [
+          "Electric Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 126,
+        "name": "Heating and Ventilating - AC",
+        "start": "2000-07-04",
+        "finish": "2001-03-12",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "180.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 127,
+        "name": "Set equipment in mechanical room",
+        "start": "2000-07-04",
+        "finish": "2000-07-17",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          81,
+          16
+        ],
+        "resource_names": [
+          "HVAC Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 128,
+        "name": "Rough-in mechanical in masonry walls",
+        "start": "2000-08-16",
+        "finish": "2000-09-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          76
+        ],
+        "resource_names": [
+          "HVAC Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 129,
+        "name": "Rough-in mechanical in drywall walls",
+        "start": "2000-12-05",
+        "finish": "2000-12-18",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          94
+        ],
+        "resource_names": [
+          "HVAC Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 130,
+        "name": "Install duct in building chase",
+        "start": "2000-12-05",
+        "finish": "2000-12-25",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          127,
+          128,
+          94
+        ],
+        "resource_names": [
+          "HVAC Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 131,
+        "name": "Set HVAC trim and test and balance system",
+        "start": "2001-02-13",
+        "finish": "2001-03-12",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          103,
+          130,
+          124
+        ],
+        "resource_names": [
+          "HVAC Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 132,
+        "name": "Final Clean-up and Occupancy",
+        "start": "2001-01-09",
+        "finish": "2001-04-02",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "60.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 133,
+        "name": "Install hard tile flooring in common areas",
+        "start": "2001-01-09",
+        "finish": "2001-01-15",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          95
+        ],
+        "resource_names": [
+          "Tile Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 134,
+        "name": "Clean hard tile floors",
+        "start": "2001-01-16",
+        "finish": "2001-01-19",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          133
+        ],
+        "resource_names": [
+          "Tile Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 135,
+        "name": "Remove debris from building and do final clean-up",
+        "start": "2001-03-27",
+        "finish": "2001-03-30",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          106,
+          105,
+          107,
+          108,
+          118,
+          125,
+          104,
+          134
+        ],
+        "resource_names": [
+          "G.C. Labor Crew"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "4.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 136,
+        "name": "Substantial completion date",
+        "start": "2001-04-02",
+        "finish": "2001-04-02",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          135
+        ],
+        "resource_names": [
+          "G.C. Superintendent"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 137,
+        "name": "Complete Final Inspections",
+        "start": "2001-04-02",
+        "finish": "2001-04-09",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": true,
+        "milestone": false,
+        "predecessors": [],
+        "resource_names": [],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "6.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 138,
+        "name": "Complete elevator inspection and certification",
+        "start": "2001-04-02",
+        "finish": "2001-04-04",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          135,
+          113
+        ],
+        "resource_names": [
+          "Elevator Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "3.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 139,
+        "name": "Perform architect's inspection",
+        "start": "2001-04-05",
+        "finish": "2001-04-05",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          135,
+          109,
+          138
+        ],
+        "resource_names": [
+          "G.C. Superintendent",
+          "G.C. Project Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 140,
+        "name": "Perform local building agency inspection",
+        "start": "2001-04-06",
+        "finish": "2001-04-06",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          139
+        ],
+        "resource_names": [
+          "G.C. Project Management",
+          "G.C. Superintendent"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 141,
+        "name": "Perform Fire Marshal's inspection",
+        "start": "2001-04-09",
+        "finish": "2001-04-09",
+        "progress": 0.0,
+        "indent": 2,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          140
+        ],
+        "resource_names": [
+          "G.C. Superintendent",
+          "G.C. Project Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 142,
+        "name": "Complete punch list items from all inspections",
+        "start": "2001-04-10",
+        "finish": "2001-04-23",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          141
+        ],
+        "resource_names": [
+          "G.C. Superintendent",
+          "G.C. Labor Crew",
+          "Plumbing Contractor",
+          "Electric Contractor",
+          "HVAC Contractor",
+          "Drywall Contractor",
+          "Carpet Contractor",
+          "Paving Contractor",
+          "Painting Contractor"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0w",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 143,
+        "name": "Obtain certificate of occupancy",
+        "start": "2001-04-24",
+        "finish": "2001-04-25",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          142
+        ],
+        "resource_names": [
+          "G.C. Project Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "2.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 144,
+        "name": "Issue final completion documents including warranties",
+        "start": "2001-04-24",
+        "finish": "2001-04-24",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          142
+        ],
+        "resource_names": [
+          "G.C. Project Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      },
+      {
+        "number": 145,
+        "name": "Issue final request for payment",
+        "start": "2001-04-26",
+        "finish": "2001-04-26",
+        "progress": 0.0,
+        "indent": 1,
+        "summary": false,
+        "milestone": false,
+        "predecessors": [
+          143,
+          144
+        ],
+        "resource_names": [
+          "G.C. Project Management",
+          "G.C. Accounting",
+          "G.C. General Management"
+        ],
+        "start_text": null,
+        "finish_text": null,
+        "duration_text": "1.0d",
+        "notes": "",
+        "deadline": null
+      }
+    ]
+  },
+  "selected_task_id": 19,
+  "collapsed_summaries": [
+    10
+  ],
+  "day_width": 24.0,
+  "left_table_width": 857.0
+}

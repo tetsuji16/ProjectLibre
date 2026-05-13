@@ -74,8 +74,8 @@
 			debug="off"
 			nowarn="on"
 			encoding="UTF-8"
-			source="21"
-			target="21">
+			source="26"
+			target="26">
 				<src path="${src}" />
 				<include name="**/*" />
 				<exclude name="**/version.properties" />
