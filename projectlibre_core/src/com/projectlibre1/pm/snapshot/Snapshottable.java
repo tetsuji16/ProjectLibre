@@ -63,19 +63,19 @@ package com.projectlibre1.pm.snapshot;
  * having a hashtable of named baselines.
  */
 public interface Snapshottable extends Cloneable{
-	public static final Integer CURRENT = new Integer(11);
-	public static final Integer BASELINE = new Integer(0);
-	public static final Integer BASELINE_1 = new Integer(1);
-	public static final Integer BASELINE_2 = new Integer(2);
-	public static final Integer BASELINE_3 = new Integer(3);
-	public static final Integer BASELINE_4 = new Integer(4);
-	public static final Integer BASELINE_5 = new Integer(5);
-	public static final Integer BASELINE_6 = new Integer(6);
-	public static final Integer BASELINE_7 = new Integer(7);
-	public static final Integer BASELINE_8 = new Integer(8);
-	public static final Integer BASELINE_9 = new Integer(9);
-	public static final Integer BASELINE_10 = new Integer(10);
-	public static final Integer TIMESHEET = new Integer(12);
+	public static final Integer CURRENT = Integer.valueOf(11);
+	public static final Integer BASELINE = Integer.valueOf(0);
+	public static final Integer BASELINE_1 = Integer.valueOf(1);
+	public static final Integer BASELINE_2 = Integer.valueOf(2);
+	public static final Integer BASELINE_3 = Integer.valueOf(3);
+	public static final Integer BASELINE_4 = Integer.valueOf(4);
+	public static final Integer BASELINE_5 = Integer.valueOf(5);
+	public static final Integer BASELINE_6 = Integer.valueOf(6);
+	public static final Integer BASELINE_7 = Integer.valueOf(7);
+	public static final Integer BASELINE_8 = Integer.valueOf(8);
+	public static final Integer BASELINE_9 = Integer.valueOf(9);
+	public static final Integer BASELINE_10 = Integer.valueOf(10);
+	public static final Integer TIMESHEET = Integer.valueOf(12);
 	
 	public DataSnapshot getSnapshot(Object snapshotId);
 	public void setSnapshot(Object snapshotId, DataSnapshot snapshot);

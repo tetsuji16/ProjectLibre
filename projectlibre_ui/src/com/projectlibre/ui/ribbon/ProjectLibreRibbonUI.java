@@ -2354,43 +2354,7 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 
 	@Override
 	public void handleMouseWheelEvent(MouseWheelEvent e) {
-		// no mouse wheel scrolling when the ribbon is minimized
-		if (ribbon.isMinimized())
-			return;
-
-		// get the visible tasks
-		final List<RibbonTask> visibleTasks = getCurrentlyShownRibbonTasks();
-		if (visibleTasks.size() == 0)
-			return;
-
-		int delta = e.getWheelRotation();
-		if (delta == 0)
-			return;
-
-		// find the index of the currently selected task
-		int currSelectedTaskIndex = visibleTasks.indexOf(ribbon
-				.getSelectedTask());
-
-		// compute the next task
-		if (!ribbon.getComponentOrientation().isLeftToRight())
-			delta = -delta;
-		int newSelectedTaskIndex = currSelectedTaskIndex
-				+ ((delta > 0) ? 1 : -1);
-		if (newSelectedTaskIndex < 0)
-			return;
-		if (newSelectedTaskIndex >= visibleTasks.size())
-			return;
-
-		final int indexToSet = newSelectedTaskIndex;
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				ribbon.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-				ribbon.setSelectedTask(visibleTasks.get(indexToSet));
-				ribbon.setCursor(Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-			}
-		});
+		// ProjectLibre should not switch ribbon tabs on mouse wheel.
 	}
 
 	protected void scrollAndRevealTaskToggleButton(

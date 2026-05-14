@@ -65,11 +65,12 @@ JAVA_INSTALL_DIR2="/usr/lib/jvm"
 JAVA_INSTALL_DIR_EXE2="bin/java"
 JAVA_INSTALL_DIR3="/opt/ibm"
 JAVA_INSTALL_DIR_EXE3="jre/bin/java"
-MIN_JAVA_VERSION="6"
+MIN_JAVA_VERSION="21"
 
 #Default conf values
 JAVA_EXE="java"
-JAVA_OPTS="-Xms128m -Xmx768m"
+DEFAULT_JAVA_OPTS="${JAVA_OPTS:-}"
+JAVA_OPTS="${PROJECTLIBRE_JAVA_OPTS:-$DEFAULT_JAVA_OPTS}"
 #PROJECTLIBRE_HOME0="/usr/share/projectlibre"
 PROJECTLIBRE_HOME0=`(dirname $0)`
 PROJECTLIBRE_HOME="$PROJECTLIBRE_HOME0"
@@ -198,6 +199,11 @@ if [ -f "$RUN_CONF" ]; then
 	. "$RUN_CONF"
 	PROJECTLIBRE_HOME="$PROJECTLIBRE_HOME0"
 	#PROJECTLIBRE_HOME can be harmful with multiple versions. disable
+	if [ -n "$PROJECTLIBRE_JAVA_OPTS" ]; then
+		JAVA_OPTS="$PROJECTLIBRE_JAVA_OPTS"
+	elif [ -n "$DEFAULT_JAVA_OPTS" ]; then
+		JAVA_OPTS="$DEFAULT_JAVA_OPTS"
+	fi
 	JAVA_OK="1"
 	run_projectlibre --silentlyFail true "$@" || if [[ $? -eq 126 || $? -eq 127 || $? -eq 64 ]]; then
 		#126 command invoked cannot execute
@@ -317,7 +323,7 @@ if [ "$JAVA_OK" -eq "0" ]; then
 
 	if [ "$JAVA_OK" -eq "0" ]; then
 		echo "Java not found or incorrect version."
-		echo "Please install OpenJDK, Oracle JRE 1.6+ or set JAVA_HOME environment variable if it's already installed."
+		echo "Please install Java 21+ or set JAVA_HOME to a Java 21+ runtime if it's already installed."
 	else
 		echo "Java OK"
 	fi

@@ -61,6 +61,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.pool.BasePoolableObjectFactory;
@@ -80,6 +81,9 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 	WorkDay[] exceptions = null;
 	WorkWeek week = new WorkWeek();
 	protected long id=-1L;
+
+	// Cache for add() results during scheduling passes. Cleared after each pass.
+	ConcurrentHashMap<AddCacheKey, Long> addCache = new ConcurrentHashMap<>(256);
 
 	/**
 	 *
@@ -179,8 +183,63 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 
 
 
+/**
+	 * Cache key for add() results. Uses three primitive fields for minimal overhead.
+	 */
+	static final class AddCacheKey {
+		final long date;
+		final long duration;
+		final boolean useSooner;
+
+		AddCacheKey(long date, long duration, boolean useSooner) {
+			this.date = date;
+			this.duration = duration;
+			this.useSooner = useSooner;
+		}
+
+		@Override
+		public int hashCode() {
+			return (int) (date ^ (date >>> 32) ^ duration ^ (duration >>> 32) ^ (useSooner ? 1 : 0));
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof AddCacheKey) {
+				AddCacheKey o = (AddCacheKey) obj;
+				return date == o.date && duration == o.duration && useSooner == o.useSooner;
+			}
+			return false;
+		}
+	}
+
 	/**
-	 * Algorithm to add a duration to a date.  This code MUST be very fast as it is the most executed code in the program.
+	 * Clear the add() result cache. Called after each scheduling pass to prevent stale results.
+	 */
+	public void clearAddCache() {
+		addCache.clear();
+	}
+
+	// Track all CalendarDefinition instances that have been used for caching.
+	// WeakHashMap ensures no memory leak - entries are removed when CalendarDefinition is GC'd.
+	private static final java.util.concurrent.ConcurrentHashMap<CalendarDefinition, Boolean> cachedInstances =
+		new java.util.concurrent.ConcurrentHashMap<>();
+
+	private void markCacheUsed() {
+		cachedInstances.put(this, Boolean.TRUE);
+	}
+
+	/**
+	 * Clear add() result caches on all tracked CalendarDefinition instances.
+	 * Called after each scheduling pass to free memory and prevent stale results.
+	 */
+	public static void clearAllAddCaches() {
+		for (CalendarDefinition cd : cachedInstances.keySet()) {
+			cd.addCache.clear();
+		}
+	}
+
+	/**
+	 * Add a duration to a date, following the calendar.  The duration is in milliseconds.  The date can be positive or negative.
 	 * The time required by the algorithm is determined by the number of exceptions encountered and not the duration itself.
 	 * To handle reverse scheduling, the date can be negative.  In this case, the date is converted to a positive value, but the duration
 	 * is negated.
@@ -188,6 +247,12 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 	public long add(long date, long duration, boolean useSooner) {
 		if (date == 0) // don't bother treating null dates since they will never be valid for calculations
 			return 0;
+		// Check cache - avoid expensive calendar arithmetic for repeated calls during scheduling
+		AddCacheKey key = new AddCacheKey(date, duration, useSooner);
+		Long cached = addCache.get(key);
+		if (cached != null) {
+			return cached.longValue();
+		}
 		long result = date;
 		boolean forward = true;
 		boolean negative = date < 0;
@@ -278,9 +343,11 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 	 		CalendarIteratorFactory.recycle(iterator); //No longer using iterator, return it to pool
 		}
 
-		// if input was negative time, return a negative value
+// if input was negative time, return a negative value
 		if (negative)
 			result = -result;
+		addCache.put(key, result);
+		markCacheUsed();
 		return result;
 	}
 

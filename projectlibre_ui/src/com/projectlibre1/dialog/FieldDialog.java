@@ -145,6 +145,7 @@ public abstract class FieldDialog extends AbstractDialog  implements ObjectEvent
 
 	protected void onCancel() {
 		updateAll();
+		super.onCancel();
 	}
 
 

@@ -228,7 +228,7 @@ public class DurationFormat extends Format {
 	}
 	
 	public String formatCompact(Object durationObject) {
-		StringBuffer toAppendTo = new StringBuffer();
+		StringBuilder toAppendTo = new StringBuilder();
 		long duration = ((Duration)durationObject).getEncodedMillis();
 		if (((Duration)durationObject).isWork() && Duration.getType(duration) != TimeUnit.NON_TEMPORAL) {
 			duration = Duration.setAsTimeUnit(duration,ScheduleOption.getInstance().getWorkUnit());
@@ -254,7 +254,7 @@ public class DurationFormat extends Format {
 	}
 
 	public static String formatTypeUnit(int type, boolean isSingular, boolean addSpace, boolean isPercent, boolean isEstimated, int displayIndex) {
-		StringBuffer toAppendTo = new StringBuffer();
+		StringBuilder toAppendTo = new StringBuilder();
 		if (type == TimeUnit.NON_TEMPORAL)
 			return "";
 		if (addSpace && !isPercent) {

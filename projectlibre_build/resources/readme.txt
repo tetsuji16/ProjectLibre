@@ -1,8 +1,8 @@
 Running ProjectLibre @version_name@
 
 Requirements:
-	ProjectLibre requires Java 26.
-	Install a Java 26 runtime or JDK before launching projectlibre.jar or projectlibre.bat.
+	ProjectLibre requires Java 21 or later.
+	Install a Java 21+ runtime or JDK before launching projectlibre.jar or projectlibre.bat. Java 26 is also supported.
 
 Installation:
 	Unzip the files to the folder of your choice.

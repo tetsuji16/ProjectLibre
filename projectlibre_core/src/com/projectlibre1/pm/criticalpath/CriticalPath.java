@@ -253,6 +253,8 @@ public class CriticalPath implements SchedulingAlgorithm {
 			
 		}
 		getFreshCalculationStateCount(); // For next time;
+		// Clear calendar date calculation caches after scheduling pass completes
+		com.projectlibre1.pm.calendar.CalendarDefinition.clearAllAddCaches();
 	}
 	
 	private void doPass(Task startTask, TaskSchedule.CalculationContext context) {

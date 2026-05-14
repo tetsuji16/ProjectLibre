@@ -58,6 +58,7 @@ package com.projectlibre1.pm.graphic.model.cache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.projectlibre1.pm.graphic.model.event.CacheEvent;
@@ -78,13 +79,14 @@ public class DependencyCache extends CellCache {
 	    }
 	}
 	public void updateAllVisibleElements(VisibleDependencies v){	    
-	    ArrayList visibleDependencies=v.getElements();
-	    ArrayList visibleNodes=v.getVisibleNodes().getElements();
-	    visibleDependencies.clear();
+		ArrayList visibleDependencies=v.getElements();
+		ArrayList visibleNodes=v.getVisibleNodes().getElements();
+		Collection visibleNodesCol=getContainsCollection(visibleNodes);
+		visibleDependencies.clear();
 		for(Iterator i=getCacheIterator();i.hasNext();){
 			GraphicDependency dep=(GraphicDependency)i.next();
-			if (visibleNodes.contains(dep.getPredecessor())&&
-					visibleNodes.contains(dep.getSuccessor()))
+			if (visibleNodesCol.contains(dep.getPredecessor())&&
+					visibleNodesCol.contains(dep.getSuccessor()))
 			    visibleDependencies.add(dep);
 		}
 	}
@@ -111,23 +113,27 @@ public class DependencyCache extends CellCache {
 	private void updateVisibleElements(ArrayList visibleDependencies,ArrayList visibleNodes, ArrayList removed, ArrayList inserted, ArrayList changed){
 		Collection visibleNodesCol=getContainsCollection(visibleNodes);
 		Collection visibleDependenciesCol=getContainsCollection(visibleDependencies);
+		HashSet visibleDependenciesSet=(visibleDependenciesCol instanceof HashSet)?(HashSet)visibleDependenciesCol:new HashSet(visibleDependenciesCol);
+		HashSet visibleNodesSet=(visibleNodesCol instanceof HashSet)?(HashSet)visibleNodesCol:new HashSet(visibleNodesCol);
 		
 //		long t0=System.currentTimeMillis();
 		boolean containsPredecessor,containsSuccessor,containsDependency;
 		for(Iterator i=getCacheIterator();i.hasNext();){
 			GraphicDependency dep=(GraphicDependency)i.next();
-			containsPredecessor=visibleNodesCol.contains(dep.getPredecessor());
-			containsSuccessor=visibleNodesCol.contains(dep.getSuccessor());
-			containsDependency=visibleDependenciesCol.contains(dep);
+			containsPredecessor=visibleNodesSet.contains(dep.getPredecessor());
+			containsSuccessor=visibleNodesSet.contains(dep.getSuccessor());
+			containsDependency=visibleDependenciesSet.contains(dep);
 			
 //System.out.println("contains " + dep.getPredecessor() + " / " + dep.getSuccessor() + " pred " + containsPredecessor + " succ " + containsSuccessor + " dep " + containsDependency);			
 			if (containsPredecessor&&containsSuccessor&&!containsDependency){
 			    visibleDependencies.add(dep);
+			    visibleDependenciesSet.add(dep);
 				inserted.add(dep);
 				changed.remove(dep);
 			}else if ((!containsPredecessor||
 					!containsSuccessor)&&containsDependency){
 			    visibleDependencies.remove(dep);
+			    visibleDependenciesSet.remove(dep);
 			    removed.add(dep);
 				changed.remove(dep);
 			}
@@ -139,6 +145,7 @@ public class DependencyCache extends CellCache {
 			GraphicDependency dep=(GraphicDependency)i.next();
 			if (!cacheCol.contains(dep)){
 			    i.remove();
+			    visibleDependenciesSet.remove(dep);
 			    removed.add(dep);
 				changed.remove(dep);
 			}
