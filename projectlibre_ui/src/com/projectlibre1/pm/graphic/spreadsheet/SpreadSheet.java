@@ -74,9 +74,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -128,6 +131,10 @@ import com.projectlibre1.util.BrowserControl;
  */
 public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	private static final long serialVersionUID = 5958334223191182318L;
+	public static final String NAME_COLUMN_INDENT_ACTION = "spreadsheet.nameColumnIndent";
+	public static final String NAME_COLUMN_OUTDENT_ACTION = "spreadsheet.nameColumnOutdent";
+	private Object defaultTabActionKey;
+	private Object defaultShiftTabActionKey;
 	protected SpreadSheetPopupMenu popup=null;
 
 
@@ -170,6 +177,93 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		} else {
 			return super.getCellEditor(row, column);
 		}
+	}
+
+	public boolean isNameFieldColumn(int column) {
+		if (column < 0 || !(getModel() instanceof SpreadSheetModel))
+			return false;
+		Field field = ((SpreadSheetModel)getModel()).getFieldInColumn(column + 1);
+		return field != null && field.isNameField();
+	}
+
+	public boolean isNameCellTabActionEnabled() {
+		int column = isEditing() ? getEditingColumn() : getSelectedColumn();
+		return isNameFieldColumn(column);
+	}
+
+	public void executeNameCellTabAction(boolean outdent) {
+		if (!isNameCellTabActionEnabled())
+			return;
+		int rowToFocus = getSelectionModel().getAnchorSelectionIndex();
+		if (rowToFocus < 0)
+			rowToFocus = getCurrentRow();
+		executeAction(outdent ? MenuActionConstants.ACTION_OUTDENT : MenuActionConstants.ACTION_INDENT);
+		restoreNameColumnFocus(rowToFocus);
+	}
+
+	private void restoreNameColumnFocus(int preferredRow) {
+		int nameColumn = findNameColumn();
+		if (nameColumn < 0)
+			return;
+		int row = preferredRow;
+		if (row < 0 || row >= getRowCount())
+			row = getCurrentRow();
+		if (row < 0 || row >= getRowCount())
+			row = Math.max(0, Math.min(getSelectedRow(), getRowCount() - 1));
+		if (row < 0 || row >= getRowCount())
+			return;
+		requestFocusInWindow();
+		if (getSelectedRowCount() == 0)
+			getSelectionModel().setSelectionInterval(row, row);
+		getColumnModel().getSelectionModel().setSelectionInterval(nameColumn, nameColumn);
+		scrollRectToVisible(getCellRect(row, nameColumn, true));
+	}
+
+	private int findNameColumn() {
+		if (!(getModel() instanceof SpreadSheetModel))
+			return -1;
+		SpreadSheetModel model = (SpreadSheetModel)getModel();
+		for (int column = 0; column < getColumnCount(); column++) {
+			Field field = model.getFieldInColumn(column + 1);
+			if (field != null && field.isNameField())
+				return column;
+		}
+		return -1;
+	}
+
+	private void installNameColumnTabActions() {
+		InputMap inputMap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+		ActionMap actionMap = getActionMap();
+		defaultTabActionKey = inputMap.get(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
+		defaultShiftTabActionKey = inputMap.get(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_MASK));
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), NAME_COLUMN_INDENT_ACTION);
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_MASK), NAME_COLUMN_OUTDENT_ACTION);
+		actionMap.put(NAME_COLUMN_INDENT_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				if (isNameCellTabActionEnabled())
+					executeNameCellTabAction(false);
+				else
+					invokeBoundAction(defaultTabActionKey, e);
+			}
+		});
+		actionMap.put(NAME_COLUMN_OUTDENT_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				if (isNameCellTabActionEnabled())
+					executeNameCellTabAction(true);
+				else
+					invokeBoundAction(defaultShiftTabActionKey, e);
+			}
+		});
+	}
+
+	private void invokeBoundAction(Object actionKey, ActionEvent event) {
+		if (actionKey == null)
+			return;
+		javax.swing.Action action = getActionMap().get(actionKey);
+		if (action != null)
+			action.actionPerformed(new ActionEvent(this, event.getID(), String.valueOf(actionKey), event.getWhen(), event.getModifiers()));
 	}
 
 	public void setFieldArray(ArrayList fieldArray) {
@@ -263,6 +357,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		}
 		
 		registerEditors(); //Consume memory
+		installNameColumnTabActions();
 		initRowHeader(spreadSheetModel);
 		initModel();
 		initListeners();

@@ -4,8 +4,8 @@ ant jpackage-deb
 cd packages/jpackage-deb
 ./make.sh
 
-Note that you need java and fakeroot to build the deb:
-sudo apt install openjdk-21-jdk
+Note that you need JDK 26 and fakeroot to build the deb:
+sudo apt install openjdk-26-jdk
 sudo apt install fakeroot
 
 To create a rpm:

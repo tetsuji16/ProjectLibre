@@ -1,11 +1,8 @@
 Running ProjectLibre @version_name@
 
 Requirements:
-	ProjectLibre uses Java version 6 or later.
-	To see what version you have, check out this page:
-	http://www.java.com/en/download/help/testvm.xml
-
-	You can download java here:  http://www.java.com/en/download/index.jsp
+	ProjectLibre requires Java 26.
+	Install a Java 26 runtime or JDK before launching projectlibre.jar or projectlibre.bat.
 
 Installation:
 	Unzip the files to the folder of your choice.
