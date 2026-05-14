@@ -323,6 +323,9 @@ public class GanttInteractor extends GraphInteractor{
     protected boolean isDirectAction(){
     	return state==SPLIT||super.isDirectAction();
     }
+    protected boolean isZoomRestoreInvalidatingDirectAction(){
+    	return state==SPLIT;
+    }
     protected boolean isRepaintOnRelease(){
     	return state==BAR_MOVE||state==BAR_MOVE_END||state==BAR_MOVE_START||state==PROGRESS_BAR_MOVE||state==LINK_CREATION;
     }

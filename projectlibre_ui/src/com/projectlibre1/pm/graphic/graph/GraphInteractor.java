@@ -83,6 +83,7 @@ import com.projectlibre1.dialog.DependencyDialog;
 import com.projectlibre1.pm.graphic.IconManager;
 import com.projectlibre1.pm.graphic.model.cache.GraphicDependency;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
+import com.projectlibre1.pm.graphic.views.synchro.ScrollPaneSynchronizer;
 import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 
 /**
@@ -282,6 +283,9 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
     //Mouse
     public void mouseClicked(MouseEvent e){}
     public void mouseWheelMoved(MouseWheelEvent e){
+        if (e.isConsumed() || e.isShiftDown()) {
+            return;
+        }
         // Directly scroll the parent scroll pane by manipulating its vertical scrollbar
         Component comp = getGraph();
         while (comp != null && !(comp instanceof JScrollPane)) {
@@ -302,14 +306,18 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
     	if (isReadOnly()) return;
     	if (SwingUtilities.isRightMouseButton(e)){
     		if (popup!=null) popup.show(getGraph(),e.getX(),e.getY());
-    	}else{
+	    }else{
 	    	if (selected==null) return;
 	    	if (isMove()){
+	    		ScrollPaneSynchronizer.invalidateZoomRestore(getGraph());
 	    		selection=false;
 	    		x0=e.getX();
 	    		y0=e.getY();
 	    		drawBarShadow(x0,y0,true);
 	    	}else if (isDirectAction()){
+	    		if (isZoomRestoreInvalidatingDirectAction()) {
+	    			ScrollPaneSynchronizer.invalidateZoomRestore(getGraph());
+	    		}
 	    		executeAction(e.getX(),e.getY());
 	    		state=NOTHING_SELECTED;
 	    		//select(e.getX(),e.getY()); //TODO commented to avoid second action when spliting
@@ -468,6 +476,9 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
     }
     protected boolean isDirectAction(){
     	return state==LINK_SELECTION;
+    }
+    protected boolean isZoomRestoreInvalidatingDirectAction(){
+    	return false;
     }
     protected boolean isRepaintOnRelease(){
     	return state==BAR_MOVE||state==LINK_CREATION;
