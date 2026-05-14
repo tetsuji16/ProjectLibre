@@ -59,21 +59,34 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Stack;
+import java.util.WeakHashMap;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JViewport;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.projectlibre1.pm.graphic.gantt.Gantt;
+import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
 
 /**
  * 
  */
 public class ScrollPaneSynchronizer {
+	private static final Map ganttSynchronizers = new WeakHashMap();
+
 	public static final int HORIZONTAL = JSplitPane.VERTICAL_SPLIT;
 
 	public static final int VERTICAL = JSplitPane.HORIZONTAL_SPLIT;
@@ -94,6 +107,10 @@ public class ScrollPaneSynchronizer {
 
 	protected MouseWheelListener scrollPane2WheelListener = null;
 
+	protected MouseWheelEvent scrollPane1LastWheelEvent = null;
+
+	protected MouseWheelEvent scrollPane2LastWheelEvent = null;
+
 	protected ArrayList scrollPane1WheelTargets = new ArrayList();
 
 	protected ArrayList scrollPane2WheelTargets = new ArrayList();
@@ -105,11 +122,39 @@ public class ScrollPaneSynchronizer {
 	protected boolean defaultWheelScrollingEnabled1;
 
 	protected boolean defaultWheelScrollingEnabled2;
+
+	protected AdjustmentListener scrollPane1HorizontalAdjustmentListener = null;
+
+	protected AdjustmentListener scrollPane2HorizontalAdjustmentListener = null;
 	
 	protected boolean bottomBarActivated=true;
 	protected boolean bottomBarEnabled=false;
 
 	protected boolean active = false;
+
+	protected ZoomRestoreState scrollPane1ZoomRestoreState = null;
+
+	protected ZoomRestoreState scrollPane2ZoomRestoreState = null;
+
+	protected int programmaticHorizontalScrollCount = 0;
+
+	private static class ZoomRestore {
+		private final int scaleIndex;
+		private final double leftDate;
+
+		private ZoomRestore(int scaleIndex, double leftDate) {
+			this.scaleIndex = scaleIndex;
+			this.leftDate = leftDate;
+		}
+	}
+
+	private static class ZoomRestoreState {
+		private final Stack zoomOutHistory = new Stack();
+
+		private void clear() {
+			zoomOutHistory.clear();
+		}
+	}
 	/**
 	 * @param scrollPane1
 	 * @param scrollPane2
@@ -187,19 +232,43 @@ public class ScrollPaneSynchronizer {
 			};
 			scrollPane1.getViewport().addChangeListener(scrollPane1Listener);
 			scrollPane2.getViewport().addChangeListener(scrollPane2Listener);
+			scrollPane1ZoomRestoreState = createZoomRestoreState(scrollPane1);
+			scrollPane2ZoomRestoreState = createZoomRestoreState(scrollPane2);
+			registerGanttSynchronizer(scrollPane1, scrollPane1ZoomRestoreState);
+			registerGanttSynchronizer(scrollPane2, scrollPane2ZoomRestoreState);
+			scrollPane1HorizontalAdjustmentListener = createHorizontalAdjustmentListener(scrollPane1ZoomRestoreState);
+			scrollPane2HorizontalAdjustmentListener = createHorizontalAdjustmentListener(scrollPane2ZoomRestoreState);
+			scrollPane1.getHorizontalScrollBar().addAdjustmentListener(scrollPane1HorizontalAdjustmentListener);
+			scrollPane2.getHorizontalScrollBar().addAdjustmentListener(scrollPane2HorizontalAdjustmentListener);
 
 			scrollPane1WheelListener = new MouseWheelListener() {
 				public void mouseWheelMoved(MouseWheelEvent e) {
+					if (e == scrollPane1LastWheelEvent) {
+						return;
+					}
+					scrollPane1LastWheelEvent = e;
+					if (handleZoomWheel(scrollPane1, e)) {
+						e.consume();
+						return;
+					}
 					if (e.isShiftDown()) {
 						scrollHorizontally(scrollPane1, e);
 					} else {
-						scrollVertically(scrollPane2, e);
+						scrollVertically(scrollPane1, e);
 					}
 					e.consume();
 				}
 			};
 			scrollPane2WheelListener = new MouseWheelListener() {
 				public void mouseWheelMoved(MouseWheelEvent e) {
+					if (e == scrollPane2LastWheelEvent) {
+						return;
+					}
+					scrollPane2LastWheelEvent = e;
+					if (handleZoomWheel(scrollPane2, e)) {
+						e.consume();
+						return;
+					}
 					if (e.isShiftDown()) {
 						scrollHorizontally(scrollPane2, e);
 					} else {
@@ -256,6 +325,18 @@ public class ScrollPaneSynchronizer {
 				scrollPane2.getViewport().removeChangeListener(scrollPane2Listener);
 				scrollPane2Listener = null;
 			}
+			unregisterGanttSynchronizer(scrollPane1);
+			unregisterGanttSynchronizer(scrollPane2);
+			scrollPane1ZoomRestoreState = null;
+			scrollPane2ZoomRestoreState = null;
+			if (scrollPane1HorizontalAdjustmentListener != null) {
+				scrollPane1.getHorizontalScrollBar().removeAdjustmentListener(scrollPane1HorizontalAdjustmentListener);
+				scrollPane1HorizontalAdjustmentListener = null;
+			}
+			if (scrollPane2HorizontalAdjustmentListener != null) {
+				scrollPane2.getHorizontalScrollBar().removeAdjustmentListener(scrollPane2HorizontalAdjustmentListener);
+				scrollPane2HorizontalAdjustmentListener = null;
+			}
 			unregisterMouseWheelTargets(scrollPane1WheelTargets, scrollPane1WheelListener);
 			unregisterMouseWheelTargets(scrollPane2WheelTargets, scrollPane2WheelListener);
 			scrollPane1WheelListener = null;
@@ -276,49 +357,284 @@ public class ScrollPaneSynchronizer {
 	}
 
 	private void scrollVertically(JScrollPane scrollPane, MouseWheelEvent e) {
-		double rotation = e.getPreciseWheelRotation();
-		int units = (int) Math.round(rotation * e.getScrollAmount() * 4.0d);
-		if (units == 0 && e.getPreciseWheelRotation() != 0.0d) {
-			units = rotation > 0.0d ? 1 : -1;
-		}
-		if (units == 0) {
+		int steps = getWheelSteps(e);
+		if (steps == 0) {
 			return;
 		}
 
-		int direction = units > 0 ? 1 : -1;
-		int scrollAmount = Math.abs(units) * scrollPane.getVerticalScrollBar().getUnitIncrement(direction);
-		int newValue = scrollPane.getVerticalScrollBar().getValue() + (units > 0 ? scrollAmount : -scrollAmount);
-		int min = scrollPane.getVerticalScrollBar().getMinimum();
-		int max = scrollPane.getVerticalScrollBar().getMaximum() - scrollPane.getVerticalScrollBar().getVisibleAmount();
-		if (newValue < min) {
-			newValue = min;
-		} else if (newValue > max) {
-			newValue = max;
+		JViewport viewport = scrollPane.getViewport();
+		if (viewport == null) {
+			return;
 		}
-		scrollPane.getVerticalScrollBar().setValue(newValue);
+		int scrollAmount = Math.abs(steps) * getVerticalScrollStep(scrollPane);
+		Point viewPosition = viewport.getViewPosition();
+		viewPosition.y += steps > 0 ? scrollAmount : -scrollAmount;
+		clampViewPosition(viewport, viewPosition);
+		viewport.setViewPosition(viewPosition);
 	}
 
 	private void scrollHorizontally(JScrollPane scrollPane, MouseWheelEvent e) {
-		double rotation = e.getPreciseWheelRotation();
-		int units = (int) Math.round(rotation * e.getScrollAmount() * 4.0d);
-		if (units == 0 && rotation != 0.0d) {
-			units = rotation > 0.0d ? 1 : -1;
-		}
-		if (units == 0) {
+		int steps = getWheelSteps(e);
+		if (steps == 0) {
 			return;
 		}
 
-		int direction = units > 0 ? 1 : -1;
-		int scrollAmount = Math.abs(units) * scrollPane.getHorizontalScrollBar().getUnitIncrement(direction);
-		int newValue = scrollPane.getHorizontalScrollBar().getValue() + (units > 0 ? scrollAmount : -scrollAmount);
-		int min = scrollPane.getHorizontalScrollBar().getMinimum();
-		int max = scrollPane.getHorizontalScrollBar().getMaximum() - scrollPane.getHorizontalScrollBar().getVisibleAmount();
-		if (newValue < min) {
-			newValue = min;
-		} else if (newValue > max) {
-			newValue = max;
+		JViewport viewport = scrollPane.getViewport();
+		if (viewport == null) {
+			return;
 		}
-		scrollPane.getHorizontalScrollBar().setValue(newValue);
+		int direction = steps > 0 ? 1 : -1;
+		int scrollAmount = Math.abs(steps) * getHorizontalScrollStep(scrollPane, direction);
+		Point viewPosition = viewport.getViewPosition();
+		viewPosition.x += steps > 0 ? scrollAmount : -scrollAmount;
+		invalidateZoomRestoreState(getZoomRestoreState(scrollPane));
+		clampViewPosition(viewport, viewPosition);
+		setViewportViewPosition(viewport, viewPosition);
+	}
+
+	private boolean handleZoomWheel(JScrollPane scrollPane, MouseWheelEvent e) {
+		if (!e.isControlDown()) {
+			return false;
+		}
+
+		JViewport viewport = scrollPane.getViewport();
+		if (viewport == null) {
+			return false;
+		}
+		Component view = viewport.getView();
+		if (!(view instanceof Gantt)) {
+			return false;
+		}
+
+		int steps = getWheelSteps(e);
+		if (steps == 0) {
+			return true;
+		}
+
+		CoordinatesConverter coord = ((Gantt) view).getCoord();
+		if (coord == null) {
+			return true;
+		}
+
+		ZoomRestoreState zoomRestoreState = getZoomRestoreState(scrollPane);
+		Point viewPosition = viewport.getViewPosition();
+		double anchorTime = coord.toTime(viewPosition.x);
+		int currentScaleIndex = coord.getTimescaleManager().getCurrentScaleIndex();
+		boolean zoomed = false;
+		if (steps < 0) {
+			if (coord.canZoomIn()) {
+				coord.zoomIn();
+				zoomed = true;
+			}
+		} else if (coord.canZoomOut()) {
+			if (zoomRestoreState != null) {
+				zoomRestoreState.zoomOutHistory.push(new ZoomRestore(currentScaleIndex, anchorTime));
+			}
+			coord.zoomOut();
+			zoomed = true;
+		}
+		if (!zoomed) {
+			return true;
+		}
+
+		Point newViewPosition = viewport.getViewPosition();
+		double restoreDate = anchorTime;
+		if (steps < 0 && zoomRestoreState != null && !zoomRestoreState.zoomOutHistory.isEmpty()) {
+			ZoomRestore restore = (ZoomRestore) zoomRestoreState.zoomOutHistory.peek();
+			int newScaleIndex = coord.getTimescaleManager().getCurrentScaleIndex();
+			if (restore.scaleIndex == newScaleIndex) {
+				restoreDate = restore.leftDate;
+				zoomRestoreState.zoomOutHistory.pop();
+			} else {
+				zoomRestoreState.clear();
+			}
+		}
+		newViewPosition.x = (int) Math.round(coord.toX(restoreDate));
+		clampViewPosition(viewport, newViewPosition);
+		setViewportViewPosition(viewport, newViewPosition);
+		return true;
+	}
+
+	private ZoomRestoreState createZoomRestoreState(JScrollPane scrollPane) {
+		return isGanttScrollPane(scrollPane) ? new ZoomRestoreState() : null;
+	}
+
+	private boolean isGanttScrollPane(JScrollPane scrollPane) {
+		if (scrollPane == null || scrollPane.getViewport() == null) {
+			return false;
+		}
+		return scrollPane.getViewport().getView() instanceof Gantt;
+	}
+
+	private ZoomRestoreState getZoomRestoreState(JScrollPane scrollPane) {
+		if (scrollPane == scrollPane1) {
+			return scrollPane1ZoomRestoreState;
+		}
+		if (scrollPane == scrollPane2) {
+			return scrollPane2ZoomRestoreState;
+		}
+		return null;
+	}
+
+	private void registerGanttSynchronizer(JScrollPane scrollPane, ZoomRestoreState state) {
+		if (state == null || scrollPane == null || scrollPane.getViewport() == null) {
+			return;
+		}
+		Component view = scrollPane.getViewport().getView();
+		if (view != null) {
+			ganttSynchronizers.put(view, this);
+		}
+	}
+
+	private void unregisterGanttSynchronizer(JScrollPane scrollPane) {
+		if (scrollPane == null || scrollPane.getViewport() == null) {
+			return;
+		}
+		Component view = scrollPane.getViewport().getView();
+		if (view != null) {
+			ganttSynchronizers.remove(view);
+		}
+	}
+
+	private AdjustmentListener createHorizontalAdjustmentListener(final ZoomRestoreState state) {
+		return new AdjustmentListener() {
+			public void adjustmentValueChanged(AdjustmentEvent e) {
+				if (programmaticHorizontalScrollCount > 0) {
+					return;
+				}
+				if (e.getValueIsAdjusting() || e.getAdjustmentType() == AdjustmentEvent.TRACK || e.getAdjustmentType() == AdjustmentEvent.UNIT_INCREMENT
+						|| e.getAdjustmentType() == AdjustmentEvent.UNIT_DECREMENT || e.getAdjustmentType() == AdjustmentEvent.BLOCK_INCREMENT
+						|| e.getAdjustmentType() == AdjustmentEvent.BLOCK_DECREMENT) {
+					invalidateZoomRestoreState(state);
+				}
+			}
+		};
+	}
+
+	private void setViewportViewPosition(JViewport viewport, Point viewPosition) {
+		programmaticHorizontalScrollCount++;
+		try {
+			viewport.setViewPosition(viewPosition);
+		} finally {
+			programmaticHorizontalScrollCount--;
+		}
+	}
+
+	private void invalidateZoomRestoreState(ZoomRestoreState state) {
+		if (state != null) {
+			state.clear();
+		}
+	}
+
+	private void invalidateAllZoomRestoreState() {
+		invalidateZoomRestoreState(scrollPane1ZoomRestoreState);
+		invalidateZoomRestoreState(scrollPane2ZoomRestoreState);
+	}
+
+	public static void invalidateZoomRestore(Component component) {
+		if (component == null) {
+			return;
+		}
+		Component current = component;
+		while (current != null) {
+			ScrollPaneSynchronizer synchronizer = (ScrollPaneSynchronizer) ganttSynchronizers.get(current);
+			if (synchronizer != null) {
+				synchronizer.invalidateAllZoomRestoreState();
+				return;
+			}
+			current = current.getParent();
+		}
+	}
+
+	private int getWheelSteps(MouseWheelEvent e) {
+		double rotation = e.getPreciseWheelRotation();
+		if (rotation == 0.0d) {
+			return 0;
+		}
+		return rotation > 0.0d ? 1 : -1;
+	}
+
+	private int getVerticalScrollStep(JScrollPane scrollPane) {
+		int synchronizedRowHeight = getSynchronizedRowHeight();
+		if (synchronizedRowHeight > 0) {
+			return synchronizedRowHeight * 5;
+		}
+
+		JViewport viewport = scrollPane.getViewport();
+		if (viewport != null) {
+			Component view = viewport.getView();
+			if (view instanceof javax.swing.JTable) {
+				int rowHeight = ((javax.swing.JTable) view).getRowHeight();
+				if (rowHeight > 0) {
+					return rowHeight * 5;
+				}
+			}
+			if (view instanceof Scrollable) {
+				Rectangle visibleRect = viewport.getViewRect();
+				int step = ((Scrollable) view).getScrollableUnitIncrement(visibleRect, SwingConstants.VERTICAL, 1);
+				if (step > 0) {
+					return step * 5;
+				}
+			}
+		}
+		int fallback = scrollPane.getVerticalScrollBar().getUnitIncrement(1);
+		if (fallback <= 0) {
+			fallback = 1;
+		}
+		return fallback * 5;
+	}
+
+	private int getSynchronizedRowHeight() {
+		int leftRowHeight = getViewRowHeight(scrollPane1);
+		if (leftRowHeight > 0) {
+			return leftRowHeight;
+		}
+		return getViewRowHeight(scrollPane2);
+	}
+
+	private int getViewRowHeight(JScrollPane scrollPane) {
+		if (scrollPane == null) {
+			return -1;
+		}
+		JViewport viewport = scrollPane.getViewport();
+		if (viewport == null) {
+			return -1;
+		}
+		Component view = viewport.getView();
+		if (view instanceof javax.swing.JTable) {
+			int rowHeight = ((javax.swing.JTable) view).getRowHeight();
+			return rowHeight > 0 ? rowHeight : -1;
+		}
+		if (view instanceof com.projectlibre1.pm.graphic.gantt.Gantt) {
+			int rowHeight = ((com.projectlibre1.pm.graphic.gantt.Gantt) view).getRowHeight();
+			return rowHeight > 0 ? rowHeight : -1;
+		}
+		return -1;
+	}
+
+	private int getHorizontalScrollStep(JScrollPane scrollPane, int direction) {
+		int step = scrollPane.getHorizontalScrollBar().getUnitIncrement(direction);
+		if (step <= 0) {
+			step = 1;
+		}
+		return step;
+	}
+
+	private void clampViewPosition(JViewport viewport, Point viewPosition) {
+		Dimension viewSize = viewport.getViewSize();
+		Dimension extentSize = viewport.getExtentSize();
+		int maxX = Math.max(0, viewSize.width - extentSize.width);
+		int maxY = Math.max(0, viewSize.height - extentSize.height);
+		if (viewPosition.x < 0) {
+			viewPosition.x = 0;
+		} else if (viewPosition.x > maxX) {
+			viewPosition.x = maxX;
+		}
+		if (viewPosition.y < 0) {
+			viewPosition.y = 0;
+		} else if (viewPosition.y > maxY) {
+			viewPosition.y = maxY;
+		}
 	}
 
 	private void registerMouseWheelTargets(JScrollPane scrollPane, MouseWheelListener listener, ArrayList targets) {
