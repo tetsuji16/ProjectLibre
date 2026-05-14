@@ -72,6 +72,10 @@ public class LoadOptions {
 	protected boolean openAs;
 	protected ResourceMappingForm resourceMapping;
 	protected Closure endSwingClosure;
+	protected boolean collaborationEnabled;
+	protected String collaborationUserKey;
+	protected String sidecarFileName;
+	protected boolean reloadFromCollaborationSync;
 	public boolean isLocal() {
 		return local;
 	}
@@ -131,6 +135,30 @@ public class LoadOptions {
 	}
 	public void setFileInputStream(InputStream fileInputStream) {
 		this.fileInputStream = fileInputStream;
+	}
+	public boolean isCollaborationEnabled() {
+		return collaborationEnabled;
+	}
+	public void setCollaborationEnabled(boolean collaborationEnabled) {
+		this.collaborationEnabled = collaborationEnabled;
+	}
+	public String getCollaborationUserKey() {
+		return collaborationUserKey;
+	}
+	public void setCollaborationUserKey(String collaborationUserKey) {
+		this.collaborationUserKey = collaborationUserKey;
+	}
+	public String getSidecarFileName() {
+		return sidecarFileName;
+	}
+	public void setSidecarFileName(String sidecarFileName) {
+		this.sidecarFileName = sidecarFileName;
+	}
+	public boolean isReloadFromCollaborationSync() {
+		return reloadFromCollaborationSync;
+	}
+	public void setReloadFromCollaborationSync(boolean reloadFromCollaborationSync) {
+		this.reloadFromCollaborationSync = reloadFromCollaborationSync;
 	}
 
 }

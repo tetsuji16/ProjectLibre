@@ -83,6 +83,7 @@ import com.projectlibre1.menu.MenuActionConstants;
 import com.projectlibre1.menu.MenuActionsMap;
 import com.projectlibre1.menu.MenuManager;
 import com.projectlibre1.pm.graphic.IconManager;
+import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.frames.workspace.NamedFrame;
 import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
 import com.projectlibre1.pm.graphic.model.cache.NodeModelCacheFactory;
@@ -440,6 +441,8 @@ public class DocumentFrame extends NamedFrame implements
 	public void doLinkTasks() {
 		finishAnyOperations();
 		try {
+			if (!CollaborationHelper.tryLockNodes(getProject(), getSelectedNodes(false), this, "link"))
+				return;
 			List list = NodeList.nodeListToImplList(getSelectedNodes(false), NotAssignmentFilter.getInstance());
 			DependencyService.getInstance().connect(list,this,null);
 			//DependencyService.getInstance().connect(list,this);
@@ -449,6 +452,8 @@ public class DocumentFrame extends NamedFrame implements
 	}
 	public void doUnlinkTasks() {
 		finishAnyOperations();
+		if (!CollaborationHelper.tryLockNodes(getProject(), getSelectedNodes(false), this, "unlink"))
+			return;
 		List list = NodeList.nodeListToImplList(getSelectedNodes(false), NotAssignmentFilter.getInstance());
 
 
@@ -495,8 +500,11 @@ public class DocumentFrame extends NamedFrame implements
 
 	public void doOutdent() {
 		SpreadSheet ss = getActiveSpreadSheet();
-		if (ss !=null)
+		if (ss !=null) {
+			if (!CollaborationHelper.tryLockNodes(getProject(), getSelectedNodes(false), this, "outdent"))
+				return;
 			ss.executeAction(MenuActionConstants.ACTION_OUTDENT);
+		}
 	}
 	public void doExpand() {
 		SpreadSheet ss = getActiveSpreadSheet();
@@ -511,8 +519,11 @@ public class DocumentFrame extends NamedFrame implements
 
 	public void doIndent() {
 		SpreadSheet ss = getActiveSpreadSheet();
-		if (ss !=null)
+		if (ss !=null) {
+			if (!CollaborationHelper.tryLockNodes(getProject(), getSelectedNodes(false), this, "indent"))
+				return;
 			ss.executeAction(MenuActionConstants.ACTION_INDENT);
+		}
 	}
 	public void doDelete() {
 		SpreadSheet ss = getActiveSpreadSheet();

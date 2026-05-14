@@ -61,6 +61,7 @@ import java.awt.geom.Rectangle2D;
 
 import com.projectlibre1.pm.graphic.graph.GraphInteractor;
 import com.projectlibre1.pm.graphic.graph.GraphUI;
+import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.model.cache.GraphicDependency;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
@@ -257,6 +258,9 @@ public class GanttInteractor extends GraphInteractor{
     	if (state==BAR_MOVE||state==BAR_MOVE_START||state==BAR_MOVE_END||state==PROGRESS_BAR_MOVE||state==SPLIT){
     		if (!(selected instanceof GraphicNode)) return false;
     		sourceNode=(GraphicNode)selected;
+    		if (!CollaborationHelper.tryLockObject(null, sourceNode.getNode(), getGraph(), "edit")) {
+    			return false;
+    		}
     	}
     	long t=(long)getCoord().toTime(x);
     	long dt=(long)getCoord().toDuration(x-x0);
@@ -275,6 +279,12 @@ public class GanttInteractor extends GraphInteractor{
 			return true;
 		case LINK_CREATION:
 			try {
+					if (sourceNode != null && !CollaborationHelper.tryLockObject(null, sourceNode.getNode(), getGraph(), "link")) {
+						return false;
+					}
+					if (destinationNode != null && !CollaborationHelper.tryLockObject(null, destinationNode.getNode(), getGraph(), "link")) {
+						return false;
+					}
 					if (sourceNode!=null&&destinationNode!=null&&
 							sourceNode.getNode().getImpl() instanceof HasDependencies &&
 							destinationNode.getNode().getImpl() instanceof HasDependencies && !ClassUtils.isObjectReadOnly(destinationNode.getNode().getImpl())){

@@ -75,6 +75,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -109,6 +110,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
+import javax.swing.JOptionPane;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -132,6 +134,8 @@ import com.projectlibre.ui.ribbon.ProjectLibreRibbonUI;
 import com.projectlibre1.configuration.Configuration;
 import com.projectlibre1.configuration.FieldDictionary;
 import com.projectlibre1.configuration.Settings;
+import com.projectlibre1.collaboration.CollaborationMetadataStore;
+import com.projectlibre1.collaboration.CollaborationSession;
 import com.projectlibre1.contrib.ClassLoaderUtils;
 import com.projectlibre1.dialog.AboutDialog;
 import com.projectlibre1.dialog.AbstractDialog;
@@ -172,6 +176,7 @@ import com.projectlibre1.options.CalendarOption;
 import com.projectlibre1.pm.assignment.Assignment;
 import com.projectlibre1.pm.graphic.IconManager;
 import com.projectlibre1.pm.graphic.TabbedNavigation;
+import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.frames.workspace.DefaultFrameManager;
 import com.projectlibre1.pm.graphic.frames.workspace.FrameHolder;
 import com.projectlibre1.pm.graphic.frames.workspace.FrameManager;
@@ -446,6 +451,9 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
     	setCurrentFrame(f);
 
     }
+	public DocumentFrame getFrameForProject(Project project) {
+		return (DocumentFrame) frameMap.get(project);
+	}
 	protected void setCurrentFrame(DocumentFrame frame){
 		if (frame instanceof DocumentFrame) {
 			if (currentFrame != null && projectListMenu != null&&!Environment.isPlugin()) {
@@ -547,6 +555,60 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 			}});
 		getMenuManager().setActionEnabled(ACTION_OPEN_PROJECT,frame==null || !frame.isEditingResourcePool()); //resource pool can not be opened at same time as another proj
 		return frame;
+	}
+
+	private String getCollaborationUserKey() {
+		String user = System.getProperty("user.name");
+		if (user == null || user.trim().length() == 0) {
+			return "unknown";
+		}
+		return user.trim();
+	}
+
+	private void initializeCollaboration(Project project) {
+		if (project == null) {
+			return;
+		}
+		String fileName = project.getFileName();
+		if (!CollaborationMetadataStore.isCollaborationCandidate(fileName)) {
+			return;
+		}
+		if (project.getCollaborationSession() != null) {
+			DocumentFrame frame = getFrameForProject(project);
+			if (frame != null && project.getCollaborationWorkspace() != null) {
+				frame.restoreWorkspace(project.getCollaborationWorkspace(), SavableToWorkspace.VIEW);
+				project.setCollaborationWorkspace(null);
+			}
+			return;
+		}
+		CollaborationSession session = CollaborationSession.create(project, fileName, getCollaborationUserKey());
+		if (session == null) {
+			return;
+		}
+		project.setCollaborationSession(session);
+		project.setCollaborationWorkspace(session.loadWorkspace());
+		session.start();
+		DocumentFrame frame = getFrameForProject(project);
+		if (frame != null && project.getCollaborationWorkspace() != null) {
+			frame.restoreWorkspace(project.getCollaborationWorkspace(), SavableToWorkspace.VIEW);
+			project.setCollaborationWorkspace(null);
+		}
+	}
+
+	private void persistCollaborationWorkspace(Project project) {
+		if (project == null) {
+			return;
+		}
+		CollaborationSession session = project.getCollaborationSession();
+		if (session == null) {
+			return;
+		}
+		DocumentFrame frame = getFrameForProject(project);
+		if (frame != null) {
+			WorkspaceSetting workspace = frame.createWorkspace(SavableToWorkspace.VIEW);
+			project.setCollaborationWorkspace(workspace);
+			session.saveWorkspace(workspace);
+		}
 	}
 
 	private void closeProjectFrame(Project project) {
@@ -924,6 +986,8 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		Object impl=node.getImpl();
 		if (impl instanceof Task||(impl instanceof Assignment&&taskType)){
 			Task task=(Task)((impl instanceof Assignment)?(((Assignment)impl).getTask()):impl);
+			if (!CollaborationHelper.tryLockObject(task.getProject(), task, getCurrentFrame(), "open task details"))
+				return;
 			if (taskInformationDialog == null) {
 				taskInformationDialog = TaskInformationDialog.getInstance(getFrame(),task, notes);
 				taskInformationDialog.pack();
@@ -1148,7 +1212,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent arg0) {
 			setMeAsLastGraphicManager();
-			BrowserControl.displayURL("http://www.projectlibre.com/");
+			BrowserControl.displayURL("https://github.com/tetsuji16/ProjectLibre");
 		}
 	}
 
@@ -1898,6 +1962,18 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			opt.setFileName(fileName);
 			opt.setLocal(true);
 			opt.setSync(false);
+			opt.setCollaborationEnabled(CollaborationMetadataStore.isCollaborationCandidate(fileName));
+			opt.setCollaborationUserKey(getCollaborationUserKey());
+			if (opt.isCollaborationEnabled()) {
+				opt.setSidecarFileName(CollaborationMetadataStore.buildSidecarFile(new File(fileName)).getAbsolutePath());
+			}
+			opt.setEndSwingClosure(new Closure() {
+				public void execute(Object arg0) {
+					if (arg0 instanceof Project) {
+						initializeCollaboration((Project)arg0);
+					}
+				}
+			});
 
 			if (merge) opt.setResourceMapping(new ResourceMappingForm(){
 				public boolean execute(){
@@ -1930,13 +2006,55 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		SaveOptions opt=new SaveOptions();
 		opt.setLocal(true);
 		final Project project=getCurrentFrame().getProject();
+		final String originalFileName = project.getFileName();
+		CollaborationSession collaborationSession = project.getCollaborationSession();
+		if (collaborationSession != null) {
+			persistCollaborationWorkspace(project);
+			int saveDecision = collaborationSession.checkBeforeSave(getCurrentFrame());
+			if (saveDecision == CollaborationSession.SAVE_CANCEL) {
+				return;
+			}
+			if (saveDecision == CollaborationSession.SAVE_AS_COPY) {
+				String copyFileName = SessionFactory.getInstance().getLocalSession().chooseFileName(true, project.getGuessedFileName());
+				if (copyFileName == null) {
+					return;
+				}
+				fileName = copyFileName;
+			}
+			opt.setCollaborationEnabled(true);
+			opt.setCollaborationUserKey(getCollaborationUserKey());
+			opt.setSidecarFileName(CollaborationMetadataStore.buildSidecarFile(new File(fileName)).getAbsolutePath());
+		}
 		if (project.getFileName()!=fileName){
 			final DocumentFrame frame=getCurrentFrame();
 			if (saveAs) opt.setSaveAs(true);
 			opt.setPostSaving(new Closure(){
 				public void execute(Object arg0) {
 					if (saveAs) frame.setId(project.getUniqueId()+""); //$NON-NLS-1$
+					if (project.getCollaborationSession() != null) {
+						project.getCollaborationSession().afterSave();
+						persistCollaborationWorkspace(project);
+					}
+					if (originalFileName == null || !originalFileName.equals(project.getFileName())) {
+						if (project.getCollaborationSession() != null) {
+							project.getCollaborationSession().stop();
+							project.setCollaborationSession(null);
+						}
+						initializeCollaboration(project);
+					}
 					refreshSaveStatus(true);
+				}
+			});
+		} else if (project.getCollaborationSession() != null) {
+			opt.setPostSaving(new Closure(){
+				public void execute(Object arg0) {
+					project.getCollaborationSession().afterSave();
+					persistCollaborationWorkspace(project);
+					if (originalFileName == null || !originalFileName.equals(project.getFileName())) {
+						project.getCollaborationSession().stop();
+						project.setCollaborationSession(null);
+						initializeCollaboration(project);
+					}
 				}
 			});
 		}
@@ -1993,12 +2111,28 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		opt.setFileName(fileName);
 		opt.setLocal(true);
 		opt.setPreSaving(getSavingClosure());
+		if (project.getCollaborationSession() != null) {
+			persistCollaborationWorkspace(project);
+			opt.setCollaborationEnabled(true);
+			opt.setCollaborationUserKey(getCollaborationUserKey());
+			opt.setSidecarFileName(project.getCollaborationSession().getSidecarFileName());
+			opt.setPostSaving(new Closure() {
+				public void execute(Object arg0) {
+					project.getCollaborationSession().afterSave();
+				}
+			});
+		}
 
 	    projectFactory.saveProject(project,opt);
 		//showWaitCursor(false);
 	}
 
 	protected void closeProject(Project project){
+		persistCollaborationWorkspace(project);
+		if (project.getCollaborationSession() != null) {
+			project.getCollaborationSession().stop();
+			project.setCollaborationSession(null);
+		}
 		projectFactory.removeProject(project,true,true,true);
 	}
 
@@ -3083,6 +3217,15 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 	}
 
 	public boolean quitApplication() throws Exception{
+		for (Object frameObj : new ArrayList(frameList)) {
+			if (frameObj instanceof DocumentFrame) {
+				Project project = ((DocumentFrame)frameObj).getProject();
+				persistCollaborationWorkspace(project);
+				if (project != null && project.getCollaborationSession() != null) {
+					project.getCollaborationSession().stop();
+				}
+			}
+		}
 		final boolean[] lock=new boolean[]{false};
 
 		JobRunnable exitRunnable=new JobRunnable("Local: closeProjects"){

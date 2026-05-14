@@ -87,6 +87,7 @@ import com.projectlibre1.pm.graphic.model.event.CacheListener;
 import com.projectlibre1.pm.graphic.model.event.CompositeCacheEvent;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetColumnModel;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
+import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetSearchContext;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetUtils;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.KeyboardFocusable;
@@ -381,6 +382,12 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	}
     // edit triggered by click
     public boolean editCellAt(int row, int column, EventObject e){
+    	if (column > 0) {
+    		Node node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
+    		if (node != null && !CollaborationHelper.tryLockObject(null, node, this, "edit")) {
+    			return false;
+    		}
+    	}
     	boolean b=super.editCellAt(row,column,e);
     	if (b&&editorComp!=null){
 //    		System.out.println("editing cell at " + row + " " + column);
