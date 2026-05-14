@@ -1,57 +1,43 @@
 @echo off
-setlocal
-set JAVA_HOME=C:\Program Files\Java\jdk-26.0.1
-set PATH=%JAVA_HOME%\bin;%PATH%
+setlocal enabledelayedexpansion
+rem Compile the startup entry points with JDK 26, update dist\projectlibre.jar, and launch ProjectLibre.
 
-set SOURCE_DIR=C:\Users\tetsu\vscode\ProjectLibre\projectlibre-code
-set BUILD_DIR=%SOURCE_DIR%\projectlibre_build\build
-set DIST_DIR=%SOURCE_DIR%\projectlibre_build\dist
-set CONTRIB_DIR=%SOURCE_DIR%\projectlibre_contrib
+set "JAVA_HOME=C:\Program Files\Java\jdk-26.0.1"
+set "PATH=%JAVA_HOME%\bin;%PATH%"
 
-echo Setting up classpath...
-set CLASSPATH=%CONTRIB_DIR%\projectlibre-contrib.jar;%CONTRIB_DIR%\projectlibre-script.jar;%CONTRIB_DIR%\projectlibre-reports.jar
+for %%I in ("%~dp0..") do set "SOURCE_DIR=%%~fI"
+set "BUILD_DIR=%SOURCE_DIR%\projectlibre_build\build"
+set "DIST_DIR=%SOURCE_DIR%\projectlibre_build\dist"
+set "CONTRIB_DIR=%SOURCE_DIR%\projectlibre_contrib"
+set "SOURCEPATH=%SOURCE_DIR%\projectlibre_ui\src;%SOURCE_DIR%\projectlibre_core\src;%SOURCE_DIR%\projectlibre_exchange\src;%SOURCE_DIR%\projectlibre_reports\src;%SOURCE_DIR%\projectlibre_contrib\src"
 
-for %%f in ("%CONTRIB_DIR%\lib\*.jar") do (
-    set CLASSPATH=!CLASSPATH!;%%f
-)
-
-for %%f in ("%CONTRIB_DIR%\lib\exchange\*.jar") do (
-    set CLASSPATH=!CLASSPATH!;%%f
-)
-
-for %%f in ("%CONTRIB_DIR%\lib\groovy\*.jar") do (
-    set CLASSPATH=!CLASSPATH!;%%f
-)
-
-for %%f in ("%CONTRIB_DIR%\lib\jasperreports\*.jar") do (
-    set CLASSPATH=!CLASSPATH!;%%f
-)
-
-echo Classpath: %CLASSPATH%
+echo Building classpath...
+set "CP=%CONTRIB_DIR%\projectlibre-contrib.jar;%CONTRIB_DIR%\projectlibre-script.jar;%CONTRIB_DIR%\projectlibre-reports.jar"
+for %%f in ("%CONTRIB_DIR%\lib\*.jar") do set "CP=!CP!;%%~ff"
+for %%f in ("%CONTRIB_DIR%\lib\exchange\*.jar") do set "CP=!CP!;%%~ff"
+for %%f in ("%CONTRIB_DIR%\lib\groovy\*.jar") do set "CP=!CP!;%%~ff"
+for %%f in ("%CONTRIB_DIR%\lib\jasperreports\*.jar") do set "CP=!CP!;%%~ff"
 
 mkdir "%BUILD_DIR%" 2>nul
 
-echo Compiling StartupFactory.java...
-"%JAVA_HOME%\bin\javac" -source 8 -target 8 -cp "%CLASSPATH%" -d "%BUILD_DIR%" "%SOURCE_DIR%\projectlibre_ui\src\com\projectlibre1\pm\graphic\frames\StartupFactory.java" 2>&1 | head -20
+echo Compiling StartupFactory.java with Java 26...
+"%JAVA_HOME%\bin\javac" -source 26 -target 26 -cp "%CP%" -sourcepath "%SOURCEPATH%" -d "%BUILD_DIR%" "%SOURCE_DIR%\projectlibre_ui\src\com\projectlibre1\pm\graphic\frames\StartupFactory.java"
+if errorlevel 1 exit /b 1
 
-echo Compiling Init.java...
-"%JAVA_HOME%\bin\javac" -source 8 -target 8 -cp "%CLASSPATH%" -d "%BUILD_DIR%" "%SOURCE_DIR%\projectlibre_core\src\com\projectlibre1\init\Init.java" 2>&1 | head -20
+echo Compiling Init.java with Java 26...
+"%JAVA_HOME%\bin\javac" -source 26 -target 26 -cp "%CP%" -sourcepath "%SOURCEPATH%" -d "%BUILD_DIR%" "%SOURCE_DIR%\projectlibre_core\src\com\projectlibre1\init\Init.java"
+if errorlevel 1 exit /b 1
 
-if exist "%BUILD_DIR%\com\projectlibre1\pm\graphic\frames\StartupFactory.class" (
-    echo StartupFactory.class created successfully
-) else (
-    echo FAILED to create StartupFactory.class
+if not exist "%DIST_DIR%\projectlibre.jar" (
+    echo Missing "%DIST_DIR%\projectlibre.jar"
+    exit /b 1
 )
 
-if exist "%BUILD_DIR%\com\projectlibre1\init\Init.class" (
-    echo Init.class created successfully
-) else (
-    echo FAILED to create Init.class
-)
-
-echo Updating JAR...
+echo Updating projectlibre.jar...
 cd /d "%DIST_DIR%"
-jar uf projectlibre.jar -C "%BUILD_DIR%" com/projectlibre1/pm/graphic/frames/StartupFactory.class -C "%BUILD_DIR%" com/projectlibre1/init/Init.class
+"%JAVA_HOME%\bin\jar" uf projectlibre.jar -C "%BUILD_DIR%" com/projectlibre1/pm/graphic/frames/StartupFactory.class -C "%BUILD_DIR%" com/projectlibre1/init/Init.class
+if errorlevel 1 exit /b 1
 
 echo Running ProjectLibre...
-java -jar projectlibre.jar
+"%JAVA_HOME%\bin\java" -jar projectlibre.jar
+exit /b %ERRORLEVEL%

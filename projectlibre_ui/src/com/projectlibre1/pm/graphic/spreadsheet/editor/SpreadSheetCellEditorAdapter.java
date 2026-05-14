@@ -62,11 +62,13 @@ import java.util.EventObject;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
 
 import com.projectlibre1.menu.MenuActionConstants;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.CellUtility;
 /**
  * Adapter to modify defaults editors behaviour
@@ -118,6 +120,28 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 					spreadSheet.prepareAction(MenuActionConstants.ACTION_PASTE).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
 				}
 			});
+			boolean nameField = table.getModel() instanceof SpreadSheetModel
+				&& spreadSheet.isNameFieldColumn(column);
+			edit.setFocusTraversalKeysEnabled(!nameField);
+			if (nameField) {
+				edit.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("TAB"), SpreadSheet.NAME_COLUMN_INDENT_ACTION);
+				edit.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift TAB"), SpreadSheet.NAME_COLUMN_OUTDENT_ACTION);
+				edit.getActionMap().put(SpreadSheet.NAME_COLUMN_INDENT_ACTION, new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						spreadSheet.executeNameCellTabAction(false);
+					}
+				});
+				edit.getActionMap().put(SpreadSheet.NAME_COLUMN_OUTDENT_ACTION, new AbstractAction() {
+					public void actionPerformed(ActionEvent e) {
+						spreadSheet.executeNameCellTabAction(true);
+					}
+				});
+			} else {
+				edit.getInputMap(JComponent.WHEN_FOCUSED).remove(KeyStroke.getKeyStroke("TAB"));
+				edit.getInputMap(JComponent.WHEN_FOCUSED).remove(KeyStroke.getKeyStroke("shift TAB"));
+				edit.getActionMap().remove(SpreadSheet.NAME_COLUMN_INDENT_ACTION);
+				edit.getActionMap().remove(SpreadSheet.NAME_COLUMN_OUTDENT_ACTION);
+			}
 			
 		}
 		

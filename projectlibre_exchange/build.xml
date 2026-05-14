@@ -55,6 +55,8 @@
  -->
 <project default="dist" basedir=".">
 	<property file="build.properties"/>
+	<!-- ProjectLibre requires JDK 26 for compilation and runtime. -->
+	<property name="java.release" value="26"/>
 
 	<path id="compile.class.path">
 		<fileset dir="../projectlibre_contrib">
@@ -105,8 +107,8 @@
 			debug="off"
 			nowarn="on"
 			encoding="UTF-8"
-			source="26"
-			target="26">
+			source="${java.release}"
+			target="${java.release}">
 				<src path="${src}" />
 				<include name="**/*" />
 				<exclude name="**/version.properties" />
