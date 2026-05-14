@@ -302,8 +302,10 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			yrow=node.getRow()*rowHeight;
 
 			if (container!=null){
-				rendererPane=new CellRendererPane();
-				container.add(rendererPane);
+				if (rendererPane==null){
+					rendererPane=new CellRendererPane();
+					container.add(rendererPane);
+				}
 			}
 			component.setFont(FontUtil.getFont(null,Environment.GANTT_ANNOTATIONS_FONT));
 			fontMetrics=component.getFontMetrics(component.getFont());
@@ -480,16 +482,14 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 		int i0=(int)Math.floor(bounds.getY()/rowHeight);
 		int i1=(int)Math.ceil(bounds.getMaxY()/rowHeight);
-		double t0=coord.toTime(bounds.getX());
-		double t1=coord.toTime(bounds.getMaxX());
 
 		GraphicNode node;
-		for (ListIterator i=nodeIterator;i.hasNext();){
+		ListIterator i=((GanttParams)graphInfo).getCache().getIterator(i0);
+		while (i.hasNext()&&i.nextIndex()<i1){
+			int row=i.nextIndex();
 			node=(GraphicNode)i.next();
-			node.setRow(i.previousIndex());
-			if (i.previousIndex()>=i0&&i.previousIndex()<i1){
-				if (!node.isVoid()) updateShape(node);
-			}
+			node.setRow(row);
+			if (!node.isVoid()) updateShape(node);
 		}
     }
 
@@ -675,20 +675,19 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 //		} //Because row not initialized for some nodes
 
 		NodeModelCache cache=graphInfo.getCache();
-		for (ListIterator i=cache.getIterator();i.hasNext();){
+		for (ListIterator i=cache.getIterator(i0);i.hasNext()&&i.nextIndex()<i1;){
+			int row=i.nextIndex();
 			node=(GraphicNode)i.next();
-			node.setRow(i.previousIndex());
-			if (i.previousIndex()>=i0&&i.previousIndex()<i1){
-				if (!node.isSchedule()) continue;
-				nodeList.add(node);
-				paintAnnotation(g2,node);
-				paintNode(g2,node,true);
-				paintHorizontalLine(g2,node);
-			}
+			node.setRow(row);
+			if (!node.isSchedule()) continue;
+			nodeList.add(node);
+			paintAnnotation(g2,node);
+			paintNode(g2,node,true);
+			paintHorizontalLine(g2,node);
 		}
 
 		GraphicDependency dependency;
-		for (Iterator i=cache.getEdgesIterator();i.hasNext();){
+		for (Iterator i=cache.getVisibleDependencies().getIterator();i.hasNext();){
 			dependency=(GraphicDependency)i.next();
 			//if (nodeList.contains(dependency.getPredecessor())||nodeList.contains(dependency.getSuccessor()))
 				paintLink(g2,dependency);

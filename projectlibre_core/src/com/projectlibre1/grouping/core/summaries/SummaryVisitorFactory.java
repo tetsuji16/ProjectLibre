@@ -118,66 +118,66 @@ public class SummaryVisitorFactory implements SummaryNames {
 
 	private static BidiMap COST_SUMMARY_MAP = new DualHashBidiMap();
 	static {
-		COST_SUMMARY_MAP.put(Messages.getString("Summary.None"), new Integer(NONE));
-		COST_SUMMARY_MAP.put(Messages.getString("Summary.Average"), new Integer(AVERAGE));
-		COST_SUMMARY_MAP.put(Messages.getString("Summary.AverageFirstSublevel"), new Integer(AVERAGE_FIRST_SUBLEVEL));		
-		COST_SUMMARY_MAP.put(Messages.getString("Summary.Maximum"), new Integer(MAXIMUM));
-		COST_SUMMARY_MAP.put(Messages.getString("Summary.Minimum"), new Integer(MINIMUM));
-		COST_SUMMARY_MAP.put(Messages.getString("Summary.Sum"), new Integer(SUM));
+		COST_SUMMARY_MAP.put(Messages.getString("Summary.None"), Integer.valueOf(NONE));
+		COST_SUMMARY_MAP.put(Messages.getString("Summary.Average"), Integer.valueOf(AVERAGE));
+		COST_SUMMARY_MAP.put(Messages.getString("Summary.AverageFirstSublevel"), Integer.valueOf(AVERAGE_FIRST_SUBLEVEL));
+		COST_SUMMARY_MAP.put(Messages.getString("Summary.Maximum"), Integer.valueOf(MAXIMUM));
+		COST_SUMMARY_MAP.put(Messages.getString("Summary.Minimum"), Integer.valueOf(MINIMUM));
+		COST_SUMMARY_MAP.put(Messages.getString("Summary.Sum"), Integer.valueOf(SUM));
 	}
 
 	private static BidiMap DATE_SUMMARY_MAP = new DualHashBidiMap();
 	static {
-		DATE_SUMMARY_MAP.put(Messages.getString("Summary.None"), new Integer(NONE));		
-		DATE_SUMMARY_MAP.put(Messages.getString("Summary.Maximum"), new Integer(MAXIMUM));
-		DATE_SUMMARY_MAP.put(Messages.getString("Summary.Minimum"), new Integer(MINIMUM));		
+		DATE_SUMMARY_MAP.put(Messages.getString("Summary.None"), Integer.valueOf(NONE));
+		DATE_SUMMARY_MAP.put(Messages.getString("Summary.Maximum"), Integer.valueOf(MAXIMUM));
+		DATE_SUMMARY_MAP.put(Messages.getString("Summary.Minimum"), Integer.valueOf(MINIMUM));
 	}
 
 	private static BidiMap DURATION_SUMMARY_MAP = COST_SUMMARY_MAP;
 	
 	private static BidiMap FLAG_SUMMARY_MAP = new DualHashBidiMap();
 	static {
-		FLAG_SUMMARY_MAP.put(Messages.getString("Summary.None"), new Integer(NONE));		
-		FLAG_SUMMARY_MAP.put(Messages.getString("Summary.OR"), new Integer(OR));
-		FLAG_SUMMARY_MAP.put(Messages.getString("Summary.AND"), new Integer(AND));		
+		FLAG_SUMMARY_MAP.put(Messages.getString("Summary.None"), Integer.valueOf(NONE));
+		FLAG_SUMMARY_MAP.put(Messages.getString("Summary.OR"), Integer.valueOf(OR));
+		FLAG_SUMMARY_MAP.put(Messages.getString("Summary.AND"), Integer.valueOf(AND));
 	}
 
 	private static BidiMap NUMBER_SUMMARY_MAP = new DualHashBidiMap();
 	static {
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.None"), new Integer(NONE));		
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Average"), new Integer(AVERAGE));
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.AverageFirstSublevel"), new Integer(AVERAGE_FIRST_SUBLEVEL));		
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.CountAll"), new Integer(COUNT_ALL));		
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.CountFirstSublevel"), new Integer(COUNT_FIRST_SUBLEVEL));
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.CountNonsummaries"), new Integer(COUNT_NONSUMMARIES));		
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Maximum"), new Integer(MAXIMUM));
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Minimum"), new Integer(MINIMUM));
-		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Sum"), new Integer(SUM));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.None"), Integer.valueOf(NONE));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Average"), Integer.valueOf(AVERAGE));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.AverageFirstSublevel"), Integer.valueOf(AVERAGE_FIRST_SUBLEVEL));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.CountAll"), Integer.valueOf(COUNT_ALL));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.CountFirstSublevel"), Integer.valueOf(COUNT_FIRST_SUBLEVEL));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.CountNonsummaries"), Integer.valueOf(COUNT_NONSUMMARIES));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Maximum"), Integer.valueOf(MAXIMUM));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Minimum"), Integer.valueOf(MINIMUM));
+		NUMBER_SUMMARY_MAP.put(Messages.getString("Summary.Sum"), Integer.valueOf(SUM));
 	}
 	
 	private static BidiMap TEXT_SUMMARY_MAP = new DualHashBidiMap();
 	static {
-		TEXT_SUMMARY_MAP.put(Messages.getString("Summary.None"), new Integer(NONE));		
-		TEXT_SUMMARY_MAP.put(Messages.getString("Summary.List"), new Integer(LIST));
+		TEXT_SUMMARY_MAP.put(Messages.getString("Summary.None"), Integer.valueOf(NONE));
+		TEXT_SUMMARY_MAP.put(Messages.getString("Summary.List"), Integer.valueOf(LIST));
 	}
 	
 	private static Hashtable ALL_SUMMARY_MAP = new Hashtable();
 	static {
-		ALL_SUMMARY_MAP.put("None", new Integer(NONE));		
-		ALL_SUMMARY_MAP.put("This", new Integer(THIS));		
-		ALL_SUMMARY_MAP.put("List", new Integer(LIST));		
-		ALL_SUMMARY_MAP.put("Average", new Integer(AVERAGE));
-		ALL_SUMMARY_MAP.put("AverageFirstSublevel", new Integer(AVERAGE_FIRST_SUBLEVEL));		
-		ALL_SUMMARY_MAP.put("CountAll", new Integer(COUNT_ALL));		
-		ALL_SUMMARY_MAP.put("CountFirstSublevel", new Integer(COUNT_FIRST_SUBLEVEL));
-		ALL_SUMMARY_MAP.put("CountNonsummaries", new Integer(COUNT_NONSUMMARIES));		
-		ALL_SUMMARY_MAP.put("Maximum", new Integer(MAXIMUM));
-		ALL_SUMMARY_MAP.put("Minimum", new Integer(MINIMUM));
-		ALL_SUMMARY_MAP.put("Sum", new Integer(SUM));
-		ALL_SUMMARY_MAP.put("OR", new Integer(OR));
-		ALL_SUMMARY_MAP.put("AND", new Integer(AND));		
+		ALL_SUMMARY_MAP.put("None", Integer.valueOf(NONE));
+		ALL_SUMMARY_MAP.put("This", Integer.valueOf(THIS));
+		ALL_SUMMARY_MAP.put("List", Integer.valueOf(LIST));
+		ALL_SUMMARY_MAP.put("Average", Integer.valueOf(AVERAGE));
+		ALL_SUMMARY_MAP.put("AverageFirstSublevel", Integer.valueOf(AVERAGE_FIRST_SUBLEVEL));
+		ALL_SUMMARY_MAP.put("CountAll", Integer.valueOf(COUNT_ALL));
+		ALL_SUMMARY_MAP.put("CountFirstSublevel", Integer.valueOf(COUNT_FIRST_SUBLEVEL));
+		ALL_SUMMARY_MAP.put("CountNonsummaries", Integer.valueOf(COUNT_NONSUMMARIES));
+		ALL_SUMMARY_MAP.put("Maximum", Integer.valueOf(MAXIMUM));
+		ALL_SUMMARY_MAP.put("Minimum", Integer.valueOf(MINIMUM));
+		ALL_SUMMARY_MAP.put("Sum", Integer.valueOf(SUM));
+		ALL_SUMMARY_MAP.put("OR", Integer.valueOf(OR));
+		ALL_SUMMARY_MAP.put("AND", Integer.valueOf(AND));
 
-		ALL_SUMMARY_MAP.put("Same", new Integer(SAME));		
+		ALL_SUMMARY_MAP.put("Same", Integer.valueOf(SAME));
 }
  
 /**

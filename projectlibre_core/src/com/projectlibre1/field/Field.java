@@ -132,7 +132,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 	private int summary = NONE;
 	private int groupSummary = NONE;
 	private Range range = null;
-	private Integer ZERO = new Integer(0);
+	private Integer ZERO = Integer.valueOf(0);
 	private boolean nameField = false;
 	private boolean map = false;
 	private String url = null;
@@ -705,9 +705,9 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 			try {
 
 				if (getHasNoContext)
-					result = methodGet.invoke(object, (isIndexed() ? new Object[] { new Integer(index) } : new Object[] {}));
+					result = methodGet.invoke(object, (isIndexed() ? new Object[] { Integer.valueOf(index) } : new Object[] {}));
 				else {
-					result = methodGet.invoke(object, (isIndexed() ? new Object[] { new Integer(index), context }
+					result = methodGet.invoke(object, (isIndexed() ? new Object[] { Integer.valueOf(index), context }
 							: new Object[] { context }));
 				}
 
@@ -1018,9 +1018,9 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 				Map map = (Map)getPropertyValue(object,context);
 				map.put(getId(), value);
 			} else if (setHasNoContext) {
-				methodSet.invoke(object, (isIndexed() ? new Object[] { new Integer(index), value } : new Object[] { value }));
+				methodSet.invoke(object, (isIndexed() ? new Object[] { Integer.valueOf(index), value } : new Object[] { value }));
 			} else {
-				methodSet.invoke(object, (isIndexed() ? new Object[] { new Integer(index), value, context }
+				methodSet.invoke(object, (isIndexed() ? new Object[] { Integer.valueOf(index), value, context }
 						: new Object[] { value, context }));
 			}
 			//LC
@@ -1205,7 +1205,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 
 	private final void setAccessorMethods() {
 		if (clazz != null && property != null) {
-			StringBuffer javaName = new StringBuffer(property);
+			StringBuilder javaName = new StringBuilder(property);
 			javaName.setCharAt(0, Character.toUpperCase(javaName.charAt(0)));
 
 			// First look for a getter that has a context (indexed or not)
@@ -1267,12 +1267,12 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 		try {
 			if (noContext) {
 				if (isIndexed())
-					return method.invoke(object, new Object[] { new Integer(getIndex()), null });
+					return method.invoke(object, new Object[] { Integer.valueOf(getIndex()), null });
 				else
 					return method.invoke(object, (Object[])null);
 			} else {
 				if (isIndexed())
-					return method.invoke(object, new Object[] { new Integer(getIndex()), context });
+					return method.invoke(object, new Object[] { Integer.valueOf(getIndex()), context });
 				else
 					return method.invoke(object, new Object[] { context });
 			}

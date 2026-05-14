@@ -150,7 +150,7 @@ public class Serializer {
             enterpriseResourceData.setEmailAddress((emailAddress==null||emailAddress.length()==0)?null:emailAddress); //this is used to map a new user to an existing resource
             resourceData.setEnterpriseResource(enterpriseResourceData);
 
-            transformationMap.put(new Long(resource.getUniqueId()),resourceData); // the resource map uses ids now
+            transformationMap.put(Long.valueOf(resource.getUniqueId()),resourceData); // the resource map uses ids now
             return resourceData;
     	}
     	public void executeFinally(){
@@ -158,8 +158,8 @@ public class Serializer {
     	}
     	public boolean addOutlineElement(Object outlineChild,Object outlineParent,long position){
 			if (outlineChild instanceof VoidNodeImpl) return false;
-    		ResourceData resourceData=(ResourceData)getTransformationMap().get(new Long(((Resource)outlineChild).getUniqueId()));
-			ResourceData parentData=(outlineParent==null)?null:(ResourceData)getTransformationMap().get(new Long(((Resource)outlineParent).getUniqueId()));
+		ResourceData resourceData=(ResourceData)getTransformationMap().get(Long.valueOf(((Resource)outlineChild).getUniqueId()));
+			ResourceData parentData=(outlineParent==null)?null:(ResourceData)getTransformationMap().get(Long.valueOf(((Resource)outlineParent).getUniqueId()));
 			EnterpriseResourceData enterpriseResourceData=resourceData.getEnterpriseResource(); //enterprise resource version
 			enterpriseResourceData.setParentResource((parentData==null)?null:parentData.getEnterpriseResource()); //enterprise resource version
 			enterpriseResourceData.setChildPosition(position); //enterprise resource version
@@ -181,7 +181,7 @@ public class Serializer {
     }
     public static void forAssignments(NormalTask task,AssignmentClosure c) throws IOException{
         for (int s=0;s<Settings.numBaselines();s++){
-            TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(new Integer(s));
+            TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(Integer.valueOf(s));
             if (snapshot==null) continue;
             AssociationList snapshotAssignments=snapshot.getHasAssignments().getAssignments();
             if (snapshotAssignments.size()>0){
@@ -262,7 +262,7 @@ public class Serializer {
 						else assignmentData.setTaskId(taskData.getUniqueId());
 						EnterpriseResourceData enterpriseResourceData=(r.isDefault())?
 						    	null:
-						    		((ResourceData)resourceMap.get(new Long(r.getUniqueId()))).getEnterpriseResource();
+								((ResourceData)resourceMap.get(Long.valueOf(r.getUniqueId()))).getEnterpriseResource();
 						if (flatAssignments==null) assignmentData.setResource(enterpriseResourceData);
 						else assignmentData.setResourceId((enterpriseResourceData==null)?-1L:enterpriseResourceData.getUniqueId());
 						assignmentData.setSnapshotId(s);
@@ -1076,7 +1076,7 @@ public class Serializer {
 
     					assignment.getDetail().setTask(task);
     					assignment.getDetail().setResource(resource);
-    					Object snapshotId=new Integer(s);
+						Object snapshotId=Integer.valueOf(s);
     					TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(snapshotId);
 
     					//TODO was commented but needed for loading  because task.getSnapshot(snapshotId)==null
@@ -1341,7 +1341,7 @@ public class Serializer {
         	enterpriseResource =(EnterpriseResource)deserialize(enterpriseResourceData,reindex);
         	enterpriseResource.setUserAccount(enterpriseResourceData.getUserAccount());
         }else{
-        	EnterpriseResourceData e=(EnterpriseResourceData)enterpriseResources.get(new Long(enterpriseResourceData.getUniqueId()));
+		EnterpriseResourceData e=(EnterpriseResourceData)enterpriseResources.get(Long.valueOf(enterpriseResourceData.getUniqueId()));
         	if (e==null) return null; //TODO handle this
         	enterpriseResource =(EnterpriseResource)deserialize(e,reindex);
         	enterpriseResource.setUserAccount(e.getUserAccount());
@@ -1639,9 +1639,9 @@ public class Serializer {
     	if (assignments!=null){
 	        for (Iterator i=assignments.iterator();i.hasNext();){
 	        	AssignmentData assignment=(AssignmentData)i.next();
-	        	ResourceData resource=(ResourceData)resourceMap.get(new Long(assignment.getResourceId()));
+			ResourceData resource=(ResourceData)resourceMap.get(Long.valueOf(assignment.getResourceId()));
 	        	if (!ignoreResourcesForAssignments) assignment.setResource((resource==null)?null:resource.getEnterpriseResource());
-	            TaskData taskData=(TaskData)taskMap.get(new Long(assignment.getTaskId()));
+	            TaskData taskData=(TaskData)taskMap.get(Long.valueOf(assignment.getTaskId()));
 	            if (taskData == null) {
 	            	//System.out.println("null task data ("+assignment.getTaskId()+")- project " + projectData.getName());
 	            	ErrorLogger.logOnce("null task data","null task data - project " + projectData.getName(),null);
@@ -1659,8 +1659,8 @@ public class Serializer {
         if (links!=null){
 	        for (Iterator i=links.iterator();i.hasNext();){
 	        	LinkData link=(LinkData)i.next();
-	            TaskData predecessor=(TaskData)taskMap.get(new Long(link.getPredecessorId()));
-	            TaskData successor=(TaskData)taskMap.get(new Long(link.getSuccessorId()));
+	            TaskData predecessor=(TaskData)taskMap.get(Long.valueOf(link.getPredecessorId()));
+	            TaskData successor=(TaskData)taskMap.get(Long.valueOf(link.getSuccessorId()));
 	            if (predecessor==null||successor==null) continue; //external links
 	            successor.addPredecessor(link);
 	            link.setPredecessor(predecessor);
@@ -1674,7 +1674,7 @@ public class Serializer {
         if (c!=null){
 	        for (Iterator i=c.iterator();i.hasNext();){
 	        	DataObject d=(DataObject)i.next();
-	        	map.put(new Long(d.getUniqueId()),d);
+			map.put(Long.valueOf(d.getUniqueId()),d);
 	        }
         }
         return map;
@@ -1682,17 +1682,22 @@ public class Serializer {
     }
 
     public void printTaskDataHierarchy(Collection tasks){
-    	StringBuffer b=new StringBuffer();
-    	printTaskDataHierarchy(tasks,b);
+		StringBuilder b=new StringBuilder();
+		printTaskDataHierarchy(tasks,b);
     	System.out.println(b);
     }
     public void printTaskDataHierarchy(Collection tasks,final StringBuffer b){
+		StringBuilder builder = new StringBuilder();
+		printTaskDataHierarchy(tasks, builder);
+		b.append(builder.toString());
+    }
+    private void printTaskDataHierarchy(Collection tasks,final StringBuilder b){
     	Map taskMap=new HashMap();
     	for (Iterator i=tasks.iterator();i.hasNext();){
     		TaskData taskData=(TaskData)i.next();
     		if (taskData == null)
     			continue;
-    		Long key=new Long(taskData.getParentTaskId());
+			Long key=Long.valueOf(taskData.getParentTaskId());
     		Set set=(Set)taskMap.get(key);
     		if (set==null){
     			set=new TreeSet(new Comparator(){
@@ -1714,8 +1719,8 @@ public class Serializer {
 
 
     }
-    private void buildTaskDataHierarchy(long key, String prefix, Map taskMap,final StringBuffer b){
-    	Object o=taskMap.get(new Long(key));
+    private void buildTaskDataHierarchy(long key, String prefix, Map taskMap,final StringBuilder b){
+		Object o=taskMap.get(Long.valueOf(key));
     	if (o==null) return;
     	TreeSet children=(TreeSet)((TreeSet)o).clone();
     	for (Iterator i=children.iterator();i.hasNext();){

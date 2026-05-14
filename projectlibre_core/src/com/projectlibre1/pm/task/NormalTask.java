@@ -792,7 +792,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 	}
 
 	public long getBaselineStart(int numBaseline) {
-		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(new Integer(
+		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(Integer.valueOf(
 				numBaseline)));
 		if (snapshot == null)
 			return 0;
@@ -800,7 +800,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 	}
 
 	public long getBaselineFinish(int numBaseline) {
-		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(new Integer(
+		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(Integer.valueOf(
 				numBaseline)));
 		if (snapshot == null)
 			return 0;
@@ -808,7 +808,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 	}
 
 	public long getBaselineDuration(int numBaseline) {
-		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(new Integer(
+		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(Integer.valueOf(
 				numBaseline)));
 		if (snapshot == null)
 			return 0;
@@ -816,7 +816,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 	}
 
 	public double getBaselineCost(int numBaseline, long start, long end) {
-		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(new Integer(
+		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(Integer.valueOf(
 				numBaseline)));
 		if (snapshot == null)
 			return 0;
@@ -824,7 +824,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 	}
 
 	public double getBaselineWork(int numBaseline, long start, long end) {
-		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(new Integer(
+		TaskSnapshot snapshot = ((TaskSnapshot) getSnapshot(Integer.valueOf(
 				numBaseline)));
 		if (snapshot == null)
 			return 0;
@@ -1309,7 +1309,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 	}
 
 	private boolean isBaselineFieldHidden(int numBaseline,FieldContext fieldContext) {
-		TaskSnapshot baseline = (TaskSnapshot) getSnapshot(new Integer(numBaseline));
+		TaskSnapshot baseline = (TaskSnapshot) getSnapshot(Integer.valueOf(numBaseline));
 		if (baseline == null)
 			return true;
 
@@ -1466,21 +1466,21 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 
 	//Baseline versions
 	public double getBaselineCost(int numBaseline, FieldContext fieldContext) {
-		TaskSnapshot snapshot = (TaskSnapshot) getSnapshot(new Integer(
+		TaskSnapshot snapshot = (TaskSnapshot) getSnapshot(Integer.valueOf(
 				numBaseline));
 		if (snapshot == null)
 			return 0.0D;
-		return ((TaskSnapshot) getSnapshot(new Integer(numBaseline))).cost(
+		return ((TaskSnapshot) getSnapshot(Integer.valueOf(numBaseline))).cost(
 				FieldContext.start(fieldContext), FieldContext
 						.end(fieldContext));
 	}
 
 	public long getBaselineWork(int numBaseline, FieldContext fieldContext) {
-		TaskSnapshot snapshot = (TaskSnapshot) getSnapshot(new Integer(
+		TaskSnapshot snapshot = (TaskSnapshot) getSnapshot(Integer.valueOf(
 				numBaseline));
 		if (snapshot == null)
 			return 0L;
-		return ((TaskSnapshot) getSnapshot(new Integer(numBaseline))).work(
+		return ((TaskSnapshot) getSnapshot(Integer.valueOf(numBaseline))).work(
 				FieldContext.start(fieldContext), FieldContext
 						.end(fieldContext));
 	}
@@ -1708,7 +1708,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 		if (deep){
 			TaskSnapshot snapshot;
 			for (int i = 0; i < Settings.numBaselines(); i++) {
-				Integer snapshotId = new Integer(i);
+				Integer snapshotId = Integer.valueOf(i);
 				snapshot = (TaskSnapshot) getSnapshot(snapshotId);
 				if (snapshot != null) {
 					// send events only for current snapshot
@@ -2000,12 +2000,12 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 	    else{
 	    	int sCount=0;
             for (int i=0;i<Settings.numBaselines();i++){
-                TaskSnapshot snapshot=(TaskSnapshot)getSnapshot(new Integer(i));
+                TaskSnapshot snapshot=(TaskSnapshot)getSnapshot(Integer.valueOf(i));
                 if (snapshot!=null) sCount++;
     	    }
             s.writeInt(sCount);
             for (int i=0;i<Settings.numBaselines();i++){
-                TaskSnapshot snapshot=(TaskSnapshot)getSnapshot(new Integer(i));
+                TaskSnapshot snapshot=(TaskSnapshot)getSnapshot(Integer.valueOf(i));
                 if (snapshot==null) continue;
                 s.writeInt(i);
                 snapshot.serialize(s);
@@ -2027,7 +2027,7 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
             for (int i=0;i<sCount;i++){
             	int snapshotId=s.readInt();
                 TaskSnapshot snapshot=TaskSnapshot.deserialize(s,this);
-                setSnapshot(new Integer(snapshotId), snapshot);
+                setSnapshot(Integer.valueOf(snapshotId), snapshot);
             }
 	    }
 

@@ -141,7 +141,7 @@ public class UpdateChecker {
 
 			String latestName = in.readLine();
 
-			StringBuffer formulaDef=new StringBuffer();
+			StringBuilder formulaDef=new StringBuilder();
 			String s=null;
 			while ((s=in.readLine())!=null ){
 				if(s.trim().toUpperCase().equals("%UPDATECHECKER")) break;
@@ -173,7 +173,7 @@ public class UpdateChecker {
 
 	private static UpdateCheckerFormula getFormula(String formulaDef){
 	    if (formulaDef.length()==0) return new UpdateCheckerFormula();
-	    StringBuffer classText=new StringBuffer();
+	    StringBuilder classText=new StringBuilder();
 	    classText.append("package org.projectlibre1.util;\n");
 	    classText.append("public class UpdateCheckerFormulaImpl extends UpdateCheckerFormula{\n");
 	    classText.append("\tpublic int mainCompare(String currentVersion,String latestVersion){\n");

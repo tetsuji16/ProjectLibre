@@ -1752,11 +1752,8 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 	}
 	public void markAllTasksAsNeedingRecalculation(boolean invalidateSchedules) {
 		int nextStateCount = getCalculationStateCount()+1;
-		Iterator i = tasks.iterator();
-		Task task;
-		// update all of the tasks schedules to reflect their scheduling direction
-		while (i.hasNext()) {
-			task = (Task)i.next();
+		for (Object obj : tasks) {
+			Task task = (Task) obj;
 			task.setCalculationStateCount(nextStateCount);
 			if (invalidateSchedules)
 				task.invalidateSchedules();
@@ -1764,28 +1761,20 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		getSchedulingAlgorithm().initEarliestAndLatest();
 	}
 	public void setAllChildrenDirty(boolean dirty) { // used when changing field dirties all tasks
-		Iterator i = tasks.iterator();
-		Task task;
-		while (i.hasNext()) {
-			task = (Task)i.next();
-			task.setDirty(dirty);
+		for (Object obj : tasks) {
+			((Task) obj).setDirty(dirty);
 		}
 	}
 	public void setAllDirty() {
 		setDirty(true);
 		setGroupDirty(true);
-		Iterator i = tasks.iterator();
-		NormalTask task;
-		// update all of the tasks schedules to reflect their scheduling direction
-		while (i.hasNext()) {
-			task = (NormalTask)i.next();
+		for (Object obj : tasks) {
+			NormalTask task = (NormalTask) obj;
 			task.setDirty(false);
-			Iterator j = task.getAssignments().iterator();
-			while (j.hasNext())
-				((Assignment)j.next()).setDirty(true);
-			j=task.getDependencyList(true).iterator();
-			while (j.hasNext())
-				((Dependency)j.next()).setDirty(true);
+			for (Object aObj : task.getAssignments())
+				((Assignment) aObj).setDirty(true);
+			for (Object dObj : task.getDependencyList(true))
+				((Dependency) dObj).setDirty(true);
 		}
 	}
 

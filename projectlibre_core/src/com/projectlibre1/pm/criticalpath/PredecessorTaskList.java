@@ -59,6 +59,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.projectlibre1.pm.task.SubProj;
 import com.projectlibre1.pm.task.Task;
@@ -70,7 +71,7 @@ import com.projectlibre1.pm.task.Task;
 */
 public class PredecessorTaskList {
 	private LinkedList list = new LinkedList();
-	private int calculationStateCount = 0;
+	private final AtomicInteger calculationStateCount = new AtomicInteger(0);
 	private boolean markerStatus;
 	private int numberOfReverseScheduledTasks = 0;
 	public static final int CALCULATION_STATUS_STEP = 3;
@@ -185,17 +186,21 @@ public class PredecessorTaskList {
 		}
 	}
 	
-	synchronized int getFreshCalculationStateCount() {
-		while (calculationStateCount % CALCULATION_STATUS_STEP != 0)// go by 3s so we can see what happens during different passes
-			calculationStateCount++;
-		return calculationStateCount;
+	int getFreshCalculationStateCount() {
+		int current, next;
+		do {
+			current = calculationStateCount.get();
+			// round up to next multiple of CALCULATION_STATUS_STEP (3)
+			int remainder = current % CALCULATION_STATUS_STEP;
+			next = (remainder == 0) ? current : current + (CALCULATION_STATUS_STEP - remainder);
+		} while (!calculationStateCount.compareAndSet(current, next));
+		return next;
 	}
-	synchronized int getNextCalculationStateCount() {
-		calculationStateCount += 1; // just get next one
-		return calculationStateCount;
+	int getNextCalculationStateCount() {
+		return calculationStateCount.incrementAndGet();
 	}
 	int getCalculationStateCount() {
-		return calculationStateCount;
+		return calculationStateCount.get();
 	}
 
 	boolean addAll(Collection tasks) {
