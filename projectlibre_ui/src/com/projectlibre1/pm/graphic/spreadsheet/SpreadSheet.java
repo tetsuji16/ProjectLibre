@@ -95,6 +95,7 @@ import com.projectlibre1.menu.MenuActionConstants;
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
+import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetAction;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
@@ -825,6 +826,8 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			List l = getSelectedDeletableRows();
 			if (l.isEmpty())
 				return;
+			if (!CollaborationHelper.tryLockNodes(null, l, SpreadSheet.this, "delete"))
+				return;
 			if (!GeneralOption.getInstance().isConfirmDeletes() || Alert.okCancel(Messages.getString("Message.confirmDeleteRows"))) {
 				getCache().deleteNodes(l);
 			}
@@ -844,6 +847,8 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 				finishCurrentOperations();
 				List nodes = getSelectedCuttableRows((List) object);
 				if (nodes.isEmpty())
+					return;
+				if (!CollaborationHelper.tryLockNodes(null, nodes, SpreadSheet.this, "cut"))
 					return;
 				executeFirst();
 				getCache().cutNodes(nodes);
@@ -882,6 +887,8 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			if (object != null && object instanceof List) {
 				finishCurrentOperations();
 				List selectedNodes = getSelectedNodes();
+				if (!CollaborationHelper.tryLockNodes(null, selectedNodes, SpreadSheet.this, "paste"))
+					return;
 				Node parent = null;
 				int position = 0;
 				if (selectedNodes.size() > 0) {

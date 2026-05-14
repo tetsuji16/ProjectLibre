@@ -69,6 +69,10 @@ public class SaveOptions implements Cloneable{
 	protected Closure postSaving;
 	protected Closure preSaving;
 	protected boolean sync;
+	protected boolean collaborationEnabled;
+	protected String collaborationUserKey;
+	protected String sidecarFileName;
+	protected boolean reloadFromCollaborationSync;
 	
 	public SaveOptions() {
 	}
@@ -127,6 +131,30 @@ public class SaveOptions implements Cloneable{
 	}
 	public void setPreSaving(Closure preSaving) {
 		this.preSaving = preSaving;
+	}
+	public boolean isCollaborationEnabled() {
+		return collaborationEnabled;
+	}
+	public void setCollaborationEnabled(boolean collaborationEnabled) {
+		this.collaborationEnabled = collaborationEnabled;
+	}
+	public String getCollaborationUserKey() {
+		return collaborationUserKey;
+	}
+	public void setCollaborationUserKey(String collaborationUserKey) {
+		this.collaborationUserKey = collaborationUserKey;
+	}
+	public String getSidecarFileName() {
+		return sidecarFileName;
+	}
+	public void setSidecarFileName(String sidecarFileName) {
+		this.sidecarFileName = sidecarFileName;
+	}
+	public boolean isReloadFromCollaborationSync() {
+		return reloadFromCollaborationSync;
+	}
+	public void setReloadFromCollaborationSync(boolean reloadFromCollaborationSync) {
+		this.reloadFromCollaborationSync = reloadFromCollaborationSync;
 	}
 	
 	

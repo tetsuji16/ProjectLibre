@@ -170,6 +170,7 @@ import com.projectlibre1.util.DateTime;
 import com.projectlibre1.util.Environment;
 import com.projectlibre1.workspace.SavableToWorkspace;
 import com.projectlibre1.workspace.WorkspaceSetting;
+import com.projectlibre1.collaboration.CollaborationSession;
 /**
  * Project class
  */
@@ -2498,6 +2499,8 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 	}
 
 	protected transient String fileName;
+	protected transient CollaborationSession collaborationSession;
+	protected transient WorkspaceSetting collaborationWorkspace;
 	public String getFileName(){
 		return fileName;
 	}
@@ -2528,6 +2531,18 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 
 	public void setFileType(int fileType) {
 		this.fileType = fileType;
+	}
+	public CollaborationSession getCollaborationSession() {
+		return collaborationSession;
+	}
+	public void setCollaborationSession(CollaborationSession collaborationSession) {
+		this.collaborationSession = collaborationSession;
+	}
+	public WorkspaceSetting getCollaborationWorkspace() {
+		return collaborationWorkspace;
+	}
+	public void setCollaborationWorkspace(WorkspaceSetting collaborationWorkspace) {
+		this.collaborationWorkspace = collaborationWorkspace;
 	}
 
 	public void setBoundsAfterReadProject() {
