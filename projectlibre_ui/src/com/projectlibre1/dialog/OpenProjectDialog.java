@@ -111,6 +111,7 @@ public final class OpenProjectDialog extends AbstractDialog {
 	JLabel resourcePoolMessage;
 	protected JButton openReadOnly;
 	private boolean openCopy;
+	private boolean loading = true;
 
 
 	public static OpenProjectDialog getInstance(Frame owner, List projects, String title, boolean allowMaster, boolean allowOpenAs, Project anyProjectButThisOne) {
@@ -147,6 +148,13 @@ public final class OpenProjectDialog extends AbstractDialog {
 //	  	    });
 		table=new OpenProjectTable(this);
 		bind(true);
+		if (!loading) {
+			refreshProjects();
+		}
+	}
+
+	protected boolean initialOkEnabledState() {
+		return !loading && table != null && table.getSelectedRow() >= 0;
 	}
 
 	public ButtonPanel createButtonPanel() {
@@ -168,11 +176,23 @@ public final class OpenProjectDialog extends AbstractDialog {
 
 		if (hasOkAndCancelButtons())
 			buttonPanel.addButton(cancel);
+		setLoading(loading);
 		return buttonPanel;
 	}
-    protected void onOpenCopy() {
+	protected void onOpenCopy() {
     	this.openCopy = true;
     	onOk();
+	}
+
+	public void onOk() {
+		if (loading || table == null) {
+			return;
+		}
+		int row = table.getSelectedRow();
+		if (row < 0 || row >= projects.size()) {
+			return;
+		}
+		super.onOk();
 	}
 
 	protected void createOkCancelButtons() {
@@ -220,6 +240,41 @@ public final class OpenProjectDialog extends AbstractDialog {
 
 		return builder.getPanel();
 	}
+
+	public void refreshProjects() {
+		setLoading(false);
+		if (table != null && table.getModel() instanceof OpenProjectTableModel) {
+			((OpenProjectTableModel) table.getModel()).update();
+			selectFirstSelectableRow();
+		}
+	}
+
+	private void selectFirstSelectableRow() {
+		if (table == null || projects == null || projects.size() == 0) {
+			return;
+		}
+		if (table.getSelectedRow() >= 0) {
+			return;
+		}
+		for (int i = 0; i < projects.size(); i++) {
+			ProjectData project = (ProjectData) projects.get(i);
+			if (allowOpenAs || canBeUsed(project)) {
+				table.setRowSelectionInterval(i, i);
+				return;
+			}
+		}
+	}
+
+	private void setLoading(boolean loading) {
+		this.loading = loading;
+		if (ok != null) {
+			ok.setEnabled(!loading && table != null && table.getSelectedRow() >= 0);
+		}
+		if (openReadOnly != null) {
+			openReadOnly.setEnabled(!loading && allowOpenAs && table != null && table.getSelectedRow() >= 0);
+		}
+	}
+
 	/**
 	 * @return Returns the form.
 	 */
