@@ -780,38 +780,38 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		finishAnyOperations();
 
 		final ArrayList descriptors=new ArrayList();
+		final OpenProjectDialog dialog = OpenProjectDialog.getInstance(getFrame(),descriptors,Messages.getString("Text.openProject"),getCurrentFrame() == null && Environment.isAdministrator(),true,null); //$NON-NLS-1$
 
     	Session session=SessionFactory.getInstance().getSession(false);
 		Job job=(Job)SessionFactory.callNoEx(session,"getLoadProjectDescriptorsJob",new Class[]{boolean.class,java.util.List.class,boolean.class},new Object[]{true,descriptors,!Environment.isAdministrator()});
     	job.addSwingRunnable(new JobRunnable("Local: loadDocument"){ //$NON-NLS-1$
     		public Object run() throws Exception{
-			   		    final Closure setter=new Closure(){
-		    		        public void execute(Object obj){
-
-		    		        }
-		    		    };
-		    		    final Closure getter=new Closure(){
-		    		        public void execute(Object obj){
-		    		        	final Object[] r=(Object[])obj;
-		    		        	if (r!=null){
-		    		        		DocumentData data=(DocumentData)r[0];
-		    		        		boolean openAs=(Boolean)r[1];
-		    		        		loadDocument(data.getUniqueId(),false,openAs);
-		    		        	}
-
-		    		        }
-		    		    };
-		    		    try {
-		    		    	boolean allowMaster = getCurrentFrame() == null && Environment.isAdministrator();
-		    		    	OpenProjectDialog.getInstance(getFrame(),descriptors,Messages.getString("Text.openProject"),allowMaster, true, null).execute(setter,getter); //$NON-NLS-1$
-		    		    } finally {
-				    		doingOpenDialog = false;
-		    		    }
-
+			   		dialog.refreshProjects();
 	    		    	return null;
     		}
-		});
-		session.schedule(job);
+    	});
+    	session.schedule(job);
+		final Closure setter=new Closure(){
+		    public void execute(Object obj){
+
+		    }
+		};
+		final Closure getter=new Closure(){
+		    public void execute(Object obj){
+		    	final Object[] r=(Object[])obj;
+		    	if (r!=null){
+		    		DocumentData data=(DocumentData)r[0];
+		    		boolean openAs=(Boolean)r[1];
+		    		loadDocument(data.getUniqueId(),false,openAs);
+		    	}
+
+		    }
+		};
+		try {
+			dialog.execute(setter,getter); //$NON-NLS-1$
+		} finally {
+			doingOpenDialog = false;
+		}
 	}
 	private void doInsertProjectDialog() {
 		if (doingOpenDialog)
