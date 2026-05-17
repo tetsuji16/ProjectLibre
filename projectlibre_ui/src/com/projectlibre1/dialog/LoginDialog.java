@@ -64,6 +64,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -79,6 +81,7 @@ import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.ClassLoaderUtils;
 
 public final class LoginDialog extends AbstractDialog {
+	private static final Logger logger = Logger.getLogger(LoginDialog.class.getName());
 	private static final long serialVersionUID = 1L;
 
 	private LoginForm form;
@@ -125,7 +128,9 @@ public final class LoginDialog extends AbstractDialog {
 //			ObjectInputStream in=new ObjectInputStream((InputStream)Class.forName("javax.jnlp.FileContents").getMethod("getInputStream",null).invoke(contents,null));
 			form=(LoginForm)in.readObject();
 			in.close();
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			logger.log(Level.FINE, "Failed to load login form from JNLP persistence service", e);
+		}
 		
 		
 		LoginDialog dlg = getInstance(owner,form);

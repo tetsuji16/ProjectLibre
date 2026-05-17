@@ -62,6 +62,8 @@ import java.util.LinkedList;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -87,6 +89,7 @@ import com.projectlibre1.util.Environment;
  *
  */
 public class MenuManager {
+	private static final Logger logger = Logger.getLogger(MenuManager.class.getName());
 	private static final String MENU_BUNDLE = "com.projectlibre1.menu.menu";
 	private static final String MENU_INTERNAL_BUNDLE = "com.projectlibre1.menu.menuInternal";
 	private static final String MENU_BUNDLE_CONF_DIR = "menu";
@@ -124,7 +127,9 @@ public class MenuManager {
 		if (bundle==null){
 			try{
 				bundle=ConfigurationFile.getDirectoryBundle(MENU_BUNDLE_CONF_DIR);
-			}catch(Exception e){}
+			}catch(Exception e){
+				logger.log(Level.FINE, "Failed to load menu bundle from config directory", e);
+			}
 			if (internalBundle==null) internalBundle =  ResourceBundle.getBundle(MENU_INTERNAL_BUNDLE,Locale.getDefault(),ClassLoaderUtils.getLocalClassLoader());
 			if (bundle==null) bundle =  ResourceBundle.getBundle(MENU_BUNDLE,Locale.getDefault(),ClassLoaderUtils.getLocalClassLoader());
 			bundles=new ResourceBundle[]{internalBundle,bundle};

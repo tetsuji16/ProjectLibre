@@ -57,6 +57,8 @@ package com.projectlibre1.util;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -65,17 +67,22 @@ import javax.swing.SwingUtilities;
 import com.projectlibre1.strings.Messages;
 
 public class VersionUtils {
+	private static final Logger logger = Logger.getLogger(VersionUtils.class.getName());
 	public static String getVersion(){
 		String version=null;
 		try {
 			ResourceBundle bundle=ResourceBundle.getBundle("com.projectlibre1.version.version",Locale.ENGLISH,ClassLoaderUtils.getLocalClassLoader()); //$NON-NLS-1$
 			if (bundle!=null) version=bundle.getString("projectlibre1.version");
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			logger.log(Level.FINE, "Failed to load version from com.projectlibre1.version.version", e);
+		}
 		if (version==null){
 			try {
 				ResourceBundle bundle=ResourceBundle.getBundle("com.projectlibre1.strings.version",Locale.ENGLISH,ClassLoaderUtils.getLocalClassLoader()); //$NON-NLS-1$
 				if (bundle!=null) version=bundle.getString("projectlibre1.version");
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				logger.log(Level.FINE, "Failed to load version from com.projectlibre1.strings.version", e);
+			}
 		}
 		if (version!=null)
 			return version; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$

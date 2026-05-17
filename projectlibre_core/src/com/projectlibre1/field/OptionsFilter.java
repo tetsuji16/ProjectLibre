@@ -59,12 +59,23 @@ import java.lang.reflect.Method;
 import java.util.Vector;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class OptionsFilter {
-	protected String method;
-	
-	public String getMethod() {
-		return method;
+public  class OptionsFilter {
+	private static final Logger logger = Logger.getLogger(OptionsFilter.class.getName());
+	private String method;
+
+	public Object[] getOptionValues(Object obj, String method, String[] optionKeys, Object[] optionValues) {
+		List keys=new Vector(optionKeys.length);
+		keys.addAll(Arrays.asList(optionKeys));
+		try {
+			Method m=obj.getClass().getMethod(method, new Class[]{List.class,List.class});
+			m.invoke(obj, new Object[]{keys,optionValues});
+		} catch (Exception e) {
+			logger.log(Level.FINE, "Failed to invoke method {0} on {1}", new Object[]{method, obj.getClass().getName()});
+		}
+		return keys.toArray();
 	}
 
 	public void setMethod(String method) {
@@ -78,7 +89,9 @@ public class OptionsFilter {
 		try {
 			Method m=obj.getClass().getMethod(method, new Class[]{List.class,List.class});
 			m.invoke(obj, new Object[]{keys,optionValues});
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			logger.log(Level.FINE, "Failed to invoke method {0} on {1}", new Object[]{method, obj.getClass().getName()});
+		}
 		return keys.toArray();
 	}
 }

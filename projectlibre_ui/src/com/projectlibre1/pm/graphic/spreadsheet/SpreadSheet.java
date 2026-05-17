@@ -137,6 +137,7 @@ import com.projectlibre1.util.BrowserControl;
  * 
  */
 public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
+	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SpreadSheet.class.getName());
 	private static final long serialVersionUID = 5958334223191182318L;
 	public static final String NAME_COLUMN_INDENT_ACTION = "spreadsheet.nameColumnIndent";
 	public static final String NAME_COLUMN_OUTDENT_ACTION = "spreadsheet.nameColumnOutdent";
@@ -1047,7 +1048,9 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 									if (resourceMap.containsKey(key)) resourceMap.remove(key);
 								}
 								form.getSelectedResources().addAll(resourceMap.values());
-							}catch(Exception e){}
+							}catch(Exception e){
+								logger.log(java.util.logging.Level.WARNING, "Failed to process resource selection", e);
+							}
 							
 							ResourceAdditionDialog.getInstance((JFrame)SwingUtilities.getRoot(SpreadSheet.this),form).execute(setter,getter);
 							return null;
