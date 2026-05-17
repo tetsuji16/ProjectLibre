@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.toolbar;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -81,7 +81,7 @@ public class TransformComboBoxModel extends AbstractListModel implements ComboBo
 	protected TransformList transformList;
 	protected CommonTransformFactory selected;
 	protected ViewConfiguration view;
-	protected Map viewMap=new HashMap();
+	protected Map viewMap=new Hashtable();
 	private String tipText;
 	/**
 	 * 

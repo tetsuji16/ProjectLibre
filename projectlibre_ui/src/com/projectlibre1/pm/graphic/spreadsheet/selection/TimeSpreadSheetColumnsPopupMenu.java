@@ -57,7 +57,7 @@ package com.projectlibre1.pm.graphic.spreadsheet.selection;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 
 import javax.swing.JPopupMenu;
@@ -105,7 +105,7 @@ public class TimeSpreadSheetColumnsPopupMenu extends JPopupMenu {
 		
 		Object columnDefinitions[] = Dictionary.getAll(type);
 		//if (columnDefinitions==null||columnDefinitions.length==0) return;
-		ArrayList fieldArray=(ArrayList)columnDefinitions[0];
+		Vector fieldArray=(Vector)columnDefinitions[0];
 		for (Iterator i=fieldArray.iterator();i.hasNext();) {
 			Field field=(Field)i.next();
 			boolean selected = (spreadSheet.getSelectedFieldArray().contains(field));

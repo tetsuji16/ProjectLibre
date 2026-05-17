@@ -23,7 +23,7 @@
 
 package net.sf.mpxj;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -86,6 +86,6 @@ public class TableContainer extends ListWithCallbacks<Table>
       return result;
    }
 
-   private Map<String, Table> m_taskTablesByName = new HashMap<String, Table>();
-   private Map<String, Table> m_resourceTablesByName = new HashMap<String, Table>();
+   private Map<String, Table> m_taskTablesByName = new Hashtable<String, Table>();
+   private Map<String, Table> m_resourceTablesByName = new Hashtable<String, Table>();
 }

@@ -1,6 +1,6 @@
 @echo off
 setlocal
-set JAVA_HOME=C:\Program Files\Java\jdk-21
+set JAVA_HOME=C:\Program Files\Java\jdk-26.0.1
 set PATH=%JAVA_HOME%\bin;%PATH%
 cd /d "C:\Users\tetsu\vscode\ProjectLibre\projectlibre-code"
 

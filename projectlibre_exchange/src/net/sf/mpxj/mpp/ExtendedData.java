@@ -26,7 +26,7 @@ package net.sf.mpxj.mpp;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -249,5 +249,5 @@ final class ExtendedData
    }
 
    private FixDeferFix m_data;
-   private HashMap<Integer, byte[]> m_map = new HashMap<Integer, byte[]>();
+   private Hashtable<Integer, byte[]> m_map = new Hashtable<Integer, byte[]>();
 }

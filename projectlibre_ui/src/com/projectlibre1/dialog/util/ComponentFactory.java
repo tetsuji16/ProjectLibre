@@ -131,7 +131,7 @@ public class ComponentFactory {
 		else if (component instanceof JTextArea)
 			return ((JTextArea)component).getText();
 		else if (component instanceof JCheckBox) 
-			return new Boolean(((JCheckBox)component).isSelected());
+			return Boolean.valueOf(((JCheckBox)component).isSelected());
 		else if (component instanceof ExtDateField) { 
 			return ((ExtDateField)component).getDateValue();
 		}

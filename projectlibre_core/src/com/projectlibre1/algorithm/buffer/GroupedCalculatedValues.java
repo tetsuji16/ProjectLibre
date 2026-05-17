@@ -56,7 +56,7 @@
 package com.projectlibre1.algorithm.buffer;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.ListIterator;
 import org.apache.commons.lang.time.DateUtils;
@@ -68,9 +68,9 @@ import com.projectlibre1.pm.calendar.WorkCalendar;
  */
 public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 	static final long serialVersionUID = 8900927827L;
-	ArrayList values = new ArrayList(); //(x,y pairs) //TODO a set would be better because this is often sparse
+	Vector values = new Vector(); //(x,y pairs) //TODO a set would be better because this is often sparse
 	double yScale;
-	private static final Double ZERO = new Double(0.0D);
+	private static final Double ZERO = Double.valueOf(0.0D);
 //	boolean dayByDay;
 	/**
 	 * 
@@ -110,7 +110,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 		Point point = (Point) values.get(index);
 		if (point == null)
 			return null;
-		return new Long(point.date);
+		return Long.valueOf(point.date);
 	}
 	
 	public void setValue(int index, double value) {
@@ -145,7 +145,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 		Point point = (Point) values.get(index);
 		if (point == null)
 			return null;
-		return new Double(point.value / yScale);
+		return Double.valueOf(point.value / yScale);
 	}
 	
 	
@@ -294,7 +294,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
  		return c;
  	}
 
-	public final ArrayList getValues() {
+	public final Vector getValues() {
 		return values;
 	}
 	

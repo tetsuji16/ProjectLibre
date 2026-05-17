@@ -56,7 +56,7 @@
 package com.projectlibre1.dialog.util;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import javax.swing.JCheckBox;
@@ -82,7 +82,7 @@ public class FieldComponentMap implements ObjectRef {
 	private Node node = null;
 	private NodeModel nodeModel = null;
 	private Collection collection = null;
-	private HashMap map = new HashMap();
+	private Hashtable map = new Hashtable();
 	private FieldDialog fieldDialog;
 	private NodeModelDataFactory dataFactory;
 

@@ -85,7 +85,7 @@ public class CommandToggleButtonGroup implements Serializable {
 	 */
 	public CommandToggleButtonGroup() {
 		this.buttons = new Vector<JCommandToggleButton>();
-		this.modelChangeListeners = new HashMap<JCommandToggleButton, ChangeListener>();
+		this.modelChangeListeners = new Hashtable<JCommandToggleButton, ChangeListener>();
 		this.allowsClearingSelection = true;
 	}
 

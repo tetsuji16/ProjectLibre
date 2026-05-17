@@ -210,8 +210,8 @@ public class JCommandButtonPanel extends JPanel implements Scrollable {
 	 * Creates a new panel.
 	 */
 	protected JCommandButtonPanel() {
-		this.buttons = new ArrayList<List<AbstractCommandButton>>();
-		this.groupTitles = new ArrayList<String>();
+		this.buttons = new Vector<List<AbstractCommandButton>>();
+		this.groupTitles = new Vector<String>();
 		this.maxButtonColumns = -1;
 		this.maxButtonRows = -1;
 		this.isSingleSelectionMode = false;
@@ -258,7 +258,7 @@ public class JCommandButtonPanel extends JPanel implements Scrollable {
 	 */
 	public void addButtonGroup(String buttonGroupName, int groupIndex) {
 		this.groupTitles.add(groupIndex, buttonGroupName);
-		List<AbstractCommandButton> list = new ArrayList<AbstractCommandButton>();
+		List<AbstractCommandButton> list = new Vector<AbstractCommandButton>();
 		this.buttons.add(groupIndex, list);
 		this.fireStateChanged();
 	}

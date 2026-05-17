@@ -55,9 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.common.transfer;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
-public class TransferObject extends ArrayList {
+public class TransferObject extends Vector {
 	protected boolean recreateAssignments;
 	public TransferObject() {
 		super();

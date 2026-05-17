@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.task;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -65,8 +65,8 @@ import com.projectlibre1.pm.criticalpath.TaskSchedule;
 
 public class TaskSnapshotBackup {
 	protected TaskSchedule currentSchedule;
-	protected ArrayList assignmentDetails;
-	protected TaskSnapshotBackup(TaskSchedule currentSchedule, ArrayList assignmentDetails) {
+	protected Vector assignmentDetails;
+	protected TaskSnapshotBackup(TaskSchedule currentSchedule, Vector assignmentDetails) {
 		this.currentSchedule = currentSchedule;
 		this.assignmentDetails = assignmentDetails;
 	}
@@ -82,7 +82,7 @@ public class TaskSnapshotBackup {
 		AssociationList assignments=snapshot.getAssignments();
 		Iterator i = assignments.iterator();
 		Assignment assignment;
-		ArrayList detail=new ArrayList(assignments.size());
+		Vector detail=new Vector(assignments.size());
 		while (i.hasNext()) {
 			assignment = (Assignment)i.next();
 			detail.add(assignment.backupDetail());

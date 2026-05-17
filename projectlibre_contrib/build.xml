@@ -153,13 +153,25 @@
 				<zipgroupfileset file="lib/jdnc-0_7-all.jar" /> 
 				<zipgroupfileset file="lib/itext.jar" /> 
 				<zipgroupfileset file="lib/trident-6.2.jar" /> 
+				<zipgroupfileset file="lib/swingx-all-1.6.5-1.jar" /> 
 				<zipgroupfileset file="lib/exchange/jakarta-poi.jar" /> 
+				<zipgroupfileset file="lib/exchange/poi-ooxml-3.17.jar" /> 
+				<zipgroupfileset file="lib/exchange/poi-ooxml-schemas-3.17.jar" /> 
+				<zipgroupfileset file="lib/exchange/xmlbeans-2.6.0.jar" /> 
 				<zipgroupfileset file="lib/exchange/commons-collections4.jar" /> 
 				<zipgroupfileset file="lib/exchange/rtfparserkit.jar" /> 
 				<zipgroupfileset file="lib/exchange/jaxb-api.jar" /> 
 				<zipgroupfileset file="lib/exchange/jaxb-core.jar" /> 
 				<zipgroupfileset file="lib/exchange/jaxb-impl.jar" /> 
-				<zipgroupfileset file="lib/exchange/javax.activation-api.jar" /> 
+			<zipgroupfileset file="lib/exchange/javax.activation-api.jar" />
+				<zipgroupfileset file="lib/commons-lang3-3.14.0.jar" />
+				<zipgroupfileset file="lib/commons-collections4-4.4.jar" />
+				<zipgroupfileset file="lib/pdfbox-3.0.1.jar" />
+				<zipgroupfileset file="lib/fontbox-3.0.1.jar" />
+				<zipgroupfileset file="lib/pdfbox-io-3.0.1.jar" />
+				<zipgroupfileset file="lib/jackson-core-2.16.1.jar" />
+				<zipgroupfileset file="lib/jackson-databind-2.16.1.jar" />
+				<zipgroupfileset file="lib/jackson-annotations-2.16.1.jar" />
 			</jar>
 		</else>
 	  </if>

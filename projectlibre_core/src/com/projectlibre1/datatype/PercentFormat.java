@@ -84,7 +84,7 @@ public class PercentFormat extends Format {
 		if (result == null) {
 			result = NUMBER_FORMAT.parse(arg0,arg1);
 			if (result != null)
-				result = new Double(result.doubleValue() / 100.0D);
+				result = Double.valueOf(result.doubleValue() / 100.0D);
 		}
 		return result;
 	}
@@ -101,7 +101,7 @@ public class PercentFormat extends Format {
 		}
 		Object value;
 		if (arg0 instanceof Rate)
-			value = new Double(((Rate)arg0).getValue());
+			value = Double.valueOf(((Rate)arg0).getValue());
 		else
 			value = arg0;
 		PERCENT_FORMAT.format(value,arg1,arg2);
@@ -109,7 +109,7 @@ public class PercentFormat extends Format {
 	}
 	
 	public String format(double value) {
-		return format(new Double(value));
+		return format(Double.valueOf(value));
 	}
 	public static boolean isSpecialValue(Double v) {
 		return v.equals(ClassUtils.PERCENT_MULTIPLE_VALUES) || v.doubleValue() == NULL_VALUE;

@@ -240,7 +240,7 @@ public class BasicBreadcrumbBarUI extends BreadcrumbBarUI {
 								publish(item);
 
 								// now check if it has any children
-								List<BreadcrumbItem> subPath = new ArrayList<BreadcrumbItem>();
+								List<BreadcrumbItem> subPath = new Vector<BreadcrumbItem>();
 								for (int j = 0; j <= itemIndex; j++) {
 									subPath.add(items.get(j));
 								}

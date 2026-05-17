@@ -77,9 +77,9 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -153,7 +153,7 @@ public final class LocaleDialog extends AbstractDialog {
 	AbstractTableModel externalListModel;
 	String[] externalListColumns={"code", "client.properties", "menu.properties"};
 	
-	ArrayList<LanguageProperties> files=new ArrayList<LanguageProperties>();
+	Vector<LanguageProperties> files=new Vector<LanguageProperties>();
 	
 	public enum FileStatus {
 	    OK(Messages.getString("LocaleDialog.FileStatusOk")),
@@ -233,8 +233,8 @@ public final class LocaleDialog extends AbstractDialog {
 	
 	String[] slocales=Settings.LANGUAGES.split(";");
 	Set<String> allLocales=new TreeSet();
-	Map<String, String> transOri=new HashMap<String, String>();
-	Map<String, String> oriTrans=new HashMap<String, String>();
+	Map<String, String> transOri=new Hashtable<String, String>();
+	Map<String, String> oriTrans=new Hashtable<String, String>();
 
 
 	protected boolean bind(boolean get) {

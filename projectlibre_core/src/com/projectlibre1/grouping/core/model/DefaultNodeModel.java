@@ -55,11 +55,11 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.model;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -168,7 +168,7 @@ public class DefaultNodeModel implements NodeModel {
 		add(parent,child,-1,actionType);
 	}
 	public void add(Node parent,Node child,int position,int actionType){
-		ArrayList children=new ArrayList();
+		Vector children=new Vector();
 		children.add(child);
 		add(parent,children,position,actionType);
 		//hierarchy.add(parent,child,position,actionType);
@@ -272,7 +272,7 @@ public class DefaultNodeModel implements NodeModel {
 		remove(node, actionType, true,removeDependencies);
 	}
 	public void remove(Node node,int actionType,boolean filterAssignments,boolean removeDependencies){
-		ArrayList nodes=new ArrayList();
+		Vector nodes=new Vector();
 		nodes.add(node);
 		remove(nodes,actionType,filterAssignments,removeDependencies);
 		//hierarchy.remove(node,this,actionType);
@@ -289,7 +289,7 @@ public class DefaultNodeModel implements NodeModel {
 			undoController.getEditSupport().beginUpdate();
 		}
 		try {
-			ArrayList roots=new ArrayList();
+			Vector roots=new Vector();
 			HierarchyUtils.extractParents(nodes, roots);
 			if (filterAssignments)
 				for (Iterator i=roots.iterator();i.hasNext();){
@@ -300,8 +300,8 @@ public class DefaultNodeModel implements NodeModel {
 					}
 				}
 			boolean containsSubprojects=false;
-			List parents=new ArrayList();
-			List positions=new ArrayList();
+			List parents=new Vector();
+			List positions=new Vector();
 			NodeBridge node,parent;
 			for (Iterator i=roots.iterator();i.hasNext();){
 				node=(NodeBridge)i.next();
@@ -309,7 +309,7 @@ public class DefaultNodeModel implements NodeModel {
 					containsSubprojects=true;
 				parent=(NodeBridge)node.getParent();
 				parents.add(parent);
-				positions.add(new Integer(parent.getIndex(node)));
+				positions.add(Integer.valueOf(parent.getIndex(node)));
 			}
 			if (!confirmRemove(roots))
 				return;
@@ -369,7 +369,7 @@ public class DefaultNodeModel implements NodeModel {
 		List newNodes=copy(nodes,clone,actionType);
 		remove(nodes,actionType);
 		return newNodes;
-//		ArrayList parentNodes=new ArrayList(nodes.size());
+//		Vector parentNodes=new Vector(nodes.size());
 //		HierarchyUtils.extractParents(nodes,parentNodes);
 //		remove(parentNodes,actionType);
 //		//TODO check parent is null
@@ -382,11 +382,11 @@ public class DefaultNodeModel implements NodeModel {
 	}
 
 	public List copy(List nodes,boolean clone,int actionType){
-		ArrayList parentNodes=new ArrayList(nodes.size());
+		Vector parentNodes=new Vector(nodes.size());
 		HierarchyUtils.extractParents(nodes,parentNodes);
 		if (!clone) return parentNodes;
 		Set assignedNodes=new HashSet();
-		Map implMap=new HashMap();
+		Map implMap=new Hashtable();
 		Set<Dependency> predecessors=new HashSet<Dependency>();
 		Set<Dependency> successors=new HashSet<Dependency>();
 		for (ListIterator i=parentNodes.listIterator();i.hasNext();){
@@ -751,7 +751,7 @@ public class DefaultNodeModel implements NodeModel {
 			Node parent=(Node)sibling.getParent();
 			p.add(node);
 			if (getUndoableEditSupport()!=null&isUndo(actionType)){
-				previousPosition=new ArrayList(p.size());
+				previousPosition=new Vector(p.size());
 				for (Iterator i=p.iterator();i.hasNext();){
 					Node n=(Node)i.next();
 					previousPosition.add(new NodeImplChangeAndValueSetEdit.Position((Node)n.getParent(),n,n.getParent().getIndex(n)));

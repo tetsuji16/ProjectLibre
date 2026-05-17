@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.task;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 
 import com.projectlibre1.association.InvalidAssociationException;
@@ -63,7 +63,7 @@ import com.projectlibre1.pm.dependency.Dependency;
 import com.projectlibre1.pm.dependency.DependencyService;
 
 public class ExternalTaskManager {
-	private ArrayList externalTasks = new ArrayList();
+	private Vector externalTasks = new Vector();
 	
 	public void add(Task task) {
 		externalTasks.add(task);

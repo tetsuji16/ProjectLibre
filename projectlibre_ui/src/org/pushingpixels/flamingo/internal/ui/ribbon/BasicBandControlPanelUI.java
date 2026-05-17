@@ -313,7 +313,7 @@ public class BasicBandControlPanelUI extends AbstractBandControlPanelUI {
 							.getRibbonComps();
 					Map<JRibbonComponent, Integer> ribbonCompRowSpans = controlPanelGroup
 							.getRibbonCompsRowSpans();
-					List<JRibbonComponent> currColumn = new ArrayList<JRibbonComponent>();
+					List<JRibbonComponent> currColumn = new Vector<JRibbonComponent>();
 
 					// if a group has a title, then the core components in that
 					// group will take two rows instead of three
@@ -426,7 +426,7 @@ public class BasicBandControlPanelUI extends AbstractBandControlPanelUI {
 						}
 					}
 
-					Map<CommandButtonDisplayState, List<AbstractCommandButton>> buttonMap = new HashMap<CommandButtonDisplayState, List<AbstractCommandButton>>();
+					Map<CommandButtonDisplayState, List<AbstractCommandButton>> buttonMap = new Hashtable<CommandButtonDisplayState, List<AbstractCommandButton>>();
 					for (RibbonElementPriority elementPriority : RibbonElementPriority
 							.values()) {
 						for (AbstractCommandButton commandButton : controlPanelGroup
@@ -435,7 +435,7 @@ public class BasicBandControlPanelUI extends AbstractBandControlPanelUI {
 									.getDisplayState();
 							if (buttonMap.get(state) == null) {
 								buttonMap.put(state,
-										new ArrayList<AbstractCommandButton>());
+										new Vector<AbstractCommandButton>());
 							}
 							buttonMap.get(state).add(commandButton);
 						}

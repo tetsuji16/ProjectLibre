@@ -57,7 +57,7 @@ package com.projectlibre1.graphic.configuration.shape;
 
 
 import java.awt.Color;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 
 /**
@@ -344,11 +344,11 @@ public class Colors {
 	  {"VERY_LIGHT_GRAY",VERY_LIGHT_GRAY}
  };
 
-	private static HashMap colorMap = null;
+	private static Hashtable colorMap = null;
 
-	public static HashMap getColors() {
+	public static Hashtable getColors() {
 		if (colorMap == null) {
-			colorMap = new HashMap();
+			colorMap = new Hashtable();
 			for (int i = 0; i < data.length; i++) {
 				Object row[] = data[i];
 				colorMap.put(row[0], row[1]);

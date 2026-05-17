@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.primavera;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -63,7 +63,7 @@ public enum PercentCompleteType
 
    private final String m_value;
 
-   private static final Map<String, PercentCompleteType> VALUE_MAP = new HashMap<String, PercentCompleteType>();
+   private static final Map<String, PercentCompleteType> VALUE_MAP = new Hashtable<String, PercentCompleteType>();
    static
    {
       for (PercentCompleteType e : PercentCompleteType.values())

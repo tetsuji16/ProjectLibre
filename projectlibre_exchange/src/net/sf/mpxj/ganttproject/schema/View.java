@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.ganttproject.schema;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -71,7 +71,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (field == null)
       {
-         field = new ArrayList<Field>();
+         field = new Vector<Field>();
       }
       return this.field;
    }

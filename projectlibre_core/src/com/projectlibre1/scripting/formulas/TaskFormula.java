@@ -62,7 +62,7 @@ import com.projectlibre1.scripting.Formula;
 public abstract class TaskFormula extends Formula {
 	public Object evaluate(Object object) throws InvalidFormulaException {
 		if (!(object instanceof Task)) return Boolean.FALSE;
-		return new Boolean(evaluateTask((Task)object));
+		return Boolean.valueOf(evaluateTask((Task)object));
 	}
 	public abstract boolean evaluateTask(Task task);
 

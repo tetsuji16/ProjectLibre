@@ -59,7 +59,7 @@ import java.awt.Rectangle;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -79,7 +79,7 @@ import com.projectlibre1.graphic.configuration.TexturedShape;
  *
  */
 public class XbsLayout extends AbstractNetworkLayout {
-	protected List dependencies=new ArrayList();
+	protected List dependencies=new Vector();
 	public XbsLayout(NetworkParams network){
 		super(network);
 	}

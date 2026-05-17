@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.resources;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 import com.projectlibre.core.nodes.AbstractNodeContainer;
@@ -67,7 +67,7 @@ import com.projectlibre.pm.calendar.WorkCalendar;
  *
  */
 public class ResourcePool extends AbstractNodeContainer implements HasCalendar{
-	protected List<Resource> resources=new ArrayList<Resource>();
+	protected List<Resource> resources=new Vector<Resource>();
 	protected WorkCalendar calendar;
 	protected Resource unassignedResource;
 	

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.assignment.contour;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 import com.projectlibre1.configuration.Configuration;
 import com.projectlibre1.pm.time.ImmutableInterval;
@@ -82,7 +82,7 @@ public class StandardContour extends AbstractContour implements ContourTypes {
 	}	
 	
 	public String getName() {
-		return Configuration.getInstance().getFieldDictionary().getFieldFromId("Field.workContour").convertIdToString(new Integer(type));
+		return Configuration.getInstance().getFieldDictionary().getFieldFromId("Field.workContour").convertIdToString(Integer.valueOf(type));
 	}
 
 	

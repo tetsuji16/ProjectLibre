@@ -76,7 +76,11 @@ public class HeaderMouseListener extends MouseAdapter {
 	public void mouseClicked(MouseEvent e){
 		int col = table.columnAtPoint(e.getPoint());
 		if  (SwingUtilities.isLeftMouseButton(e)) {
-	
+			if (isColumnFullySelected(col)) {
+				table.clearSelection();
+				e.consume();
+				return;
+			}
 			SpreadSheetSelectionModel selection=table.getSelection();
 			table.getRowHeader().clearSelection();
 			selection.getColumnSelection().setSelectionInterval(col,col);
@@ -91,5 +95,13 @@ public class HeaderMouseListener extends MouseAdapter {
 			}
 		}
 
+	}
+
+	private boolean isColumnFullySelected(int col) {
+		if (col < 0)
+			return false;
+		if (!table.getSelection().getColumnSelection().isSelectedIndex(col))
+			return false;
+		return table.getSelectedColumnCount() == 1 && table.getSelectedRowCount() == table.getRowCount();
 	}
 }

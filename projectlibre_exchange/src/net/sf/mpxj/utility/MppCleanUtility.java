@@ -28,10 +28,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -168,7 +168,7 @@ public class MppCleanUtility
       //
       // Process Tasks
       //
-      Map<String, String> replacements = new HashMap<String, String>();
+      Map<String, String> replacements = new Hashtable<String, String>();
       for (Task task : m_project.getTasks())
       {
          mapText(task.getName(), replacements);
@@ -233,7 +233,7 @@ public class MppCleanUtility
       //
       // Populate a list of keys and sort into descending order of length
       //
-      List<String> keys = new ArrayList<String>(replacements.keySet());
+      List<String> keys = new Vector<String>(replacements.keySet());
       Collections.sort(keys, new Comparator<String>()
       {
          @Override public int compare(String o1, String o2)

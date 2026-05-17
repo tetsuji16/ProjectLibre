@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.graphic.configuration;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -78,7 +78,7 @@ public class BarStyles implements NamedItem {
 
 	String name = null;
 	String id = null;
-	ArrayList rows = new ArrayList();
+	Vector rows = new Vector();
 
 	public BarStyles() {}
 	/**
@@ -133,7 +133,7 @@ public class BarStyles implements NamedItem {
 	/**
 	 * @return Returns the rows.
 	 */
-	public ArrayList getRows() {
+	public Vector getRows() {
 		return rows;
 	}
 

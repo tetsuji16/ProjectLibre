@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.time;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -85,7 +85,7 @@ public enum WorkContour {
 	}
 	public static WorkContour getInstance(int id){
 		if (reverseMap==null){
-			reverseMap=new HashMap<Integer,WorkContour>();
+			reverseMap=new Hashtable<Integer,WorkContour>();
 			for (WorkContour ct : values())
 				reverseMap.put(ct.getId(),ct);
 		}

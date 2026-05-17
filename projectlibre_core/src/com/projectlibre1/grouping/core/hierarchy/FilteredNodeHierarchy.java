@@ -192,7 +192,7 @@ public class FilteredNodeHierarchy extends AbstractMutableNodeHierarchy implemen
 //	public int getVoidNodesCountAfter(NodeHierarchyLocation location) {
 //		return hierarchy.getVoidNodesCountAfter(location);
 //	}
-//	public ArrayList getVoidNodes(NodeHierarchyLocation location) {
+//	public Vector getVoidNodes(NodeHierarchyLocation location) {
 //		return hierarchy.getVoidNodes(location);
 //	}
 	public void valueForPathChanged(TreePath path, Object newValue) {

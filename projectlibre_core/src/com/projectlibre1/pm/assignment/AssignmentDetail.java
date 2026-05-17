@@ -605,11 +605,11 @@ public final class AssignmentDetail implements Schedule, HasCalendar, Cloneable,
 //			actualWorkContour = actualWorkContour.adjustDuration(newActualDuration); // simple, just truncate it.
 //		} else {
 //System.out.println("Stop "+ new Date(stop) + " duration" + DurationFormat.format(stopResumeDuration));			
-//			ArrayList list;
+//			Vector list;
 //			if (actualWorkContour != null) // see if there are actuals
 //				list = actualWorkContour.toArrayList(); // copy current actual contour to an array list
 //			else // in case there are no actuals yet
-//				list = new ArrayList();
+//				list = new Vector();
 //			if (actualDuration > durationMillis) { // if made longer than planned duration, adjust planned duration
 //				durationMillis = actualDuration;
 //				workContour = workContour.adjustDuration(durationMillis);

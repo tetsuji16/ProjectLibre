@@ -8,16 +8,20 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CollaborationMetadataStore {
+	private static final Logger logger = Logger.getLogger(CollaborationMetadataStore.class.getName());
+	private static final int MAX_METADATA_BYTES = 1024 * 1024; // 1 MB safety limit
 	public static final int SCHEMA_VERSION = 1;
 
 	private final File projectFile;
@@ -40,7 +44,8 @@ public class CollaborationMetadataStore {
 		String name = projectFile.getName();
 		int dot = name.lastIndexOf('.');
 		String base = dot >= 0 ? name.substring(0, dot) : name;
-		return new File(projectFile.getParentFile(), base + ".projectlibre-sync.json");
+		File parent = projectFile.getParentFile();
+		return parent != null ? new File(parent, base + ".projectlibre-sync.json") : new File(base + ".projectlibre-sync.json");
 	}
 
 	public File getSidecarFile() {
@@ -89,19 +94,22 @@ public class CollaborationMetadataStore {
 				if (lock != null) {
 					lock.release();
 				}
-			} catch (Exception e) {
+			} catch (IOException e) {
+				logger.log(Level.FINE, "Failed to release file lock on {0}", sidecarFile);
 			}
 			try {
 				if (channel != null) {
 					channel.close();
 				}
-			} catch (Exception e) {
+			} catch (IOException e) {
+				logger.log(Level.FINE, "Failed to close file channel on {0}", sidecarFile);
 			}
 			try {
 				if (raf != null) {
 					raf.close();
 				}
-			} catch (Exception e) {
+			} catch (IOException e) {
+				logger.log(Level.FINE, "Failed to close RandomAccessFile on {0}", sidecarFile);
 			}
 		}
 	}
@@ -111,7 +119,12 @@ public class CollaborationMetadataStore {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		byte[] buf = new byte[4096];
 		int read;
+		int total = 0;
 		while ((read = raf.read(buf)) != -1) {
+			total += read;
+			if (total > MAX_METADATA_BYTES) {
+				throw new IOException("Metadata file exceeds maximum allowed size of " + MAX_METADATA_BYTES + " bytes");
+			}
 			out.write(buf, 0, read);
 		}
 		return out.toByteArray();
@@ -674,7 +687,7 @@ public class CollaborationMetadataStore {
 		}
 
 		private List<Object> parseArray() {
-			List<Object> list = new ArrayList<Object>();
+			List<Object> list = new Vector<Object>();
 			index++;
 			while (true) {
 				skipWhitespace();

@@ -55,9 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.model.cache;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -68,17 +68,17 @@ import java.util.Map;
  *
  */
 public abstract class CellCache{
-	protected ArrayList cache;
-	protected ArrayList visibleElements;
+	protected Vector cache;
+	protected Vector visibleElements;
 	protected Map baseIndex;
 	
 	/**
 	 * 
 	 */
 	public CellCache() {
-		cache=new ArrayList();
-		visibleElements=new ArrayList();
-		baseIndex=new HashMap();
+		cache=new Vector();
+		visibleElements=new Vector();
+		baseIndex=new Hashtable();
 	}
 		
 	
@@ -110,7 +110,7 @@ public abstract class CellCache{
 	}
 	
 	
-    public ArrayList getVisibleElements() {
+    public Vector getVisibleElements() {
         return visibleElements;
     }
     public void addVisibleElements(VisibleElements elements){
@@ -158,7 +158,7 @@ public abstract class CellCache{
 	/**
 	 * @return Returns the cache.
 	 */
-	public ArrayList getCache() {
+	public Vector getCache() {
 		return cache;
 	}
 	
@@ -174,7 +174,7 @@ public abstract class CellCache{
 	void setBaseIndex(Map baseIndex) {
 		this.baseIndex = baseIndex;
 	}
-	void setCache(ArrayList cache) {
+	void setCache(Vector cache) {
 		this.cache = cache;
 	}
 	

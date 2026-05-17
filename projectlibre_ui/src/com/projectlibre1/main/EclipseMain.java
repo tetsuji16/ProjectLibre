@@ -86,9 +86,9 @@ public class EclipseMain
         Environment.setStandAlone(true);
         Environment.setNewLook(false);
         Environment.setPlugin(true);
-        java.util.HashMap hashmap = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) hashmap.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(hashmap);
+        java.util.Hashtable Hashtable = ApplicationStartupFactory.extractOpts(as);
+        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
+        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
         return applicationstartupfactory.instanceFromNewSession(frame, true);
     }
 }

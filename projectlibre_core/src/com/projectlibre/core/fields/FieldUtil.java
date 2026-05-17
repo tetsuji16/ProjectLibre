@@ -60,7 +60,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -268,7 +268,7 @@ public class FieldUtil {
 	}
 	
 	public static Map<String,com.projectlibre.core.fields.Field> getFields(String[] categories){
-		Map<String,com.projectlibre.core.fields.Field> map=new HashMap<String, com.projectlibre.core.fields.Field>();
+		Map<String,com.projectlibre.core.fields.Field> map=new Hashtable<String, com.projectlibre.core.fields.Field>();
 		for (String category : categories){
 			Map<String,HasStringId> m=Configuration.getInstance().getDictionary().get(
 					new DictionaryCategory(com.projectlibre.core.fields.Field.class, category));

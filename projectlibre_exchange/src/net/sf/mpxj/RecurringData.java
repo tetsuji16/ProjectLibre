@@ -26,7 +26,7 @@ package net.sf.mpxj;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.text.DateFormatSymbols;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
@@ -328,7 +328,7 @@ public class RecurringData
 
       Calendar calendar = Calendar.getInstance();
       calendar.setTime(m_startDate);
-      List<Date> dates = new ArrayList<Date>();
+      List<Date> dates = new Vector<Date>();
 
       switch (m_recurrenceType)
       {

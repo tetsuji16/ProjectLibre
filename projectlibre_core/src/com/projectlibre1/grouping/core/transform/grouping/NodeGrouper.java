@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform.grouping;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 import com.projectlibre1.field.InvalidFormulaException;
@@ -68,7 +68,7 @@ import com.projectlibre1.grouping.core.transform.CommonTransformFactory;
 public class NodeGrouper extends CommonTransformFactory{
 //	static Log log = LogFactory.getLog(NodeGrouper.class);
 	protected String type = null; 
-	protected List groups=new ArrayList();
+	protected List groups=new Vector();
 	
 	private static int count=0;
 	

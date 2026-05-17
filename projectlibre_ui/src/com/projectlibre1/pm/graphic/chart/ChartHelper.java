@@ -60,7 +60,7 @@ package com.projectlibre1.pm.graphic.chart;
  */
 
 import java.awt.Color;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -161,11 +161,11 @@ public class ChartHelper implements TimeDistributedConstants {
 		plot.setInsets(new RectangleInsets(0, 0, BOTTOM_INSET, 0));
 	}
 
-	private static HashMap map = null;
+	private static Hashtable map = null;
 
-	private static HashMap getMap() {
+	private static Hashtable getMap() {
 		if (map == null) {
-			map = new HashMap();
+			map = new Hashtable();
 			map.put(PERCENT_ALLOC, Colors.RED);
 			map.put(OVERALLOCATED, Colors.RED);
 			if (!Environment.getStandAlone()) map.put(OTHER_PROJECTS, Colors.GRAY);

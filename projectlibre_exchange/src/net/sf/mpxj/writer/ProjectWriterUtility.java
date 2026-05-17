@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.writer;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,6 +33,7 @@ import net.sf.mpxj.mspdi.MSPDIWriter;
 import net.sf.mpxj.planner.PlannerWriter;
 import net.sf.mpxj.primavera.PrimaveraPMFileWriter;
 import net.sf.mpxj.sdef.SDEFWriter;
+import net.sf.mpxj.xlsx.XlsxWriter;
 
 /**
  * This class contains utility methods for working with ProjectWriters.
@@ -86,14 +87,15 @@ public final class ProjectWriterUtility
       return (WRITER_MAP.keySet());
    }
 
-   private static final Map<String, Class<? extends ProjectWriter>> WRITER_MAP = new HashMap<String, Class<? extends ProjectWriter>>();
+   private static final Map<String, Class<? extends ProjectWriter>> WRITER_MAP = new Hashtable<String, Class<? extends ProjectWriter>>();
    static
    {
-      WRITER_MAP.put("MPX", MPXWriter.class);
-      WRITER_MAP.put("XML", MSPDIWriter.class);
-      WRITER_MAP.put("PMXML", PrimaveraPMFileWriter.class);
-      WRITER_MAP.put("PLANNER", PlannerWriter.class);
-      WRITER_MAP.put("JSON", JsonWriter.class);
-      WRITER_MAP.put("SDEF", SDEFWriter.class);
+       WRITER_MAP.put("MPX", MPXWriter.class);
+       WRITER_MAP.put("XML", MSPDIWriter.class);
+       WRITER_MAP.put("PMXML", PrimaveraPMFileWriter.class);
+       WRITER_MAP.put("PLANNER", PlannerWriter.class);
+       WRITER_MAP.put("JSON", JsonWriter.class);
+       WRITER_MAP.put("SDEF", SDEFWriter.class);
+       WRITER_MAP.put("XLSX", XlsxWriter.class);
    }
 }

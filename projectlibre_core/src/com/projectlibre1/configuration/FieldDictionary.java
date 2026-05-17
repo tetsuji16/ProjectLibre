@@ -59,7 +59,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -90,7 +90,7 @@ import com.projectlibre1.util.Environment;
 public class FieldDictionary {
 	private static Log log = LogFactory.getLog(FieldDictionary.class);
 	private HashedMap map = new HashedMap();
-	private HashMap actionsMap = new HashMap();
+	private Hashtable actionsMap = new Hashtable();
 	public void addField(Field field) {
 		if (field.isServer()&&Environment.getStandAlone()) return;
 		field.setClass(clazz);
@@ -133,7 +133,7 @@ public class FieldDictionary {
 			clazz = ClassUtils.forName(className);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		}
 	}
 	
@@ -316,18 +316,18 @@ public class FieldDictionary {
 			new FileOutputStream(fileName).write(result.toString().getBytes());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		}
 	}
 	public static void main(String args[]) {
 		generateFieldDoc("d:/pod/fields.html");
 	}
 	
-	public static HashMap getAliasMap() {
-		HashMap aliasMap = new HashMap();
+	public static Hashtable getAliasMap() {
+		Hashtable aliasMap = new Hashtable();
 		MapIterator i = getInstance().map.mapIterator();
 		while (i.hasNext()) {
 			Object key = i.next();
@@ -338,7 +338,7 @@ public class FieldDictionary {
 		return aliasMap;
 	}
 
-	public static void setAliasMap(HashMap aliasMap) {
+	public static void setAliasMap(Hashtable aliasMap) {
 		if (aliasMap == null)
 			return;
 		Iterator i = aliasMap.keySet().iterator();

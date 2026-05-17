@@ -59,7 +59,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.comparators.ComparableComparator;
@@ -77,11 +77,11 @@ import com.projectlibre1.field.Field;
  */
 public class ClassUtils {
 
-	public static final Long defaultLong = new Long(0L);
-	public static final Double defaultDouble = new Double(0.0);
-	public static final Integer defaultInteger = new Integer(0);
-	public static final Float defaultFloat = new Float(0.0);
-	public static final Boolean defaultBoolean = new Boolean(false);
+	public static final Long defaultLong = Long.valueOf(0L);
+	public static final Double defaultDouble = Double.valueOf(0.0);
+	public static final Integer defaultInteger = Integer.valueOf(0);
+	public static final Float defaultFloat = Float.valueOf(0.0f);
+	public static final Boolean defaultBoolean = Boolean.valueOf(false);
 	public static final String defaultString = new String();
 	public static final Rate defaultRate = new Rate(1.0D);
 	public static final Rate defaultUnitlessRate = new Rate(1, TimeUnit.NON_TEMPORAL);
@@ -131,13 +131,13 @@ public class ClassUtils {
 			|| value == DateTime.getZeroDate());
 	}
 
-	public static final Long LONG_MULTIPLE_VALUES = new Long(0L);
-	public static final Double DOUBLE_MULTIPLE_VALUES = new Double(0.0);
-	public static final Integer INTEGER_MULTIPLE_VALUES = new Integer(0);
-	public static final Float FLOAT_MULTIPLE_VALUES = new Float(0.0);
-	public static final Boolean BOOLEAN_MULTIPLE_VALUES = new Boolean(false);
+	public static final Long LONG_MULTIPLE_VALUES = Long.valueOf(0L);
+	public static final Double DOUBLE_MULTIPLE_VALUES = Double.valueOf(0.0);
+	public static final Integer INTEGER_MULTIPLE_VALUES = Integer.valueOf(0);
+	public static final Float FLOAT_MULTIPLE_VALUES = Float.valueOf(0.0f);
+	public static final Boolean BOOLEAN_MULTIPLE_VALUES = Boolean.valueOf(false);
 	public static final String STRING_MULTIPLE_VALUES = new String();
-	public static final Double PERCENT_MULTIPLE_VALUES = new Double(-9876543.21); // a never used value used as flag to indicate multiple values
+	public static final Double PERCENT_MULTIPLE_VALUES = Double.valueOf(-9876543.21); // a never used value used as flag to indicate multiple values
 	public static final Rate RATE_MULTIPLE_VALUES = new Rate();
 	/**
 	 * Given a type, return a value that signifies that there are multiple values.  This can occur in a dialog which works on multile objects at once.  If type is unknown, a new one is constructed
@@ -220,17 +220,17 @@ public class ClassUtils {
  * @throws IllegalArgumentException if the value is not convertible to the class
  */	public static Object doubleToObject(Double value, Class clazz) {
 		if (clazz == Boolean.class)
-			return new Boolean(value.doubleValue() != 0.0);
+			return Boolean.valueOf(value.doubleValue() != 0.0);
 		else if (clazz == Byte.class)
 			return new Byte(value.byteValue());
 		else if (clazz == Short.class)
 			return new Short(value.shortValue());
 		else if (clazz == Integer.class)
-			return new Integer(value.intValue());
+			return Integer.valueOf(value.intValue());
 		else if (clazz == Long.class)
-			return new Long(value.longValue());
+			return Long.valueOf(value.longValue());
 		else if (clazz == Float.class)
-			return new Float(value.floatValue());			
+			return Float.valueOf(value.floatValue());			
 		else if (clazz == Double.class)
 			return value;
 		else if (clazz == Money.class)
@@ -374,7 +374,7 @@ public class ClassUtils {
 			
 		}
 		
-		private static HashMap<Class,Comparator> comparatorMap = null;
+		private static Hashtable<Class,Comparator> comparatorMap = null;
 		private static final Comparator defaultTextComparator=
 				new Comparator() {
 					public int compare(Object o1, Object o2) {
@@ -383,7 +383,7 @@ public class ClassUtils {
 
 		public static Comparator getComparator(Class clazz) {
 			if (comparatorMap == null) {
-				comparatorMap = new HashMap<Class,Comparator>();
+				comparatorMap = new Hashtable<Class,Comparator>();
 				comparatorMap.put(String.class,
 						new Comparator() {
 							public int compare(Object o1, Object o2) {

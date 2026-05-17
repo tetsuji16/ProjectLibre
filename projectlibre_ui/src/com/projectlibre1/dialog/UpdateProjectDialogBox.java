@@ -209,11 +209,11 @@ public class UpdateProjectDialogBox extends AbstractDialog {
 			updateDateChooser.setValue(form.getUpdateDate());
 			rescheduleDateChooser.setValue(form.getRescheduleDate());
 		} else {
-			Boolean b1=new Boolean(entireProject.isSelected());
+			Boolean b1=Boolean.valueOf(entireProject.isSelected());
 			form.setEntireProject(b1);
-			Boolean b2=new Boolean(update.isSelected());
+			Boolean b2=Boolean.valueOf(update.isSelected());
 			form.setUpdate(b2);
-			Boolean b3=new Boolean(progress.isSelected());
+			Boolean b3=Boolean.valueOf(progress.isSelected());
 			form.setProgress(b3);	    		    
 			long d1 = updateDateChooser.getDateValue().getTime();
 			d1 = CalendarOption.getInstance().makeValidStart(d1, true);

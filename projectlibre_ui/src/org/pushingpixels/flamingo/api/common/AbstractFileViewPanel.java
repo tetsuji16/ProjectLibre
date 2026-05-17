@@ -101,7 +101,7 @@ public abstract class AbstractFileViewPanel<T> extends JCommandButtonPanel {
 		public Leaf(String leafName, InputStream leafStream) {
 			this.leafName = leafName;
 			this.leafStream = leafStream;
-			this.leafProps = new HashMap<String, Object>();
+			this.leafProps = new Hashtable<String, Object>();
 		}
 
 		/**
@@ -167,7 +167,7 @@ public abstract class AbstractFileViewPanel<T> extends JCommandButtonPanel {
 	public AbstractFileViewPanel(int startingDimension,
 			ProgressListener progressListener) {
 		super(startingDimension);
-		this.buttonMap = new HashMap<String, JCommandButton>();
+		this.buttonMap = new Hashtable<String, JCommandButton>();
 		this.progressListener = progressListener;
 		this.loadedSet = new HashSet<JCommandButton>();
 
@@ -185,7 +185,7 @@ public abstract class AbstractFileViewPanel<T> extends JCommandButtonPanel {
 	public AbstractFileViewPanel(CommandButtonDisplayState startingState,
 			ProgressListener progressListener) {
 		super(startingState);
-		this.buttonMap = new HashMap<String, JCommandButton>();
+		this.buttonMap = new Hashtable<String, JCommandButton>();
 		this.progressListener = progressListener;
 		this.loadedSet = new HashSet<JCommandButton>();
 
@@ -208,7 +208,7 @@ public abstract class AbstractFileViewPanel<T> extends JCommandButtonPanel {
 		this.buttonMap.clear();
 		int fileCount = 0;
 
-		final Map<String, JCommandButton> newButtons = new HashMap<String, JCommandButton>();
+		final Map<String, JCommandButton> newButtons = new Hashtable<String, JCommandButton>();
 		for (StringValuePair<T> leaf : leafs) {
 			String name = leaf.getKey();
 			if (!toShowFile(leaf))

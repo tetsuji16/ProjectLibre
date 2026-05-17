@@ -55,7 +55,7 @@
  *******************************************************************************/
 package org.projectlibre.core.dictionary;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -68,8 +68,8 @@ import java.util.Set;
  *
  */
 public class Dictionary implements Iterable<HasStringId>{
-	protected Map<DictionaryCategory, Map<String,HasStringId>> dictionary=new HashMap<DictionaryCategory, Map<String,HasStringId>>();
-	protected Map<Class<?>, Set<String>> categories=new HashMap<Class<?>, Set<String>>();
+	protected Map<DictionaryCategory, Map<String,HasStringId>> dictionary=new Hashtable<DictionaryCategory, Map<String,HasStringId>>();
+	protected Map<Class<?>, Set<String>> categories=new Hashtable<Class<?>, Set<String>>();
 	
 	
 	public void add(HasStringId hasId){
@@ -95,7 +95,7 @@ public class Dictionary implements Iterable<HasStringId>{
 		//dictionary
 		Map<String,HasStringId> map=dictionary.get(category);
 		if (map==null){
-			map=new HashMap<String, HasStringId>();
+			map=new Hashtable<String, HasStringId>();
 			dictionary.put(category,map);
 		}
 		return map.put(hasId.getId(),hasId);		

@@ -61,7 +61,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -522,7 +522,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 				return convertValueToStringUsingOptions(value);
 			}
 		} catch (IllegalArgumentException e1) {
-			e1.printStackTrace();
+			log.error("Unexpected error", e1);
 		}
 		return toText(value, object);
 	}
@@ -543,7 +543,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 				return convertValueToStringUsingOptions(value);
 			}
 		} catch (IllegalArgumentException e1) {
-			e1.printStackTrace();
+			log.error("Unexpected error", e1);
 		}
 		return toText(value, object);
 	}
@@ -713,13 +713,13 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 
 			} catch (IllegalArgumentException e) {
 				System.out.println("Bad field " + this);
-				e.printStackTrace();
+				log.error("Unexpected error", e);
 			} catch (IllegalAccessException e) {
 				System.out.println("Bad field " + this);
-				e.printStackTrace();
+				log.error("Unexpected error", e);
 			} catch (InvocationTargetException e) {
 				System.out.println("Bad field " + this);
-				e.printStackTrace();
+				log.error("Unexpected error", e);
 			}
 		}
 		return result;
@@ -757,7 +757,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 				try {// convert to external type
 					result = FieldConverter.convert(result, externalType, context); // convert a long to date for example
 				} catch (FieldParseException e1) {
-					e1.printStackTrace();
+					log.error("Unexpected error", e1);
 					result = null;
 				}
 			}
@@ -1032,10 +1032,10 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 		} catch (IllegalArgumentException e) {
 			throw new FieldParseException(e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		} catch (InvocationTargetException e) {
 			Throwable cause = e.getCause();
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 			if (cause != null && cause instanceof FieldParseException)
 				throw (FieldParseException) cause;
 			else {
@@ -1277,11 +1277,11 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 					return method.invoke(object, new Object[] { context });
 			}
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		}
 		return null;
 	}
@@ -1385,7 +1385,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 			setExternalType(Class.forName(type));
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 		}
 	}
 	/**
@@ -1657,7 +1657,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 			return super.clone();
 		} catch (CloneNotSupportedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Unexpected error", e);
 			return null;
 		}
 	}
@@ -1754,7 +1754,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 				setValue(current, eventSource, value, context);
 			} catch (FieldParseException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error("Unexpected error", e);
 			}
 		}
 
@@ -1826,7 +1826,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 	}
 
 	public Object[] findAllInCollection(Object value, Collection collection) {
-		ArrayList result = new ArrayList();
+		Vector result = new Vector();
 		Iterator i = collection.iterator();
 		Object current;
 		while (i.hasNext()) {

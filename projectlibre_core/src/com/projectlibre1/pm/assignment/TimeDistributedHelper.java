@@ -55,14 +55,14 @@
  *******************************************************************************/
 package com.projectlibre1.pm.assignment;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import com.projectlibre1.configuration.Configuration;
 import com.projectlibre1.field.Field;
 import com.projectlibre1.pm.snapshot.Snapshottable;
 
 public class TimeDistributedHelper {
-	private static HashMap baselineMapper = new HashMap();
+	private static Hashtable baselineMapper = new Hashtable();
 	static {
 		baselineMapper.put(HasTimeDistributedData.WORK, Snapshottable.CURRENT);
 		baselineMapper.put(HasTimeDistributedData.ACTUAL_WORK, Snapshottable.CURRENT);

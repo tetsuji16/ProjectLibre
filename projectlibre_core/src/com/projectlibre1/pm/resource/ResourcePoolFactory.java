@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.resource;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 import com.projectlibre1.grouping.core.model.DefaultNodeModel;
 import com.projectlibre1.undo.DataFactoryUndoController;
@@ -67,7 +67,7 @@ import com.projectlibre1.undo.DataFactoryUndoController;
  */
 public class ResourcePoolFactory {
 	private static ResourcePoolFactory instance = null;
-	private ArrayList resourcePools = new ArrayList();
+	private Vector resourcePools = new Vector();
 	private String name;
 	public static ResourcePoolFactory getInstance() {
 		if (instance == null)
@@ -87,7 +87,7 @@ public class ResourcePoolFactory {
 	/**
 	 * @return Returns the resourcePools.
 	 */
-	public ArrayList getResourcePools() {
+	public Vector getResourcePools() {
 		return resourcePools;
 	}
 	

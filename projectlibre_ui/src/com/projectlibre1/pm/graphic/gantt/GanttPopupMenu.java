@@ -59,6 +59,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 
@@ -114,6 +115,24 @@ public class GanttPopupMenu extends GraphPopupMenu{
             ((GraphModel)interactor.getGraph().getModel()).getCache().update();
         }
     }
+
+    private class ProgressLineMenuAction extends JCheckBoxMenuItem implements ActionListener {
+		private static final long serialVersionUID = -7938597987478064286L;
+
+		ProgressLineMenuAction() {
+			super(Messages.getString("Gantt.Popup.showProgressLine"));
+			if (interactor.getGraph() instanceof Gantt)
+				setSelected(((Gantt)interactor.getGraph()).isProgressLineEnabled());
+			addActionListener(this);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (!(interactor.getGraph() instanceof Gantt))
+				return;
+			((Gantt)interactor.getGraph()).setProgressLineEnabled(isSelected());
+			((GraphModel)interactor.getGraph().getModel()).updateAll(true);
+		}
+    }
    
     private class SplitModeMenuAction extends AbstractAction {
     	/**
@@ -142,6 +161,7 @@ public class GanttPopupMenu extends GraphPopupMenu{
     	removeAll();
     	add(new SplitModeMenuAction());
     	add(new AssignmentsMenuAction());
+    	add(new ProgressLineMenuAction());
         final JMenu bars=new JMenu(Messages.getString("Gantt.Popup.barStylesMenu"));
         final JMenu annotations=new JMenu(Messages.getString("Gantt.Popup.annotationStylesMenu"));
 		CollectionUtils.forAllDo(interactor.getGraph().getBarStyles().getRows(), new Closure() {

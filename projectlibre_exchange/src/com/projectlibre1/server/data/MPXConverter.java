@@ -115,11 +115,11 @@ public class MPXConverter {
 
 		CalendarOption calendarOption = CalendarOption.getInstance();
 //		projectHeader.setDefaultHoursInDay(new Float(calendarOption.getHoursPerDay()));
-		projectHeader.setMinutesPerDay(new Integer((int) (60 * calendarOption.getHoursPerDay())));
+		projectHeader.setMinutesPerDay(Integer.valueOf((int) (60 * calendarOption.getHoursPerDay())));
 //		projectHeader.setDefaultHoursInWeek(new Float(calendarOption.getHoursPerWeek()));
-		projectHeader.setMinutesPerWeek(new Integer((int) (60 * calendarOption.getHoursPerWeek())));
+		projectHeader.setMinutesPerWeek(Integer.valueOf((int) (60 * calendarOption.getHoursPerWeek())));
 
-		projectHeader.setDaysPerMonth(new Integer((int) Math.round(calendarOption.getDaysPerMonth())));
+		projectHeader.setDaysPerMonth(Integer.valueOf((int) Math.round(calendarOption.getDaysPerMonth())));
 
 		projectHeader.setDefaultStartTime(calendarOption.getDefaultStartTime().getTime());
 		projectHeader.setDefaultEndTime(calendarOption.getDefaultEndTime().getTime());
@@ -228,7 +228,7 @@ public class MPXConverter {
 		mpxResource.setNotes(removeInvalidChars(projectlibreResource.getNotes()));
 		mpxResource.setAccrueAt(AccrueType.getInstance(projectlibreResource.getAccrueAt()));
 		mpxResource
-				.setCostPerUse(new Double(projectlibreResource.getCostPerUse()));
+				.setCostPerUse(Double.valueOf(projectlibreResource.getCostPerUse()));
 		mpxResource.setStandardRate(toMPXRate(projectlibreResource
 				.getStandardRate()));
 		mpxResource.setOvertimeRate(toMPXRate(projectlibreResource
@@ -269,7 +269,7 @@ public class MPXConverter {
 		for (int i = 0; i < maps.costMap.length; i++) {
 			double cost = projectlibreFields.getCustomCost(i);
 			if (cost != 0.0D)
-				mpx.set(maps.costMap[i],new Double(cost));
+				mpx.set(maps.costMap[i],Double.valueOf(cost));
 		}
 		for (int i = 0; i < maps.dateMap.length; i++) {
 			long d = projectlibreFields.getCustomDate(i);
@@ -294,7 +294,7 @@ public class MPXConverter {
 		for (int i = 0; i < maps.numberMap.length; i++) {
 			double n = projectlibreFields.getCustomNumber(i);
 			if (n != 0.0D)
-				mpx.set(maps.numberMap[i],new Double(n));
+				mpx.set(maps.numberMap[i],Double.valueOf(n));
 		}
 		for (int i = 0; i < maps.startMap.length; i++) {
 			long d = projectlibreFields.getCustomStart(i);
@@ -367,7 +367,7 @@ private static int autoId = 0;
 		mpxTask.setDuration(toMPXDuration(projectlibreTask.getDuration())); // set duration without controls
 		mpxTask.setStart(DateTime.fromGmt(new Date(projectlibreTask.getStart())));
 		mpxTask.setFinish(DateTime.fromGmt(new Date(projectlibreTask.getEnd())));
-		mpxTask.setCritical(new Boolean(projectlibreTask.isCritical()));
+		mpxTask.setCritical(Boolean.valueOf(projectlibreTask.isCritical()));
 		mpxTask.setEstimated(projectlibreTask.isEstimated());
 		mpxTask.setEffortDriven(projectlibreTask.isEffortDriven());
 		mpxTask.setType(TaskType.getInstance(projectlibreTask.getSchedulingType()));

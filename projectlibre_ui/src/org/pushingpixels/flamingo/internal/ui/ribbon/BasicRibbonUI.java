@@ -63,9 +63,9 @@ import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -182,7 +182,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * Creates a new basic ribbon UI delegate.
 	 */
 	public BasicRibbonUI() {
-		this.taskToggleButtons = new HashMap<RibbonTask, JRibbonTaskToggleButton>();
+		this.taskToggleButtons = new Hashtable<RibbonTask, JRibbonTaskToggleButton>();
 		this.taskToggleButtonGroup = new CommandToggleButtonGroup();
 		this.taskToggleButtonGroup.setAllowsClearingSelection(false);
 	}
@@ -1756,7 +1756,7 @@ public class BasicRibbonUI extends RibbonUI {
 			int totalPrefWidth = 0;
 			int totalMinWidth = 0;
 			List<RibbonTask> visibleTasks = getCurrentlyShownRibbonTasks();
-			Map<JRibbonTaskToggleButton, Integer> diffMap = new HashMap<JRibbonTaskToggleButton, Integer>();
+			Map<JRibbonTaskToggleButton, Integer> diffMap = new Hashtable<JRibbonTaskToggleButton, Integer>();
 			int totalDiff = 0;
 			for (RibbonTask task : visibleTasks) {
 				JRibbonTaskToggleButton tabButton = taskToggleButtons.get(task);
@@ -2055,7 +2055,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * @return The list of currently shown ribbon tasks.
 	 */
 	protected List<RibbonTask> getCurrentlyShownRibbonTasks() {
-		List<RibbonTask> result = new ArrayList<RibbonTask>();
+		List<RibbonTask> result = new Vector<RibbonTask>();
 
 		// add all regular tasks
 		for (int i = 0; i < this.ribbon.getTaskCount(); i++) {

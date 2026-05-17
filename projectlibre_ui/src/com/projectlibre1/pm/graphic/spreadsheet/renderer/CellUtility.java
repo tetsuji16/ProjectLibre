@@ -79,26 +79,21 @@ public class CellUtility {
 		CommonSpreadSheetModel model = (CommonSpreadSheetModel) table.getModel();
 		GraphicNode node = model.getNode(row);
 		CellFormat cellFormat=model.getCellProperties(node);
-		if (isSelected){
-			component.setForeground(/*table.getSelectionForeground()*/Color.WHITE);
-			component.setBackground(/*Color.BLACK*/GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor());
-		}else{
-
-			Color foreground=cellFormat.getForegroundObject();
-			component.setForeground((foreground==null)?table.getForeground():foreground);
-			Color background=cellFormat.getBackgroundObject();
-			component.setBackground((background==null)?table.getBackground():background);
-		}
+		boolean editingThisCell = table.isEditing() && table.getEditingRow() == row && table.getEditingColumn() == column;
+		Color foreground=cellFormat.getForegroundObject();
+		Color background=cellFormat.getBackgroundObject();
+		Color resolvedForeground=(foreground==null)?table.getForeground():foreground;
+		Color resolvedBackground=(background==null)?table.getBackground():background;
+		component.setForeground(resolvedForeground);
+		component.setBackground(resolvedBackground);
 		//component.setFont(table.getFont());
-		if (hasFocus){
-			component.setBorder( /*UIManager.getBorder("Table.focusCellHighlightBorder")*/new LineBorder(Color.BLACK) );
-			if (table.isCellEditable(row, column)) {
-				Color foreground=cellFormat.getForegroundObject();
-				component.setForeground((foreground==null)?UIManager.getColor("Table.focusCellForeground"):foreground );
-				Color background=cellFormat.getBackgroundObject();
-				component.setBackground((background==null)?(Environment.isMac()?Colors.NOT_TOO_DARK_GRAY:UIManager.getColor("Table.focusCellBackground")):background );
-			}
-		}else{
+		if (editingThisCell && table.isCellEditable(row, column)) {
+			component.setBorder(new LineBorder(Color.BLACK));
+			component.setForeground((foreground==null)?UIManager.getColor("Table.focusCellForeground"):foreground);
+			component.setBackground((background==null)?(Environment.isMac()?Colors.NOT_TOO_DARK_GRAY:UIManager.getColor("Table.focusCellBackground")):background);
+		} else if (hasFocus || isSelected) {
+			component.setBorder(new LineBorder(Color.BLACK));
+		} else {
 			component.setBorder(new EmptyBorder(1, 1, 1, 1));
 //			if (!model.isRowEditable(row))
 //				component.setForeground(Color.GRAY);

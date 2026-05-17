@@ -107,7 +107,7 @@ public class JBreadcrumbBar<T> extends JComponent {
 		if (this.callback != null)
 			this.callback.setup();
 
-		this.exceptionHandlers = new ArrayList<BreadcrumbBarExceptionHandler>();
+		this.exceptionHandlers = new Vector<BreadcrumbBarExceptionHandler>();
 
 		this.updateUI();
 	}

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package org.projectlibre.core.configuration.adapters;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
@@ -73,7 +73,7 @@ public class MapAdapter<K, V> extends XmlAdapter<MapAdapterList<K, V>, Map<K, V>
     
    @Override
     public Map<K, V> unmarshal(MapAdapterList<K, V> list) throws Exception {
-        HashMap<K, V> map = new HashMap<K, V>(); 
+        Hashtable<K, V> map = new Hashtable<K, V>(); 
         for (MapAdapterEntry<K, V> element : list.getEntry()) {
             map.put(element.getKey(), element.getValue());
         }

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.nodes;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 import com.projectlibre.core.hierarchy.DefaultHierarchy;
@@ -67,10 +67,10 @@ import com.projectlibre.core.hierarchy.Hierarchy;
  *
  */
 public abstract class AbstractNodeContainer extends AbstractNode implements NodeContainer{
-	protected ArrayList<Hierarchy> hierarchies;
+	protected Vector<Hierarchy> hierarchies;
 	
 	public AbstractNodeContainer(){
-		hierarchies=new ArrayList<Hierarchy>(1);
+		hierarchies=new Vector<Hierarchy>(1);
 		hierarchies.add(new DefaultHierarchy());
 	}
 

@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.mpp;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.poi.hpsf.CustomProperties;
@@ -138,7 +138,7 @@ public final class ProjectPropertiesReader
          ph.setLanguage(documentSummaryInformation.getLanguage());
          ph.setDocumentVersion(documentSummaryInformation.getDocumentVersion());
 
-         Map<String, Object> customPropertiesMap = new HashMap<String, Object>();
+         Map<String, Object> customPropertiesMap = new Hashtable<String, Object>();
          CustomProperties customProperties = documentSummaryInformation.getCustomProperties();
          if (customProperties != null)
          {

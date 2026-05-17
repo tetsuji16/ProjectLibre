@@ -64,7 +64,7 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Map;
 import java.util.Stack;
 import java.util.WeakHashMap;
@@ -111,9 +111,9 @@ public class ScrollPaneSynchronizer {
 
 	protected MouseWheelEvent scrollPane2LastWheelEvent = null;
 
-	protected ArrayList scrollPane1WheelTargets = new ArrayList();
+	protected Vector scrollPane1WheelTargets = new Vector();
 
-	protected ArrayList scrollPane2WheelTargets = new ArrayList();
+	protected Vector scrollPane2WheelTargets = new Vector();
 
 	protected int defaultScrollBarPolicy1;
 
@@ -396,6 +396,30 @@ public class ScrollPaneSynchronizer {
 		if (!e.isControlDown()) {
 			return false;
 		}
+		return performZoom(scrollPane, getWheelSteps(e));
+	}
+
+	public static boolean zoomIn(Component component) {
+		return performZoom(component, -1);
+	}
+
+	public static boolean zoomOut(Component component) {
+		return performZoom(component, 1);
+	}
+
+	private static boolean performZoom(Component component, int steps) {
+		JScrollPane scrollPane = findScrollPane(component);
+		ScrollPaneSynchronizer synchronizer = findSynchronizer(component);
+		if (scrollPane == null || synchronizer == null) {
+			return false;
+		}
+		return synchronizer.performZoom(scrollPane, steps);
+	}
+
+	private boolean performZoom(JScrollPane scrollPane, int steps) {
+		if (steps == 0) {
+			return true;
+		}
 
 		JViewport viewport = scrollPane.getViewport();
 		if (viewport == null) {
@@ -406,20 +430,17 @@ public class ScrollPaneSynchronizer {
 			return false;
 		}
 
-		int steps = getWheelSteps(e);
-		if (steps == 0) {
-			return true;
-		}
-
 		CoordinatesConverter coord = ((Gantt) view).getCoord();
 		if (coord == null) {
 			return true;
 		}
 
 		ZoomRestoreState zoomRestoreState = getZoomRestoreState(scrollPane);
-		Point viewPosition = viewport.getViewPosition();
-		double anchorTime = coord.toTime(viewPosition.x);
 		int currentScaleIndex = coord.getTimescaleManager().getCurrentScaleIndex();
+		// Capture the left-edge date BEFORE zooming. This is the date at pixel 0
+		// (timeline origin), which remains stable across zoom operations and prevents
+		// the visible left-end date from shifting during repeated zoom in/out cycles.
+		double leftEdgeDate = coord.toTime(0);
 		boolean zoomed = false;
 		if (steps < 0) {
 			if (coord.canZoomIn()) {
@@ -428,7 +449,7 @@ public class ScrollPaneSynchronizer {
 			}
 		} else if (coord.canZoomOut()) {
 			if (zoomRestoreState != null) {
-				zoomRestoreState.zoomOutHistory.push(new ZoomRestore(currentScaleIndex, anchorTime));
+				zoomRestoreState.zoomOutHistory.push(new ZoomRestore(currentScaleIndex, leftEdgeDate));
 			}
 			coord.zoomOut();
 			zoomed = true;
@@ -438,7 +459,7 @@ public class ScrollPaneSynchronizer {
 		}
 
 		Point newViewPosition = viewport.getViewPosition();
-		double restoreDate = anchorTime;
+		double restoreDate = leftEdgeDate;
 		if (steps < 0 && zoomRestoreState != null && !zoomRestoreState.zoomOutHistory.isEmpty()) {
 			ZoomRestore restore = (ZoomRestore) zoomRestoreState.zoomOutHistory.peek();
 			int newScaleIndex = coord.getTimescaleManager().getCurrentScaleIndex();
@@ -637,7 +658,7 @@ public class ScrollPaneSynchronizer {
 		}
 	}
 
-	private void registerMouseWheelTargets(JScrollPane scrollPane, MouseWheelListener listener, ArrayList targets) {
+	private void registerMouseWheelTargets(JScrollPane scrollPane, MouseWheelListener listener, Vector targets) {
 		registerMouseWheelTargets(scrollPane.getViewport(), listener, targets);
 		registerMouseWheelTargets(scrollPane.getViewport() == null ? null : scrollPane.getViewport().getView(), listener, targets);
 		if (scrollPane.getRowHeader() != null) {
@@ -650,7 +671,7 @@ public class ScrollPaneSynchronizer {
 		}
 	}
 
-	private void registerMouseWheelTargets(Component component, MouseWheelListener listener, ArrayList targets) {
+	private void registerMouseWheelTargets(Component component, MouseWheelListener listener, Vector targets) {
 		if (component == null || listener == null) {
 			return;
 		}
@@ -664,7 +685,7 @@ public class ScrollPaneSynchronizer {
 		}
 	}
 
-	private void unregisterMouseWheelTargets(ArrayList targets, MouseWheelListener listener) {
+	private void unregisterMouseWheelTargets(Vector targets, MouseWheelListener listener) {
 		if (listener == null) {
 			targets.clear();
 			return;
@@ -674,6 +695,26 @@ public class ScrollPaneSynchronizer {
 			component.removeMouseWheelListener(listener);
 		}
 		targets.clear();
+	}
+
+	private static ScrollPaneSynchronizer findSynchronizer(Component component) {
+		Component current = component;
+		while (current != null) {
+			ScrollPaneSynchronizer synchronizer = (ScrollPaneSynchronizer) ganttSynchronizers.get(current);
+			if (synchronizer != null) {
+				return synchronizer;
+			}
+			current = current.getParent();
+		}
+		return null;
+	}
+
+	private static JScrollPane findScrollPane(Component component) {
+		Component current = component;
+		while (current != null && !(current instanceof JScrollPane)) {
+			current = current.getParent();
+		}
+		return current instanceof JScrollPane ? (JScrollPane) current : null;
 	}
 
     /**

@@ -54,7 +54,7 @@
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
 package com.projectlibre1.grouping.core;
-import java.util.ArrayList;
+import java.util.Vector;
 /**
  *
  */
@@ -80,7 +80,7 @@ public class OutlineCode extends Format {
 	static final int CHARACTERS = 3;
 	private static final int ANY_LENGTH = 0;
 	
-	private ArrayList masks = new ArrayList();
+	private Vector masks = new Vector();
 	private transient Pattern pattern = null;
 
 	/* (non-Javadoc)

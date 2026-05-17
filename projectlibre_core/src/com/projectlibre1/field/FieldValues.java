@@ -57,7 +57,7 @@ package com.projectlibre1.field;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -70,10 +70,10 @@ import com.projectlibre1.server.access.ErrorLogger;
  */
 public class FieldValues {
 	
-	public static HashMap getValues(Collection fields, Object object) {
+	public static Hashtable getValues(Collection fields, Object object) {
 		Iterator i = fields.iterator();
 		FieldContext context = null;
-		HashMap map = new HashMap();
+		Hashtable map = new Hashtable();
 		while (i.hasNext()) {
 			Field field = (Field)i.next();
 			try {

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.pm.exchange.converters.mpx;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -76,10 +76,10 @@ import com.projectlibre.pm.tasks.Task;
  */
 public class MpxImportState {
 	protected ProjectCalendar mpxStandardBaseCalendar;
-	protected Map<String,ProjectCalendar> mpxBaseCalendarMap=new HashMap<String,ProjectCalendar>();
-	protected Map<String,WorkCalendar> baseCalendarMap=new HashMap<String,WorkCalendar>();
-	protected Map<net.sf.mpxj.Task,Task> taskMap=new HashMap<net.sf.mpxj.Task,Task>();
-	protected Map<net.sf.mpxj.Resource,Resource> resourceMap=new HashMap<net.sf.mpxj.Resource,Resource>();
+	protected Map<String,ProjectCalendar> mpxBaseCalendarMap=new Hashtable<String,ProjectCalendar>();
+	protected Map<String,WorkCalendar> baseCalendarMap=new Hashtable<String,WorkCalendar>();
+	protected Map<net.sf.mpxj.Task,Task> taskMap=new Hashtable<net.sf.mpxj.Task,Task>();
+	protected Map<net.sf.mpxj.Resource,Resource> resourceMap=new Hashtable<net.sf.mpxj.Resource,Resource>();
 	protected Map<ResourceAssignment,List<TimephasedDataType>> mpxTimephasedMap;
 	
 	protected WorkCalendar projectBaseCalendar;

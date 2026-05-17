@@ -60,14 +60,19 @@ import java.awt.Dimension;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -100,6 +105,7 @@ import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetAction;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.common.transfer.NodeListTransferHandler;
+import com.projectlibre1.pm.graphic.spreadsheet.common.transfer.NodeListTransferable;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SimpleComboBoxEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.NameCellComponent;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetListSelectionModel;
@@ -134,15 +140,92 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	private static final long serialVersionUID = 5958334223191182318L;
 	public static final String NAME_COLUMN_INDENT_ACTION = "spreadsheet.nameColumnIndent";
 	public static final String NAME_COLUMN_OUTDENT_ACTION = "spreadsheet.nameColumnOutdent";
+	private static final String CLIPBOARD_PASTE_VALUES_ACTION = "spreadsheet.clipboardPasteValues";
+	private static final String CLIPBOARD_INSERT_ACTION = "spreadsheet.clipboardInsert";
 	private Object defaultTabActionKey;
 	private Object defaultShiftTabActionKey;
 	protected SpreadSheetPopupMenu popup=null;
+	private boolean hierarchyActionInProgress;
 
 
 	public SpreadSheet() {
 		super();
 		NodeListTransferHandler.registerWith(this);
+		installClipboardPasteBindings();
 
+	}
+
+	private void installClipboardPasteBindings() {
+		InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
+		inputMap.put(KeyStroke.getKeyStroke("ctrl V"), CLIPBOARD_PASTE_VALUES_ACTION);
+		inputMap.put(KeyStroke.getKeyStroke("shift ctrl V"), CLIPBOARD_INSERT_ACTION);
+
+		ActionMap actionMap = getActionMap();
+		actionMap.put(CLIPBOARD_PASTE_VALUES_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				pasteClipboardAsValues();
+			}
+		});
+		actionMap.put(CLIPBOARD_INSERT_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				prepareAction(MenuActionConstants.ACTION_PASTE_INSERT).actionPerformed(
+					new ActionEvent(SpreadSheet.this, ActionEvent.ACTION_PERFORMED, MenuActionConstants.ACTION_PASTE_INSERT));
+			}
+		});
+	}
+
+	public void pasteClipboardAsValues() {
+		finishCurrentOperations();
+		Transferable transferable = getClipboardContents();
+		if (transferable == null)
+			return;
+		String text = getClipboardText(transferable);
+		if (text != null) {
+			NodeListTransferable.pasteString(text, this);
+			return;
+		}
+		insertClipboardContents(transferable);
+	}
+
+	public void insertClipboardContents() {
+		insertClipboardContents(getClipboardContents());
+	}
+
+	private void insertClipboardContents(Transferable transferable) {
+		if (transferable == null)
+			return;
+		if (getTransferHandler() instanceof NodeListTransferHandler) {
+			((NodeListTransferHandler)getTransferHandler()).importData(this, transferable);
+			return;
+		}
+		NodeListTransferHandler.getPasteAction().actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+	}
+
+	private Transferable getClipboardContents() {
+		try {
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			return (clipboard == null) ? null : clipboard.getContents(null);
+		} catch (IllegalStateException e) {
+			return null;
+		}
+	}
+
+	private String getClipboardText(Transferable transferable) {
+		try {
+			if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor))
+				return (String)transferable.getTransferData(DataFlavor.stringFlavor);
+			if (transferable.isDataFlavorSupported(DataFlavor.getTextPlainUnicodeFlavor()))
+				return transferable.getTransferData(DataFlavor.getTextPlainUnicodeFlavor()).toString();
+		} catch (UnsupportedFlavorException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+		return null;
 	}
 
 	protected void finalize() {
@@ -153,7 +236,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			((CommonSpreadSheetModel) getModel()).getCache().removeNodeModelListener(this);
 		super.cleanUp();
 	}
-	public void setCache(NodeModelCache cache, ArrayList fieldArray, CellStyle cellStyle, ActionList actionList) {
+	public void setCache(NodeModelCache cache, Vector fieldArray, CellStyle cellStyle, ActionList actionList) {
 		// if (getCache()!=null) getCache().close();
 		if (getCache() != null)
 			getCache().getReference().close(); // deepClose
@@ -193,20 +276,131 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	}
 
 	public void executeNameCellTabAction(boolean outdent) {
-		if (!isNameCellTabActionEnabled())
+		if (hierarchyActionInProgress || !isNameCellTabActionEnabled())
 			return;
-		int rowToFocus = getSelectionModel().getAnchorSelectionIndex();
+		int rowToFocus = getCurrentRow();
 		if (rowToFocus < 0)
-			rowToFocus = getCurrentRow();
-		executeAction(outdent ? MenuActionConstants.ACTION_OUTDENT : MenuActionConstants.ACTION_INDENT);
-		restoreNameColumnFocus(rowToFocus);
+			rowToFocus = getSelectionModel().getAnchorSelectionIndex();
+		GraphicNode focusNode = null;
+		if (rowToFocus >= 0 && rowToFocus < getRowCount() && getModel() instanceof SpreadSheetModel) {
+			focusNode = ((SpreadSheetModel)getModel()).getNode(rowToFocus);
+		}
+		hierarchyActionInProgress = true;
+		try {
+			finishCurrentOperations();
+			executeAction(outdent ? MenuActionConstants.ACTION_OUTDENT : MenuActionConstants.ACTION_INDENT);
+			restoreNameColumnFocus(focusNode, rowToFocus);
+		} finally {
+			hierarchyActionInProgress = false;
+		}
 	}
 
-	private void restoreNameColumnFocus(int preferredRow) {
+	public boolean canIndentCurrentNameRow() {
+		int row = getCurrentRow();
+		if (row < 0 || row >= getRowCount())
+			return false;
+		if (!(getModel() instanceof SpreadSheetModel))
+			return false;
+		SpreadSheetModel model = (SpreadSheetModel) getModel();
+		GraphicNode graphicNode = model.getNode(row);
+		if (graphicNode == null)
+			return false;
+		Node node = graphicNode.getNode();
+		if (node == null || node.isRoot() || !node.isIndentable(1))
+			return false;
+		Node parent = (Node) node.getParent();
+		if (parent == null)
+			return false;
+		int index = parent.getIndex(node);
+		if (index <= 0)
+			return false;
+		for (int siblingIndex = index - 1; siblingIndex >= 0; siblingIndex--) {
+			Node sibling = (Node) parent.getChildAt(siblingIndex);
+			if (node.canBeChildOf(sibling))
+				return true;
+			if (!sibling.isVoid())
+				break;
+		}
+		return false;
+	}
+
+	public boolean canOutdentCurrentNameRow() {
+		int row = getCurrentRow();
+		if (row < 0 || row >= getRowCount())
+			return false;
+		if (!(getModel() instanceof SpreadSheetModel))
+			return false;
+		SpreadSheetModel model = (SpreadSheetModel) getModel();
+		GraphicNode graphicNode = model.getNode(row);
+		if (graphicNode == null)
+			return false;
+		Node node = graphicNode.getNode();
+		if (node == null || node.isRoot() || !node.isIndentable(-1))
+			return false;
+		Node parent = (Node) node.getParent();
+		if (parent == null || parent.isRoot() || parent.isLazyParent())
+			return false;
+		return true;
+	}
+
+	public void executeNameCellCollapseExpand(boolean expand) {
+		if (hierarchyActionInProgress)
+			return;
+		int column = isEditing() ? getEditingColumn() : getSelectedColumn();
+		if (!isNameFieldColumn(column))
+			return;
+		int rowToFocus = getCurrentRow();
+		if (rowToFocus < 0)
+			rowToFocus = getSelectionModel().getAnchorSelectionIndex();
+		if (rowToFocus < 0)
+			return;
+		GraphicNode focusNode = ((SpreadSheetModel)getModel()).getNode(rowToFocus);
+		hierarchyActionInProgress = true;
+		try {
+			finishCurrentOperations();
+			focusSingleNameRow(rowToFocus);
+			executeAction(expand ? MenuActionConstants.ACTION_EXPAND : MenuActionConstants.ACTION_COLLAPSE);
+			restoreNameColumnFocus(focusNode, rowToFocus);
+		} finally {
+			hierarchyActionInProgress = false;
+		}
+	}
+
+	private void installNameColumnHierarchyNavigationActions() {
+		InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
+		ActionMap actionMap = getActionMap();
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK), "spreadsheet.nameColumnCollapseExpandLeft");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK), "spreadsheet.nameColumnCollapseExpandRight");
+		actionMap.put("spreadsheet.nameColumnCollapseExpandLeft", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				executeNameCellCollapseExpand(false);
+			}
+		});
+		actionMap.put("spreadsheet.nameColumnCollapseExpandRight", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				executeNameCellCollapseExpand(true);
+			}
+		});
+	}
+
+	private void focusSingleNameRow(int row) {
+		int nameColumn = findNameColumn();
+		if (row < 0 || row >= getRowCount() || nameColumn < 0)
+			return;
+		getSelectionModel().setSelectionInterval(row, row);
+		getColumnModel().getSelectionModel().setSelectionInterval(nameColumn, nameColumn);
+		rowHeader.clearSelection();
+	}
+
+	private void restoreNameColumnFocus(GraphicNode preferredNode, int preferredRow) {
 		int nameColumn = findNameColumn();
 		if (nameColumn < 0)
 			return;
-		int row = preferredRow;
+		int row = findRowForGraphicNode(preferredNode);
+		if (row < 0)
+			row = preferredRow;
 		if (row < 0 || row >= getRowCount())
 			row = getCurrentRow();
 		if (row < 0 || row >= getRowCount())
@@ -218,6 +412,12 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			getSelectionModel().setSelectionInterval(row, row);
 		getColumnModel().getSelectionModel().setSelectionInterval(nameColumn, nameColumn);
 		scrollRectToVisible(getCellRect(row, nameColumn, true));
+	}
+
+	private int findRowForGraphicNode(GraphicNode node) {
+		if (node == null || !(getModel() instanceof SpreadSheetModel))
+			return -1;
+		return ((SpreadSheetModel)getModel()).findGraphicNodeRow(node);
 	}
 
 	private int findNameColumn() {
@@ -233,18 +433,18 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	}
 
 	private void installNameColumnTabActions() {
-		InputMap inputMap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+		InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
 		ActionMap actionMap = getActionMap();
 		defaultTabActionKey = inputMap.get(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
-		defaultShiftTabActionKey = inputMap.get(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_MASK));
+		defaultShiftTabActionKey = inputMap.get(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_DOWN_MASK));
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0), NAME_COLUMN_INDENT_ACTION);
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_MASK), NAME_COLUMN_OUTDENT_ACTION);
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, KeyEvent.SHIFT_DOWN_MASK), NAME_COLUMN_OUTDENT_ACTION);
 		actionMap.put(NAME_COLUMN_INDENT_ACTION, new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
 				if (isNameCellTabActionEnabled())
 					executeNameCellTabAction(false);
-				else
+				else if (!isNameCellTabActionEnabled())
 					invokeBoundAction(defaultTabActionKey, e);
 			}
 		});
@@ -253,10 +453,30 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			public void actionPerformed(ActionEvent e) {
 				if (isNameCellTabActionEnabled())
 					executeNameCellTabAction(true);
-				else
+				else if (!isNameCellTabActionEnabled())
 					invokeBoundAction(defaultShiftTabActionKey, e);
 			}
 		});
+	}
+
+	@Override
+	protected boolean handleHierarchyNavigationKeyEvent(KeyEvent e) {
+		if (e == null || e.getID() != KeyEvent.KEY_PRESSED)
+			return false;
+		int column = getSelectedColumn();
+		if (!isNameFieldColumn(column))
+			return false;
+		if ((e.getModifiersEx() & (KeyEvent.CTRL_DOWN_MASK | KeyEvent.ALT_DOWN_MASK | KeyEvent.META_DOWN_MASK)) != KeyEvent.CTRL_DOWN_MASK)
+			return false;
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+			executeNameCellCollapseExpand(false);
+			return true;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+			executeNameCellCollapseExpand(true);
+			return true;
+		}
+		return false;
 	}
 
 	private void invokeBoundAction(Object actionKey, ActionEvent event) {
@@ -267,7 +487,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			action.actionPerformed(new ActionEvent(this, event.getID(), String.valueOf(actionKey), event.getWhen(), event.getModifiers()));
 	}
 
-	public void setFieldArray(ArrayList fieldArray) {
+	public void setFieldArray(Vector fieldArray) {
 		((SpreadSheetColumnModel) getColumnModel()).setFieldArray(fieldArray);
 		createDefaultColumnsFromModel(fieldArray);
 		resizeAndRepaintHeader();
@@ -284,7 +504,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		
 	}
 
-	public void createDefaultColumnsFromModel(ArrayList fieldArray) {
+	public void createDefaultColumnsFromModel(Vector fieldArray) {
 			// Remove any current columns
 			TableColumnModel cm = getColumnModel();
 			while (cm.getColumnCount() > 0) {
@@ -358,6 +578,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		}
 		
 		registerEditors(); //Consume memory
+		installNameColumnHierarchyNavigationActions();
 		installNameColumnTabActions();
 		initRowHeader(spreadSheetModel);
 		initModel();
@@ -441,10 +662,14 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 						
 					}
 					if (!e.isConsumed()) {
-						if (e.getClickCount() == 2)  // if above code didn't treat and is dbl click
-							doDoubleClick(row,col);
-						else
+						if (e.getClickCount() == 2) {
+							finishCurrentOperations();
+							if (editCellAt(row, col, e)) {
+								e.consume();
+							}
+						} else {
 							doClick(row,col);
+						}
 					}
 								
 					
@@ -486,6 +711,17 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 //			}
 //		});
 
+	}
+
+	private void selectCellFromClick(int row, int col, MouseEvent e) {
+		if (row < 0 || col < 0)
+			return;
+		finishCurrentOperations();
+		requestFocusInWindow();
+		boolean extend = e != null && e.isShiftDown();
+		boolean toggle = e != null && (e.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) != 0;
+		changeSelection(row, col, toggle, extend);
+		scrollRectToVisible(getCellRect(row, col, true));
 	}
 	
 //    public void columnSelectionChanged(ListSelectionEvent e) {
@@ -607,7 +843,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	private Map actionMap=null;
 	public CommonSpreadSheetAction getAction(String actionId) {
 		if (actionMap==null){
-			actionMap=new HashMap();
+			actionMap=new Hashtable();
 			addActions(getActionList());
 		}
 		return (CommonSpreadSheetAction) actionMap.get(actionId);
@@ -631,7 +867,10 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 				if (handler!=null){
 					addAction(action,MenuActionConstants.ACTION_COPY,handler.getNodeListCopyAction());
 					addAction(action,MenuActionConstants.ACTION_CUT,handler.getNodeListCutAction());
-					addAction(action,MenuActionConstants.ACTION_PASTE,handler.getNodeListPasteAction());
+					addAction(action,MenuActionConstants.ACTION_PASTE,clipboardPasteAction);
+					if (MenuActionConstants.ACTION_PASTE.equals(action)) {
+						actionMap.put(MenuActionConstants.ACTION_PASTE_INSERT, pasteInsertAction);
+					}
 				}
 				addAction(action,MenuActionConstants.ACTION_EXPAND,expandAction);
 				addAction(action,MenuActionConstants.ACTION_COLLAPSE,collapseAction);
@@ -655,7 +894,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	public void setActions(String[] actions){
 		//replace default actions
 		actionList=actions;
-		if (actionMap==null) actionMap=new HashMap();
+		if (actionMap==null) actionMap=new Hashtable();
 		else actionMap.clear();
 		addActions(actions);
 	}
@@ -765,7 +1004,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 				final ResourcePool resourcePool=(ResourcePool)getCache().getModel().getDataFactory();
 				Project project=(Project)resourcePool.getProjects().get(0);
 					if (nodes==null||nodes.size()==0) return;
-					final ArrayList descriptors=new ArrayList();
+					final Vector descriptors=new Vector();
 					Session session=SessionFactory.getInstance().getSession(false);
 					Job job=(Job)SessionFactory.callNoEx(session,"getLoadProjectDescriptorsJob",new Class[]{boolean.class,java.util.List.class,boolean.class},new Object[]{true,descriptors,true});
 					job.addSwingRunnable(new JobRunnable("Local: addNodes"){
@@ -777,7 +1016,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 							final Closure getter=new Closure(){
 								public void execute(Object obj){
 									ResourceAdditionDialog.Form form=(ResourceAdditionDialog.Form)obj;
-									List nodes=new ArrayList();
+									List nodes=new Vector();
 									for (Iterator i=form.getSelectedResources().iterator();i.hasNext();){
 										try {
 											nodes.add(NodeFactory.getInstance().createNode(Serializer.deserializeResourceAndAddToPool((EnterpriseResourceData)i.next(),resourcePool,null)));
@@ -796,15 +1035,15 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 							ResourceAdditionDialog.Form form=new ResourceAdditionDialog.Form();
 							try{
 								List resources=(List)SessionFactory.call(SessionFactory.getInstance().getSession(false),"retrieveResourceDescriptors",null,null);
-								HashMap resourceMap=new HashMap();
+								Hashtable resourceMap=new Hashtable();
 								for (Iterator i=resources.iterator();i.hasNext();){
 									EnterpriseResourceData data=(EnterpriseResourceData)i.next();
-									resourceMap.put(new Long(data.getUniqueId()),data);
+									resourceMap.put(Long.valueOf(data.getUniqueId()),data);
 								}
 								List currentResources=resourcePool.getResourceList();
 								for (Iterator i=currentResources.iterator();i.hasNext();){
 									ResourceImpl resource=(ResourceImpl)i.next();
-									Long key=new Long(resource.getUniqueId());
+									Long key=Long.valueOf(resource.getUniqueId());
 									if (resourceMap.containsKey(key)) resourceMap.remove(key);
 								}
 								form.getSelectedResources().addAll(resourceMap.values());
@@ -907,6 +1146,20 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 //						changeSelection(row + nodes.size() - 1, getColumnCount(), false, true);
 //				}
 			}
+		}
+	};
+	protected SpreadSheetAction clipboardPasteAction = new SpreadSheetAction("Spreadsheet.Action.paste",this) {
+		private static final long serialVersionUID = 1L;
+
+		public void execute() {
+			pasteClipboardAsValues();
+		}
+	};
+	protected SpreadSheetAction pasteInsertAction = new SpreadSheetAction("Spreadsheet.Action.pasteInsert",this) {
+		private static final long serialVersionUID = 1L;
+
+		public void execute() {
+			insertClipboardContents();
 		}
 	};
 	

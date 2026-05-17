@@ -57,7 +57,7 @@ public class RenderingUtils {
 		Map oldRenderingHints = null;
 		Map desktopHints = desktopHints(g2);
 		if (desktopHints != null && !desktopHints.isEmpty()) {
-			oldRenderingHints = new HashMap(desktopHints.size());
+			oldRenderingHints = new Hashtable(desktopHints.size());
 			RenderingHints.Key key;
 			for (Iterator i = desktopHints.keySet().iterator(); i.hasNext();) {
 				key = (RenderingHints.Key) i.next();

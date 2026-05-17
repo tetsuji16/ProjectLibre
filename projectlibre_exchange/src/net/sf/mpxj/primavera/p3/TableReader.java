@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import net.sf.mpxj.common.StreamHelper;
@@ -122,7 +122,7 @@ class TableReader
             int btrieveValue = getShort(buffer, index);
             if (btrieveValue != 0)
             {
-               Map<String, Object> row = new HashMap<String, Object>();
+               Map<String, Object> row = new Hashtable<String, Object>();
                row.put("ROW_VERSION", Integer.valueOf(btrieveValue));
                for (ColumnDefinition column : m_definition.getColumns())
                {

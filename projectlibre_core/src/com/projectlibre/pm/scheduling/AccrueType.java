@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.scheduling;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -79,7 +79,7 @@ public enum AccrueType {
 	}
 	public static AccrueType getInstance(int id){
 		if (reverseMap==null){
-			reverseMap=new HashMap<Integer,AccrueType>();
+			reverseMap=new Hashtable<Integer,AccrueType>();
 			for (AccrueType ct : values())
 				reverseMap.put(ct.getId(),ct);
 		}

@@ -29,7 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 
@@ -309,7 +309,7 @@ public final class DatatypeConverter
       return DAY_TO_NAME.get(value);
    }
 
-   private static final Map<String, ResourceType> STRING_TO_RESOURCE_TYPE_MAP = new HashMap<String, ResourceType>();
+   private static final Map<String, ResourceType> STRING_TO_RESOURCE_TYPE_MAP = new Hashtable<String, ResourceType>();
    static
    {
       STRING_TO_RESOURCE_TYPE_MAP.put("Labor", ResourceType.WORK);
@@ -324,7 +324,7 @@ public final class DatatypeConverter
       RESOURCE_TYPE_TO_STRING_MAP.put(ResourceType.COST, "Non-Labor");
    }
 
-   private static final Map<String, TimeUnit> STRING_TO_TIME_UNITS_MAP = new HashMap<String, TimeUnit>();
+   private static final Map<String, TimeUnit> STRING_TO_TIME_UNITS_MAP = new Hashtable<String, TimeUnit>();
    static
    {
       STRING_TO_TIME_UNITS_MAP.put("Days", TimeUnit.DAYS);
@@ -338,7 +338,7 @@ public final class DatatypeConverter
       TIME_UNITS_TO_STRING_MAP.put(TimeUnit.DAYS, "Days");
    }
 
-   private static Map<String, RelationType> NAME_TO_RELATION_TYPE = new HashMap<String, RelationType>();
+   private static Map<String, RelationType> NAME_TO_RELATION_TYPE = new Hashtable<String, RelationType>();
    static
    {
       NAME_TO_RELATION_TYPE.put("FinishToFinish", RelationType.FINISH_FINISH);
@@ -347,7 +347,7 @@ public final class DatatypeConverter
       NAME_TO_RELATION_TYPE.put("StartToStart", RelationType.START_START);
    }
 
-   private static Map<RelationType, String> RELATION_TYPE_TO_NAME = new HashMap<RelationType, String>();
+   private static Map<RelationType, String> RELATION_TYPE_TO_NAME = new Hashtable<RelationType, String>();
    static
    {
       RELATION_TYPE_TO_NAME.put(RelationType.FINISH_FINISH, "FinishToFinish");
@@ -356,7 +356,7 @@ public final class DatatypeConverter
       RELATION_TYPE_TO_NAME.put(RelationType.START_START, "StartToStart");
    }
 
-   private static Map<String, Day> NAME_TO_DAY = new HashMap<String, Day>();
+   private static Map<String, Day> NAME_TO_DAY = new Hashtable<String, Day>();
    static
    {
       NAME_TO_DAY.put("Mon", Day.MONDAY);
@@ -368,7 +368,7 @@ public final class DatatypeConverter
       NAME_TO_DAY.put("Sun", Day.SUNDAY);
    }
 
-   private static Map<Day, String> DAY_TO_NAME = new HashMap<Day, String>();
+   private static Map<Day, String> DAY_TO_NAME = new Hashtable<Day, String>();
    static
    {
       DAY_TO_NAME.put(Day.MONDAY, "Mon");

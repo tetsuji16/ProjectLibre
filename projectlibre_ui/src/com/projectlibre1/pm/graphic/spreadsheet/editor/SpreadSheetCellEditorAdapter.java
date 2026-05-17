@@ -57,16 +57,25 @@ package com.projectlibre1.pm.graphic.spreadsheet.editor;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.util.EventObject;
+import java.text.AttributedCharacterIterator;
 
 import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.JComponent;
-import javax.swing.JTable;
+import javax.swing.InputMap;
 import javax.swing.KeyStroke;
+import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
 
 import com.projectlibre1.menu.MenuActionConstants;
+import com.projectlibre1.pm.graphic.ChangeAwareTextField;
+import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.CellUtility;
@@ -75,6 +84,12 @@ import com.projectlibre1.pm.graphic.spreadsheet.renderer.CellUtility;
  */
 public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 	protected static JTable lastTable;
+	private static final String COMPOSITION_PROPERTY = "projectlibre.input.composing";
+	private static final String NAME_TAB_INSTALL_PROPERTY = "projectlibre.nameTabActionsInstalled";
+	private static final String NAME_COLLAPSE_ACTION = "spreadsheet.nameColumnCollapse";
+	private static final String NAME_EXPAND_ACTION = "spreadsheet.nameColumnExpand";
+	private static final String NAME_UNDO_ACTION = "spreadsheet.nameColumnUndo";
+	private static final String NAME_REDO_ACTION = "spreadsheet.nameColumnRedo";
 	protected TableCellEditor editor;
 	public SpreadSheetCellEditorAdapter(TableCellEditor editor) {
 		this.editor=editor;
@@ -105,48 +120,141 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 		if (table instanceof SpreadSheet){
 			final SpreadSheet spreadSheet=(SpreadSheet)table;
 			JComponent edit = (component instanceof DateEditor.ExtDateField) ? ((DateEditor.ExtDateField)component).getTextField() : component;
-			edit.getActionMap().put("cut",new AbstractAction(){
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					spreadSheet.prepareAction(MenuActionConstants.ACTION_CUT).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
-				}
-			});
-			edit.getActionMap().put("copy",new AbstractAction(){
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					spreadSheet.prepareAction(MenuActionConstants.ACTION_COPY).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
-				}
-			});
-			edit.getActionMap().put("paste",new AbstractAction(){
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					spreadSheet.prepareAction(MenuActionConstants.ACTION_PASTE).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
-				}
-			});
-			boolean nameField = table.getModel() instanceof SpreadSheetModel
-				&& spreadSheet.isNameFieldColumn(column);
-			edit.setFocusTraversalKeysEnabled(!nameField);
-			if (nameField) {
-				edit.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("TAB"), SpreadSheet.NAME_COLUMN_INDENT_ACTION);
-				edit.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift TAB"), SpreadSheet.NAME_COLUMN_OUTDENT_ACTION);
-				edit.getActionMap().put(SpreadSheet.NAME_COLUMN_INDENT_ACTION, new AbstractAction() {
-					public void actionPerformed(ActionEvent e) {
-						spreadSheet.executeNameCellTabAction(false);
-					}
-				});
-				edit.getActionMap().put(SpreadSheet.NAME_COLUMN_OUTDENT_ACTION, new AbstractAction() {
-					public void actionPerformed(ActionEvent e) {
-						spreadSheet.executeNameCellTabAction(true);
-					}
-				});
+			installClipboardActions(spreadSheet, edit);
+			if (table.getModel() instanceof SpreadSheetModel && spreadSheet.isNameFieldColumn(column)) {
+				installNameFieldTabActions(spreadSheet, edit);
 			} else {
-				edit.getInputMap(JComponent.WHEN_FOCUSED).remove(KeyStroke.getKeyStroke("TAB"));
-				edit.getInputMap(JComponent.WHEN_FOCUSED).remove(KeyStroke.getKeyStroke("shift TAB"));
-				edit.getActionMap().remove(SpreadSheet.NAME_COLUMN_INDENT_ACTION);
-				edit.getActionMap().remove(SpreadSheet.NAME_COLUMN_OUTDENT_ACTION);
+				resetNameFieldTabActions(edit);
 			}
-			
 		}
 		
 		return component;
 	}
+
+	protected void installClipboardActions(final SpreadSheet spreadSheet, JComponent edit) {
+		edit.getActionMap().put("cut",new AbstractAction(){
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				spreadSheet.prepareAction(MenuActionConstants.ACTION_CUT).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
+			}
+		});
+		edit.getActionMap().put("copy",new AbstractAction(){
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				spreadSheet.prepareAction(MenuActionConstants.ACTION_COPY).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
+			}
+		});
+		edit.getActionMap().put("paste",new AbstractAction(){
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				spreadSheet.prepareAction(MenuActionConstants.ACTION_PASTE).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
+			}
+		});
+		edit.getActionMap().put("pasteInsert", new AbstractAction() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				spreadSheet.prepareAction(MenuActionConstants.ACTION_PASTE_INSERT).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
+			}
+		});
+		InputMap inputMap = edit.getInputMap(JComponent.WHEN_FOCUSED);
+		inputMap.put(KeyStroke.getKeyStroke("shift ctrl V"), "pasteInsert");
+	}
+
+	protected void installNameFieldTabActions(final SpreadSheet spreadSheet, final JComponent edit) {
+		edit.setFocusTraversalKeysEnabled(false);
+		InputMap inputMap = edit.getInputMap(JComponent.WHEN_FOCUSED);
+		ActionMap actionMap = edit.getActionMap();
+		inputMap.put(KeyStroke.getKeyStroke("TAB"), SpreadSheet.NAME_COLUMN_INDENT_ACTION);
+		inputMap.put(KeyStroke.getKeyStroke("shift TAB"), SpreadSheet.NAME_COLUMN_OUTDENT_ACTION);
+		actionMap.put(SpreadSheet.NAME_COLUMN_INDENT_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				spreadSheet.executeNameCellTabAction(false);
+			}
+		});
+		actionMap.put(SpreadSheet.NAME_COLUMN_OUTDENT_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				spreadSheet.executeNameCellTabAction(true);
+			}
+		});
+		actionMap.put(NAME_COLLAPSE_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				spreadSheet.executeNameCellCollapseExpand(false);
+			}
+		});
+		actionMap.put(NAME_EXPAND_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				spreadSheet.executeNameCellCollapseExpand(true);
+			}
+		});
+		inputMap.put(KeyStroke.getKeyStroke("ctrl Z"), NAME_UNDO_ACTION);
+		inputMap.put(KeyStroke.getKeyStroke("ctrl Y"), NAME_REDO_ACTION);
+		actionMap.put(NAME_UNDO_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				spreadSheet.finishCurrentOperations();
+				if (GraphicManager.getDocumentFrameInstance() != null)
+					GraphicManager.getDocumentFrameInstance().doUndoRedo(true);
+			}
+		});
+		actionMap.put(NAME_REDO_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				spreadSheet.finishCurrentOperations();
+				if (GraphicManager.getDocumentFrameInstance() != null)
+					GraphicManager.getDocumentFrameInstance().doUndoRedo(false);
+			}
+		});
+		edit.putClientProperty(ChangeAwareTextField.NAME_HIERARCHY_COLLAPSE_ACTION_PROPERTY, actionMap.get(NAME_COLLAPSE_ACTION));
+		edit.putClientProperty(ChangeAwareTextField.NAME_HIERARCHY_EXPAND_ACTION_PROPERTY, actionMap.get(NAME_EXPAND_ACTION));
+	}
+
+	protected void resetNameFieldTabActions(JComponent edit) {
+		edit.setFocusTraversalKeysEnabled(true);
+		InputMap inputMap = edit.getInputMap(JComponent.WHEN_FOCUSED);
+		ActionMap actionMap = edit.getActionMap();
+		inputMap.remove(KeyStroke.getKeyStroke("TAB"));
+		inputMap.remove(KeyStroke.getKeyStroke("shift TAB"));
+		inputMap.remove(KeyStroke.getKeyStroke("ctrl Z"));
+		inputMap.remove(KeyStroke.getKeyStroke("ctrl Y"));
+		actionMap.remove(SpreadSheet.NAME_COLUMN_INDENT_ACTION);
+		actionMap.remove(SpreadSheet.NAME_COLUMN_OUTDENT_ACTION);
+		actionMap.remove(NAME_COLLAPSE_ACTION);
+		actionMap.remove(NAME_EXPAND_ACTION);
+		actionMap.remove(NAME_UNDO_ACTION);
+		actionMap.remove(NAME_REDO_ACTION);
+		edit.putClientProperty(ChangeAwareTextField.NAME_HIERARCHY_COLLAPSE_ACTION_PROPERTY, null);
+		edit.putClientProperty(ChangeAwareTextField.NAME_HIERARCHY_EXPAND_ACTION_PROPERTY, null);
+	}
+
+	protected void installCompositionTracking(final JComponent edit) {
+		if (Boolean.TRUE.equals(edit.getClientProperty(NAME_TAB_INSTALL_PROPERTY))) {
+			return;
+		}
+		edit.putClientProperty(NAME_TAB_INSTALL_PROPERTY, Boolean.TRUE);
+		edit.putClientProperty(COMPOSITION_PROPERTY, Boolean.FALSE);
+		edit.addInputMethodListener(new InputMethodListener() {
+			public void inputMethodTextChanged(InputMethodEvent event) {
+				edit.putClientProperty(COMPOSITION_PROPERTY, Boolean.valueOf(isComposing(event)));
+			}
+			public void caretPositionChanged(InputMethodEvent event) {
+			}
+		});
+	}
+
+	protected boolean isComposing(InputMethodEvent event) {
+		AttributedCharacterIterator text = event.getText();
+		if (text == null) {
+			return false;
+		}
+		int committed = event.getCommittedCharacterCount();
+		int length = text.getEndIndex() - text.getBeginIndex();
+		return committed < length;
+	}
+
+	protected boolean isCompositionActive(JComponent edit) {
+		return Boolean.TRUE.equals(edit.getClientProperty(COMPOSITION_PROPERTY));
+	}
+
 	/**
 	 * @see javax.swing.CellEditor#addCellEditorListener(javax.swing.event.CellEditorListener)
 	 */
@@ -172,10 +280,12 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 	 * @see javax.swing.CellEditor#isCellEditable(java.util.EventObject)
 	 */
 	public boolean isCellEditable(EventObject event) {
-		/*if (event instanceof EditCellEvent){
+		if (event == null)
 			return true;
-		}
-		return false;*/
+		if (event instanceof MouseEvent)
+			return ((MouseEvent)event).getClickCount() >= 2;
+		if (event instanceof KeyEvent)
+			return ((KeyEvent)event).getID() == KeyEvent.KEY_TYPED;
 		return true;
 	}
 	/**

@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.spreadsheet;
 
 import java.awt.Rectangle;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -199,9 +199,9 @@ public class SpreadSheetParamsImpl extends GanttParamsImpl implements SpreadShee
 	}
 	private void updatePages(){
 		if (printBounds==null) return;
-		if (colPageInfo==null) colPageInfo=new ArrayList();
+		if (colPageInfo==null) colPageInfo=new Vector();
 		else  colPageInfo.clear();
-		if (rowPageInfo==null) rowPageInfo=new ArrayList();
+		if (rowPageInfo==null) rowPageInfo=new Vector();
 		else  rowPageInfo.clear();
 
 		int w=getConfiguration().getRowHeaderWidth()+2*idColMargin;
@@ -273,7 +273,7 @@ public class SpreadSheetParamsImpl extends GanttParamsImpl implements SpreadShee
 		}
 	}
 
-	protected ArrayList colPageInfo,rowPageInfo;
+	protected Vector colPageInfo,rowPageInfo;
 	public PageInfo getRowPageInfo(int row){
 		return (row<0||row>=rowPageInfo.size())?null:(PageInfo)rowPageInfo.get(row);
 	}
@@ -352,8 +352,8 @@ public class SpreadSheetParamsImpl extends GanttParamsImpl implements SpreadShee
 
 	public GraphParams createSafePrintCopy(){
 		SpreadSheetParamsImpl c=(SpreadSheetParamsImpl)super.createSafePrintCopy();
-		if (c.colPageInfo!=null) c.colPageInfo=(ArrayList)colPageInfo.clone();
-		if (c.rowPageInfo!=null) c.rowPageInfo=(ArrayList)rowPageInfo.clone();
+		if (c.colPageInfo!=null) c.colPageInfo=(Vector)colPageInfo.clone();
+		if (c.rowPageInfo!=null) c.rowPageInfo=(Vector)rowPageInfo.clone();
 		return c;
 	}
 

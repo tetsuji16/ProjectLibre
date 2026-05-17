@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +71,7 @@ import com.projectlibre1.pm.graphic.spreadsheet.editor.SimpleComboBoxEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SimpleEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SpinEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SpreadSheetCellEditorAdapter;
+import com.projectlibre1.pm.graphic.spreadsheet.editor.SpreadSheetNameCellEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.DateRenderer;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.IndicatorsRenderer;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.LookupRenderer;
@@ -93,8 +94,8 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 
 	int colWidth = 0;
 
-	private ArrayList fieldArray; //changes when columns are moved - needed to update the current definition
-	private ArrayList originalFieldArray; // will not change
+	private Vector fieldArray; //changes when columns are moved - needed to update the current definition
+	private Vector originalFieldArray; // will not change
 	private Map<String,Integer> colWidthMap;
 
 	boolean svg;
@@ -103,14 +104,14 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 	 *            TODO
 	 *
 	 */
-	public SpreadSheetColumnModel(final ArrayList fieldArray) {
+	public SpreadSheetColumnModel(final Vector fieldArray) {
 		this(fieldArray,null);
 
 	}
-	public SpreadSheetColumnModel(ArrayList fieldArray,List<Integer> colWidthList) {
+	public SpreadSheetColumnModel(Vector fieldArray,List<Integer> colWidthList) {
 		super();
 		setFieldArray(fieldArray);
-		colWidthMap=new HashMap<String,Integer>();
+		colWidthMap=new Hashtable<String,Integer>();
 		if (fieldArray instanceof SpreadSheetFieldArray){
 			SpreadSheetFieldArray sa=(SpreadSheetFieldArray)fieldArray;
 			if (colWidthList==null&&sa!=null&&sa.getWidths()!=null&&sa.getWidths().size()>0){
@@ -147,8 +148,7 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 			if (field.isNameField()) {
 				tc.setPreferredWidth((svg)?170:150);
 				tc.setCellRenderer(new SpreadSheetNameCellRenderer());
-//				tc.setCellEditor(new SpreadSheetNameCellEditor(new SimpleEditor(String.class)));
-				tc.setCellEditor(new SpreadSheetCellEditorAdapter(new SimpleEditor(String.class)));
+				tc.setCellEditor(new SpreadSheetNameCellEditor(new SimpleEditor(String.class)));
 			} else if (field == Configuration.getFieldFromId("Field.indicators")) {
 				tc.setPreferredWidth(50);
 				tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new IndicatorsRenderer()));
@@ -215,13 +215,13 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 		fieldArray = f.move(columnIndex+1, newIndex+1);
 	}
 
-	public ArrayList getFieldArray() {
+	public Vector getFieldArray() {
 		return fieldArray;
 	}
 
-	public void setFieldArray(ArrayList fieldArray) {
+	public void setFieldArray(Vector fieldArray) {
 		this.fieldArray = fieldArray;
-		originalFieldArray = (ArrayList) fieldArray.clone();
+		originalFieldArray = (Vector) fieldArray.clone();
 	}
 
 	public int getColWidth() {

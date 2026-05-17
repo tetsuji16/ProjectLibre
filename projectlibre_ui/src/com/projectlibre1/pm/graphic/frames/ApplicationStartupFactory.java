@@ -59,8 +59,8 @@ import java.awt.Container;
 import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,7 +77,7 @@ public class ApplicationStartupFactory extends StartupFactory {
 	public ApplicationStartupFactory(String args[]){
 		this(ApplicationStartupFactory.extractOpts(args));
 	}
-	public ApplicationStartupFactory(HashMap opts) {
+	public ApplicationStartupFactory(Hashtable opts) {
 		try{
 			Class.forName("java.net.CookieHandler").getMethod("setDefault",new Class[]{CookieHandler.class}).invoke(null,new Object[]{null});
 		}catch(Exception e){}
@@ -114,7 +114,7 @@ public class ApplicationStartupFactory extends StartupFactory {
 		else if (o instanceof List){
 			fileNames=(List)o;
 		}else{
-			fileNames=new ArrayList(1);
+			fileNames=new Vector(1);
 			fileNames.add(o);
 		}
 
@@ -194,8 +194,8 @@ public class ApplicationStartupFactory extends StartupFactory {
 //	private void computeOpts(String args[]){
 //		opts = extractOpts(args);
 //	}
-	public static HashMap extractOpts(String args[]){
-		HashMap opts=new HashMap();
+	public static Hashtable extractOpts(String args[]){
+		Hashtable opts=new Hashtable();
 		if (args.length==0) return opts;
 		String arg=args[0];
 		if (arg!=null&&arg.length()>1&&(!arg.startsWith("--"))){

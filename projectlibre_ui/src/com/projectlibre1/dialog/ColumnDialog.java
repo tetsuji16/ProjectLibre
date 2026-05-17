@@ -56,7 +56,7 @@
 package com.projectlibre1.dialog;
 
 import java.awt.Component;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,9 +74,9 @@ public final class ColumnDialog extends AbstractDialog {
 	private static final long serialVersionUID = 1L;
 	JComboBox combo = null;
 	List fieldList;
-	ArrayList currentFields;
+	Vector currentFields;
 	Field field;
-	public static Field getFieldFromDialog(Component component, List fieldList, ArrayList currentFields) {
+	public static Field getFieldFromDialog(Component component, List fieldList, Vector currentFields) {
 		ColumnDialog dlg = new ColumnDialog(component,fieldList,currentFields);
 		if (dlg.doModal())
 			return dlg.getField();
@@ -84,7 +84,7 @@ public final class ColumnDialog extends AbstractDialog {
 	}
 	
 	
-	private ColumnDialog(Component component,List fieldList, ArrayList currentFields) {
+	private ColumnDialog(Component component,List fieldList, Vector currentFields) {
 		super(GraphicManager.getInstance(component).getFrame(), Messages.getString("ColumnDialog.InsertColumn"), true); //$NON-NLS-1$
 		this.fieldList = fieldList;
 		this.currentFields = currentFields;
@@ -103,7 +103,7 @@ public final class ColumnDialog extends AbstractDialog {
 
 	protected boolean bind(boolean get) {
 		if (get) {
-			ArrayList l = new ArrayList();
+			Vector l = new Vector();
 			l.addAll(fieldList);
 			Collections.sort(l);
 			combo = new JComboBox(new DefaultComboBoxModel(l.toArray()));

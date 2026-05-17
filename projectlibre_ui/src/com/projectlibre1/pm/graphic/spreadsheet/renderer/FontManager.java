@@ -57,7 +57,7 @@ package com.projectlibre1.pm.graphic.spreadsheet.renderer;
 
 import java.awt.Component;
 import java.awt.Font;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.UIManager;
@@ -71,9 +71,9 @@ public class FontManager {
 	public static final Font SVG_DEFAULT_FONT=new Font("SansSerif",Font.PLAIN,12);
 	public static final Font DEFAULT_FONT=UIManager.getFont("Table.font");
 
-	public static Map boldMapping=new HashMap();
-	public static Map italicMapping=new HashMap();
-	public static Map boldItalicMapping=new HashMap();
+	public static Map boldMapping=new Hashtable();
+	public static Map italicMapping=new Hashtable();
+	public static Map boldItalicMapping=new Hashtable();
 	//fonts are mapped to avoid using deriveFont each time. deriveFont causes useless memory consumption 
 	
 	public static void setComponentFont(CellFormat props, Component component) {
