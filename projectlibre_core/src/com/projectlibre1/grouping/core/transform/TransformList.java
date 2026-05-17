@@ -95,7 +95,9 @@ public class TransformList implements NamedItem {
 	public void addFactory(CommonTransformFactory factory) {
     	if (factory.isServer()&&Environment.getStandAlone()) return;
 		factories.add(factory);
-		factoryMap.put(factory.getId(),factory);
+		if (factory.getId() != null) {
+			factoryMap.put(factory.getId(),factory);
+		}
 	}
 	/**
 	 * @return Returns the name.
@@ -122,6 +124,7 @@ public class TransformList implements NamedItem {
 	}
 
 	public Object getTransform(String id) {
+	    if (id == null) return null;
 	    Object transform=null;
 	    if (elementMap.containsKey(id))
 		    transform=elementMap.get(id);
@@ -130,7 +133,9 @@ public class TransformList implements NamedItem {
             if (factory==null) return null;
             try {
                     transform=factory.getTransform();
-                    elementMap.put(id,transform);
+                    if (transform != null) {
+                    	elementMap.put(id,transform);
+                    }
                 } catch (InvalidFormulaException e) {
         			log.error("Formula not set: invalid formula text: " +factory.getFormulaText());
                 }

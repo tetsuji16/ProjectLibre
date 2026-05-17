@@ -160,7 +160,9 @@ public class TransformComboBoxModel extends AbstractListModel implements ComboBo
 	}
 	public void setSelectedItem(Object obj) {
 		selected=(CommonTransformFactory)obj;
-		viewMap.put(view,selected);
+		if (view != null && selected != null) {
+			viewMap.put(view,selected);
+		}
 	}
 
     

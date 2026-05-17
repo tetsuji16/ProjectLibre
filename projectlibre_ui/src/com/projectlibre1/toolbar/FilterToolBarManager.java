@@ -170,9 +170,12 @@ public class FilterToolBarManager implements MenuActionConstants{
 		groupersComboBox.transformBasedOnValue();
 	}
 	public void clear() {
-		filtersComboBox.setSelectedIndex(0);
-		sortersComboBox.setSelectedIndex(0);
-		groupersComboBox.setSelectedIndex(0);
+		if (filtersComboBox.getItemCount() > 0)
+			filtersComboBox.setSelectedIndex(0);
+		if (sortersComboBox.getItemCount() > 0)
+			sortersComboBox.setSelectedIndex(0);
+		if (groupersComboBox.getItemCount() > 0)
+			groupersComboBox.setSelectedIndex(0);
 	}
 
 }

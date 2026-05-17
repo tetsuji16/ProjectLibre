@@ -233,6 +233,9 @@ public class PredefinedShape {
 	}
 
 	public static PredefinedShape find(String key) {
+		if (key == null) {
+			return null;
+		}
 		PredefinedShape found = (PredefinedShape) getPredefinedShapeMap().get(key);
 		return found;
 	}

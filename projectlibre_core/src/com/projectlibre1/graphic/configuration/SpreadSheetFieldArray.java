@@ -157,11 +157,30 @@ public class SpreadSheetFieldArray extends Vector implements NamedItem, Cloneabl
     }
     public CellStyle getCellStyle(){
         CellStyles cellStyles=CellStyles.getInstance();
+        if (cellStyles == null) {
+            return new CellStyle() {
+                public CellFormat getCellFormat(Object node) {
+                    return null;
+                }
+            };
+        }
         if (cellStyleId==null||cellStyleId.length()==0)
-            return cellStyles.getDefaultStyle();
+            return safeDefaultStyle(cellStyles);
         CellStyle style=cellStyles.getStyle(cellStyleId);
-        if (style==null) style=cellStyles.getDefaultStyle();
+        if (style==null) style=safeDefaultStyle(cellStyles);
         return style;
+    }
+
+    private CellStyle safeDefaultStyle(CellStyles cellStyles) {
+        CellStyle defaultStyle = cellStyles.getDefaultStyle();
+        if (defaultStyle != null) {
+            return defaultStyle;
+        }
+        return new CellStyle() {
+            public CellFormat getCellFormat(Object node) {
+                return null;
+            }
+        };
     }
 
     public String getActionListId() {
@@ -172,11 +191,30 @@ public class SpreadSheetFieldArray extends Vector implements NamedItem, Cloneabl
     }
     public ActionList getActionList(){
         ActionLists actionLists=ActionLists.getInstance();
+        if (actionLists == null) {
+            return new ActionList() {
+                public String getList(Object nodeModel) {
+                    return null;
+                }
+            };
+        }
         if (actionListId==null||actionListId.length()==0)
-            return actionLists.getDefaultActionList();
+            return safeDefaultActionList(actionLists);
         ActionList actionList=actionLists.getActionList(actionListId);
-        if (actionList==null) actionList=actionLists.getDefaultActionList();
+        if (actionList==null) actionList=safeDefaultActionList(actionLists);
         return actionList;
+    }
+
+    private ActionList safeDefaultActionList(ActionLists actionLists) {
+        ActionList defaultActionList = actionLists.getDefaultActionList();
+        if (defaultActionList != null) {
+            return defaultActionList;
+        }
+        return new ActionList() {
+            public String getList(Object nodeModel) {
+                return null;
+            }
+        };
     }
 
 	/**

@@ -77,7 +77,6 @@ public class PredefinedStroke {
 		predefinedStrokeMap.put("DASHED", DASHED);
 		predefinedStrokeMap.put("FRAMED", FRAMED);
 		predefinedStrokeMap.put("LARGE_FRAMED", LARGE_FRAMED);
-		predefinedStrokeMap.put("SOLID", SOLID);
 	}
 	
 	private static Hashtable getPredefinedStrokeMap() {
@@ -89,6 +88,12 @@ public class PredefinedStroke {
 	}
 	
 	public static Stroke find(String key) {
+		if (key == null) {
+			return null;
+		}
+		if ("SOLID".equals(key)) {
+			return SOLID;
+		}
 		Stroke found = (Stroke) getPredefinedStrokeMap().get(key);
 		return found;
 	}

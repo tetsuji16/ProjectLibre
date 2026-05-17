@@ -103,7 +103,13 @@ public class MenuActionsMap {
     protected DualHashBidiMap listeners = new DualHashBidiMap();
 
 	public void addHandler(String menuId, AbstractAction action) {
-		listeners.put(menuManager.getActionStringFromId(menuId),action);
+		String actionKey = menuManager.getActionStringFromId(menuId);
+		if (actionKey == null) {
+			actionKey = menuId;
+		}
+		if (actionKey != null) {
+			listeners.put(actionKey, action);
+		}
         menuIdActionMap.put(menuId, action);
 	}
 	
@@ -116,6 +122,9 @@ public class MenuActionsMap {
 		Iterator i = listeners.keySet().iterator();
 		while (i.hasNext()) {
 			String actionText = (String) i.next();
+			if (actionText == null) {
+				continue;
+			}
 			GlobalMenuAction action = (GlobalMenuAction)listeners.get(actionText);
 			if (action.needsDocument()) {
 				menuManager.setActionEnabled(actionText,enable&&action.allowed(enable));
