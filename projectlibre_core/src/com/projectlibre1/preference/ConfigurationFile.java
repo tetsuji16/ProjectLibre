@@ -184,11 +184,11 @@ public class ConfigurationFile {
 			File f=new File(confDir,OPENPROJ_RUN_CONF_FILE);
 			if (!f.exists()) return null;
 			runProps=new Properties();
-			try {
-				FileInputStream in=new FileInputStream(f);
+			try (FileInputStream in = new FileInputStream(f)) {
 				runProps.load(in);
-				in.close();
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				logger.log(java.util.logging.Level.FINE, "Failed to load runtime properties", e);
+			}
 		}
 		return runProps.getProperty(key);
 	}

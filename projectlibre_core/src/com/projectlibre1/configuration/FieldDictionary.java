@@ -312,8 +312,8 @@ public class FieldDictionary {
 		fieldsToHtmlTable(result,"Dependency Fields",FieldDictionary.getInstance().getProjectFields());
 		result.append("</body></html>");
 		
-		try {
-			new FileOutputStream(fileName).write(result.toString().getBytes());
+		try (FileOutputStream fos = new FileOutputStream(fileName)) {
+			fos.write(result.toString().getBytes());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			log.error("Unexpected error", e);
