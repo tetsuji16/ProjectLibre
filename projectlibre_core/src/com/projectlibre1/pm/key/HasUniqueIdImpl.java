@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.key;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import com.projectlibre1.server.data.CommonDataObject;
@@ -69,7 +69,7 @@ import com.projectlibre1.session.SessionFactory;
  */
 public class HasUniqueIdImpl implements Serializable{
 	private static final long serialVersionUID = 939382200022L;
-	private static Map uniqueIds=new HashMap();
+	private static Map uniqueIds=new Hashtable();
 	protected long uniqueId = -1L;
 	protected transient Session session;
 	protected transient boolean local;
@@ -80,16 +80,16 @@ public class HasUniqueIdImpl implements Serializable{
     public HasUniqueIdImpl(DataObject hasUniqueId,long uniqueId) {
     	setLocal(CommonDataObject.isLocal(uniqueId));
     	//System.out.println((hasUniqueId==null?"null":hasUniqueId.getClass()+"")+" UniqueId "+uniqueId+", local? "+local);
-    	uniqueIds.put(new Long(uniqueId),hasUniqueId);
+    	uniqueIds.put(Long.valueOf(uniqueId),hasUniqueId);
     }
     public HasUniqueIdImpl(boolean local,DataObject hasUniqueId) {
     	setLocal(local);
     	//System.out.println((hasUniqueId==null?"null":hasUniqueId.getClass()+"")+" UniqueId ?, local? "+local);
 		uniqueId = session.getId();
-		uniqueIds.put(new Long(uniqueId),hasUniqueId);
+		uniqueIds.put(Long.valueOf(uniqueId),hasUniqueId);
     }
     protected void finalize() throws Throwable {
-        uniqueIds.remove(new Long(uniqueId));
+        uniqueIds.remove(Long.valueOf(uniqueId));
         super.finalize();
     }
 
@@ -126,9 +126,9 @@ public class HasUniqueIdImpl implements Serializable{
 		if (localOnly&&!CommonDataObject.isLocal(uniqueId)) return false;
 		if (localOnly&&local) setLocal(false);
 		long oldUniqueId=uniqueId;
-		DataObject hasUniqueId=(DataObject)uniqueIds.remove(new Long(oldUniqueId));
+		DataObject hasUniqueId=(DataObject)uniqueIds.remove(Long.valueOf(oldUniqueId));
 		uniqueId = session.getId();
-		uniqueIds.put(new Long(uniqueId),hasUniqueId);
+		uniqueIds.put(Long.valueOf(uniqueId),hasUniqueId);
 		//System.out.println("Renumber "+(hasUniqueId==null?"":(hasUniqueId.getClass()+"/"+hasUniqueId.getName()))+": "+oldUniqueId+"-->"+uniqueId);
 		return true;
 	}

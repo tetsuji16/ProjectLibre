@@ -163,7 +163,7 @@ public class DependencyFormat extends AssociationFormat {
 
 		StringBuffer details = new StringBuffer();
 		if (!DependencyType.isDefault(dependency.getDependencyType()) || hasLag)
-			details.append(DependencyType.mapValueToString( new Integer(dependency.getDependencyType())));
+			details.append(DependencyType.mapValueToString( Integer.valueOf(dependency.getDependencyType())));
 
 		Duration duration = new Duration(dependency.getLag()); // use duration format to format duration
 		if (hasLag) {

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.EventListener;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -114,7 +114,7 @@ public class ViewTransformer{
     }
     public void setFilters(String slist) {
         StringTokenizer st=new StringTokenizer(slist,";, \t");
-        filters=new ArrayList();
+        filters=new Vector();
         while (st.hasMoreTokens()) filters.add(st.nextToken());
     }
     public List getSorterList() {
@@ -122,7 +122,7 @@ public class ViewTransformer{
     }
     public void setSorters(String slist) {
         StringTokenizer st=new StringTokenizer(slist,";, \t");
-        sorters=new ArrayList();
+        sorters=new Vector();
         while (st.hasMoreTokens()) sorters.add(st.nextToken());
     }
     public List getGrouperList() {
@@ -130,7 +130,7 @@ public class ViewTransformer{
     }
     public void setGroupers(String slist) {
         StringTokenizer st=new StringTokenizer(slist,";, \t");
-        groupers=new ArrayList();
+        groupers=new Vector();
         while (st.hasMoreTokens()) groupers.add(st.nextToken());
     }
 

@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.mpp;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import net.sf.mpxj.AssignmentField;
@@ -1570,7 +1570,7 @@ class FieldMap14 extends FieldMap
       },
    };
 
-   private static final Map<FieldType, Integer> VAR_DATA_MAP = new HashMap<FieldType, Integer>();
+   private static final Map<FieldType, Integer> VAR_DATA_MAP = new Hashtable<FieldType, Integer>();
    static
    {
       for (Object[] item : VAR_DATA_MAP_CONTENT)

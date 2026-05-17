@@ -210,8 +210,8 @@ public class DecoratedField {
 			endString = endString.substring(0, endString.indexOf('_'));
 //			System.out.println("time based field start " + startString + ", end " + endString);
 			setTimeBased(true);
-			setStart(new Long(startString).longValue());
-			setEnd(new Long(endString).longValue());
+			setStart(Long.valueOf(startString).longValue());
+			setEnd(Long.valueOf(endString).longValue());
 //			System.out.println("time based field start " + getStart() + ", end " + getEnd());
 		}
 	}

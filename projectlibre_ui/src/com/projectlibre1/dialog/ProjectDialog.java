@@ -58,7 +58,7 @@ package com.projectlibre1.dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Date;
 
@@ -281,7 +281,7 @@ public final class ProjectDialog extends FieldDialog { // extends FieldDialog fo
 		startDateChooser = CalendarFactory.createDateField();
 		manager = new JTextField();
 		name = new JTextField();
-		ArrayList choices = new ArrayList();
+		Vector choices = new Vector();
 		choices.add(new String());
 		choices.addAll(ResourcePoolFactory.getInstance().getResourcePools());
 		resourcePool = new JComboBox(choices.toArray());
@@ -333,9 +333,9 @@ public final class ProjectDialog extends FieldDialog { // extends FieldDialog fo
 			startDateChooser.setValue(d);
 			forward.setSelected(form.isForward());
 //			remote.setSelected(!form.isLocal());
-			projectType.setSelectedItem(new Integer(form.getProjectType()));
-			projectStatus.setSelectedItem(new Integer(form.getProjectStatus()));
-			expenseType.setSelectedItem(new Integer(form.getExpenseType()));
+			projectType.setSelectedItem(Integer.valueOf(form.getProjectType()));
+			projectStatus.setSelectedItem(Integer.valueOf(form.getProjectStatus()));
+			expenseType.setSelectedItem(Integer.valueOf(form.getExpenseType()));
 			group.setText(form.getGroup());
 			division.setText(form.getDivision());
 			setDateLabel();

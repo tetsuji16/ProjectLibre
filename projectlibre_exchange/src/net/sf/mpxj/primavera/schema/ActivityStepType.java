@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -700,7 +700,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (udf == null)
       {
-         udf = new ArrayList<UDFAssignmentType>();
+         udf = new Vector<UDFAssignmentType>();
       }
       return this.udf;
    }

@@ -59,12 +59,17 @@ package com.projectlibre1.strings;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.projectlibre1.preference.ConfigurationFile;
 
 public class DirectoryClassLoader extends ClassLoader{
+    private static final Logger logger = Logger.getLogger(DirectoryClassLoader.class.getName());
+
     protected File directory;
     public DirectoryClassLoader(){
     	directory=ConfigurationFile.getConfDir();
@@ -79,29 +84,33 @@ public class DirectoryClassLoader extends ClassLoader{
     public boolean isValid(){
     	return directory!=null;
     }
-    
+
     protected Class findClass(String name) throws ClassNotFoundException{
     	if (directory==null) throw new ClassNotFoundException(name);
-        try {
-			File file = new File(directory, name+".properties");
-			DataInputStream in = new DataInputStream(new FileInputStream(file));
-			byte b[] = new byte[(int)file.length()];
+        File file = new File(directory, name + ".properties");
+        if (!file.isFile()) {
+            throw new ClassNotFoundException(name);
+        }
+        try (DataInputStream in = new DataInputStream(new FileInputStream(file))) {
+			byte b[] = new byte[(int) file.length()];
 			in.readFully(b);
-			in.close();
 			return defineClass(name, b, 0, b.length);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ClassNotFoundException(name);
+		} catch (IOException e) {
+			logger.log(Level.FINE, "Failed to load class {0} from {1}", new Object[]{name, file});
+			throw new ClassNotFoundException(name, e);
 		}
-        
     }
-	public InputStream getResourceAsStream(String name) { //used by resourceBundle
+
+	public InputStream getResourceAsStream(String name) {
     	if (directory==null) return null;
         try {
-			File file = new File(directory, name+"_"+Locale.getDefault()+".properties");
-			DataInputStream in = new DataInputStream(new FileInputStream(file));
-			return in;
-		} catch (Exception e) {
+			File file = new File(directory, name + "_" + Locale.getDefault() + ".properties");
+			if (!file.isFile()) {
+				return null;
+			}
+			return new FileInputStream(file);
+		} catch (IOException e) {
+			logger.log(Level.FINE, "Failed to load resource {0}", name);
 			return null;
 		}
 	}

@@ -29,7 +29,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -976,7 +976,7 @@ public final class PlannerReader extends AbstractProjectReader
    private List<DateRange> m_defaultWorkingHours = new LinkedList<DateRange>();
    private List<ProjectListener> m_projectListeners;
 
-   private static Map<String, RelationType> RELATIONSHIP_TYPES = new HashMap<String, RelationType>();
+   private static Map<String, RelationType> RELATIONSHIP_TYPES = new Hashtable<String, RelationType>();
    static
    {
       RELATIONSHIP_TYPES.put("FF", RelationType.FINISH_FINISH);

@@ -62,7 +62,7 @@ import com.projectlibre1.scripting.Formula;
 public class AssignmentFormula extends Formula {
 	public Object evaluate(Object object) throws InvalidFormulaException {
 		if (!(object instanceof Assignment)) return Boolean.FALSE;
-		return new Boolean(evaluateTask((Assignment)object));
+		return Boolean.valueOf(evaluateTask((Assignment)object));
 	}
 	public boolean evaluateTask(Assignment task){
 		return task.isAssignment();

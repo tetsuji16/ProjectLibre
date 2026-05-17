@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform.filtering;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -147,7 +147,7 @@ public abstract class NodeFilter extends CommonTransform implements Predicate{
 	}
 	public Object[] filterArray(Object[] list){
 		if (list==null) return null;
-		ArrayList filtered=new ArrayList(list.length);
+		Vector filtered=new Vector(list.length);
 		for (int i=0;i<list.length;i++){
 			Object obj=list[i];
 			if (evaluate(obj)) filtered.add(obj);

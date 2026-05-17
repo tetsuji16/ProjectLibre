@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.menu;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -91,7 +91,7 @@ public class MenuActionsMap {
 	public MenuActionsMap(ActionMap actionMap,MenuManager menuManager) {
 		this.actionMap = actionMap;
 		this.menuManager = menuManager;
-		menuIdActionMap = new HashMap();
+		menuIdActionMap = new Hashtable();
 	}
 	
 	public Action getConcreteAction(String key) {

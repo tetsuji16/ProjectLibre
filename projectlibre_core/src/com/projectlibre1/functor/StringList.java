@@ -146,7 +146,7 @@ public class StringList implements Closure {
 	
 	public static String listWithMaxAndMessage(Collection collection, int maxInList, String message, Transformer transformer) {
 		if (collection.size() > maxInList)
-			return MessageFormat.format( message, new Object[] { new Integer(collection.size())});
+			return MessageFormat.format( message, new Object[] { Integer.valueOf(collection.size())});
 		return list(collection,transformer);
 	}
 	/**

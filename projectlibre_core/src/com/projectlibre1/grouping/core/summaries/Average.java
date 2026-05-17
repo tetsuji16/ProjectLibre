@@ -71,8 +71,8 @@ public class Average extends NumberSummaryVisitor {
 	 */
 	public Object getSummary() {
 		if (count == 0)
-			return new Double(0);
-		return new Double(summary / count);
+			return Double.valueOf(0);
+		return Double.valueOf(summary / count);
 	}
 	public void reset() {
 		super.reset();

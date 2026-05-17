@@ -58,8 +58,8 @@ package com.projectlibre1.scripting;
 import java.util.Hashtable;
 
 public class FormulaFactory {
-	private static  Hashtable scriptClassMap = new Hashtable();
-	private static  Hashtable formulaMap = new Hashtable();
+	private static  Hashtable scriptClassMap = new Hashtable<>();
+	private static  Hashtable formulaMap = new Hashtable<>();
 	public FormulaFactory() {
 		super();
 		// TODO Auto-generated constructor stub

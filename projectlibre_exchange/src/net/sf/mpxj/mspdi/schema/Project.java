@@ -9,7 +9,7 @@ package net.sf.mpxj.mspdi.schema;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -4692,7 +4692,7 @@ import net.sf.mpxj.WorkGroup;
       {
          if (assignment == null)
          {
-            assignment = new ArrayList<Project.Assignments.Assignment>();
+            assignment = new Vector<Project.Assignments.Assignment>();
          }
          return this.assignment;
       }
@@ -7298,7 +7298,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (extendedAttribute == null)
             {
-               extendedAttribute = new ArrayList<Project.Assignments.Assignment.ExtendedAttribute>();
+               extendedAttribute = new Vector<Project.Assignments.Assignment.ExtendedAttribute>();
             }
             return this.extendedAttribute;
          }
@@ -7329,7 +7329,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (baseline == null)
             {
-               baseline = new ArrayList<Project.Assignments.Assignment.Baseline>();
+               baseline = new Vector<Project.Assignments.Assignment.Baseline>();
             }
             return this.baseline;
          }
@@ -12586,7 +12586,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (timephasedData == null)
             {
-               timephasedData = new ArrayList<TimephasedDataType>();
+               timephasedData = new Vector<TimephasedDataType>();
             }
             return this.timephasedData;
          }
@@ -12665,7 +12665,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (timephasedData == null)
                {
-                  timephasedData = new ArrayList<TimephasedDataType>();
+                  timephasedData = new Vector<TimephasedDataType>();
                }
                return this.timephasedData;
             }
@@ -13402,7 +13402,7 @@ import net.sf.mpxj.WorkGroup;
       {
          if (calendar == null)
          {
-            calendar = new ArrayList<Project.Calendars.Calendar>();
+            calendar = new Vector<Project.Calendars.Calendar>();
          }
          return this.calendar;
       }
@@ -14135,7 +14135,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (exception == null)
                {
-                  exception = new ArrayList<Project.Calendars.Calendar.Exceptions.Exception>();
+                  exception = new Vector<Project.Calendars.Calendar.Exceptions.Exception>();
                }
                return this.exception;
             }
@@ -14787,7 +14787,7 @@ import net.sf.mpxj.WorkGroup;
                   {
                      if (workingTime == null)
                      {
-                        workingTime = new ArrayList<Project.Calendars.Calendar.Exceptions.Exception.WorkingTimes.WorkingTime>();
+                        workingTime = new Vector<Project.Calendars.Calendar.Exceptions.Exception.WorkingTimes.WorkingTime>();
                      }
                      return this.workingTime;
                   }
@@ -14995,7 +14995,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (weekDay == null)
                {
-                  weekDay = new ArrayList<Project.Calendars.Calendar.WeekDays.WeekDay>();
+                  weekDay = new Vector<Project.Calendars.Calendar.WeekDays.WeekDay>();
                }
                return this.weekDay;
             }
@@ -15337,7 +15337,7 @@ import net.sf.mpxj.WorkGroup;
                   {
                      if (workingTime == null)
                      {
-                        workingTime = new ArrayList<Project.Calendars.Calendar.WeekDays.WeekDay.WorkingTimes.WorkingTime>();
+                        workingTime = new Vector<Project.Calendars.Calendar.WeekDays.WeekDay.WorkingTimes.WorkingTime>();
                      }
                      return this.workingTime;
                   }
@@ -15572,7 +15572,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (workWeek == null)
                {
-                  workWeek = new ArrayList<Project.Calendars.Calendar.WorkWeeks.WorkWeek>();
+                  workWeek = new Vector<Project.Calendars.Calendar.WorkWeeks.WorkWeek>();
                }
                return this.workWeek;
             }
@@ -15948,7 +15948,7 @@ import net.sf.mpxj.WorkGroup;
                   {
                      if (weekDay == null)
                      {
-                        weekDay = new ArrayList<Project.Calendars.Calendar.WorkWeeks.WorkWeek.WeekDays.WeekDay>();
+                        weekDay = new Vector<Project.Calendars.Calendar.WorkWeeks.WorkWeek.WeekDays.WeekDay>();
                      }
                      return this.weekDay;
                   }
@@ -16166,7 +16166,7 @@ import net.sf.mpxj.WorkGroup;
                         {
                            if (workingTime == null)
                            {
-                              workingTime = new ArrayList<Project.Calendars.Calendar.WorkWeeks.WorkWeek.WeekDays.WeekDay.WorkingTimes.WorkingTime>();
+                              workingTime = new Vector<Project.Calendars.Calendar.WorkWeeks.WorkWeek.WeekDays.WeekDay.WorkingTimes.WorkingTime>();
                            }
                            return this.workingTime;
                         }
@@ -16438,7 +16438,7 @@ import net.sf.mpxj.WorkGroup;
       {
          if (extendedAttribute == null)
          {
-            extendedAttribute = new ArrayList<Project.ExtendedAttributes.ExtendedAttribute>();
+            extendedAttribute = new Vector<Project.ExtendedAttributes.ExtendedAttribute>();
          }
          return this.extendedAttribute;
       }
@@ -17256,7 +17256,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (value == null)
                {
-                  value = new ArrayList<Project.ExtendedAttributes.ExtendedAttribute.ValueList.Value>();
+                  value = new Vector<Project.ExtendedAttributes.ExtendedAttribute.ValueList.Value>();
                }
                return this.value;
             }
@@ -17551,7 +17551,7 @@ import net.sf.mpxj.WorkGroup;
       {
          if (outlineCode == null)
          {
-            outlineCode = new ArrayList<Project.OutlineCodes.OutlineCode>();
+            outlineCode = new Vector<Project.OutlineCodes.OutlineCode>();
          }
          return this.outlineCode;
       }
@@ -18131,7 +18131,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (mask == null)
                {
-                  mask = new ArrayList<Project.OutlineCodes.OutlineCode.Masks.Mask>();
+                  mask = new Vector<Project.OutlineCodes.OutlineCode.Masks.Mask>();
                }
                return this.mask;
             }
@@ -18370,7 +18370,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (value == null)
                {
-                  value = new ArrayList<Project.OutlineCodes.OutlineCode.Values.Value>();
+                  value = new Vector<Project.OutlineCodes.OutlineCode.Values.Value>();
                }
                return this.value;
             }
@@ -19026,7 +19026,7 @@ import net.sf.mpxj.WorkGroup;
       {
          if (resource == null)
          {
-            resource = new ArrayList<Project.Resources.Resource>();
+            resource = new Vector<Project.Resources.Resource>();
          }
          return this.resource;
       }
@@ -21158,7 +21158,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (extendedAttribute == null)
             {
-               extendedAttribute = new ArrayList<Project.Resources.Resource.ExtendedAttribute>();
+               extendedAttribute = new Vector<Project.Resources.Resource.ExtendedAttribute>();
             }
             return this.extendedAttribute;
          }
@@ -21189,7 +21189,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (baseline == null)
             {
-               baseline = new ArrayList<Project.Resources.Resource.Baseline>();
+               baseline = new Vector<Project.Resources.Resource.Baseline>();
             }
             return this.baseline;
          }
@@ -21220,7 +21220,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (outlineCode == null)
             {
-               outlineCode = new ArrayList<Project.Resources.Resource.OutlineCode>();
+               outlineCode = new Vector<Project.Resources.Resource.OutlineCode>();
             }
             return this.outlineCode;
          }
@@ -21407,7 +21407,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (timephasedData == null)
             {
-               timephasedData = new ArrayList<TimephasedDataType>();
+               timephasedData = new Vector<TimephasedDataType>();
             }
             return this.timephasedData;
          }
@@ -21477,7 +21477,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (availabilityPeriod == null)
                {
-                  availabilityPeriod = new ArrayList<Project.Resources.Resource.AvailabilityPeriods.AvailabilityPeriod>();
+                  availabilityPeriod = new Vector<Project.Resources.Resource.AvailabilityPeriods.AvailabilityPeriod>();
                }
                return this.availabilityPeriod;
             }
@@ -22156,7 +22156,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (rate == null)
                {
-                  rate = new ArrayList<Project.Resources.Resource.Rates.Rate>();
+                  rate = new Vector<Project.Resources.Resource.Rates.Rate>();
                }
                return this.rate;
             }
@@ -22943,7 +22943,7 @@ import net.sf.mpxj.WorkGroup;
       {
          if (task == null)
          {
-            task = new ArrayList<Project.Tasks.Task>();
+            task = new Vector<Project.Tasks.Task>();
          }
          return this.task;
       }
@@ -25898,7 +25898,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (predecessorLink == null)
             {
-               predecessorLink = new ArrayList<Project.Tasks.Task.PredecessorLink>();
+               predecessorLink = new Vector<Project.Tasks.Task.PredecessorLink>();
             }
             return this.predecessorLink;
          }
@@ -25981,7 +25981,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (extendedAttribute == null)
             {
-               extendedAttribute = new ArrayList<Project.Tasks.Task.ExtendedAttribute>();
+               extendedAttribute = new Vector<Project.Tasks.Task.ExtendedAttribute>();
             }
             return this.extendedAttribute;
          }
@@ -26012,7 +26012,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (baseline == null)
             {
-               baseline = new ArrayList<Project.Tasks.Task.Baseline>();
+               baseline = new Vector<Project.Tasks.Task.Baseline>();
             }
             return this.baseline;
          }
@@ -26043,7 +26043,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (outlineCode == null)
             {
-               outlineCode = new ArrayList<Project.Tasks.Task.OutlineCode>();
+               outlineCode = new Vector<Project.Tasks.Task.OutlineCode>();
             }
             return this.outlineCode;
          }
@@ -26412,7 +26412,7 @@ import net.sf.mpxj.WorkGroup;
          {
             if (timephasedData == null)
             {
-               timephasedData = new ArrayList<TimephasedDataType>();
+               timephasedData = new Vector<TimephasedDataType>();
             }
             return this.timephasedData;
          }
@@ -26537,7 +26537,7 @@ import net.sf.mpxj.WorkGroup;
             {
                if (timephasedData == null)
                {
-                  timephasedData = new ArrayList<TimephasedDataType>();
+                  timephasedData = new Vector<TimephasedDataType>();
                }
                return this.timephasedData;
             }
@@ -27553,7 +27553,7 @@ import net.sf.mpxj.WorkGroup;
       {
          if (wbsMask == null)
          {
-            wbsMask = new ArrayList<Project.WBSMasks.WBSMask>();
+            wbsMask = new Vector<Project.WBSMasks.WBSMask>();
          }
          return this.wbsMask;
       }

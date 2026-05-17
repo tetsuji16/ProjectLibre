@@ -25,7 +25,7 @@ package net.sf.mpxj;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 /**
@@ -161,5 +161,5 @@ public final class Table
    private int m_id;
    private String m_name;
    private boolean m_resourceFlag;
-   private ArrayList<Column> m_columns = new ArrayList<Column>();
+   private Vector<Column> m_columns = new Vector<Column>();
 }

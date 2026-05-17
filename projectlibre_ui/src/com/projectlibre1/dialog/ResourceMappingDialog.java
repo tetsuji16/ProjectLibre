@@ -261,7 +261,7 @@ public final class ResourceMappingDialog extends AbstractDialog {
 	}
 
 //	private void mapResources(String mpxFieldName){
-//		Map fieldMap=new HashMap();
+//		Map fieldMap=new Hashtable();
 //		for (Iterator i=form.getImportedResources().iterator();i.hasNext();){
 //
 //		}

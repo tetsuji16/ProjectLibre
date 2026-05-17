@@ -93,12 +93,12 @@ public class NonGroupedCalculatedValues  implements CalculatedValues  {
  * @param value
  */
 	private void setValue(long date, double value) {
-		Long longDate = new Long(date);
+		Long longDate = Long.valueOf(date);
 		Double v = (Double) values.get(longDate);
 		if (v != null) // if already present, add to it
-			v = new Double(v.doubleValue() + value);
+			v = Double.valueOf(v.doubleValue() + value);
 		else
-			v = new Double(value);
+			v = Double.valueOf(value);
 		values.put(longDate,v);
 	}
 
@@ -199,9 +199,9 @@ public class NonGroupedCalculatedValues  implements CalculatedValues  {
 		for (int i = 0; i < vals.length; i++) {
 			if (cumulative) {
 				sum += vals[i].doubleValue();
-				vals[i] = new Double(sum);
+				vals[i] = Double.valueOf(sum);
 			} else {
-				vals[i] = new Double(vals[i].doubleValue() - sum);
+				vals[i] = Double.valueOf(vals[i].doubleValue() - sum);
 				sum += vals[i].doubleValue();
 			}
 		}

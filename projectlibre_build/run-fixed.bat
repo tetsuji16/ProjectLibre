@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 rem Compile the startup entry points with JDK 21, update dist\projectlibre.jar, and launch ProjectLibre.
 
-set "JAVA_HOME=C:\Program Files\Java\jdk-21"
+set "JAVA_HOME=C:\Program Files\Java\jdk-26.0.1"
 set "PATH=%JAVA_HOME%\bin;%PATH%"
 
 for %%I in ("%~dp0..") do set "SOURCE_DIR=%%~fI"
@@ -39,5 +39,5 @@ cd /d "%DIST_DIR%"
 if errorlevel 1 exit /b 1
 
 echo Running ProjectLibre...
-"%JAVA_HOME%\bin\java" -jar projectlibre.jar
+"%JAVA_HOME%\bin\java" -XX:ReservedCodeCacheSize=256m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=384m -XX:+UseG1GC -Xms256m -Xmx2048m -jar projectlibre.jar
 exit /b %ERRORLEVEL%

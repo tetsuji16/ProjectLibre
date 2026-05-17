@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.field;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -106,7 +106,7 @@ public abstract class Select implements Map {
 		if (result == null || !allowNull)
 			return result;
 		// if a null element should be added, add it at front
-		List resultWithNull=new ArrayList(result.size()+1);
+		List resultWithNull=new Vector(result.size()+1);
 		resultWithNull.add(null);
 		return resultWithNull;
 	}

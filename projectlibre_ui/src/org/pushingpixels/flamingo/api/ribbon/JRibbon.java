@@ -32,9 +32,9 @@ package org.pushingpixels.flamingo.api.ribbon;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -132,7 +132,7 @@ public class JRibbon extends JComponent {
 	 * @see #getTaskCount()
 	 * @see #getTask(int)
 	 */
-	private ArrayList<RibbonTask> tasks;
+	private Vector<RibbonTask> tasks;
 
 	/**
 	 * The contextual task groups.
@@ -143,7 +143,7 @@ public class JRibbon extends JComponent {
 	 * @see #getContextualTaskGroupCount()
 	 * @see #getContextualTaskGroup(int)
 	 */
-	private ArrayList<RibbonContextualTaskGroup> contextualTaskGroups;
+	private Vector<RibbonContextualTaskGroup> contextualTaskGroups;
 
 	/**
 	 * The taskbar components (to the right of the application menu button).
@@ -152,12 +152,12 @@ public class JRibbon extends JComponent {
 	 * @see #getTaskbarComponents()
 	 * @see #removeTaskbarComponent(Component)
 	 */
-	private ArrayList<Component> taskbarComponents;
+	private Vector<Component> taskbarComponents;
 
 	/**
 	 * Bands of the currently shown task.
 	 */
-	private ArrayList<AbstractRibbonBand> bands;
+	private Vector<AbstractRibbonBand> bands;
 
 	/**
 	 * Currently selected (shown) task.
@@ -261,12 +261,12 @@ public class JRibbon extends JComponent {
 	 * {@link JRibbonFrame#getRibbon()} API.
 	 */
 	public JRibbon() {
-		this.tasks = new ArrayList<RibbonTask>();
-		this.contextualTaskGroups = new ArrayList<RibbonContextualTaskGroup>();
-		this.taskbarComponents = new ArrayList<Component>();
-		this.bands = new ArrayList<AbstractRibbonBand>();
+		this.tasks = new Vector<RibbonTask>();
+		this.contextualTaskGroups = new Vector<RibbonContextualTaskGroup>();
+		this.taskbarComponents = new Vector<Component>();
+		this.bands = new Vector<AbstractRibbonBand>();
 		this.currentlySelectedTask = null;
-		this.groupVisibilityMap = new HashMap<RibbonContextualTaskGroup, Boolean>();
+		this.groupVisibilityMap = new Hashtable<RibbonContextualTaskGroup, Boolean>();
 		
 		//projectlibre
 		fileSelector=new JPanel();

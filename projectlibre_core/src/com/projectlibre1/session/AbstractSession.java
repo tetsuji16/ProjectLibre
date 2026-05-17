@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.session;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 import com.projectlibre1.company.ApplicationUser;
@@ -95,7 +95,7 @@ public abstract class AbstractSession implements Session{
 
     //public Job getSaveProjectJob(final Project project, final boolean cloneMaster){
     public Job getSaveProjectJob(final Project project, SaveOptions opt){
-    	List<Project> projects=new ArrayList();
+    	List<Project> projects=new Vector();
     	projects.add(project);
     	return getSaveProjectJob(projects,opt);
     }

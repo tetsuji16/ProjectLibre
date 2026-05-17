@@ -24,7 +24,7 @@
 package net.sf.mpxj.mpp;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.apache.poi.poifs.filesystem.DirectoryEntry;
 
@@ -48,5 +48,5 @@ interface CalendarFactory
     * @param resourceMap map of resources to calendars
     * @throws IOException
     */
-   void processCalendarData(DirectoryEntry projectDir, Props projectProps, DocumentInputStreamFactory inputStreamFactory, HashMap<Integer, ProjectCalendar> resourceMap) throws IOException;
+   void processCalendarData(DirectoryEntry projectDir, Props projectProps, DocumentInputStreamFactory inputStreamFactory, Hashtable<Integer, ProjectCalendar> resourceMap) throws IOException;
 }

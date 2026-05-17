@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.hierarchy;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.EventListener;
@@ -441,7 +441,7 @@ public abstract class AbstractMutableNodeHierarchy implements NodeHierarchy{
 	 * @return
 	 */
 	public List toList(final boolean isNode, final Predicate filter) {
-		final ArrayList list = new ArrayList();
+		final Vector list = new Vector();
     	visitAll(new Closure(){
 			public void execute(Object node) {
 				if (filter != null  && !filter.evaluate(((Node) node).getImpl()))

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.tasks;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -85,7 +85,7 @@ public enum DependencyType {
 	}
 	public static DependencyType getInstance(int id){
 		if (reverseMap==null){
-			reverseMap=new HashMap<Integer,DependencyType>();
+			reverseMap=new Hashtable<Integer,DependencyType>();
 			for (DependencyType ct : values())
 				reverseMap.put(ct.getId(),ct);
 		}

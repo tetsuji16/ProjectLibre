@@ -628,7 +628,7 @@ public class JRibbonFrame extends JFrame {
 				}
 			});
 		} else {
-			final List<Image> images = new ArrayList<Image>();
+			final List<Image> images = new Vector<Image>();
 			Image icon16 = getImage(icon, 16);
 			if (icon16 != null)
 				images.add(icon16);

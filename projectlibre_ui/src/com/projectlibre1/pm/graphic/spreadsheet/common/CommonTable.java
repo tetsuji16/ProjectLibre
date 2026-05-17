@@ -58,7 +58,6 @@ package com.projectlibre1.pm.graphic.spreadsheet.common;
 import java.util.Date;
 import java.util.Vector;
 
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -80,14 +79,13 @@ import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 /**
  *
  */
-public class CommonTable extends JTable {
+public class CommonTable extends javax.swing.JTable {
 
     /**
      * 
      */
     public CommonTable() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -96,7 +94,6 @@ public class CommonTable extends JTable {
      */
     public CommonTable(int numRows, int numColumns) {
         super(numRows, numColumns);
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -104,7 +101,6 @@ public class CommonTable extends JTable {
      */
     public CommonTable(TableModel dm) {
         super(dm);
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -113,7 +109,6 @@ public class CommonTable extends JTable {
      */
     public CommonTable(Object[][] rowData, Object[] columnNames) {
         super(rowData, columnNames);
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -122,7 +117,6 @@ public class CommonTable extends JTable {
      */
     public CommonTable(Vector rowData, Vector columnNames) {
         super(rowData, columnNames);
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -131,7 +125,6 @@ public class CommonTable extends JTable {
      */
     public CommonTable(TableModel dm, TableColumnModel cm) {
         super(dm, cm);
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -141,7 +134,6 @@ public class CommonTable extends JTable {
      */
     public CommonTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm) {
         super(dm, cm, sm);
-        // TODO Auto-generated constructor stub
     }
     public boolean editorsRegistered;
 	protected void registerEditors(){

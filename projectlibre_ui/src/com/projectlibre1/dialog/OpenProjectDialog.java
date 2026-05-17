@@ -125,12 +125,12 @@ public final class OpenProjectDialog extends AbstractDialog {
 	    this.projects=projects;
 	    currentProjectIds=new HashSet();
 	    if (anyProjectButThisOne != null) {
-	    	currentProjectIds.add(new Long(anyProjectButThisOne.getUniqueId()));
+	    	currentProjectIds.add(Long.valueOf(anyProjectButThisOne.getUniqueId()));
 	    } else {
 	    	ProjectFactory.getInstance().getPortfolio().forProjects(new Closure(){
 	    		public void execute(Object impl) {
 	    			Project project=(Project)impl;
-	    			currentProjectIds.add(new Long(project.getUniqueId()));
+	    			currentProjectIds.add(Long.valueOf(project.getUniqueId()));
 	    		}
 	    	});
 	    }
@@ -473,7 +473,7 @@ public final class OpenProjectDialog extends AbstractDialog {
 	private boolean canBeUsed(ProjectData project){
 		return project.canBeUsed()
 				&& (allowMaster || !project.isMaster())
-				&& !currentProjectIds.contains(new Long(project.getUniqueId()));
+				&& !currentProjectIds.contains(Long.valueOf(project.getUniqueId()));
 	}
 
 	private class OpenProjectListSelectionModel extends DefaultListSelectionModel{

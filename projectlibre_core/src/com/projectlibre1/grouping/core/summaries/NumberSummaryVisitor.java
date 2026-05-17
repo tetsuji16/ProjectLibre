@@ -67,6 +67,6 @@ public abstract class NumberSummaryVisitor extends SummaryVisitor {
 		summary = 0;
 	}
 	public Object getSummary() {
-		return new Double(summary);
+		return Double.valueOf(summary);
 	}
 }

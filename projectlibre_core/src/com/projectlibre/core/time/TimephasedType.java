@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.time;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -188,7 +188,7 @@ public enum TimephasedType {
 	}
 	public static TimephasedType getInstance(int id){
 		if (reverseMap==null){
-			reverseMap=new HashMap<Integer,TimephasedType>();
+			reverseMap=new Hashtable<Integer,TimephasedType>();
 			for (TimephasedType ct : values())
 				reverseMap.put(ct.getId(),ct);
 		}

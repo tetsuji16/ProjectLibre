@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.selection.event;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 import javax.swing.event.ListSelectionEvent;
@@ -81,7 +81,7 @@ public class SpreadSheetNodeSelectionListener implements ListSelectionListener {
 		CommonSpreadSheetModel model=(CommonSpreadSheetModel)spreadSheet.getModel();
 		
 		int[] rows=spreadSheet.getSelectedRows();
-		List nodes=new ArrayList(rows.length);
+		List nodes=new Vector(rows.length);
 		Node currentNode = null;
 		int selectedRow = spreadSheet.getSelectedRow();
 		for (int i=0;i<rows.length;i++){

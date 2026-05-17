@@ -63,7 +63,7 @@ package com.projectlibre1.grouping.core.summaries;
 public class Count extends SummaryVisitor {
 	int count = 0;
 	public Object getSummary() {
-		return new Integer(count);
+		return Integer.valueOf(count);
 	}
 	public void addToSummary(Object value) {
 		count++;

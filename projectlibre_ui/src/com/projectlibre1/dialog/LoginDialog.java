@@ -142,9 +142,9 @@ public final class LoginDialog extends AbstractDialog {
 			Object ps=Class.forName("javax.jnlp.ServiceManager").getMethod("lookup",new Class[]{String.class}).invoke(null,new Object[]{"javax.jnlp.PersistenceService"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (dlg.form.isStoreCredentials()){
 				
-				if (form==null) ps.getClass().getMethod("create",new Class[]{URL.class,long.class}).invoke(ps,new Object[]{serverUrl,new Long(1000)}); //$NON-NLS-1$
+				if (form==null) ps.getClass().getMethod("create",new Class[]{URL.class,long.class}).invoke(ps,new Object[]{serverUrl,Long.valueOf(1000)}); //$NON-NLS-1$
 				Object contents=ps.getClass().getMethod("get",new Class[]{URL.class}).invoke(ps,new Object[]{serverUrl}); //$NON-NLS-1$
-				ObjectOutputStream out=new ObjectOutputStream((OutputStream)Class.forName("javax.jnlp.FileContents").getMethod("getOutputStream",new Class[]{boolean.class}).invoke(contents,new Object[]{new Boolean(true)})); //$NON-NLS-1$ //$NON-NLS-2$
+				ObjectOutputStream out=new ObjectOutputStream((OutputStream)Class.forName("javax.jnlp.FileContents").getMethod("getOutputStream",new Class[]{boolean.class}).invoke(contents,new Object[]{Boolean.valueOf(true)})); //$NON-NLS-1$ //$NON-NLS-2$
 				out.writeObject(dlg.form);
 				out.close();
 			} else if (form!=null) ps.getClass().getMethod("delete",new Class[]{URL.class}).invoke(ps,new Object[]{serverUrl}); //$NON-NLS-1$

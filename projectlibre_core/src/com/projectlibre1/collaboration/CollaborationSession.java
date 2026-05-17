@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -23,6 +25,7 @@ import com.projectlibre1.util.Alert;
 import com.projectlibre1.workspace.WorkspaceSetting;
 
 public class CollaborationSession {
+	private static final Logger logger = Logger.getLogger(CollaborationSession.class.getName());
 	private static final long POLL_INTERVAL_MS = 2000L;
 	private static final long HEARTBEAT_INTERVAL_MS = 5000L;
 
@@ -38,13 +41,13 @@ public class CollaborationSession {
 	private final String userKey;
 	private final String displayName;
 	private final String clientInstanceId;
-	private Timer timer;
+	private volatile Timer timer;
 	private long lastKnownProjectModified;
 	private long lastKnownProjectLength;
 	private long lastKnownSidecarModified;
-	private boolean externalChangePending;
-	private boolean externalChangeWarned;
-	private long lastHeartbeatAt;
+	private volatile boolean externalChangePending;
+	private volatile boolean externalChangeWarned;
+	private volatile long lastHeartbeatAt;
 
 	public CollaborationSession(Project project, String fileName, String userKey) {
 		this.project = project;
@@ -77,12 +80,17 @@ public class CollaborationSession {
 	}
 
 	public void stop() {
-		saveWorkspace(project.getCollaborationWorkspace());
-		lockManager.releaseAll();
-		if (timer != null) {
-			timer.cancel();
-			timer = null;
+		if (timer == null) {
+			return;
 		}
+		try {
+			saveWorkspace(project.getCollaborationWorkspace());
+		} catch (Exception e) {
+			logger.log(Level.FINE, "Failed to save workspace on session stop", e);
+		}
+		lockManager.releaseAll();
+		timer.cancel();
+		timer = null;
 	}
 
 	private void registerUser() {
@@ -228,6 +236,7 @@ public class CollaborationSession {
 				store.refreshProjectStats(metadata);
 			});
 		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to save workspace state for user " + userKey, e);
 		}
 	}
 

@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.exchange;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Vector;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -79,12 +79,12 @@ public abstract class ResourceMappingForm {
 		protected JFrame owner;
 		
 		public static final MergeField NO_MERGE=new MergeField(null,null,"");
-		protected Vector mergeFields=new Vector();
+		protected Vector mergeFields=new Vector<>();
 		protected MergeField mergeField;
 		protected Object unassignedResource;
 		
 		public ResourceMappingForm(){
-			selectedResources=new ArrayList();
+			selectedResources=new Vector();
 			mergeFields.add(NO_MERGE);
 			mergeField=NO_MERGE;
 			
@@ -167,7 +167,7 @@ public abstract class ResourceMappingForm {
 
 		public void setMergeField(MergeField mergeField) {
 			this.mergeField = mergeField;
-			Map mergeFieldMap=new HashMap();
+			Map mergeFieldMap=new Hashtable();
 			HashSet notMergedValues=new HashSet();
 			Object resource;
 			if (mergeField!=NO_MERGE)

@@ -57,6 +57,7 @@ package com.projectlibre1.session;
 
 import java.awt.Component;
 import java.io.File;
+import java.util.Locale;
 import java.util.prefs.Preferences;
 
 import javax.swing.Icon;
@@ -65,6 +66,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileView;
 import javax.swing.UIManager;
 
+import com.projectlibre1.preference.ConfigurationFile;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Environment;
 
@@ -75,6 +77,15 @@ public class FileHelper {
 	//public static final int SERVER_FILE_TYPE=1000;
 	
     private JFileChooser fileChooser = null;
+    private String chooserConfigurationSignature = null;
+    private Boolean chooserConfigurationSaveMode = null;
+    private FileView chooserFileView = null;
+    private FileFilter projectlibreFilter = null;
+    private FileFilter microsoftFilter = null;
+    private FileFilter microsoftXMLFilter = null;
+    private FileFilter plannerFilter = null;
+    private FileFilter projectFilter = null;
+
     private JFileChooser getFileChooser() {
     	if (fileChooser == null) {
     		fileChooser = new JFileChooser();
@@ -82,14 +93,128 @@ public class FileHelper {
     	}
     	return fileChooser;
     }
+
+    private String getChooserConfigurationSignature() {
+    	Preferences pref = Preferences.userNodeForPackage(ConfigurationFile.class);
+    	boolean useExternalLocales = pref.getBoolean("useExternalLocales", false);
+    	String externalLocalesDirectory = pref.get("externalLocalesDirectory", "");
+    	return Locale.getDefault().toString() + "|" + useExternalLocales + "|" + externalLocalesDirectory;
+    }
+
+    private void configureFileChooser(JFileChooser chooser, final boolean save) {
+    	setUpdateUI(chooser);
+
+    	chooserFileView = new FileView() {
+    		public Icon getIcon(File f) {
+    			String extension = getFileExtension(f.getName());
+    			if (extension != null) {
+    				if ("pod".equals(extension)) {
+    					return FileHelper.getIcon("format.projectlibre");
+    				}
+    			}
+    			return null;
+    		}
+    	};
+    	chooser.setFileView(chooserFileView);
+
+    	projectlibreFilter = new FileFilter() {
+    	    public boolean accept(File f) {
+    	    	return f.isDirectory() || f.getName().toLowerCase().endsWith("." + DEFAULT_FILE_EXTENSION);
+    	    }
+    	    public String getDescription() {
+    	    	return Messages.getString("File.projectlibre") + " (*." + DEFAULT_FILE_EXTENSION + ")";
+    	    }
+    	};
+    	microsoftFilter = new FileFilter() {
+    	    public boolean accept(File f) {
+    	    	boolean isAllowed;
+    			String n = f.getName().toLowerCase();
+    	    	if (save) isAllowed = false;
+    	    	else isAllowed = n.endsWith(".mpp") || n.endsWith(".mpx");
+    	    	return f.isDirectory() || isAllowed;
+    	    }
+    	    public String getDescription() {
+    	    	return Messages.getString("File.microsoft") + " (*.mpp, *.mpx)";
+    	    }
+    	};
+    	microsoftXMLFilter = new FileFilter() {
+    	    public boolean accept(File f) {
+    	    	boolean isAllowed;
+    			String n = f.getName().toLowerCase();
+    	    	if (save) isAllowed = n.endsWith(".xml");
+    	    	else isAllowed = n.endsWith(".xml");
+    	    	return f.isDirectory() || isAllowed;
+    	    }
+    	    public String getDescription() {
+    	    	return Messages.getString("File.microsoftXML") + " (*.xml)";
+    	    }
+    	};
+    	plannerFilter = new FileFilter() {
+    	    public boolean accept(File f) {
+    	    	boolean isAllowed;
+    			String n = f.getName().toLowerCase();
+    	    	if (save) isAllowed = false;
+    	    	else isAllowed = n.endsWith("*.planner");
+    	    	return f.isDirectory() || isAllowed;
+    	    }
+    	    public String getDescription() {
+    	    	return Messages.getString("File.planner") + " (*.planner)";
+    	    }
+    	};
+    	projectFilter = new FileFilter() {
+    	    public boolean accept(File f) {
+    	    	if (projectlibreFilter.accept(f)) return true;
+    	    	if (microsoftXMLFilter.accept(f)) return true;
+    	    	if (plannerFilter.accept(f)) return true;
+    	    	if (microsoftFilter.accept(f)) return true;
+    	    	return false;
+    	    }
+    	    public String getDescription() {
+    	    	return Messages.getString("File.projects");
+    	    }
+    	};
+
+    	chooser.resetChoosableFileFilters();
+    	if (save) {
+    		File selectedFile = chooser.getSelectedFile();
+    		if (selectedFile != null && microsoftFilter.accept(selectedFile)) {
+    			if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
+    			chooser.addChoosableFileFilter(microsoftXMLFilter);
+    		} else {
+    			chooser.addChoosableFileFilter(microsoftXMLFilter);
+    			if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
+    		}
+    	} else {
+    		if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
+    		chooser.addChoosableFileFilter(microsoftFilter);
+    		chooser.addChoosableFileFilter(microsoftXMLFilter);
+    		chooser.addChoosableFileFilter(plannerFilter);
+    		chooser.addChoosableFileFilter(projectFilter);
+    	}
+    }
+
+    private void ensureFileChooserConfigured(final boolean save) {
+    	String signature = getChooserConfigurationSignature();
+    	if (chooserConfigurationSignature == null
+    			|| chooserConfigurationSaveMode == null
+    			|| chooserConfigurationSaveMode.booleanValue() != save
+    			|| !chooserConfigurationSignature.equals(signature)) {
+    		configureFileChooser(getFileChooser(), save);
+    		chooserConfigurationSignature = signature;
+    		chooserConfigurationSaveMode = Boolean.valueOf(save);
+    	}
+    }
+
     public synchronized String chooseFileName(final boolean save,String selectedFileName,Component fileChooserParent){
     	if (!Environment.getStandAlone()&&save&&selectedFileName!=null&&selectedFileName.endsWith("."+DEFAULT_FILE_EXTENSION)){
     		selectedFileName=changeFileExtension(selectedFileName,save?"xml":"mpp");
     	}
 	JFileChooser fileChooser = getFileChooser();
-	fileChooser=setUpdateUI(fileChooser);
+	if (selectedFileName != null) {
+		fileChooser.setSelectedFile(new File(selectedFileName));
+	}
+	ensureFileChooserConfigured(save);
     	fileChooser.setDialogType(save?JFileChooser.SAVE_DIALOG:JFileChooser.OPEN_DIALOG);
-    	fileChooser.resetChoosableFileFilters();
     	if (selectedFileName==null){
     		try {
     			String initialDirName=Preferences.userNodeForPackage(FileHelper.class).get("lastDirectory",System.getProperty("user.home")+File.separator+"ProjectLibre");
@@ -97,104 +222,7 @@ public class FileHelper {
 			} catch (Exception e) {
 			}
     	}
-    	else fileChooser.setSelectedFile(new File(selectedFileName));
     	
-    	FileView fileView=new FileView(){
-    		public Icon getIcon(File f) {
-    			String extension=getFileExtension(f.getName());
-    			if (extension != null) {
-    					if ("pod".equals(extension)){
-    						return FileHelper.getIcon("format.projectlibre");
-    					}
-    					//Icon icon=fileChooser.getFileSystemView().getSystemIcon(f);
- //    					if ("mpp".equals(extension) || "mpx".equals(extension) || "planner".equals(extension)){
-//    						return LocalSession.getIcon("format.other");
-//    					}
-    			}
-    			return null;
-    		}
-    	};
-    	fileChooser.setFileView(fileView);
-    	
-    	
-		final FileFilter projectlibreFilter=new FileFilter(){
-		    public boolean accept(File f){
-		    	return f.isDirectory()||f.getName().toLowerCase().endsWith("."+DEFAULT_FILE_EXTENSION);
-		    }
-		    public String getDescription(){
-		    	//return "projectlibre";
-		    	return Messages.getString("File.projectlibre")+" (*."+DEFAULT_FILE_EXTENSION+")";
-		    }
-		};
-		final FileFilter microsoftFilter=new FileFilter(){
-		    public boolean accept(File f){
-		    	boolean isAllowed;
-				String n = f.getName().toLowerCase();
-		    	if (save) isAllowed=false;
-		    	else isAllowed=n.endsWith(".mpp") || n.endsWith(".mpx");			
-		    	return f.isDirectory()||isAllowed;
-		    }
-		    public String getDescription(){
-		    	return Messages.getString("File.microsoft")+" (*.mpp, *.mpx)";
-		    }
-	
-		};
-		final FileFilter microsoftXMLFilter=new FileFilter(){
-		    public boolean accept(File f){
-		    	boolean isAllowed;
-				String n = f.getName().toLowerCase();
-		    	if (save) isAllowed=n.endsWith(".xml");
-		    	else isAllowed=n.endsWith(".xml");			
-		    	return f.isDirectory()||isAllowed;
-		    }
-		    public String getDescription(){
-		    	return Messages.getString("File.microsoftXML")+" (*.xml)";
-		    }
-	
-		};
-		final FileFilter plannerFilter=new FileFilter(){
-		    public boolean accept(File f){
-		    	boolean isAllowed;
-				String n = f.getName().toLowerCase();
-		    	if (save) isAllowed=false;
-		    	else isAllowed=n.endsWith("*.planner");			
-		    	return f.isDirectory()||isAllowed;
-		    }
-		    public String getDescription(){
-		    	return Messages.getString("File.planner")+" (*.planner)";
-		    }
-	
-		};
-		FileFilter projectFilter=new FileFilter(){
-		    public boolean accept(File f){
-		    	if (/*Environment.getStandAlone()&&*/projectlibreFilter.accept(f)) return true;
-		    	if (microsoftXMLFilter.accept(f)) return true;
-		    	if (plannerFilter.accept(f)) return true;
-		    	if (microsoftFilter.accept(f)) return true;
-		    	return false;
-		    }
-		    public String getDescription(){
-		    	return Messages.getString("File.projects");
-		    }
-	
-		};
-		
-		if (save){
-			if (microsoftFilter.accept(fileChooser.getSelectedFile())){ //To select the good filter by default
-				if (Environment.getStandAlone()) fileChooser.addChoosableFileFilter(projectlibreFilter);
-				fileChooser.addChoosableFileFilter(microsoftXMLFilter);
-			}else{
-				fileChooser.addChoosableFileFilter(microsoftXMLFilter);
-				if (Environment.getStandAlone()) fileChooser.addChoosableFileFilter(projectlibreFilter);
-			}
-		}else{
-			/*if (Environment.getStandAlone())*/ fileChooser.addChoosableFileFilter(projectlibreFilter);
-			fileChooser.addChoosableFileFilter(microsoftFilter);
-			fileChooser.addChoosableFileFilter(microsoftXMLFilter);
-			fileChooser.addChoosableFileFilter(plannerFilter);
-			fileChooser.addChoosableFileFilter(projectFilter);
-		}
-
 		if (fileChooser.showDialog(fileChooserParent, null)!=JFileChooser.APPROVE_OPTION)
 			return null;
 		File file=fileChooser.getSelectedFile();

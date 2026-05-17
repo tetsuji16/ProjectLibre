@@ -59,7 +59,7 @@ import java.awt.Container;
 import java.awt.HeadlessException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.JOptionPane;
@@ -102,9 +102,9 @@ public abstract class StartupFactory {
 	protected String[] projectUrls=null;
 	protected String login=null;
 	protected String password=null;
-	protected Map credentials=new HashMap();
+	protected Map credentials=new Hashtable();
 	protected long projectId;
-	protected HashMap opts=null;
+	protected Hashtable opts=null;
 
 	protected StartupFactory() {
 //		System.out.println("---------- StartupFactory");

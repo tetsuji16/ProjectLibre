@@ -73,6 +73,7 @@ public interface MenuActionConstants {
 	public static final String ACTION_CUT                     = "Cut";
 	public static final String ACTION_COPY                    = "Copy";
 	public static final String ACTION_PASTE                   = "Paste";
+	public static final String ACTION_PASTE_INSERT            = "PasteInsert";
 
 	public static final String ACTION_FILL_DOWN               = "FillDown";
 	public static final String ACTION_FILL_RIGHT              = "FillRight";

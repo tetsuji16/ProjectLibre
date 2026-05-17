@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.gantt;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -69,7 +70,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -105,6 +106,7 @@ import com.projectlibre1.pm.dependency.Dependency;
 import com.projectlibre1.pm.dependency.DependencyType;
 import com.projectlibre1.pm.scheduling.ScheduleInterval;
 import com.projectlibre1.pm.task.Project;
+import com.projectlibre1.pm.task.Task;
 import com.projectlibre1.timescale.CalendarUtil;
 import com.projectlibre1.timescale.TimeInterval;
 import com.projectlibre1.timescale.TimeIterator;
@@ -117,6 +119,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -7437190083991277084L;
+	private static final Stroke PROGRESS_LINE_STROKE = new BasicStroke(2.0f);
+	private static final Color PROGRESS_LINE_COLOR = new Color(0xFF0000);
 	protected NodeRenderer nodeRenderer = new NodeRenderer();
 	protected LinkRenderer linkRenderer = new LinkRenderer();
 	protected HorizontalLineRenderer horizontalLineRenderer = new HorizontalLineRenderer();
@@ -530,6 +534,100 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		barStyles.apply(dependency,linkRenderer,true,false,false, false);
 	}
 
+	private void paintProgressLine(Graphics2D g2) {
+		if (!(graphInfo instanceof Gantt))
+			return;
+
+		Gantt gantt = (Gantt) graphInfo;
+		if (!gantt.isProgressLineEnabled())
+			return;
+
+		GeneralPath path = createProgressLinePath();
+		if (path == null)
+			return;
+
+		Color oldColor = g2.getColor();
+		Stroke oldStroke = g2.getStroke();
+		g2.setColor(PROGRESS_LINE_COLOR);
+		g2.setStroke(PROGRESS_LINE_STROKE);
+		g2.draw(path);
+		if (oldColor != null)
+			g2.setColor(oldColor);
+		if (oldStroke != null)
+			g2.setStroke(oldStroke);
+	}
+
+	private GeneralPath createProgressLinePath() {
+		CoordinatesConverter coord=((GanttParams)graphInfo).getCoord();
+		if (coord == null)
+			return null;
+
+		GeneralPath path = null;
+		for (Iterator i=nodeList.iterator(); i.hasNext();) {
+			GraphicNode node = (GraphicNode)i.next();
+			if (!shouldIncludeInProgressLine(node))
+				continue;
+
+			Task task = (Task)node.getNode().getImpl();
+			double x = getProgressLineX(coord, task);
+			double y = getProgressLineY(node);
+			if (path == null) {
+				path = new GeneralPath();
+				path.moveTo((float)x, (float)y);
+			} else {
+				path.lineTo((float)x, (float)y);
+			}
+		}
+		return path;
+	}
+
+	private boolean shouldIncludeInProgressLine(GraphicNode node) {
+		if (node == null || !node.isSchedule() || node.isAssignment() || node.getNode() == null)
+			return false;
+
+		Object impl = node.getNode().getImpl();
+		if (!(impl instanceof Task))
+			return false;
+
+		Task task = (Task)impl;
+		if (node.isSummary() && !node.isCollapsed())
+			return false;
+		if (task.isMilestone() || task.isExternal() || task.isSubproject())
+			return false;
+
+		long start = task.getStart();
+		long end = task.getEnd();
+		return start != 0L && end > start;
+	}
+
+	private double getProgressLineX(CoordinatesConverter coord, Task task) {
+		long start = task.getStart();
+		long end = task.getEnd();
+		double progress = clampProgress(task.getPercentComplete());
+		Project project = task.getProject();
+		long statusDate = project == null ? System.currentTimeMillis() : project.getStatusDate();
+		long progressDate = start + Math.round((end - start) * progress);
+		// Zero-progress tasks should anchor to the status date so the progress line
+		// stays aligned instead of jumping back to the task start.
+		if (progress == 0.0d)
+			progressDate = statusDate;
+		return coord.toX(progressDate);
+	}
+
+	private double getProgressLineY(GraphicNode node) {
+		int rowHeight=((GanttParams)graphInfo).getRowHeight();
+		int yOffset=config.getGanttBarYOffset()+config.getGanttBarHeight()/2;
+		return rowHeight*node.getRow()+yOffset;
+	}
+
+	private double clampProgress(double value) {
+		if (value < 0.0d)
+			return 0.0d;
+		if (value > 1.0d)
+			return 1.0d;
+		return value;
+	}
+
 
 	protected BarFormat calendarFormat;
 	protected Closure calendarClosure=new Closure(){
@@ -629,7 +727,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	}
 
 
-	ArrayList nodeList=new ArrayList();
+	Vector nodeList=new Vector();
     public void paint(Graphics g) {
     	paint(g,null);
     }
@@ -697,6 +795,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			node=(GraphicNode)i.next();
 			paintNode(g2,node,false);
 		}
+		paintProgressLine(g2);
 
 		if (visibleBounds!=null) g2.setClip(svgClip);
 

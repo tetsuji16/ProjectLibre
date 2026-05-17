@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.server.data.linker;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.List;
 
@@ -95,12 +95,12 @@ public abstract class TaskLinker extends Linker {
 	public void setFlatAssignments(Collection flatAssignments) {
 		this.flatAssignments = flatAssignments;
 	}
-//	protected ArrayList<Long> unchanged;
+//	protected Vector<Long> unchanged;
 //
-//	public ArrayList<Long> getUnchanged() {
+//	public Vector<Long> getUnchanged() {
 //		return unchanged;
 //	}
-//	public void setUnchanged(ArrayList<Long> unchanged) {
+//	public void setUnchanged(Vector<Long> unchanged) {
 //		this.unchanged = unchanged;
 //	}
 
@@ -157,7 +157,7 @@ public abstract class TaskLinker extends Linker {
 //	protected List<PreparedAttributes> preparedAttributes; //claur
 //
 //	public void addPreparedAttributes(SerializedDataObject data, Object obj, NodeModel model,SerializeOptions options) {
-//		if (preparedAttributes==null) preparedAttributes=new ArrayList<PreparedAttributes>();
+//		if (preparedAttributes==null) preparedAttributes=new Vector<PreparedAttributes>();
 //		TypeSystemConverter converter=TypeSystemConverterFactory.getInstance().getConverter();
 //		Predicate fieldFilter=options==null?null:options.getFieldFilter();
 //   		if (data instanceof TaskData) preparedAttributes.add(new PreparedAttributes(data,obj,converter.getDirtyExtraFields(obj,fieldFilter),converter.getExposedTaskFields(fieldFilter),model));
@@ -168,8 +168,8 @@ public abstract class TaskLinker extends Linker {
 	public void computeAttributes(){
 //        if (Environment.isNoPodServer()){
 //           	TypeSystemConverter converter=TypeSystemConverterFactory.getInstance().getConverter();
-//           	ArrayList<Field> unionExtraTaskFields=new ArrayList<Field>();
-//           	ArrayList<Field> unionExtraAssignmentFields=new ArrayList<Field>();
+//           	Vector<Field> unionExtraTaskFields=new Vector<Field>();
+//           	Vector<Field> unionExtraAssignmentFields=new Vector<Field>();
 //           	/*DEF164438: 	 Error exporting task plan to .xml
 //           	  this stops the bombout which occurs.  may require revisiting if we find
 //           	  that this code path is needed for msp export --TAF090707*/

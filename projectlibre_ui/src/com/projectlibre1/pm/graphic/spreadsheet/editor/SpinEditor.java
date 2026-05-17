@@ -76,7 +76,7 @@ import com.projectlibre1.util.MathUtils;
  * A spinner in a spreadsheet or dialog
  */
 public class SpinEditor extends SimpleEditor {
-	private Double defaultValue = new Double(1.0D);
+	private Double defaultValue = Double.valueOf(1.0D);
 	private static double MAX_VALUE = 60000000.0; 
 	private static final String NUMBER_TEMPLATE="#######################";
 	Field field;
@@ -90,7 +90,7 @@ public class SpinEditor extends SimpleEditor {
 			spin.setValue(defaultValue);
 		} else {
 			if (value instanceof Rate)
-				value = new Double(((Rate)value).getValue());
+				value = Double.valueOf(((Rate)value).getValue());
 			spin.setValue(value);
 		}
 		return spin;
@@ -142,7 +142,7 @@ public class SpinEditor extends SimpleEditor {
 			if (field.isPercent()) {
 				value = PercentFormat.getInstance().parseObject(editor.getTextField().getText());
 //	JSpinner screws up and sometimes adds a small fraction to the value.  Round it to get rid of it.  Example, 15% shows up with a miniscule .000000000000000002 at the end
-				value = new Double(MathUtils.roundToDecentPrecision(((Number) value).doubleValue()));
+				value = Double.valueOf(MathUtils.roundToDecentPrecision(((Number) value).doubleValue()));
 			}
 			else
 				value = NumberFormat.getInstance().parseObject(editor.getTextField().getText());

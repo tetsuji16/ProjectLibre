@@ -58,8 +58,11 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.lang.reflect.Method;
+import java.util.Vector;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.LinkedList;
@@ -67,20 +70,30 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.swing.CellEditor;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.InputMap;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
 import javax.swing.plaf.UIResource;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
+import javax.swing.text.JTextComponent;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Utilities;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 
-import com.projectlibre1.pm.graphic.ChangeAwareTextField;
+import com.projectlibre1.pm.graphic.ChangeAwareComponent;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
 import com.projectlibre1.pm.graphic.model.event.CacheListener;
@@ -121,6 +134,8 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	private static final long serialVersionUID = 2541466281456673698L;
 	public static final String RESOURCE_CATEGORY="resourceSpreadsheet";
 	public static final String TASK_CATEGORY="taskSpreadsheet";
+	private static final String START_EDIT_ACTION = "spreadsheet.startEdit";
+	private static final String COMMIT_AND_MOVE_DOWN_ACTION = "spreadsheet.commitAndMoveDown";
 
 	protected SpreadSheetSelectionModel selection;
 	protected String spreadSheetCategory = null;
@@ -129,18 +144,20 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	protected int lastEditingRow = -1;
 	protected boolean canModifyColumns = true;
 	protected boolean canSelectFieldArray = true;
-
+	private PendingUndoSelection pendingUndoSelection;
 
 	public CommonSpreadSheet() {
 		super();
 		setGridColor(Colors.GRAY);
-		putClientProperty("JTable.autoStartsEdit",Boolean.TRUE);
+		putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
+		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		//setSurrendersFocusOnKeystroke(true); //has the side effect of selecting the first character of cell after ENTER keystroke
 		setAutoCreateColumnsFromModel(false);
 		rowHeader=new SpreadSheetRowHeader(this);
 		rowHeader.setRowHeight(getRowHeight());
 
 		setFocusCycleRoot(true);
+		installExcelEditingActions();
 
 	}
 	public void cleanUp() {
@@ -180,21 +197,21 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		return ((CommonSpreadSheetModel)model).getCache();
 	}
 
-	public void setFieldArray(ArrayList fieldArray){
+	public void setFieldArray(Vector fieldArray){
 		((SpreadSheetColumnModel)getColumnModel()).setFieldArray(fieldArray);
 //
 //		((CommonSpreadSheetModel)getModel()).setFieldArray(fieldArray);
 	}
-	public final ArrayList getFieldArray() {
+	public final Vector getFieldArray() {
 		return ((CommonSpreadSheetModel)getModel()).getFieldArray();
 	}
 
-	public final SpreadSheetFieldArray getFieldArrayWithWidths(ArrayList fieldArray) {
+	public final SpreadSheetFieldArray getFieldArrayWithWidths(Vector fieldArray) {
 		if (fieldArray == null)
 			fieldArray =   getFieldArray();
 		// the widths don't work now anyway, and someone had a crash due to code below
 		SpreadSheetColumnModel cols = (SpreadSheetColumnModel)getColumnModel();
-		ArrayList<Integer> colWidths=new ArrayList<Integer>(cols.getColumnCount());
+		Vector<Integer> colWidths=new Vector<Integer>(cols.getColumnCount());
 		colWidths.add(-1); //id column ignored
 		for (int i=0; i < cols.getColumnCount(); i++)
 			colWidths.add(cols.getColumn(i).getWidth());
@@ -242,6 +259,244 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	}
 	public boolean isCellEditing(int row, int col) {
 		return (!(isEditing() && getEditingRow() == row && getEditingColumn() == col));
+	}
+
+	private void installExcelEditingActions() {
+		InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
+		ActionMap actionMap = getActionMap();
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0), START_EDIT_ACTION);
+		actionMap.put(START_EDIT_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				startEditingCurrentCell(true);
+			}
+		});
+	}
+
+	private void startEditingCurrentCell(boolean caretAtEnd) {
+		int row = getCurrentRow();
+		int column = getSelectedColumn();
+		if (row < 0 && getRowCount() > 0)
+			row = 0;
+		if (column < 0 && getColumnCount() > 0)
+			column = 0;
+		if (row < 0 || column < 0)
+			return;
+		if (editCellAt(row, column, new StartEditEvent(this, caretAtEnd, null)) && caretAtEnd) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					requestEditorFocus();
+					positionEditorCaretToEnd();
+				}
+			});
+		}
+	}
+
+	private void startEditingFromTypedKey(KeyEvent e) {
+		int row = getCurrentRow();
+		int column = getSelectedColumn();
+		if (row < 0 && getRowCount() > 0)
+			row = 0;
+		if (column < 0 && getColumnCount() > 0)
+			column = 0;
+		if (row < 0 || column < 0)
+			return;
+		if (editCellAt(row, column, new StartEditEvent(this, false, Character.valueOf(e.getKeyChar())))) {
+			final char typedChar = e.getKeyChar();
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					requestEditorFocus();
+					seedEditorWithTypedChar(typedChar);
+				}
+			});
+		}
+	}
+
+	@Override
+	protected void processKeyEvent(KeyEvent e) {
+		if (e != null && !isEditing()) {
+			if (e.getID() == KeyEvent.KEY_TYPED && shouldStartTypingEdit(e)) {
+				startEditingFromTypedKey(e);
+				e.consume();
+				return;
+			}
+			if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_F2) {
+				startEditingCurrentCell(true);
+				e.consume();
+				return;
+			}
+		}
+		super.processKeyEvent(e);
+	}
+
+	private boolean shouldStartTypingEdit(KeyEvent e) {
+		if (e == null)
+			return false;
+		if (e.isControlDown() || e.isAltDown() || e.isMetaDown())
+			return false;
+		char c = e.getKeyChar();
+		return c != KeyEvent.CHAR_UNDEFINED && !Character.isISOControl(c);
+	}
+
+	private void seedEditorWithTypedChar(char c) {
+		JTextComponent text = getEditorTextComponent();
+		if (text == null)
+			return;
+		text.setText(String.valueOf(c));
+		text.setCaretPosition(text.getDocument().getLength());
+	}
+
+	private void positionEditorCaretToEnd() {
+		JTextComponent text = getEditorTextComponent();
+		if (text == null)
+			return;
+		resetEditorHorizontalOffset(text);
+		text.setCaretPosition(text.getDocument().getLength());
+	}
+
+	private void requestEditorFocus() {
+		JTextComponent text = getEditorTextComponent();
+		if (text != null) {
+			text.requestFocusInWindow();
+			return;
+		}
+		if (editorComp instanceof Component) {
+			((Component)editorComp).requestFocusInWindow();
+		}
+	}
+
+	private JTextComponent getEditorTextComponent() {
+		if (!(editorComp instanceof Component))
+			return null;
+		Component comp = (Component) editorComp;
+		if (comp instanceof NameCellComponent) {
+			JComponent textComponent = ((NameCellComponent)comp).getTextComponent();
+			if (textComponent instanceof JTextComponent)
+				return (JTextComponent)textComponent;
+			return null;
+		}
+		if (comp instanceof JTextComponent) {
+			return (JTextComponent) comp;
+		}
+		try {
+			Method method = comp.getClass().getMethod("getTextField");
+			Object textField = method.invoke(comp);
+			if (textField instanceof JTextComponent) {
+				return (JTextComponent) textField;
+			}
+		} catch (Exception ex) {
+			// Ignore; not all editors expose a text field accessor.
+		}
+		return null;
+	}
+
+	private void resetEditorHorizontalOffset(JTextComponent text) {
+		if (text instanceof JTextField) {
+			((JTextField)text).setScrollOffset(0);
+		}
+	}
+
+	private void installCommitAndMoveDownAction(JComponent component, final int row, final int column) {
+		if (component == null)
+			return;
+		InputMap inputMap = component.getInputMap(JComponent.WHEN_FOCUSED);
+		ActionMap actionMap = component.getActionMap();
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), COMMIT_AND_MOVE_DOWN_ACTION);
+		actionMap.put(COMMIT_AND_MOVE_DOWN_ACTION, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				CellEditor editor = getCellEditor();
+				if (editor == null)
+					return;
+				boolean stopped = editor.stopCellEditing();
+				if (stopped) {
+					moveSelectionDownAfterCommit(row, column);
+				}
+			}
+		});
+	}
+
+	private void moveSelectionDownAfterCommit(final int row, final int column) {
+		rememberPendingUndoSelection(row, column);
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (getRowCount() <= 0 || getColumnCount() <= 0)
+					return;
+				int targetRow = Math.min(Math.max(row + 1, 0), getRowCount() - 1);
+				int targetColumn = Math.min(Math.max(column, 0), getColumnCount() - 1);
+				requestFocusInWindow();
+				changeSelection(targetRow, targetColumn, false, false);
+				scrollRectToVisible(getCellRect(targetRow, targetColumn, true));
+			}
+		});
+	}
+
+	private void rememberPendingUndoSelection(int row, int column) {
+		Node node = null;
+		Object impl = null;
+		if (getModel() instanceof SpreadSheetModel && row >= 0 && row < getRowCount()) {
+			node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
+			impl = (node == null) ? null : node.getImpl();
+		}
+		int followRow = Math.min(Math.max(row + 1, 0), Math.max(getRowCount() - 1, 0));
+		int followColumn = Math.min(Math.max(column, 0), Math.max(getColumnCount() - 1, 0));
+		pendingUndoSelection = new PendingUndoSelection(node, impl, row, column, followRow, followColumn);
+	}
+
+	public PendingUndoSelection consumePendingUndoSelection(int currentRow, int currentColumn) {
+		PendingUndoSelection selection = pendingUndoSelection;
+		pendingUndoSelection = null;
+		if (selection == null)
+			return null;
+		if (selection.followRow != currentRow || selection.followColumn != currentColumn)
+			return null;
+		return selection;
+	}
+
+	public static final class PendingUndoSelection {
+		private final Node node;
+		private final Object impl;
+		private final int row;
+		private final int column;
+		private final int followRow;
+		private final int followColumn;
+
+		private PendingUndoSelection(Node node, Object impl, int row, int column, int followRow, int followColumn) {
+			this.node = node;
+			this.impl = impl;
+			this.row = row;
+			this.column = column;
+			this.followRow = followRow;
+			this.followColumn = followColumn;
+		}
+
+		public Node getNode() {
+			return node;
+		}
+
+		public Object getImpl() {
+			return impl;
+		}
+
+		public int getRow() {
+			return row;
+		}
+
+		public int getColumn() {
+			return column;
+		}
+	}
+
+	private static final class StartEditEvent extends EventObject {
+		private static final long serialVersionUID = 1L;
+		private final boolean caretAtEnd;
+		private final Character typedChar;
+
+		private StartEditEvent(Object source, boolean caretAtEnd, Character typedChar) {
+			super(source);
+			this.caretAtEnd = caretAtEnd;
+			this.typedChar = typedChar;
+		}
 	}
 
 	//editing for example
@@ -301,7 +556,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     	return true;
     }
     public List getSelectedDeletableRows() {
-    	ArrayList list = getSelectedNodes();
+    	Vector list = getSelectedNodes();
     	CollectionUtils.filter(list, new Predicate() {
 			public boolean evaluate(Object arg0) {
 				return isNodeDeletable((Node)arg0);
@@ -317,37 +572,37 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     	return nodes;
 
     }
-    public ArrayList getSelectedNodes(){
+    public Vector getSelectedNodes(){
         SpreadSheetModel model=(SpreadSheetModel)getModel();
 		int[] rows=getSelectedRows();
-		ArrayList nodes=new ArrayList(rows.length);
+		Vector nodes=new Vector(rows.length);
 		for (int i=0;i<rows.length;i++){
 		    nodes.add(model.getNode(rows[i]).getNode());
 		}
 		return nodes;
     }
-    public ArrayList getSelectedNodesImpl(){
+    public Vector getSelectedNodesImpl(){
         SpreadSheetModel model=(SpreadSheetModel)getModel();
 		int[] rows=getSelectedRows();
-		ArrayList nodes=new ArrayList(rows.length);
+		Vector nodes=new Vector(rows.length);
 		for (int i=0;i<rows.length;i++){
 		    nodes.add(model.getNode(rows[i]).getNode().getImpl());
 		}
 		return nodes;
     }
-    public ArrayList getSelectedFields(){
+    public Vector getSelectedFields(){
     	if (getRowHeader().getSelectedColumns().length>0) return null;
 		int[] columns=getSelectedColumns();
-		ArrayList fields=new ArrayList(columns.length);
+		Vector fields=new Vector(columns.length);
 		List fieldArray=getFieldArray();
 		for (int i=0;i<columns.length;i++){
 			fields.add(fieldArray.get(columns[i]+1));
 		}
 		return fields;
     }
-    public ArrayList getSelectableFields(){
+    public Vector getSelectableFields(){
     	List fa=getFieldArray();
-    	ArrayList fields=new ArrayList(fa.size());
+    	Vector fields=new Vector(fa.size());
     	fields.addAll(fa);
     	if (fields.size()>0) fields.remove(0); //ID not selectable
     	return fields;
@@ -381,11 +636,19 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		this.cellEditable = cellEditable;
 	}
     // edit triggered by click
-    public boolean editCellAt(int row, int column, EventObject e){
-    	if (column > 0) {
-    		Node node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
-    		if (node != null && !CollaborationHelper.tryLockObject(null, node, this, "edit")) {
-    			return false;
+	public boolean editCellAt(int row, int column, EventObject e){
+		if (e instanceof MouseEvent) {
+			MouseEvent me = (MouseEvent)e;
+			if (me.getClickCount() < 2)
+				return false;
+		}
+		if (e == null) {
+			return false;
+		}
+		if (column > 0) {
+			Node node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
+			if (node != null && !CollaborationHelper.tryLockObject(null, node, this, "edit")) {
+				return false;
     		}
     	}
     	boolean b=super.editCellAt(row,column,e);
@@ -397,37 +660,126 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     			nameCell=true;
         		NameCellComponent nameCellComp=(NameCellComponent)editorComp;
         		comp=nameCellComp.getTextComponent();
-        	}else
+        		if (comp instanceof JComponent)
+        			installCommitAndMoveDownAction((JComponent)comp, row, column);
+    		}else
         		comp=editorComp;
+    		if (editorComp instanceof JComponent) {
+    			installCommitAndMoveDownAction((JComponent)editorComp, row, column);
+    		}
 
-    		if (comp instanceof KeyboardFocusable)
-    			((KeyboardFocusable)comp).selectAll(e == null);
+    		boolean selectAll = true;
+    		boolean caretAtEnd = false;
+    		Character typedChar = null;
+    		if (e instanceof StartEditEvent) {
+    			selectAll = false;
+    			caretAtEnd = ((StartEditEvent)e).caretAtEnd;
+    			typedChar = ((StartEditEvent)e).typedChar;
+    		} else if (e == null) {
+    			selectAll = false;
+    			caretAtEnd = true;
+    		}
 
-    		else if (comp instanceof ChangeAwareTextField){
-        		ChangeAwareTextField text=((ChangeAwareTextField)comp);
-        		if (e==null){
-        			text.selectAll();
-        		}
-        		else if (e instanceof MouseEvent){
-        			if (nameCell){
-	        			MouseEvent me=(MouseEvent)e;
-	        			Rectangle bounds=text.getBounds(null);
-	        			Rectangle cell=getCellRect(row,column,false);
-	        			bounds.setFrame(cell.getX()+bounds.getX(),cell.getY()+bounds.getY(),bounds.getWidth(),bounds.getHeight());
-	            		if(bounds.contains(me.getPoint())){
-	                 		text.selectAllOnNextCaretUpdate(); //to avoid diselection when the cell is clicked
+    		JTextComponent text = (comp instanceof JTextComponent) ? (JTextComponent) comp : getEditorTextComponent();
+    		boolean shouldUseKeyboardFocusableSelectAll = !(caretAtEnd || typedChar != null);
+    		if (comp instanceof KeyboardFocusable && shouldUseKeyboardFocusableSelectAll)
+    			((KeyboardFocusable)comp).selectAll(selectAll);
+    		if (text != null){
+    			boolean mouseEditingNameCell = nameCell && e instanceof MouseEvent;
+    			if (nameCell && !mouseEditingNameCell) {
+    				resetEditorHorizontalOffset(text);
+    			}
+    			if (typedChar != null) {
+    				text.setText(String.valueOf(typedChar));
+    				if (nameCell) {
+    					resetEditorHorizontalOffset(text);
+    				}
+    				text.setCaretPosition(text.getDocument().getLength());
+    				selectAll = false;
+    			}
+    			if (caretAtEnd) {
+    				if (nameCell) {
+    					resetEditorHorizontalOffset(text);
+    				}
+    				text.setCaretPosition(text.getDocument().getLength());
+    			}
+    		if (e instanceof MouseEvent) {
+    			MouseEvent me = (MouseEvent)e;
+    			if (nameCell) {
+	        			Rectangle bounds = text.getBounds();
+	        			Rectangle cell = getCellRect(row, column, false);
+	        			bounds.setFrame(cell.getX() + bounds.getX(), cell.getY() + bounds.getY(), bounds.getWidth(), bounds.getHeight());
+	            		if(!bounds.contains(me.getPoint())) {
+	            			selectAll = true;
+	            		} else {
+	            			selectAll = false;
+	            			positionCaretAtMousePoint(text, me, bounds);
 	            		}
-	         			else{ //because if it's outside there's no caret update
-	         				text.requestFocus();
-	         				text.selectAll();
-	         			}
-        			}else
-        				text.selectAllOnNextCaretUpdate(); //to avoid diselection when the cell is clicked
-        		}
-        		text.resetChange();
-        	}
-        }
+    			}
+    		}
+    			if (selectAll) {
+    				text.selectAll();
+    			}
+    			if (nameCell && !mouseEditingNameCell) {
+    				resetEditorHorizontalOffset(text);
+    			}
+    			if (text instanceof ChangeAwareComponent) {
+    				((ChangeAwareComponent)text).resetChange();
+    			}
+    		}
+    	}
     	return b;
+    }
+
+    private void positionCaretAtMousePoint(final JTextComponent text, final MouseEvent me, final Rectangle cellBounds) {
+    	if (text == null || me == null || cellBounds == null)
+    		return;
+    	final Rectangle visibleBefore = text.getVisibleRect();
+    	final int scrollOffsetBefore = (text instanceof JTextField) ? ((JTextField)text).getScrollOffset() : -1;
+    	SwingUtilities.invokeLater(new Runnable() {
+    		public void run() {
+    			try {
+    				Point localPoint = SwingUtilities.convertPoint(CommonSpreadSheet.this, me.getPoint(), text);
+    				int pos = text.viewToModel2D(localPoint);
+    				if (pos >= 0) {
+    					int caret = pos;
+    					try {
+    						caret = getWordStartPosition(text, pos);
+    					} catch (BadLocationException ex) {
+    						caret = pos;
+    					}
+    					text.setCaretPosition(caret);
+     					if (visibleBefore != null) {
+     						text.scrollRectToVisible(visibleBefore);
+     					}
+     					restoreEditorHorizontalPosition(text, visibleBefore, scrollOffsetBefore);
+    				}
+    			} catch (RuntimeException ex) {
+    				// If mapping fails, leave the default caret position in place.
+    			}
+    		}
+    	});
+    }
+
+    private int getWordStartPosition(JTextComponent text, int position) throws BadLocationException {
+    	if (text == null)
+    		return position;
+    	String content = text.getText();
+    	if (content == null || content.length() == 0)
+    		return 0;
+    	int bounded = Math.max(0, Math.min(position, content.length()));
+    	if (bounded == content.length() && bounded > 0)
+    		bounded--;
+    	if (bounded < 0 || bounded >= content.length())
+    		return Math.max(0, Math.min(position, content.length()));
+    	char current = content.charAt(bounded);
+    	if (Character.isWhitespace(current))
+    		return bounded;
+    	return Utilities.getWordStart(text, bounded);
+    }
+
+    protected boolean handleHierarchyNavigationKeyEvent(KeyEvent e) {
+    	return false;
     }
 
 
@@ -451,13 +803,9 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			boolean extend) {
 		changeSelection(rowIndex,columnIndex,toggle,extend,true);
 	}
-	public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
+    public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
 			boolean extend,boolean forwards) {
     	super.changeSelection(rowIndex,columnIndex,toggle,extend);
-    	if (editOnSelect&&!isEditing()){
-       		editCellAt(rowIndex, columnIndex); //TODO prevent setValueAt from being called because of this on selection
-    	} else {
-    	}
 		if (forwards){
 			rowHeader.clearSelection();
 			//rowHeader.changeSelection(rowIndex, columnIndex, toggle, extend,false);
@@ -555,8 +903,25 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     		int col=getEditingColumn();
     		TableCellEditor editor=getCellEditor();
     		editor.cancelCellEditing();
-    		editCellAt(row,col);
+    		editCellAt(row,col,new StartEditEvent(this, true, null));
     	}
+    }
+
+    private void restoreEditorHorizontalPosition(final JTextComponent text, final Rectangle visibleBefore, final int scrollOffsetBefore) {
+    	if (text == null)
+    		return;
+    	if (visibleBefore != null)
+    		text.scrollRectToVisible(visibleBefore);
+    	if (text instanceof JTextField && scrollOffsetBefore >= 0)
+    		((JTextField)text).setScrollOffset(scrollOffsetBefore);
+    	SwingUtilities.invokeLater(new Runnable() {
+    		public void run() {
+    			if (visibleBefore != null)
+    				text.scrollRectToVisible(visibleBefore);
+    			if (text instanceof JTextField && scrollOffsetBefore >= 0)
+    				((JTextField)text).setScrollOffset(scrollOffsetBefore);
+    		}
+    	});
     }
 
 

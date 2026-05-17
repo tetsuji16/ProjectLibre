@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -224,7 +224,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (period == null)
       {
-         period = new ArrayList<ResourceAssignmentSpreadType.Period>();
+         period = new Vector<ResourceAssignmentSpreadType.Period>();
       }
       return this.period;
    }

@@ -119,7 +119,7 @@ public class TimephasedService {
 		Object fields[] = HasTimeDistributedData.baselineWorkTypes;
 		Assignment baselineAssignment;
 		for (int i = 0; i < fields.length; i++) {
-			baselineAssignment = assignment.getBaselineAssignment(new Integer(i), false);
+			baselineAssignment = assignment.getBaselineAssignment(Integer.valueOf(i), false);
 			if (baselineAssignment == null)
 				continue;
 			int mapType = TimeDistributedTypeMapper.getTimeDistributedType(i,false,baselineAssignment);

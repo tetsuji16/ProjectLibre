@@ -55,9 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.model.cache;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -182,7 +182,7 @@ public class ReferenceNodeModelCache implements ObjectEvent.Listener, HierarchyL
 	public List getChildren(GraphicNode node){
 		Collection children=getModel().getHierarchy().getChildren((node==null)?null:node.getNode());
 		if (children==null) return null;
-		List list=new LinkedList();//new ArrayList(children.size());
+		List list=new LinkedList();//new Vector(children.size());
 		Object child;
 		for (Iterator i=children.iterator();i.hasNext();){
 			child=nodeCache.getElement(i.next());
@@ -362,8 +362,8 @@ public class ReferenceNodeModelCache implements ObjectEvent.Listener, HierarchyL
 	
 //edges
 	public void buildEdges(){
-		Map implMap=new HashMap();
-		List gnodes=new ArrayList();
+		Map implMap=new Hashtable();
+		List gnodes=new Vector();
 		for (Iterator i=nodeCache.getCache().iterator();i.hasNext();){
 			GraphicNode gnode=(GraphicNode)i.next();
 			if (gnode.isVoid()||gnode.isAssignment()) continue;

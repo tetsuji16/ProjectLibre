@@ -99,7 +99,7 @@ public class Dictionary implements ProvidesDigesterEvents {
 	public Dictionary() {
 	}
 
-	private Hashtable mainMap = new Hashtable();
+	private Hashtable mainMap = new Hashtable<>();
 
 	public static void add(NamedItem namedItem) {
 		add(namedItem,false);
@@ -111,10 +111,10 @@ public class Dictionary implements ProvidesDigesterEvents {
 			String category = categories[i];
 			Hashtable subMap = (Hashtable) getInstance().mainMap.get(category);
 			if (subMap == null) {
-				subMap = new Hashtable();
+				subMap = new Hashtable<>();
 				getInstance().mainMap.put(category, subMap);
 			}
-			if (!subMap.contains(namedItem)) {
+			if (!subMap.containsValue(namedItem)) {
 				subMap.put(namedItem.getName(), namedItem);
 			} else {
 				if (replace)
