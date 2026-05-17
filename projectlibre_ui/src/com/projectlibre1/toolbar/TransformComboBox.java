@@ -96,7 +96,10 @@ public class TransformComboBox extends JComboBox {
 	}
 	public void setView(ViewConfiguration view){
 		((TransformComboBoxModel)getModel()).setView(view);
-		setSelectedItem(getModel().getSelectedItem());//JComboBox local state update
+		Object selectedItem = getModel().getSelectedItem();
+		if (selectedItem != null && getItemCount() > 0) {
+			setSelectedItem(selectedItem);//JComboBox local state update
+		}
 	}
 	public Point getToolTipLocation(MouseEvent event) { // the tip MUST be touching the button if html because you can click on links
 		if (getToolTipText().startsWith("<html>"))

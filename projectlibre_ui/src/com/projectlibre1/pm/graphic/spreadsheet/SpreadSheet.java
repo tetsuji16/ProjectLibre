@@ -833,6 +833,9 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	// init actions
 	public CommonSpreadSheetAction prepareAction(String actionId) {
 		CommonSpreadSheetAction action = getAction(actionId);
+		if (action == null) {
+			return null;
+		}
 		action.setSpreadSheet(this);
 		return action;
 	}
@@ -843,6 +846,9 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	}
 	private Map actionMap=null;
 	public CommonSpreadSheetAction getAction(String actionId) {
+		if (actionId == null) {
+			return null;
+		}
 		if (actionMap==null){
 			actionMap=new Hashtable();
 			addActions(getActionList());

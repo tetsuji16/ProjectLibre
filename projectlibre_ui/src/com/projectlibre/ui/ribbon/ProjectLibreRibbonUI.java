@@ -2219,10 +2219,12 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 			this.taskToggleButtons.put(task, taskToggleButton);
 		}
 
-		JRibbonTaskToggleButton toSelect = this.taskToggleButtons
-				.get(selectedTask);
-		if (toSelect != null) {
-			toSelect.getActionModel().setSelected(true);
+		if (selectedTask != null) {
+			JRibbonTaskToggleButton toSelect = this.taskToggleButtons
+					.get(selectedTask);
+			if (toSelect != null) {
+				toSelect.getActionModel().setSelected(true);
+			}
 		}
 
 		for (int i = 0; i < this.ribbon.getTaskCount(); i++) {

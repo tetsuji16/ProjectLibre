@@ -499,7 +499,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
     public void updateShape(GraphicNode node){
     	if (((GanttParams)graphInfo).getCoord()==null) return; //not initialized
-		BarStyles barStyles = graphInfo.getBarStyles();
+    	BarStyles barStyles = graphInfo.getBarStyles();
+		if (barStyles == null) return;
 		nodeRenderer.initialize(null,node);
 		barStyles.apply(node.getNode().getImpl(),nodeRenderer);
 
@@ -507,6 +508,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 	public void paintNode(Graphics2D g2,GraphicNode node, boolean background){
 		BarStyles barStyles = graphInfo.getBarStyles();
+		if (barStyles == null) return;
 		nodeRenderer.initialize(g2,node);
 
 		if (background)
@@ -518,18 +520,21 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 	public void paintAnnotation(Graphics2D g2,GraphicNode node){
 		BarStyles barStyles = graphInfo.getBarStyles();
+		if (barStyles == null) return;
 		annotationRenderer.initialize(g2,node);
 		barStyles.apply(node.getNode().getImpl(),annotationRenderer,false,true,false, false);
 	}
 
 	public void paintHorizontalLine(Graphics2D g2,GraphicNode node){
 		BarStyles barStyles = graphInfo.getBarStyles();
+		if (barStyles == null) return;
 		horizontalLineRenderer.initialize(g2,node);
 		barStyles.apply(node.getNode().getImpl(),horizontalLineRenderer,false,false,false, true);
 	}
 
 	public void paintLink(Graphics2D g2, GraphicDependency dependency){
 		BarStyles barStyles = graphInfo.getBarStyles();
+		if (barStyles == null) return;
 		linkRenderer.initialize(g2,dependency);
 		barStyles.apply(dependency,linkRenderer,true,false,false, false);
 	}
@@ -639,6 +644,9 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		calendarFormat=null;
 		if (calendarFormat==null){
 			BarStyles barStyles = graphInfo.getBarStyles();
+			if (barStyles == null) {
+				return null;
+			}
 			barStyles.apply(null,calendarClosure,false,false,true, false);
 		}
 		return calendarFormat;

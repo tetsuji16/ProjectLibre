@@ -104,7 +104,13 @@ public class NodeCacheTransformer implements CacheTransformer {
     public NodeCacheTransformer(String viewName,ReferenceNodeModelCache refCache,Closure transformerClosure){
     	//System.out.println("viewName="+viewName);
     	view=ViewConfiguration.getView(viewName);
-        transformer=view.getTransform();
+        if (view == null || view.getTransform() == null) {
+            view = new ViewConfiguration();
+            view.setName(viewName);
+            transformer = new ViewTransformer();
+        } else {
+            transformer=view.getTransform();
+        }
         if (transformerClosure!=null) transformerClosure.execute(transformer);
 
     	this.refCache=refCache;

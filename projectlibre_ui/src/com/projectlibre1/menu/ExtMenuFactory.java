@@ -88,12 +88,15 @@ public class ExtMenuFactory extends MenuFactory {
 	}
 	
 	JMenuItem getMenuItemFromId(String id) {
+		if (id == null)
+			return null;
 		String actionText = getActionStringFromId(id);
 		JMenuItem result = null;
-		if (actionText != null)
-			result =(JMenuItem)menuItems.get(actionText);
+		if (actionText != null) {
+			result = (JMenuItem) menuItems.get(actionText);
+		}
 		if (result == null)
-			result = (JMenuItem)menuItems.get(id);
+			result = (JMenuItem) menuItems.get(id);
 			
 		return result;
 	}

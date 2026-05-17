@@ -123,12 +123,17 @@ public abstract class CommonTransform {
         this.parametersMap = parametersMap;
     }
     public void addParameter(TransformParameter parameter){
+        if (parameter == null || parameter.getId() == null) {
+            return;
+        }
         if (parameters==null){
             parameters=new Vector();
             parametersMap=new Hashtable();
         }
         parameters.add(parameter);
-        parametersMap.put(parameter.getId(),parameter.getValue());
+        if (parameter.getValue() != null) {
+            parametersMap.put(parameter.getId(),parameter.getValue());
+        }
     }
 
     public Object getParameter(String id){
@@ -136,6 +141,9 @@ public abstract class CommonTransform {
         return parametersMap.get(id);
     }
     public void setParameter(TransformParameter param){
+        if (parametersMap == null || param == null || param.getId() == null || param.getValue() == null) {
+            return;
+        }
         parametersMap.put(param.getId(),param.getValue());
     }
     public void askForParameters(){
