@@ -2,20 +2,126 @@ package com.projectlibre1.collaboration;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import com.projectlibre1.field.FieldParseException;
+import com.projectlibre1.grouping.core.Node;
+import com.projectlibre1.grouping.core.OutlineCollection;
 import com.projectlibre1.exchange.FileImporter;
+import com.projectlibre1.grouping.core.model.NodeModel;
+import com.projectlibre1.pm.task.NormalTask;
 import com.projectlibre1.pm.resource.ResourcePool;
 import com.projectlibre1.pm.resource.ResourcePoolFactory;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.ProjectFactory;
 import com.projectlibre1.pm.task.Task;
-import com.projectlibre1.server.data.DataUtil;
 import com.projectlibre1.session.LocalSession;
 import com.projectlibre1.undo.DataFactoryUndoController;
+import com.projectlibre1.util.Environment;
 
 public class ProjectMergeService {
+	public static class TaskState {
+		private final long taskId;
+		private final long id;
+		private final String name;
+		private final long start;
+		private final long finish;
+		private final long duration;
+		private final long parentId;
+		private final int outlineLevel;
+		private final String predecessors;
+		private final String resourceAssignments;
+		private final double percentComplete;
+		private final String notes;
+
+		private TaskState(long taskId, long id, String name, long start, long finish, long duration, long parentId, int outlineLevel,
+				String predecessors, String resourceAssignments, double percentComplete, String notes) {
+			this.taskId = taskId;
+			this.id = id;
+			this.name = name;
+			this.start = start;
+			this.finish = finish;
+			this.duration = duration;
+			this.parentId = parentId;
+			this.outlineLevel = outlineLevel;
+			this.predecessors = predecessors;
+			this.resourceAssignments = resourceAssignments;
+			this.percentComplete = percentComplete;
+			this.notes = notes;
+		}
+
+		public static TaskState capture(Task task) {
+			if (task == null) {
+				return null;
+			}
+			String assignments = "";
+			if (task instanceof NormalTask) {
+				assignments = ((NormalTask) task).getResourceNames();
+			}
+			return new TaskState(task.getUniqueId(), task.getId(), task.getName(), task.getStart(), task.getEnd(), task.getDuration(),
+				task.getParentId(OutlineCollection.DEFAULT_OUTLINE), task.getOutlineLevel(), task.getUniqueIdPredecessors(),
+				assignments, task.getPercentComplete(), task.getNotes());
+		}
+
+		public boolean matches(TaskState other) {
+			if (other == null) {
+				return false;
+			}
+			return id == other.id
+				&& start == other.start
+				&& finish == other.finish
+				&& duration == other.duration
+				&& parentId == other.parentId
+				&& outlineLevel == other.outlineLevel
+				&& Double.compare(percentComplete, other.percentComplete) == 0
+				&& Objects.equals(name, other.name)
+				&& Objects.equals(predecessors, other.predecessors)
+				&& Objects.equals(resourceAssignments, other.resourceAssignments)
+				&& Objects.equals(notes, other.notes);
+		}
+	}
+
+	public static class ConflictResult {
+		private final Set<Long> deletedTaskIds = new LinkedHashSet<Long>();
+		private final Set<Long> changedTaskIds = new LinkedHashSet<Long>();
+
+		public boolean hasConflicts() {
+			return !deletedTaskIds.isEmpty() || !changedTaskIds.isEmpty();
+		}
+
+		public Set<Long> getDeletedTaskIds() {
+			return deletedTaskIds;
+		}
+
+		public Set<Long> getChangedTaskIds() {
+			return changedTaskIds;
+		}
+	}
+
+	public static class ApplyResult {
+		private int updatedTaskCount;
+		private final Set<Long> skippedLockedTaskIds = new LinkedHashSet<Long>();
+
+		public int getUpdatedTaskCount() {
+			return updatedTaskCount;
+		}
+
+		public Set<Long> getSkippedLockedTaskIds() {
+			return skippedLockedTaskIds;
+		}
+
+		public boolean hasChanges() {
+			return updatedTaskCount > 0 || !skippedLockedTaskIds.isEmpty();
+		}
+	}
+
 	public Project loadExternalProject(String fileName) {
 		if (fileName == null) {
 			return null;
@@ -47,6 +153,20 @@ public class ProjectMergeService {
 		}
 	}
 
+	public Map<Long, TaskState> captureTaskStates(Iterable<Task> tasks) {
+		Map<Long, TaskState> states = new LinkedHashMap<Long, TaskState>();
+		if (tasks == null) {
+			return states;
+		}
+		for (Task task : tasks) {
+			TaskState state = TaskState.capture(task);
+			if (state != null) {
+				states.put(Long.valueOf(task.getUniqueId()), state);
+			}
+		}
+		return states;
+	}
+
 	public Set<Long> findDeletedTasks(String fileName, Set<Long> lockedTaskIds) {
 		Set<Long> deleted = new LinkedHashSet<Long>();
 		if (lockedTaskIds == null || lockedTaskIds.isEmpty()) {
@@ -63,5 +183,144 @@ public class ProjectMergeService {
 			}
 		}
 		return deleted;
+	}
+
+	public ConflictResult findTaskConflicts(String fileName, Map<Long, TaskState> baselineStates) {
+		ConflictResult result = new ConflictResult();
+		if (baselineStates == null || baselineStates.isEmpty()) {
+			return result;
+		}
+		Project external = loadExternalProject(fileName);
+		if (external == null) {
+			return result;
+		}
+		for (Map.Entry<Long, TaskState> entry : baselineStates.entrySet()) {
+			Long taskId = entry.getKey();
+			TaskState baseline = entry.getValue();
+			Task externalTask = findMatchingTask(external, taskId.longValue(), baseline);
+			if (externalTask == null) {
+				result.getDeletedTaskIds().add(taskId);
+				continue;
+			}
+			TaskState externalState = TaskState.capture(externalTask);
+			if (!baseline.matches(externalState)) {
+				result.getChangedTaskIds().add(taskId);
+			}
+		}
+		return result;
+	}
+
+	private Task findMatchingTask(Project external, long uniqueId, TaskState baseline) {
+		if (external == null) {
+			return null;
+		}
+		Task task = external.findByUniqueId(uniqueId);
+		if (task != null) {
+			return task;
+		}
+		return findTaskByIdFallback(external, baseline);
+	}
+
+	public ApplyResult applyExternalTaskUpdates(Project target, String fileName, Set<Long> lockedTaskIds) {
+		ApplyResult result = new ApplyResult();
+		if (target == null || fileName == null) {
+			return result;
+		}
+		Project external = loadExternalProject(fileName);
+		if (external == null) {
+			return result;
+		}
+		boolean wasDirty = target.needsSaving();
+		boolean wasImporting = Environment.isImporting();
+		List<Node> changedNodes = new ArrayList<Node>();
+		try {
+			Environment.setImporting(true);
+			applyExternalTaskUpdates(target, external, lockedTaskIds, result, changedNodes);
+		} finally {
+			Environment.setImporting(wasImporting);
+			if (!wasDirty) {
+				target.setGroupDirty(false);
+			}
+		}
+		fireTaskUpdates(target, changedNodes);
+		return result;
+	}
+
+	private void applyExternalTaskUpdates(Project target, Project external, Set<Long> lockedTaskIds, ApplyResult result, List<Node> changedNodes) {
+		for (Iterator i = external.getTaskOutlineIterator(); i.hasNext();) {
+			Task externalTask = (Task) i.next();
+			TaskState incoming = TaskState.capture(externalTask);
+			if (incoming == null) {
+				continue;
+			}
+			Task localTask = findMatchingTask(target, incoming.taskId, incoming);
+			if (localTask == null) {
+				continue;
+			}
+			if (isLocked(localTask, lockedTaskIds)) {
+				result.skippedLockedTaskIds.add(Long.valueOf(localTask.getUniqueId()));
+				continue;
+			}
+			Node changedNode = applyExternalTaskValues(target, localTask, externalTask, incoming);
+			if (changedNode != null) {
+				result.updatedTaskCount++;
+				changedNodes.add(changedNode);
+			}
+		}
+	}
+
+	private Node applyExternalTaskValues(Project target, Task localTask, Task externalTask, TaskState incoming) {
+		TaskState before = TaskState.capture(localTask);
+		if (before == null || before.matches(incoming)) {
+			return null;
+		}
+		applyTaskValues(localTask, externalTask);
+		TaskState after = TaskState.capture(localTask);
+		if (before.matches(after)) {
+			return null;
+		}
+		return findTaskNode(target, localTask);
+	}
+
+	private boolean isLocked(Task task, Set<Long> lockedTaskIds) {
+		return task != null && lockedTaskIds != null && lockedTaskIds.contains(Long.valueOf(task.getUniqueId()));
+	}
+
+	private Task findTaskByIdFallback(Project project, TaskState state) {
+		if (project == null || state == null) {
+			return null;
+		}
+		return Project.findTaskById(Long.valueOf(state.id), project.getTasks());
+	}
+
+	private Node findTaskNode(Project target, Task task) {
+		return target == null || target.getTaskOutline() == null ? null : target.getTaskOutline().search(task);
+	}
+
+	private void applyTaskValues(Task localTask, Task externalTask) {
+		localTask.setName(externalTask.getName());
+		localTask.setNotes(externalTask.getNotes());
+		if (localTask instanceof NormalTask && externalTask instanceof NormalTask) {
+			NormalTask localNormal = (NormalTask) localTask;
+			NormalTask externalNormal = (NormalTask) externalTask;
+			localNormal.setDuration(externalNormal.getDuration());
+			localNormal.setEnd(externalNormal.getEnd());
+			localNormal.setPercentComplete(externalNormal.getPercentComplete());
+		}
+		try {
+			localTask.setUniqueIdPredecessors(externalTask.getUniqueIdPredecessors());
+		} catch (FieldParseException e) {
+			// Keep the refresh best-effort; malformed external links will still be caught on save.
+		}
+		localTask.markTaskAsNeedingRecalculation();
+	}
+
+	private void fireTaskUpdates(Project target, List<Node> changedNodes) {
+		if (changedNodes == null || changedNodes.isEmpty()) {
+			return;
+		}
+		NodeModel model = target.getTaskOutline();
+		model.getHierarchy().fireUpdate((Node[]) changedNodes.toArray(new Node[changedNodes.size()]));
+		target.fireScheduleChanged(this, null);
 	}
 }

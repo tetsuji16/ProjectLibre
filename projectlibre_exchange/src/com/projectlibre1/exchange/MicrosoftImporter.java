@@ -709,9 +709,7 @@ public class MicrosoftImporter extends ServerFileImporter{
 		Job job=new Job(session.getJobQueue(),"exportFile","Exporting...",true); //$NON-NLS-1$ //$NON-NLS-2$
     	job.addRunnable(new JobRunnable("Local: export",1.0f){ //$NON-NLS-1$
     		public Object run() throws Exception{
-     			MSPDISerializer serializer = new MSPDISerializer();
-    			serializer.setJob(this);
-    			serializer.saveProject(project,fileName);
+				exportFile();
     			return null;
     		}
     	});

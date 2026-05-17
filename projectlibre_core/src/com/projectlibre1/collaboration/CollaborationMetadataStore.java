@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,11 +82,11 @@ public class CollaborationMetadataStore {
 			raf = new RandomAccessFile(sidecarFile, "rw");
 			channel = raf.getChannel();
 			lock = channel.lock();
-			byte[] bytes = readAllBytes(raf);
-			Metadata metadata = bytes.length == 0 ? createDefaultMetadata() : parseMetadata(bytes);
+			byte[] originalBytes = readAllBytes(raf);
+			Metadata metadata = originalBytes.length == 0 ? createDefaultMetadata() : parseMetadata(originalBytes);
 			normalize(metadata);
 			T result = callback.execute(metadata);
-			writeMetadata(raf, metadata);
+			writeMetadataIfChanged(raf, originalBytes, metadata);
 			return result;
 		} catch (Exception e) {
 			return callback.onError(e);
@@ -130,8 +131,11 @@ public class CollaborationMetadataStore {
 		return out.toByteArray();
 	}
 
-	private void writeMetadata(RandomAccessFile raf, Metadata metadata) throws IOException {
+	private void writeMetadataIfChanged(RandomAccessFile raf, byte[] originalBytes, Metadata metadata) throws IOException {
 		byte[] bytes = toJsonBytes(metadata.toMap());
+		if (Arrays.equals(originalBytes, bytes)) {
+			return;
+		}
 		raf.setLength(0L);
 		raf.seek(0L);
 		raf.write(bytes);

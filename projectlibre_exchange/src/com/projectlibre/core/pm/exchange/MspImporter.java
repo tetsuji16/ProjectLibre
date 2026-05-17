@@ -55,8 +55,10 @@
  *******************************************************************************/
 package com.projectlibre.core.pm.exchange;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -149,19 +151,21 @@ public class MspImporter {
 	
 	public void parseProject(InputStream in, String extension) throws Exception {
 		try {
-			if (extension.equals("xml") 
-					|| extension.equals("pod")){
+			InputStream source = prepareProjectStream(in);
+			String effectiveExtension = normalizeExtension(extension, source);
+			if (effectiveExtension.equals("xml")
+					|| effectiveExtension.equals("pod")){
 				reader=new ImprovedMSPDIReader();
 				state.setMspdi(true);
-			} else if (extension.equals("mpp"))
+			} else if (effectiveExtension.equals("mpp"))
 				reader=new MPPReader();
-			else if (extension.equals("mpx"))
+			else if (effectiveExtension.equals("mpx"))
 				reader=new MPXReader();
-			else if (extension.equals("planner"))
+			else if (effectiveExtension.equals("planner"))
 				reader = new PlannerReader();
-			else if (extension.equals("xlsx"))
+			else if (effectiveExtension.equals("xlsx"))
 				reader = new XlsxReader();
-			mpxProjectFile = reader.read(in);
+			mpxProjectFile = reader.read(source);
 			state.setMpxProjectFile(mpxProjectFile);
 		
 		} finally {
@@ -170,6 +174,31 @@ public class MspImporter {
 		}	
 
 
+	}
+
+	private InputStream prepareProjectStream(InputStream in) {
+		if (in instanceof BufferedInputStream) {
+			return in;
+		}
+		return new BufferedInputStream(in);
+	}
+
+	private String normalizeExtension(String extension, InputStream in) throws Exception {
+		if (!"xlsx".equals(extension) || !in.markSupported()) {
+			return extension;
+		}
+		in.mark(256);
+		byte[] header = new byte[256];
+		int read = in.read(header);
+		in.reset();
+		if (read <= 0) {
+			return extension;
+		}
+		String prefix = new String(header, 0, read, StandardCharsets.UTF_8).trim();
+		if (prefix.startsWith("<?xml") || prefix.startsWith("<Project")) {
+			return "xml"; //$NON-NLS-1$
+		}
+		return extension;
 	}
 	protected void parseProject(String fileName) throws Exception {
 		fileName=fileName.trim();

@@ -56,6 +56,8 @@
 package com.projectlibre1.session;
 
 import java.awt.Component;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Locale;
 import java.util.prefs.Preferences;
@@ -86,6 +88,9 @@ public class FileHelper {
     private FileFilter microsoftXlsxFilter = null;
     private FileFilter plannerFilter = null;
     private FileFilter projectFilter = null;
+    private PropertyChangeListener saveDialogFilterListener = null;
+    private String suggestedSaveFileName = null;
+    private boolean updatingSuggestedSaveFile = false;
 
     private JFileChooser getFileChooser() {
     	if (fileChooser == null) {
@@ -104,6 +109,11 @@ public class FileHelper {
 
     private void configureFileChooser(JFileChooser chooser, final boolean save) {
     	setUpdateUI(chooser);
+
+		if (saveDialogFilterListener != null) {
+			chooser.removePropertyChangeListener(saveDialogFilterListener);
+			saveDialogFilterListener = null;
+		}
 
     	chooserFileView = new FileView() {
     		public Icon getIcon(File f) {
@@ -212,6 +222,19 @@ public class FileHelper {
     		chooser.addChoosableFileFilter(plannerFilter);
     		chooser.addChoosableFileFilter(projectFilter);
     	}
+
+		if (save) {
+			saveDialogFilterListener = new PropertyChangeListener() {
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					if (!JFileChooser.FILE_FILTER_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
+						return;
+					}
+					applySuggestedSaveFileName(chooser);
+				}
+			};
+			chooser.addPropertyChangeListener(saveDialogFilterListener);
+		}
     }
 
     private void ensureFileChooserConfigured(final boolean save) {
@@ -231,10 +254,11 @@ public class FileHelper {
     		selectedFileName=changeFileExtension(selectedFileName,save?"xml":"mpp");
     	}
 	JFileChooser fileChooser = getFileChooser();
-	if (selectedFileName != null) {
-		fileChooser.setSelectedFile(new File(selectedFileName));
-	}
 	ensureFileChooserConfigured(save);
+	suggestedSaveFileName = save ? selectedFileName : null;
+	if (selectedFileName != null) {
+		fileChooser.setSelectedFile(new File(getSuggestedSaveFileName(selectedFileName, fileChooser.getFileFilter())));
+	}
     	fileChooser.setDialogType(save?JFileChooser.SAVE_DIALOG:JFileChooser.OPEN_DIALOG);
     	if (selectedFileName==null){
     		try {
@@ -262,6 +286,34 @@ public class FileHelper {
 		Preferences.userNodeForPackage(FileHelper.class).put("lastDirectory",file.getParent());
 		return fileName;
     	
+    }
+
+    private void applySuggestedSaveFileName(JFileChooser chooser) {
+		if (updatingSuggestedSaveFile || suggestedSaveFileName == null) {
+			return;
+		}
+		updatingSuggestedSaveFile = true;
+		try {
+			chooser.setSelectedFile(new File(getSuggestedSaveFileName(suggestedSaveFileName, chooser.getFileFilter())));
+		} finally {
+			updatingSuggestedSaveFile = false;
+		}
+    }
+
+    private String getSuggestedSaveFileName(String baseFileName, FileFilter filter) {
+		if (baseFileName == null) {
+			return null;
+		}
+		if (filter == microsoftXlsxFilter) {
+			return changeFileExtension(baseFileName, "xlsx");
+		}
+		if (filter == microsoftXMLFilter) {
+			return changeFileExtension(baseFileName, "xml");
+		}
+		if (filter == projectlibreFilter) {
+			return changeFileExtension(baseFileName, DEFAULT_FILE_EXTENSION);
+		}
+		return baseFileName;
     }
 
     public static boolean isFileNameAllowed(String fileName,boolean save) {
