@@ -28,6 +28,14 @@
 	<classpathentry kind="lib" path="/projectlibre_contrib/lib/junit.jar"/>
 	<classpathentry kind="lib" path="/projectlibre_contrib/lib/l2fprod-common-totd.jar"/>
 	<classpathentry kind="lib" path="/projectlibre_contrib/lib/nachocalendar.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/commons-lang3-3.14.0.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/commons-collections4-4.4.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/pdfbox-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/fontbox-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/pdfbox-io-3.0.1.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/jackson-core-2.16.1.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/jackson-databind-2.16.1.jar"/>
+	<classpathentry kind="lib" path="/projectlibre_contrib/lib/jackson-annotations-2.16.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="lib" path="/projectlibre_contrib/lib/exchange/jaxb-api.jar"/>
 	<classpathentry kind="output" path="bin"/>

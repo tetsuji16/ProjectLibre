@@ -56,6 +56,8 @@
 package com.projectlibre1.exchange;
 
 import java.io.BufferedInputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -89,6 +91,7 @@ import com.projectlibre1.util.Alert;
  * Loads/Saves a project from/to a pod file
  */
 public class LocalFileImporter extends FileImporter {
+	private static final Logger logger = Logger.getLogger(LocalFileImporter.class.getName());
 	public static final String VERSION="1.0.0"; //$NON-NLS-1$
 	private static final String PROJECT_LIBRE_FILE_SEPARATOR="@@@@@@@@@@ProjectLibreSeparator_MSXML@@@@@@@@@@";
 	private static final String OLD_FILE="com.projity.server.data.ProjectData";
@@ -141,7 +144,7 @@ public class LocalFileImporter extends FileImporter {
 				try {
 					fin.close();
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.log(Level.WARNING, "Error during file import", e);
 				}
 			}
 			
@@ -208,7 +211,7 @@ public class LocalFileImporter extends FileImporter {
 							in.close();
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
-							e1.printStackTrace();
+							logger.log(Level.WARNING, "Error during file import", e1);
 						}
 					}
 					fin=new FileInputStream(f);
@@ -271,13 +274,13 @@ public class LocalFileImporter extends FileImporter {
 					if (ex!=null) throw ex;
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.log(Level.WARNING, "Error during file import", e);
 				if (in!=null){
 					try {
 						in.close();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						logger.log(Level.WARNING, "Error during file import", e1);
 					}
 				}
 			}
@@ -310,13 +313,13 @@ public class LocalFileImporter extends FileImporter {
 			    }
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error during file import", e);
 		} finally {
 			if (in!=null){
 				try {
 					in.close();
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					logger.log(Level.WARNING, "Error during file import", e1);
 				}
 			}
 		}
@@ -369,7 +372,7 @@ public class LocalFileImporter extends FileImporter {
 				System.out.println("Saving...Done in "+(t2-t1)+" ms"); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (Exception e) {
 				error=true;
-				e.printStackTrace();
+				logger.log(Level.WARNING, "Error during file import", e);
 			}
 			try{
 				BufferedOutputStream bout=new BufferedOutputStream(fout);
@@ -381,12 +384,12 @@ public class LocalFileImporter extends FileImporter {
 				
 			}catch (Exception e) {
 				error=true;
-				e.printStackTrace();
+				logger.log(Level.WARNING, "Error during file import", e);
 			}
 			fout.close();
 		} catch (Exception e) {
 			error=true;
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error during file import", e);
 		}
 
 		//Don't replace original file if an error occurred

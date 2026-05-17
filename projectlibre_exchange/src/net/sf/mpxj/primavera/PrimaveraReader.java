@@ -26,11 +26,11 @@ package net.sf.mpxj.primavera;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -1720,7 +1720,7 @@ final class PrimaveraReader
     */
    public static Map<FieldType, String> getDefaultAliases()
    {
-      Map<FieldType, String> map = new HashMap<FieldType, String>();
+      Map<FieldType, String> map = new Hashtable<FieldType, String>();
 
       map.put(TaskField.DATE1, "Suspend Date");
       map.put(TaskField.DATE2, "Resume Date");
@@ -1734,11 +1734,11 @@ final class PrimaveraReader
 
    private ProjectFile m_project;
    private EventManager m_eventManager;
-   private Map<Integer, Integer> m_clashMap = new HashMap<Integer, Integer>();
-   private Map<Integer, ProjectCalendar> m_calMap = new HashMap<Integer, ProjectCalendar>();
+   private Map<Integer, Integer> m_clashMap = new Hashtable<Integer, Integer>();
+   private Map<Integer, ProjectCalendar> m_calMap = new Hashtable<Integer, ProjectCalendar>();
    private DateFormat m_calendarTimeFormat = new SimpleDateFormat("HH:mm");
    private Integer m_defaultCalendarID;
-   private Map<Integer, String> m_udfMap = new HashMap<Integer, String>();
+   private Map<Integer, String> m_udfMap = new Hashtable<Integer, String>();
    private final UserFieldCounters m_taskUdfCounters;
    private final UserFieldCounters m_resourceUdfCounters;
    private final UserFieldCounters m_assignmentUdfCounters;
@@ -1746,10 +1746,10 @@ final class PrimaveraReader
    private Map<FieldType, String> m_wbsFields;
    private Map<FieldType, String> m_taskFields;
    private Map<FieldType, String> m_assignmentFields;
-   private List<ExternalPredecessorRelation> m_externalPredecessors = new ArrayList<ExternalPredecessorRelation>();
+   private List<ExternalPredecessorRelation> m_externalPredecessors = new Vector<ExternalPredecessorRelation>();
    private final boolean m_matchPrimaveraWBS;
 
-   private static final Map<String, ResourceType> RESOURCE_TYPE_MAP = new HashMap<String, ResourceType>();
+   private static final Map<String, ResourceType> RESOURCE_TYPE_MAP = new Hashtable<String, ResourceType>();
    static
    {
       RESOURCE_TYPE_MAP.put(null, ResourceType.WORK);
@@ -1758,7 +1758,7 @@ final class PrimaveraReader
       RESOURCE_TYPE_MAP.put("RT_Equip", ResourceType.WORK);
    }
 
-   private static final Map<String, ConstraintType> CONSTRAINT_TYPE_MAP = new HashMap<String, ConstraintType>();
+   private static final Map<String, ConstraintType> CONSTRAINT_TYPE_MAP = new Hashtable<String, ConstraintType>();
    static
    {
       CONSTRAINT_TYPE_MAP.put("CS_MSO", ConstraintType.MUST_START_ON);
@@ -1772,7 +1772,7 @@ final class PrimaveraReader
       CONSTRAINT_TYPE_MAP.put("CS_MANDFIN", ConstraintType.MUST_FINISH_ON);
    }
 
-   private static final Map<String, Priority> PRIORITY_MAP = new HashMap<String, Priority>();
+   private static final Map<String, Priority> PRIORITY_MAP = new Hashtable<String, Priority>();
    static
    {
       PRIORITY_MAP.put("PT_Top", Priority.getInstance(Priority.HIGHEST));
@@ -1782,7 +1782,7 @@ final class PrimaveraReader
       PRIORITY_MAP.put("PT_Lowest", Priority.getInstance(Priority.LOWEST));
    }
 
-   private static final Map<String, RelationType> RELATION_TYPE_MAP = new HashMap<String, RelationType>();
+   private static final Map<String, RelationType> RELATION_TYPE_MAP = new Hashtable<String, RelationType>();
    static
    {
       RELATION_TYPE_MAP.put("PR_FS", RelationType.FINISH_START);
@@ -1791,7 +1791,7 @@ final class PrimaveraReader
       RELATION_TYPE_MAP.put("PR_SF", RelationType.START_FINISH);
    }
 
-   private static final Map<String, TaskType> TASK_TYPE_MAP = new HashMap<String, TaskType>();
+   private static final Map<String, TaskType> TASK_TYPE_MAP = new Hashtable<String, TaskType>();
    static
    {
       TASK_TYPE_MAP.put("DT_FixedDrtn", TaskType.FIXED_DURATION);
@@ -1800,7 +1800,7 @@ final class PrimaveraReader
       TASK_TYPE_MAP.put("DT_FixedRate", TaskType.FIXED_WORK);
    }
 
-   private static final Map<String, Boolean> MILESTONE_MAP = new HashMap<String, Boolean>();
+   private static final Map<String, Boolean> MILESTONE_MAP = new Hashtable<String, Boolean>();
    static
    {
       MILESTONE_MAP.put("TT_Task", Boolean.FALSE);
@@ -1811,7 +1811,7 @@ final class PrimaveraReader
       MILESTONE_MAP.put("TT_WBS", Boolean.FALSE);
    }
 
-   private static final Map<String, TimeUnit> TIME_UNIT_MAP = new HashMap<String, TimeUnit>();
+   private static final Map<String, TimeUnit> TIME_UNIT_MAP = new Hashtable<String, TimeUnit>();
    static
    {
       TIME_UNIT_MAP.put("QT_Minute", TimeUnit.MINUTES);
@@ -1822,7 +1822,7 @@ final class PrimaveraReader
       TIME_UNIT_MAP.put("QT_Year", TimeUnit.YEARS);
    }
 
-   private static final Map<String, CurrencySymbolPosition> CURRENCY_SYMBOL_POSITION_MAP = new HashMap<String, CurrencySymbolPosition>();
+   private static final Map<String, CurrencySymbolPosition> CURRENCY_SYMBOL_POSITION_MAP = new Hashtable<String, CurrencySymbolPosition>();
    static
    {
       CURRENCY_SYMBOL_POSITION_MAP.put("#1.1", CurrencySymbolPosition.BEFORE);
@@ -1831,7 +1831,7 @@ final class PrimaveraReader
       CURRENCY_SYMBOL_POSITION_MAP.put("1.1 #", CurrencySymbolPosition.AFTER_WITH_SPACE);
    }
 
-   private static final Map<String, Boolean> STATICTYPE_UDF_MAP = new HashMap<String, Boolean>();
+   private static final Map<String, Boolean> STATICTYPE_UDF_MAP = new Hashtable<String, Boolean>();
    static
    {
       // this is a judgement call on how the static type indicator values would be best translated to a flag
@@ -1842,7 +1842,7 @@ final class PrimaveraReader
       STATICTYPE_UDF_MAP.put("UDF_G4", Boolean.TRUE); // blue star
    }
 
-   private static final Map<String, FieldTypeClass> FIELD_TYPE_MAP = new HashMap<String, FieldTypeClass>();
+   private static final Map<String, FieldTypeClass> FIELD_TYPE_MAP = new Hashtable<String, FieldTypeClass>();
    static
    {
       FIELD_TYPE_MAP.put("TASK", FieldTypeClass.TASK);

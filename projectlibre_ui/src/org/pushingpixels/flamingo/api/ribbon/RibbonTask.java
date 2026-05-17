@@ -49,7 +49,7 @@ public class RibbonTask {
 	/**
 	 * List of all bands.
 	 */
-	private ArrayList<AbstractRibbonBand<?>> bands;
+	private Vector<AbstractRibbonBand<?>> bands;
 
 	/**
 	 * The title of this task.
@@ -85,7 +85,7 @@ public class RibbonTask {
 			throw new IllegalArgumentException("Cannot have empty ribbon task");
 		}
 		this.title = title;
-		this.bands = new ArrayList<AbstractRibbonBand<?>>();
+		this.bands = new Vector<AbstractRibbonBand<?>>();
 		for (AbstractRibbonBand<?> band : bands) {
 			band.setRibbonTask(this);
 			this.bands.add(band);

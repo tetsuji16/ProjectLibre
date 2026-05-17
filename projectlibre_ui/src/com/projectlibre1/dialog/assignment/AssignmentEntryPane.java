@@ -57,7 +57,7 @@ package com.projectlibre1.dialog.assignment;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.List;
 
@@ -107,7 +107,7 @@ public class AssignmentEntryPane extends JScrollPane implements HierarchyListene
 	NodeModel assignmentModel;
 	Project project;
 	ResourceAssigner resourceAssigner;
-	List taskList = new ArrayList(); // empty selection to start
+	List taskList = new Vector(); // empty selection to start
 	public static final String spreadsheetCategory="assignmentEntrySpreadsheet";
 	protected NodeModelCache cache;
 	private boolean replace;
@@ -161,7 +161,7 @@ public class AssignmentEntryPane extends JScrollPane implements HierarchyListene
  * @return
  */	 	List getSelectedResources(boolean assignedOnly){
 	 		List list = NodeList.nodeListToImplList(getSelectedNodes());
-	 		ArrayList resourceList = new ArrayList();
+	 		Vector resourceList = new Vector();
 			Iterator i = list.iterator();
 			AssignmentEntry entry;
 			while (i.hasNext()) {

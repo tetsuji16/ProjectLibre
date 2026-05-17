@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.nodes;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.projectlibre.core.configuration.Configuration;
@@ -71,7 +71,7 @@ import com.projectlibre.core.fields.HasFields;
  */
 public class AbstractNode implements Node, HasFields{
 	protected NodeId id;
-	protected Map<String, Object> fieldValues=new HashMap<String, Object>();
+	protected Map<String, Object> fieldValues=new Hashtable<String, Object>();
 	protected NodeContainer container;
 	
 	@Override

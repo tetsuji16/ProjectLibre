@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.util;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -200,7 +200,7 @@ public class Environment {
 	public static final int GANTT_ANNOTATIONS_FONT=1;
 	public static final int NETWORK_FONT=2;
 
-	private static HashMap<Integer, String> fonts=new HashMap<Integer, String>();
+	private static Hashtable<Integer, String> fonts=new Hashtable<Integer, String>();
 	static{
 		fonts.put(GANTT_ANNOTATIONS_FONT,"TimesRoman BOLD 11");
 		fonts.put(NETWORK_FONT, "TimesRoman");

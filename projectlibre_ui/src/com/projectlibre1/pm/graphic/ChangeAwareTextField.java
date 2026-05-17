@@ -57,105 +57,57 @@ package com.projectlibre1.pm.graphic;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeListener;
 
-import javax.swing.Action;
+import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.JFormattedTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Keymap;
+import javax.swing.KeyStroke;
 
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
+import org.jdesktop.swingx.JXTextField;
 
 /**
- * 
+ * Lightweight text field with dirty tracking only.
  */
-public class ChangeAwareTextField extends JFormattedTextField implements DocumentListener, CaretListener, ChangeAwareComponent {
+public class ChangeAwareTextField extends JXTextField implements DocumentListener, ChangeAwareComponent {
 	private static final long serialVersionUID = -1961714277621662190L;
+	public static final String NAME_HIERARCHY_COLLAPSE_ACTION_PROPERTY = "projectlibre.nameHierarchyCollapseAction";
+	public static final String NAME_HIERARCHY_EXPAND_ACTION_PROPERTY = "projectlibre.nameHierarchyExpandAction";
 
 	protected boolean changed = false;
 
-	protected boolean selectAllNextCaretUpdate = false;
-
-	/**
-	 * 
-	 */
 	public ChangeAwareTextField() {
 		super();
 		getDocument().addDocumentListener(this);
-		addCaretListener(this);
-		addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (e.getClickCount() == 2)
-					GraphicManager.getInstance(ChangeAwareTextField.this).doInformationDialog(false);
-			}
-		});
-    	Keymap keymap = getKeymap();
-        KeyStroke key = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
-        //keymap.removeKeyStrokeBinding(keystroke);
-        keymap.addActionForKeyStroke(key, new Action() {
-			
-			@Override
+		installHierarchyKeyBindings();
+	}
+
+	private void installHierarchyKeyBindings() {
+		InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
+		ActionMap actionMap = getActionMap();
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_DOWN_MASK), NAME_HIERARCHY_COLLAPSE_ACTION_PROPERTY);
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_DOWN_MASK), NAME_HIERARCHY_EXPAND_ACTION_PROPERTY);
+		actionMap.put(NAME_HIERARCHY_COLLAPSE_ACTION_PROPERTY, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("ENTER");
-				
-			}
-			
-			@Override
-			public void setEnabled(boolean b) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void removePropertyChangeListener(PropertyChangeListener listener) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void putValue(String key, Object value) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public boolean isEnabled() {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public Object getValue(String key) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public void addPropertyChangeListener(PropertyChangeListener listener) {
-				// TODO Auto-generated method stub
-				
+				performHierarchyAction(NAME_HIERARCHY_COLLAPSE_ACTION_PROPERTY, e);
 			}
 		});
-
+		actionMap.put(NAME_HIERARCHY_EXPAND_ACTION_PROPERTY, new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+			public void actionPerformed(ActionEvent e) {
+				performHierarchyAction(NAME_HIERARCHY_EXPAND_ACTION_PROPERTY, e);
+			}
+		});
 	}
 
-	public void selectAllOnNextCaretUpdate() {
-		selectAllNextCaretUpdate = true;
-	}
-
-	public void caretUpdate(CaretEvent e) {
-		if (selectAllNextCaretUpdate) {
-			selectAllNextCaretUpdate = false;
-			selectAll();
+	private void performHierarchyAction(String property, ActionEvent event) {
+		Action action = (Action)getClientProperty(property);
+		if (action != null) {
+			action.actionPerformed(event);
 		}
 	}
 
@@ -179,7 +131,8 @@ public class ChangeAwareTextField extends JFormattedTextField implements Documen
 		changed = true;
 	}
 
-	
-
-
+	@Override
+	protected boolean processKeyBinding(KeyStroke ks, KeyEvent e, int condition, boolean pressed) {
+		return super.processKeyBinding(ks, e, condition, pressed);
+	}
 }

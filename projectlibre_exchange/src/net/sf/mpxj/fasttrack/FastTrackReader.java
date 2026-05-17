@@ -26,7 +26,7 @@ package net.sf.mpxj.fasttrack;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -585,7 +585,7 @@ public class FastTrackReader implements ProjectReader
    {
       Set<Task> tasksWithBars = new HashSet<Task>();
       FastTrackTable table = m_data.getTable(FastTrackTableType.ACTBARS);
-      Map<String, Resource> resources = new HashMap<String, Resource>();
+      Map<String, Resource> resources = new Hashtable<String, Resource>();
       for (Resource resource : m_project.getResources())
       {
          resources.put(resource.getName(), resource);
@@ -658,7 +658,7 @@ public class FastTrackReader implements ProjectReader
    private static final Pattern RELATION_REGEX = Pattern.compile("(\\d+)(:\\d+)?(FS|SF|SS|FF)*(\\-|\\+)*(\\d+\\.\\d+)*");
    private static final Pattern ASSIGNMENT_REGEX = Pattern.compile("([^\\[]+)(?:(?:\\[(-?\\d+)\\%\\])|(?:\\[.+\\]))?");
 
-   private static final Map<String, RelationType> RELATION_TYPE_MAP = new HashMap<String, RelationType>();
+   private static final Map<String, RelationType> RELATION_TYPE_MAP = new Hashtable<String, RelationType>();
    static
    {
       RELATION_TYPE_MAP.put("FS", RelationType.FINISH_START);

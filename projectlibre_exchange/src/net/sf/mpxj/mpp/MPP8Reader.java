@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -129,7 +129,7 @@ final class MPP8Reader implements MPPVariantReader
       m_file = file;
       m_eventManager = file.getEventManager();
 
-      m_calendarMap = new HashMap<Integer, ProjectCalendar>();
+      m_calendarMap = new Hashtable<Integer, ProjectCalendar>();
       m_projectDir = (DirectoryEntry) root.getEntry("   1");
       m_viewDir = (DirectoryEntry) root.getEntry("   2");
 
@@ -1383,7 +1383,7 @@ final class MPP8Reader implements MPPVariantReader
    private MPPReader m_reader;
    private ProjectFile m_file;
    private EventManager m_eventManager;
-   private HashMap<Integer, ProjectCalendar> m_calendarMap;
+   private Hashtable<Integer, ProjectCalendar> m_calendarMap;
    private DirectoryEntry m_root;
    private DirectoryEntry m_projectDir;
    private DirectoryEntry m_viewDir;

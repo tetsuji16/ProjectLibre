@@ -26,9 +26,9 @@ package net.sf.mpxj.asta;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -73,7 +73,7 @@ public final class AstaTextFileReader extends AbstractProjectReader
          ProjectFile project = m_reader.getProject();
          project.getEventManager().addProjectListeners(m_projectListeners);
 
-         m_tables = new HashMap<String, List<Row>>();
+         m_tables = new Hashtable<String, List<Row>>();
 
          processFile(inputStream);
 
@@ -118,7 +118,7 @@ public final class AstaTextFileReader extends AbstractProjectReader
          };
 
          tk.setDelimiter(DELIMITER);
-         ArrayList<String> columns = new ArrayList<String>();
+         Vector<String> columns = new Vector<String>();
          String nextTokenPrefix = null;
 
          while (tk.getType() != Tokenizer.TT_EOF)
@@ -405,7 +405,7 @@ public final class AstaTextFileReader extends AbstractProjectReader
 
          if (match && rightRow != null)
          {
-            Map<String, Object> newMap = new HashMap<String, Object>(((MapRow) leftRow).getMap());
+            Map<String, Object> newMap = new Hashtable<String, Object>(((MapRow) leftRow).getMap());
 
             for (Entry<String, Object> entry : ((MapRow) rightRow).getMap().entrySet())
             {
@@ -454,7 +454,7 @@ public final class AstaTextFileReader extends AbstractProjectReader
    private static final RowComparator LINK_COMPARATOR = new RowComparator("LINKID");
    private static final RowComparator ALLOCATION_COMPARATOR = new RowComparator("PERMANENT_SCHEDUL_ALLOCATIONID");
 
-   private static final Map<Integer, Class<? extends AbstractFileFormat>> FILE_VERSION_MAP = new HashMap<Integer, Class<? extends AbstractFileFormat>>();
+   private static final Map<Integer, Class<? extends AbstractFileFormat>> FILE_VERSION_MAP = new Hashtable<Integer, Class<? extends AbstractFileFormat>>();
    static
    {
       FILE_VERSION_MAP.put(Integer.valueOf(8020), FileFormat8020.class); // EasyProject 2

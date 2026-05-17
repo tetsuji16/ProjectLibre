@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.model.event;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
@@ -126,7 +126,7 @@ public class CompositeCacheEvent extends EventObject {
             switch (event.getType()) {
             case CacheEvent.NODES_CHANGED:
                 if (nodes!=null&&nodes.size()>0){
-                    if (updatedNodes==null) updatedNodes=new ArrayList(nodes.size());
+                    if (updatedNodes==null) updatedNodes=new Vector(nodes.size());
                     updatedNodes.addAll(nodes);
                 }
                 break;
@@ -137,13 +137,13 @@ public class CompositeCacheEvent extends EventObject {
                     if (inter.size()>0){
                         removedNodes.removeAll(inter);
                         nodes.removeAll(inter);
-                        if (updatedNodes==null) updatedNodes=new ArrayList(nodes.size());
+                        if (updatedNodes==null) updatedNodes=new Vector(nodes.size());
                         updatedNodes.addAll(inter);
                     }
                 }
                 
                 if (nodes!=null&&nodes.size()>0){
-                    if (insertedNodes==null) insertedNodes=new ArrayList(nodes.size());
+                    if (insertedNodes==null) insertedNodes=new Vector(nodes.size());
                     insertedNodes.addAll(nodes);
                 }
                 break;
@@ -151,7 +151,7 @@ public class CompositeCacheEvent extends EventObject {
                 //INSERT FOLLOWED BY REMOVE NEVER HAPPENS
                 //nothing special to handle
                 if (nodes!=null&&nodes.size()>0){
-                    if (removedNodes==null) removedNodes=new ArrayList(nodes.size());
+                    if (removedNodes==null) removedNodes=new Vector(nodes.size());
                     removedNodes.addAll(nodes);
                 }
                 break;
@@ -168,19 +168,19 @@ public class CompositeCacheEvent extends EventObject {
             switch (event.getType()) {
             case CacheEvent.NODES_CHANGED:
                 if (nodes!=null&&nodes.size()>0){
-                    if (updatedEdges==null) updatedEdges=new ArrayList(nodes.size());
+                    if (updatedEdges==null) updatedEdges=new Vector(nodes.size());
                     updatedEdges.addAll(nodes);
                 }
                 break;
             case CacheEvent.NODES_INSERTED:
                 if (nodes!=null&&nodes.size()>0){
-                    if (insertedEdges==null) insertedEdges=new ArrayList(nodes.size());
+                    if (insertedEdges==null) insertedEdges=new Vector(nodes.size());
                     insertedEdges.addAll(nodes);
                 }
                 break;
             case CacheEvent.NODES_REMOVED:
                 if (nodes!=null&&nodes.size()>0){
-                    if (removedEdges==null) removedEdges=new ArrayList(nodes.size());
+                    if (removedEdges==null) removedEdges=new Vector(nodes.size());
                     removedEdges.addAll(nodes);
                 }
                 break;

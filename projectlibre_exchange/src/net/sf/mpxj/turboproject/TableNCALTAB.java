@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.turboproject;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -38,7 +38,7 @@ class TableNCALTAB extends Table
    {
       if (data[0] != (byte) 0xFF)
       {
-         Map<String, Object> map = new HashMap<String, Object>();
+         Map<String, Object> map = new Hashtable<String, Object>();
          map.put("UNIQUE_ID", Integer.valueOf(uniqueID));
 
          map.put("NAME", PEPUtility.getString(data, 1, 8));

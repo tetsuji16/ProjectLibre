@@ -34,7 +34,7 @@ package net.sf.jasperreports.compilers;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -73,17 +73,17 @@ public class JRBshGenerator
 	{
 		jasperDesign = jrDesign;
 
-		fieldPrefixMap = new HashMap();
+		fieldPrefixMap = new Hashtable();
 		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
 		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "");
 		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
 		
-		variablePrefixMap = new HashMap();
+		variablePrefixMap = new Hashtable();
 		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
 		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
 		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
 		
-		methodSuffixMap = new HashMap();
+		methodSuffixMap = new Hashtable();
 		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
 		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
 		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");

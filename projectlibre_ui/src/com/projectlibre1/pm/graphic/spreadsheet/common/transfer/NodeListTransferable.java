@@ -60,7 +60,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -94,20 +94,20 @@ public class NodeListTransferable implements Transferable {
     private static final int STRING = 1;
     private static final int PLAIN_TEXT = 2;
     
-    public static final String NODE_LIST_MIME_TYPE=DataFlavor.javaJVMLocalObjectMimeType+";class=java.util.ArrayList";
+    public static final String NODE_LIST_MIME_TYPE=DataFlavor.javaJVMLocalObjectMimeType+";class=java.util.Vector";
     
     private DataFlavor[] flavors;
     private DataFlavor nodeListDataFlavor;
     private Set flavorSet;
 
-	protected ArrayList nodeList;
-	protected ArrayList fields;
+	protected Vector nodeList;
+	protected Vector fields;
 	protected SpreadSheet spreadsheet;
 	protected int[] rows,cols;
 	protected boolean nodeSelection;
 	//protected String sdata;
 
-	public NodeListTransferable(ArrayList nodeList,ArrayList fields,SpreadSheet spreadSheet,int[] rows,int[] cols, boolean nodeSelection) {
+	public NodeListTransferable(Vector nodeList,Vector fields,SpreadSheet spreadSheet,int[] rows,int[] cols, boolean nodeSelection) {
 		this.nodeSelection=nodeSelection;
 		try {
 			nodeListDataFlavor=new DataFlavor(NODE_LIST_MIME_TYPE);
@@ -152,8 +152,8 @@ public class NodeListTransferable implements Transferable {
 		if (!flavorSet.contains(flavor)) throw new UnsupportedFlavorException(flavor);
 		if (nodeListDataFlavor.equals(flavor)){
 			NodeModel model=((CommonSpreadSheetModel)spreadsheet.getModel()).getCache().getModel();
-//			ArrayList nl=nodeList;
-//			nodeList=new ArrayList(nl.size());
+//			Vector nl=nodeList;
+//			nodeList=new Vector(nl.size());
 //			nodeList.addAll(model.copy(nl,NodeModel.SILENT));
 			return model.copy(nodeList,NodeModel.SILENT);
 		}else if (DataFlavor.stringFlavor.equals(flavor))
@@ -223,8 +223,8 @@ public class NodeListTransferable implements Transferable {
 	
 	
 
-	public static ArrayList stringToNodeList(String s,SpreadSheet spreadsheet,List fields,NodeModelDataFactory factory){
-		ArrayList list=new ArrayList();
+	public static Vector stringToNodeList(String s,SpreadSheet spreadsheet,List fields,NodeModelDataFactory factory){
+		Vector list=new Vector();
 		StringTokenizer st=new StringTokenizer(s,"\n\r");
 		Node node;
 		while (st.hasMoreTokens()){
@@ -297,7 +297,7 @@ public class NodeListTransferable implements Transferable {
 //		return nodeSelection;
 //	}
 //	
-//	public ArrayList getSelectedFields(){
+//	public Vector getSelectedFields(){
 //		return (nodeSelection)?spreadsheet.getSelectableFields():spreadsheet.getSelectedFields();
 //	}
 

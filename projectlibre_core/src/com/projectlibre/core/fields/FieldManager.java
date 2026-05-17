@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.fields;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -63,8 +63,8 @@ import java.util.Map;
  *
  */
 public class FieldManager {
-//	protected Map<String, Map<String, Field>> fields=new HashMap<String, Map<String,Field>>();
-//	protected Map<String, String[]> fieldCategories=new HashMap<String, String[]>();
+//	protected Map<String, Map<String, Field>> fields=new Hashtable<String, Map<String,Field>>();
+//	protected Map<String, String[]> fieldCategories=new Hashtable<String, String[]>();
 //
 //	
 //	public Field getField(Class<?> classe, String fieldId) {

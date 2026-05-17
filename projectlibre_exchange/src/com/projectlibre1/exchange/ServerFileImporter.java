@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.exchange;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +83,7 @@ public abstract class ServerFileImporter extends FileImporter{
 
 		
 		//server resources
-		Vector projectlibreResources=new Vector();
+		Vector<Object> projectlibreResources = new Vector<>();
 		EnterpriseResourceData unassigned=new EnterpriseResourceData();
 		unassigned.setUniqueId(EnterpriseResource.UNASSIGNED_ID);
 		unassigned.setName(Messages.getString("Text.Unassigned")); //$NON-NLS-1$
@@ -100,7 +100,7 @@ public abstract class ServerFileImporter extends FileImporter{
 		form.setResources(projectlibreResources);
 		
 		//imported resources
-		List resourcesToMap=new ArrayList();
+		List resourcesToMap=new Vector();
 		Object resource;
 		if (srcResources!=null)
 			for (Iterator i=srcResources.iterator();i.hasNext();){

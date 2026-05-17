@@ -29,7 +29,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -926,7 +926,7 @@ public final class PlannerWriter extends AbstractProjectWriter
    private NumberFormat m_twoDigitFormat = new DecimalFormat("00");
    private NumberFormat m_fourDigitFormat = new DecimalFormat("0000");
 
-   private static Map<RelationType, String> RELATIONSHIP_TYPES = new HashMap<RelationType, String>();
+   private static Map<RelationType, String> RELATIONSHIP_TYPES = new Hashtable<RelationType, String>();
    static
    {
       RELATIONSHIP_TYPES.put(RelationType.FINISH_FINISH, "FF");

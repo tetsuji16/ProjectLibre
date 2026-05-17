@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.menu;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -194,7 +194,7 @@ public class MenuManager {
 	public JMenuItem getMenuItemFromId(String id) {
 		return menuFactory.getMenuItemFromId(id);
 	}
-	public ArrayList getToolButtonsFromId(String id) {
+	public Vector getToolButtonsFromId(String id) {
 		return ribbonFactory==null?toolBarFactory.getButtonsFromId(id):ribbonFactory.getButtonsFromId(id);
 	}
 

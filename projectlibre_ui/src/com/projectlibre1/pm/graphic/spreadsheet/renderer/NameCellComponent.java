@@ -73,7 +73,6 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 
-import com.projectlibre1.pm.graphic.ChangeAwareTextField;
 import com.projectlibre1.pm.graphic.IconManager;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetParams;
@@ -277,7 +276,7 @@ public class NameCellComponent extends JPanel {
 
 	public static NameCellComponent getComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
-		NameCellComponent component = getUninitializedComponent(hasFocus);
+		NameCellComponent component = getUninitializedComponent(false);
 		//JComponent textComponent=component.getTextComponent();
 
 //		CellUtility.setAppearance(table, value, isSelected, hasFocus, row,
@@ -351,12 +350,11 @@ public class NameCellComponent extends JPanel {
 
 
 	public void requestFocus() {
-		if (textComponent instanceof ChangeAwareTextField) {
+		if (textComponent != null) {
 			textComponent.setVisible(true);
 			textComponent.setEnabled(true);
 			textComponent.setFocusable(true);
-			textComponent.requestFocus();
-			System.out.println("delegating focus request to text component");
+			textComponent.requestFocusInWindow();
 		}
 	}
 	/*public boolean requestFocus(boolean temporary) {

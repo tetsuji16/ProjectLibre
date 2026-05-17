@@ -1,7 +1,7 @@
 package com.projectlibre1.pm.graphic.collaboration;
 
 import java.awt.Component;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,7 +51,7 @@ public final class CollaborationHelper {
 		if (nodes == null) {
 			return true;
 		}
-		List<Task> tasks = new ArrayList<Task>();
+		List<Task> tasks = new Vector<Task>();
 		for (Iterator i = nodes.iterator(); i.hasNext();) {
 			Object value = i.next();
 			if (project == null) {

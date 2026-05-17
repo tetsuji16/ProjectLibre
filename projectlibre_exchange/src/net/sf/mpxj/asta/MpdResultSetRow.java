@@ -28,7 +28,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -48,7 +48,7 @@ final class MpdResultSetRow extends MapRow
    public MpdResultSetRow(ResultSet rs, Map<String, Integer> meta)
       throws SQLException
    {
-      super(new HashMap<String, Object>());
+      super(new Hashtable<String, Object>());
 
       for (Entry<String, Integer> entry : meta.entrySet())
       {

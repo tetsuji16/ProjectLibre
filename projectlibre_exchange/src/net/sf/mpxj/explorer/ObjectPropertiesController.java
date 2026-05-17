@@ -24,7 +24,7 @@
 package net.sf.mpxj.explorer;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -73,7 +73,7 @@ public class ObjectPropertiesController
     */
    private TableModel createTableModel(Object object, Set<String> excludedMethods)
    {
-      List<Method> methods = new ArrayList<Method>();
+      List<Method> methods = new Vector<Method>();
       for (Method method : object.getClass().getMethods())
       {
          if ((method.getParameterTypes().length == 0) || (method.getParameterTypes().length == 1 && method.getParameterTypes()[0] == int.class))

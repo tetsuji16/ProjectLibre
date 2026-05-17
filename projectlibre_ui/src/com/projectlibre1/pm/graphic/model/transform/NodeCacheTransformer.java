@@ -55,11 +55,11 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.model.transform;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -156,7 +156,7 @@ public class NodeCacheTransformer implements CacheTransformer {
         Stack parents=null;
         boolean alreadyExcluded;
         if (preserveHierarchy){
-        	localList=new ArrayList();
+        	localList=new Vector();
         	parents=new Stack();
         }else localList=list;
 
@@ -484,7 +484,7 @@ public class NodeCacheTransformer implements CacheTransformer {
         }
     }
     private Map<GraphicNode,List<GraphicNode>> extractAssignments(List list){
-    	Map<GraphicNode,List<GraphicNode>> map=new HashMap<GraphicNode, List<GraphicNode>>();
+    	Map<GraphicNode,List<GraphicNode>> map=new Hashtable<GraphicNode, List<GraphicNode>>();
     	GraphicNode current,last;
     	Stack<GraphicNode> path=new Stack<GraphicNode>();
         for (ListIterator i=list.listIterator();i.hasNext();){
@@ -531,7 +531,7 @@ public class NodeCacheTransformer implements CacheTransformer {
 	private TransformerNodeModel model=new TransformerNodeModel();
 	class TransformerNodeModel implements WalkersNodeModel{
 	    protected MultiMap childrenMap=new MultiHashMap();
-	    protected Map parentMap=new HashMap();
+	    protected Map parentMap=new Hashtable();
 
 		public List getChildren(Node node) {
 			if (node.getImpl() instanceof GroupNodeImpl){

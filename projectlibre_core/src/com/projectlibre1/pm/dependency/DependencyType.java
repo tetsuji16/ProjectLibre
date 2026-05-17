@@ -75,7 +75,7 @@ public class DependencyType {
     public static final int SF = 2;
     public static final int SS = 3;
     
-    public static final Integer defaultValue = new Integer(FS);
+    public static final Integer defaultValue = Integer.valueOf(FS);
     private static Field dependencyFieldInstance = null;
     private static Field getDependencyField() {
     	if (dependencyFieldInstance == null)

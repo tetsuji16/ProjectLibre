@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.utility;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -56,9 +56,9 @@ public final class TimephasedUtility
     * @param dateList timescale date ranges
     * @return list of durations, one per timescale date range
     */
-   public ArrayList<Duration> segmentWork(ProjectCalendar projectCalendar, List<TimephasedWork> work, TimescaleUnits rangeUnits, List<DateRange> dateList)
+   public Vector<Duration> segmentWork(ProjectCalendar projectCalendar, List<TimephasedWork> work, TimescaleUnits rangeUnits, List<DateRange> dateList)
    {
-      ArrayList<Duration> result = new ArrayList<Duration>(dateList.size());
+      Vector<Duration> result = new Vector<Duration>(dateList.size());
       int lastStartIndex = 0;
 
       //
@@ -105,7 +105,7 @@ public final class TimephasedUtility
     * @param dateList timescale date ranges
     * @return list of durations, one per timescale date range
     */
-   public ArrayList<Duration> segmentBaselineWork(ProjectFile file, List<TimephasedWork> work, TimescaleUnits rangeUnits, ArrayList<DateRange> dateList)
+   public Vector<Duration> segmentBaselineWork(ProjectFile file, List<TimephasedWork> work, TimescaleUnits rangeUnits, Vector<DateRange> dateList)
    {
       return segmentWork(file.getBaselineCalendar(), work, rangeUnits, dateList);
    }
@@ -121,9 +121,9 @@ public final class TimephasedUtility
     * @param dateList timescale date ranges
     * @return list of durations, one per timescale date range
     */
-   public ArrayList<Double> segmentCost(ProjectCalendar projectCalendar, List<TimephasedCost> cost, TimescaleUnits rangeUnits, ArrayList<DateRange> dateList)
+   public Vector<Double> segmentCost(ProjectCalendar projectCalendar, List<TimephasedCost> cost, TimescaleUnits rangeUnits, Vector<DateRange> dateList)
    {
-      ArrayList<Double> result = new ArrayList<Double>(dateList.size());
+      Vector<Double> result = new Vector<Double>(dateList.size());
       int lastStartIndex = 0;
 
       //
@@ -170,7 +170,7 @@ public final class TimephasedUtility
     * @param dateList timescale date ranges
     * @return list of durations, one per timescale date range
     */
-   public ArrayList<Double> segmentBaselineCost(ProjectFile file, List<TimephasedCost> cost, TimescaleUnits rangeUnits, ArrayList<DateRange> dateList)
+   public Vector<Double> segmentBaselineCost(ProjectFile file, List<TimephasedCost> cost, TimescaleUnits rangeUnits, Vector<DateRange> dateList)
    {
       return segmentCost(file.getBaselineCalendar(), cost, rangeUnits, dateList);
    }

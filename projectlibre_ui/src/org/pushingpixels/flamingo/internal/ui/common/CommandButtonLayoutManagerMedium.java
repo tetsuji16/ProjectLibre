@@ -31,7 +31,7 @@ package org.pushingpixels.flamingo.internal.ui.common;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
@@ -227,7 +227,7 @@ public class CommandButtonLayoutManagerMedium implements
 				TextLayoutInfo lineLayoutInfo = new TextLayoutInfo();
 				lineLayoutInfo.text = commandButton.getText();
 				lineLayoutInfo.textRect = new Rectangle();
-				result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
+				result.textLayoutInfoList = new Vector<TextLayoutInfo>();
 				result.textLayoutInfoList.add(lineLayoutInfo);
 
 				lineLayoutInfo.textRect.x = x;
@@ -384,7 +384,7 @@ public class CommandButtonLayoutManagerMedium implements
 				TextLayoutInfo lineLayoutInfo = new TextLayoutInfo();
 				lineLayoutInfo.text = commandButton.getText();
 				lineLayoutInfo.textRect = new Rectangle();
-				result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
+				result.textLayoutInfoList = new Vector<TextLayoutInfo>();
 				result.textLayoutInfoList.add(lineLayoutInfo);
 
 				lineLayoutInfo.textRect.width = (int) fm.getStringBounds(

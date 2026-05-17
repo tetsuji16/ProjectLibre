@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.server.data;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Map;
 
@@ -180,12 +180,12 @@ public class TaskData extends SerializedDataObject {
 
 	//syncronizer
 	public void addAssignment(AssignmentData assignmentData){
-		if (assignments==null) assignments=new ArrayList();
+		if (assignments==null) assignments=new Vector();
 		assignmentData.setTask(this);
 		assignments.add(assignmentData);
 	}
 	public void addPredecessor(LinkData linkData){
-		if (predecessors==null) predecessors=new ArrayList();
+		if (predecessors==null) predecessors=new Vector();
 		linkData.setSuccessor(this);
 		predecessors.add(linkData);
 	}

@@ -140,7 +140,7 @@ public class RateFormat extends Format implements TimeUnit {
 			if (numberResult == null) {
 				numberResult = NUMBER_FORMAT.parse(rateString,pos);
 				if (numberResult != null)
-					numberResult = new Double(numberResult.doubleValue() / 100.0D);
+					numberResult = Double.valueOf(numberResult.doubleValue() / 100.0D);
 			}
 			if (numberResult == null)
 				return null;
@@ -193,13 +193,13 @@ public class RateFormat extends Format implements TimeUnit {
 			type = getDefaultType();
 
 		if (percent) {
-			PERCENT_FORMAT.format(new Double(rateValue),toAppendTo,pos);
+			PERCENT_FORMAT.format(Double.valueOf(rateValue),toAppendTo,pos);
 		} else {
 			rateValue *= Duration.timeUnitFactor(type);
 			if (money) {
-				MONEY_FORMAT.format(new Double(rateValue),toAppendTo,pos);
+				MONEY_FORMAT.format(Double.valueOf(rateValue),toAppendTo,pos);
 			} else {
-				NumberFormat.getInstance().format(new Double(rateValue),toAppendTo,pos);
+				NumberFormat.getInstance().format(Double.valueOf(rateValue),toAppendTo,pos);
 				if (timeUnitLabel != null && !timeUnitLabel.equals(""))
 					toAppendTo.append(" " + timeUnitLabel);
 			}

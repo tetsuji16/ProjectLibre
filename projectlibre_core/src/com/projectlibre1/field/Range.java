@@ -116,7 +116,7 @@ public class Range {
 
 	private String getFormattedError(Number value, Field field, String defaultMessage) {
 		String message = (errorMessage == null) ? defaultMessage : errorMessage;
-		return MessageFormat.format( message, new Object[] { new Double(minimum), new Double(maximum), value, field.getName()});
+		return MessageFormat.format( message, new Object[] { Double.valueOf(minimum), Double.valueOf(maximum), value, field.getName()});
 	}	
 	
 	/**

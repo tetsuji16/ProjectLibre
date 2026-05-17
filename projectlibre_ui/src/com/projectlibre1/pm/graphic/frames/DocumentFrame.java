@@ -59,8 +59,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -163,7 +163,7 @@ public class DocumentFrame extends NamedFrame implements
 	protected UsageDetailView taskUsageView;
 	protected UsageDetailView resourceUsageView;
 	protected BaseView reportView;
-	private static ArrayList ganttColumns = null; // static is ok?
+	private static Vector ganttColumns = null; // static is ok?
 	private FindDialog findDialog = null;
 	protected CoordinatesConverter coord;
 	protected Project project;
@@ -315,7 +315,7 @@ public class DocumentFrame extends NamedFrame implements
 				null, save,hasAtLeastOneTaskSelected());
 		if (!baselineDialog.doModal())
 			return false;
-		Integer baselineNumber = new Integer(baselineDialog.getForm()
+		Integer baselineNumber = Integer.valueOf(baselineDialog.getForm()
 				.getBaselineNumber());
 		boolean entireProject = baselineDialog.getForm().isEntireProject();
 		List selection = entireProject ? null : getSelectedImpls(true);
@@ -462,6 +462,7 @@ public class DocumentFrame extends NamedFrame implements
 	public void doUndoRedo(boolean isUndo) {
 		if (!isActive())
 			return;
+		SelectionSnapshot selectionSnapshot = SelectionSnapshot.capture(getActiveSpreadSheet());
 		finishAnyOperations();
 		UndoController undoController=getUndoController();
 		if (undoController!=null){
@@ -470,6 +471,74 @@ public class DocumentFrame extends NamedFrame implements
 			else
 				undoController.redo();
 			refreshUndoButtons();
+			selectionSnapshot.restore();
+		}
+	}
+
+	private static final class SelectionSnapshot {
+		private final CommonSpreadSheet spreadSheet;
+		private final Node node;
+		private final Object impl;
+		private final int row;
+		private final int column;
+
+		private SelectionSnapshot(CommonSpreadSheet spreadSheet, Node node, Object impl, int row, int column) {
+			this.spreadSheet = spreadSheet;
+			this.node = node;
+			this.impl = impl;
+			this.row = row;
+			this.column = column;
+		}
+
+		private static SelectionSnapshot capture(CommonSpreadSheet spreadSheet) {
+			if (spreadSheet == null)
+				return new SelectionSnapshot(null, null, null, -1, -1);
+			int row = spreadSheet.getCurrentRow();
+			int column = spreadSheet.isEditing() ? spreadSheet.getEditingColumn() : spreadSheet.getSelectedColumn();
+			CommonSpreadSheet.PendingUndoSelection pendingUndoSelection = spreadSheet.consumePendingUndoSelection(row, column);
+			if (pendingUndoSelection != null) {
+				return new SelectionSnapshot(spreadSheet, pendingUndoSelection.getNode(), pendingUndoSelection.getImpl(),
+						pendingUndoSelection.getRow(), pendingUndoSelection.getColumn());
+			}
+			Node node = spreadSheet.getCurrentRowNode();
+			Object impl = (node == null) ? null : node.getImpl();
+			return new SelectionSnapshot(spreadSheet, node, impl, row, column);
+		}
+
+		private void restore() {
+			if (spreadSheet == null || column < 0)
+				return;
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					int targetRow = resolveRow();
+					if (targetRow < 0 || targetRow >= spreadSheet.getRowCount() || column >= spreadSheet.getColumnCount())
+						return;
+					spreadSheet.requestFocusInWindow();
+					spreadSheet.changeSelection(targetRow, column, false, false);
+					spreadSheet.scrollRectToVisible(spreadSheet.getCellRect(targetRow, column, true));
+				}
+			});
+		}
+
+		private int resolveRow() {
+			if (!(spreadSheet.getModel() instanceof SpreadSheetModel))
+				return row;
+			SpreadSheetModel model = (SpreadSheetModel) spreadSheet.getModel();
+			if (node != null) {
+				for (int currentRow = 0; currentRow < spreadSheet.getRowCount(); currentRow++) {
+					Node rowNode = model.getNode(currentRow).getNode();
+					if (rowNode == node)
+						return currentRow;
+				}
+			}
+			if (impl != null) {
+				for (int currentRow = 0; currentRow < spreadSheet.getRowCount(); currentRow++) {
+					Node rowNode = model.getNode(currentRow).getNode();
+					if (rowNode != null && rowNode.getImpl() == impl)
+						return currentRow;
+				}
+			}
+			return row;
 		}
 	}
 	public void doZoomIn() {
@@ -551,6 +620,11 @@ public class DocumentFrame extends NamedFrame implements
 			ss.prepareAction(MenuActionConstants.ACTION_PASTE).actionPerformed(new ActionEvent(ss,0,null));
 			//NodeListTransferHandler.getPasteAction(ss).actionPerformed(new ActionEvent(this,0,null));
 			//ss.executeAction(SpreadSheet.PASTE);
+	}
+	public void doPasteInsert() {
+		SpreadSheet ss = getActiveSpreadSheet();
+		if (ss !=null)
+			ss.prepareAction(MenuActionConstants.ACTION_PASTE_INSERT).actionPerformed(new ActionEvent(ss,0,null));
 	}
 
 
@@ -809,7 +883,7 @@ public class DocumentFrame extends NamedFrame implements
 		activateTopView(getGanttView(),ACTION_GANTT);
 	}
 
-	public ArrayList getGanttColumns() {
+	public Vector getGanttColumns() {
 		return ganttColumns;
 	}
 	public void activateTrackingGanttView() {
@@ -1060,7 +1134,7 @@ public class DocumentFrame extends NamedFrame implements
 
 	}
 
-	private ArrayList<ResourceInTeamFilter> resourcesInTeamFilters=new ArrayList<ResourceInTeamFilter>();
+	private Vector<ResourceInTeamFilter> resourcesInTeamFilters=new Vector<ResourceInTeamFilter>();
 
 	public Closure addTransformerInitializationClosure(){
 		return new Closure(){
@@ -1245,10 +1319,10 @@ public class DocumentFrame extends NamedFrame implements
 		String bottomViewName;
 		WorkspaceSetting coord;
 		WorkspaceSetting mainView;
-		HashMap views;
+		Hashtable views;
 		public void saveViewWorkspace(String name, BaseView view) {
 			if (views  == null)
-				views = new HashMap();
+				views = new Hashtable();
 			if (view != null)
 				views.put(name, view.createWorkspace(SavableToWorkspace.VIEW));
 		}
@@ -1276,10 +1350,10 @@ public class DocumentFrame extends NamedFrame implements
 		public void setCoord(WorkspaceSetting coord) {
 			this.coord = coord;
 		}
-		public HashMap getViews() {
+		public Hashtable getViews() {
 			return views;
 		}
-		public void setViews(HashMap views) {
+		public void setViews(Hashtable views) {
 			this.views = views;
 		}
 		public WorkspaceSetting getMainView() {

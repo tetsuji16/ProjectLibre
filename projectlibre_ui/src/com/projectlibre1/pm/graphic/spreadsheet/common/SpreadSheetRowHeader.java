@@ -61,7 +61,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.InputMap;
 import javax.swing.JTable;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicTableUI;
 import javax.swing.table.DefaultTableColumnModel;
@@ -99,6 +102,16 @@ public class SpreadSheetRowHeader extends JTable {
 					spreadSheet.prepareAction(MenuActionConstants.ACTION_PASTE).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
 				}
 			});
+			getActionMap().put("insertClipboard",new AbstractAction(){
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					spreadSheet.prepareAction(MenuActionConstants.ACTION_PASTE_INSERT).actionPerformed(new ActionEvent(spreadSheet,e.getID(),e.getActionCommand()));
+				}
+			});
+			InputMap inputMap = getInputMap(JComponent.WHEN_FOCUSED);
+			inputMap.put(KeyStroke.getKeyStroke("ctrl X"), "cut");
+			inputMap.put(KeyStroke.getKeyStroke("ctrl C"), "copy");
+			inputMap.put(KeyStroke.getKeyStroke("ctrl V"), "paste");
+			inputMap.put(KeyStroke.getKeyStroke("shift ctrl V"), "insertClipboard");
 			
 		}
 		this.setUI(new BasicTableUI());
@@ -129,6 +142,13 @@ public class SpreadSheetRowHeader extends JTable {
 			public void mousePressed(MouseEvent e) {
 				SpreadSheetPopupMenu popup=getPopup();
 				if (SwingUtilities.isLeftMouseButton(e)){
+					int row = rowAtPoint(e.getPoint());
+					if (e.getClickCount() == 1 && isRowFullySelected(row)) {
+						SpreadSheetRowHeader.this.clearSelection();
+						table.clearSelection();
+						e.consume();
+						return;
+					}
 					if (e.getClickCount()==2){
 						((SpreadSheet)table).doDoubleClick(0,0);
 //						Component comp=SpreadSheetRowHeader.this;
@@ -152,6 +172,16 @@ public class SpreadSheetRowHeader extends JTable {
 		}
 
 	}	
+
+	private boolean isRowFullySelected(int row) {
+		if (row < 0)
+			return false;
+		if (!getSelectionModel().isSelectedIndex(row))
+			return false;
+		return getSelectedRowCount() == 1 && table.getSelectedRowCount() == 1
+			&& table.getSelectedRow() == row
+			&& table.getSelectedColumnCount() == table.getColumnCount();
+	}
 
 	public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
 			boolean extend) {

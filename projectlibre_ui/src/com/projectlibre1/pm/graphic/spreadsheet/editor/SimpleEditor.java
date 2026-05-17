@@ -61,11 +61,8 @@ import java.text.Format;
 import java.text.ParseException;
 
 import javax.swing.DefaultCellEditor;
-import javax.swing.JComponent;
-import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.text.AbstractDocument;
 
 import com.projectlibre1.dialog.util.FixedSizeFilter;
@@ -91,10 +88,6 @@ public class SimpleEditor extends DefaultCellEditor   {
 	public SimpleEditor() {
 		super(new ChangeAwareTextField());
 		component = (ChangeAwareTextField) getComponent();
-		component.setFocusLostBehavior(JFormattedTextField.COMMIT_OR_REVERT); // don't now if this is needed
-		
-		// this will make the enter key work properly. Otherwise, the enter does not go to the next line
-		component.getInputMap(JComponent.WHEN_FOCUSED).getParent().getParent().getParent().remove(KeyStroke.getKeyStroke(10, 0));
 		clazz = String.class;
 		
 	}
@@ -116,6 +109,7 @@ public class SimpleEditor extends DefaultCellEditor   {
 	public Component getTableCellEditorComponent(JTable table, Object value,
 			boolean arg2, int row, int column) {
 		cachedTable = table;
+		useFormat = null;
 		String stringValue;
 		if(value==null)
 			stringValue=null;
@@ -131,6 +125,7 @@ public class SimpleEditor extends DefaultCellEditor   {
 			SpreadSheetModel model  = (SpreadSheetModel) table.getModel();
 			Field field = model.getFieldInColumn(column+1);
 			int width = field.getTextWidth(null,null);
+			((AbstractDocument)component.getDocument()).setDocumentFilter(null);
 			if (width != Integer.MAX_VALUE) {
 				((AbstractDocument)component.getDocument()).setDocumentFilter(new FixedSizeFilter(width));
 			}

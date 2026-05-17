@@ -56,7 +56,7 @@
 package com.projectlibre1.reports.adapter;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import net.sf.jasperreports.engine.JRBand;
@@ -131,7 +131,7 @@ public class DataSourceProvider implements JRDataSourceProvider {
 		return instance;
 	}
 	
-	HashMap map = new HashMap();
+	Hashtable map = new Hashtable();
 	
 	
 	/* (non-Javadoc)
@@ -294,11 +294,11 @@ public class DataSourceProvider implements JRDataSourceProvider {
 		if (fieldValue == null)
 			return null;
 		if (field.isRate()) {
-			return new Double(((Rate)fieldValue).getValue());
+			return Double.valueOf(((Rate)fieldValue).getValue());
 		} else if(field.isMoney()) {
-			return new Double(((Money)fieldValue).doubleValue());
+			return Double.valueOf(((Money)fieldValue).doubleValue());
 		} else if (field.isDurationOrWork()) {
-			return new Long (((Duration)fieldValue).longValue());
+			return Long.valueOf(((Duration)fieldValue).longValue());
 		} else {
 			return fieldValue;
 		}

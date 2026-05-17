@@ -66,7 +66,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -102,7 +102,7 @@ public class TabbedNavigation implements MenuActionConstants, Serializable {
 	private static final long serialVersionUID = -270788624568075685L;
 	ExtTabbedPane tabbedPane;
 	MenuManager menuManager;
-	ArrayList actions = new ArrayList();
+	Vector actions = new Vector();
 	int oldSelected = -1;
 	DocumentFrame currentFrame;
 	private JToolBar currentBar = null;
@@ -113,7 +113,7 @@ public class TabbedNavigation implements MenuActionConstants, Serializable {
 	//UIManager.getColor("ProgressBar.selectionBackground");
     private Color backgroundUnselected=UIManager.getColor("TabbedPane.unselectedBackground");
 
-	private ArrayList<JButton> trackingButtons = new ArrayList<JButton>();
+	private Vector<JButton> trackingButtons = new Vector<JButton>();
 
 	private class ExtTabbedPane extends JTabbedPane {
 		private static final long serialVersionUID = 7993870683783896098L;

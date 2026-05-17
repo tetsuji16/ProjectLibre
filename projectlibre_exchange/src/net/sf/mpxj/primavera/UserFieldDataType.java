@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.primavera;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import net.sf.mpxj.DataType;
@@ -141,7 +141,7 @@ public enum UserFieldDataType
 
    private final String[] m_defaultFieldNames;
 
-   private static final Map<FieldTypeClass, String> SUBJECT_AREA_MAP = new HashMap<FieldTypeClass, String>();
+   private static final Map<FieldTypeClass, String> SUBJECT_AREA_MAP = new Hashtable<FieldTypeClass, String>();
    static
    {
       SUBJECT_AREA_MAP.put(FieldTypeClass.TASK, "Activity");

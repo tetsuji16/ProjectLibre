@@ -113,7 +113,7 @@ public class JRibbonGallery extends JComponent {
 	 * Creates new in-ribbon gallery.
 	 */
 	public JRibbonGallery() {
-		this.buttons = new ArrayList<JCommandToggleButton>();
+		this.buttons = new Vector<JCommandToggleButton>();
 		this.buttonSelectionGroup = new CommandToggleButtonGroup();
 		this.buttonSelectionGroup
 				.addPropertyChangeListener(new PropertyChangeListener() {
@@ -132,7 +132,7 @@ public class JRibbonGallery extends JComponent {
 					}
 				});
 
-		this.preferredVisibleIconCount = new HashMap<RibbonElementPriority, Integer>();
+		this.preferredVisibleIconCount = new Hashtable<RibbonElementPriority, Integer>();
 		// Initialize with some values. Application should provide real
 		// widths using setPreferredWidth.
 		for (RibbonElementPriority state : RibbonElementPriority.values())
@@ -440,7 +440,7 @@ public class JRibbonGallery extends JComponent {
 	 */
 	public void setGroupMapping(
 			List<StringValuePair<List<JCommandToggleButton>>> buttons) {
-		this.buttonGroups = new ArrayList<StringValuePair<List<JCommandToggleButton>>>();
+		this.buttonGroups = new Vector<StringValuePair<List<JCommandToggleButton>>>();
 		boolean hasGroupWithNullTitle = false;
 		for (StringValuePair<List<JCommandToggleButton>> buttonGroupPair : buttons) {
 			if (buttonGroupPair.getKey() == null) {
@@ -452,7 +452,7 @@ public class JRibbonGallery extends JComponent {
 			}
 
 			// create the list of buttons for this group
-			List<JCommandToggleButton> buttonGroupCopy = new ArrayList<JCommandToggleButton>();
+			List<JCommandToggleButton> buttonGroupCopy = new Vector<JCommandToggleButton>();
 			// add it to the groups list
 			StringValuePair<List<JCommandToggleButton>> buttonGroupInfo = new StringValuePair<List<JCommandToggleButton>>(
 					buttonGroupPair.getKey(), buttonGroupCopy);

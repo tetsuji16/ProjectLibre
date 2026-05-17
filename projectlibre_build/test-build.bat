@@ -2,7 +2,7 @@
 setlocal enabledelayedexpansion
 rem CI-style compile check for the startup entry points. Exits nonzero on failure.
 
-set "JAVA_HOME=C:\Program Files\Java\jdk-21"
+set "JAVA_HOME=C:\Program Files\Java\jdk-26.0.1"
 set "PATH=%JAVA_HOME%\bin;%PATH%"
 
 for %%I in ("%~dp0..") do set "SOURCE_DIR=%%~fI"

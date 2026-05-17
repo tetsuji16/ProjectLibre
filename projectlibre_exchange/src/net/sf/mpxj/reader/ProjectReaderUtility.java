@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.reader;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
 
@@ -102,7 +102,7 @@ public final class ProjectReaderUtility
       return (READER_MAP.keySet());
    }
 
-   private static final Map<String, Class<? extends ProjectReader>> READER_MAP = new HashMap<String, Class<? extends ProjectReader>>();
+   private static final Map<String, Class<? extends ProjectReader>> READER_MAP = new Hashtable<String, Class<? extends ProjectReader>>();
    static
    {
       READER_MAP.put("MPP", MPPReader.class);

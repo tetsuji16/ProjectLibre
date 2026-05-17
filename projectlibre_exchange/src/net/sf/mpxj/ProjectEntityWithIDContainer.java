@@ -24,7 +24,7 @@
 package net.sf.mpxj;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import net.sf.mpxj.common.NumberHelper;
@@ -105,5 +105,5 @@ public abstract class ProjectEntityWithIDContainer<T extends ProjectEntityWithID
       m_idMap.put(id, entity);
    }
 
-   protected Map<Integer, T> m_idMap = new HashMap<Integer, T>();
+   protected Map<Integer, T> m_idMap = new Hashtable<Integer, T>();
 }

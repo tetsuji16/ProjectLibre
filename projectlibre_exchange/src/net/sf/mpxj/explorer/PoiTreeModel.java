@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.explorer;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.List;
 
@@ -135,7 +135,7 @@ public class PoiTreeModel implements TreeModel
     */
    private List<Entry> getChildNodes(DirectoryEntry parent)
    {
-      List<Entry> result = new ArrayList<Entry>();
+      List<Entry> result = new Vector<Entry>();
       Iterator<Entry> entries = parent.getEntries();
       while (entries.hasNext())
       {

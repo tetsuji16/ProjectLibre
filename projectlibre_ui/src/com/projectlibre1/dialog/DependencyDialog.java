@@ -215,7 +215,7 @@ public class DependencyDialog extends AbstractDialog {
 		if (get) {
 			preLabel.setText(dependency.getQualifiedPredecessorName());
 			sucLabel.setText(dependency.getQualifiedSuccessorName());
-			String stype = DependencyType.mapValueToString(new Integer(dependency.getDependencyType()));
+			String stype = DependencyType.mapValueToString(Integer.valueOf(dependency.getDependencyType()));
 			typeCombo.setSelectedItem(stype);
 			lagTextField.setText(DurationFormat.format(dependency.getLag()));
 			

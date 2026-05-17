@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.turboproject;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -36,7 +36,7 @@ class TableA0TAB extends Table
     */
    @Override protected void readRow(int uniqueID, byte[] data)
    {
-      Map<String, Object> map = new HashMap<String, Object>();
+      Map<String, Object> map = new Hashtable<String, Object>();
       map.put("UNIQUE_ID", Integer.valueOf(uniqueID));
       map.put("DELETED", Boolean.valueOf(data[0] == (byte) 0xFF));
       addRow(uniqueID, map);

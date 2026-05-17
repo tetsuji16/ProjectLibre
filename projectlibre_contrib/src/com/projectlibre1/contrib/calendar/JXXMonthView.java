@@ -336,20 +336,13 @@ public class JXXMonthView extends JComponent {
 		// Use some meaningful default if the UIManager doesn't have anything
 		// for us.
 //		PROJECTLIBRE_MODIFICATION
-		int w0 = 0;
-		int w1 = 1;
-		if (isChinese()) {
-			w0 = 2;
-			w1 = 3;
-		}
-
 		if (daysOfTheWeek == null) {
 			daysOfTheWeek = new String[DAYS_IN_WEEK];
 			Calendar weekCal = calendarInstance();
 			SimpleDateFormat format = dateFormatInstance("E");
 			for (int i = 0; i < DAYS_IN_WEEK; i++) {
 				weekCal.set(Calendar.DAY_OF_WEEK,i+1);
-				daysOfTheWeek[i] = format.format(weekCal.getTime()).substring(w0,w1).toUpperCase();
+				daysOfTheWeek[i] = abbreviateDayLabel(format.format(weekCal.getTime()));
 			}
 
 //			daysOfTheWeek = new String[] { "S", "M", "T", "W", "T", "F", "S" };
@@ -544,8 +537,8 @@ public class JXXMonthView extends JComponent {
 
 //	PROJECTLIBRE_MODIFICATION
 	/*
-	 * public ArrayList initFlaggedDates(){ ArrayList flaggedDates=new
-	 * ArrayList(); long last = getLastDisplayedDate(); long first
+	 * public Vector initFlaggedDates(){ Vector flaggedDates=new
+	 * Vector(); long last = getLastDisplayedDate(); long first
 	 * =getFirstDisplayedDate(); int diff=DateUtils.getDaysDiff(last,first); if
 	 * (diff!=0){ for (int i=0;i <diff;i++){ if
 	 * (DateUtils.getDayOfWeek(first)==0){ flaggedDates.add(new
@@ -2051,6 +2044,16 @@ public class JXXMonthView extends JComponent {
 	public static boolean isChinese(){
 		Locale locale = Locale.getDefault();
 		return locale.equals(Locale.SIMPLIFIED_CHINESE) || locale.equals(Locale.TRADITIONAL_CHINESE);
+	}
+
+	private static String abbreviateDayLabel(String label) {
+		if (label == null || label.length() == 0) {
+			return label;
+		}
+		if (isChinese()) {
+			return label.substring(label.length() - 1);
+		}
+		return label.substring(0, 1).toUpperCase(Locale.getDefault());
 	}
 
 

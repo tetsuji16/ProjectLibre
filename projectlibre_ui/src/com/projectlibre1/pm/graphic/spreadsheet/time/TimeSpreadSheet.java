@@ -57,7 +57,7 @@ package com.projectlibre1.pm.graphic.spreadsheet.time;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellEditor;
@@ -86,20 +86,20 @@ import com.projectlibre1.timescale.TimeScaleListener;
  */
 public class TimeSpreadSheet extends CommonSpreadSheet implements ScaledComponent{
 	protected Project project;
-	protected ArrayList fieldArray;
+	protected Vector fieldArray;
 	public TimeSpreadSheet(Project project) {
 		super();
 		setTableHeader(null);
 		this.project=project;
 	}
 	
-	public void setCache(NodeModelCache cache,ArrayList fieldArray, CellStyle cellStyle, ActionList actionList){
+	public void setCache(NodeModelCache cache,Vector fieldArray, CellStyle cellStyle, ActionList actionList){
 		TimeSpreadSheetModel model=new TimeSpreadSheetModel(cache,fieldArray,cellStyle,actionList);
 		setModel(model,
 				new TimeSpreadSheetColumnModel(this));	    
 	}
 	
-	public void setFieldArray(ArrayList fieldArray){
+	public void setFieldArray(Vector fieldArray){
 		((TimeSpreadSheetModel)getModel()).setFieldArray(fieldArray);
 		((TimeSpreadSheetModel)getModel()).resetSelectedFieldArray();
 
@@ -107,10 +107,10 @@ public class TimeSpreadSheet extends CommonSpreadSheet implements ScaledComponen
 	}
 	
 	
-	public void setSelectedFieldArray(ArrayList fieldArray){
+	public void setSelectedFieldArray(Vector fieldArray){
 		((TimeSpreadSheetModel)getModel()).setSelectedFieldArray(fieldArray);
 	}
-	public final ArrayList getSelectedFieldArray() {
+	public final Vector getSelectedFieldArray() {
 		return ((TimeSpreadSheetModel)getModel()).getSelectedFieldArray();
 	}
 	public void selectFieldArray(Field field){

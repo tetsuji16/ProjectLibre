@@ -58,7 +58,7 @@ Copyright (c) 2003-2007 Apple, Inc., All Rights Reserved
 package apple.dts.samplecode.osxadapter;
 
 import java.lang.reflect.*;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 
 public class OSXAdapter implements InvocationHandler {

@@ -103,6 +103,10 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
 	protected GraphicConfiguration config;
 	protected GraphPopupMenu popup=null;
 	protected DependencyDialog dependencyPropertiesDialog;
+	// Drag scroll throttling: avoid excessive scrollRectToVisible calls during mouse drag
+	private static final int SCROLL_THROTTLE_PX = 30;
+	private int lastScrollX = Integer.MIN_VALUE;
+	private int lastScrollY = Integer.MIN_VALUE;
 	/**
 	 *
 	 */
@@ -129,6 +133,9 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
        	sourceNode=null;
     	destinationNode=null;
     	selection=true;
+    	// Reset scroll throttle so next drag starts fresh
+    	lastScrollX = Integer.MIN_VALUE;
+    	lastScrollY = Integer.MIN_VALUE;
     }
 
     protected boolean selectedIsNonSummaryNode(){
@@ -283,7 +290,7 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
     //Mouse
     public void mouseClicked(MouseEvent e){}
     public void mouseWheelMoved(MouseWheelEvent e){
-        if (e.isConsumed() || e.isShiftDown()) {
+        if (e.isConsumed() || e.isShiftDown() || e.isControlDown()) {
             return;
         }
         // Directly scroll the parent scroll pane by manipulating its vertical scrollbar
@@ -342,8 +349,15 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
     public void mouseExited(MouseEvent e){}
 
     private void scrollToVisible(int x,int y){
-    	int scrollingDistance=100;
-    	getGraph().scrollRectToVisible(new Rectangle(x-scrollingDistance,y-scrollingDistance,scrollingDistance*2,scrollingDistance*2));
+     	// Throttle: skip if mouse hasn't moved far enough since last scroll.
+     	// This prevents excessive scrollRectToVisible calls during smooth dragging.
+     	if (Math.abs(x - lastScrollX) < SCROLL_THROTTLE_PX && Math.abs(y - lastScrollY) < SCROLL_THROTTLE_PX) {
+     		return;
+     	}
+     	lastScrollX = x;
+     	lastScrollY = y;
+     	int scrollingDistance=100;
+     	getGraph().scrollRectToVisible(new Rectangle(x-scrollingDistance,y-scrollingDistance,scrollingDistance*2,scrollingDistance*2));
     }
     protected boolean allowLinkSelectionToMove(){
     	return false;

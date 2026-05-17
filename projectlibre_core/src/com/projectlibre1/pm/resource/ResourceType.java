@@ -71,11 +71,11 @@ public class ResourceType {
 
 	private static BidiMap RESOURCE_TYPE_MAP = new DualHashBidiMap();
 	static {
-		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Labor"), new Integer(WORK));
-		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Material"), new Integer(MATERIAL));
-		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Location"),  new Integer(LOCATION));
-		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Machine"),  new Integer(MACHINE));
-		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Other"), new Integer(OTHER));
+		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Labor"), Integer.valueOf(WORK));
+		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Material"), Integer.valueOf(MATERIAL));
+		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Location"),  Integer.valueOf(LOCATION));
+		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Machine"),  Integer.valueOf(MACHINE));
+		RESOURCE_TYPE_MAP.put(Messages.getString("ResourceType.Other"), Integer.valueOf(OTHER));
 	}
 	
 	

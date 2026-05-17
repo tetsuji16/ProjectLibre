@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.primavera.common;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 /**
@@ -113,7 +113,7 @@ public class AbstractWbsFormat
       return sb.toString();
    }
 
-   private final List<String> m_elements = new ArrayList<String>();
-   protected final List<Integer> m_lengths = new ArrayList<Integer>();
-   protected final List<String> m_separators = new ArrayList<String>();
+   private final List<String> m_elements = new Vector<String>();
+   protected final List<Integer> m_lengths = new Vector<Integer>();
+   protected final List<String> m_separators = new Vector<String>();
 }

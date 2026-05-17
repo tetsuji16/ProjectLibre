@@ -55,9 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.model;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -101,7 +101,7 @@ public class AssignmentNodeModel extends DefaultNodeModel implements ObjectEvent
 		this.containsLeftObjects=containsLeftObjects;
 		setDocument(document);
 	}
-	AssignmentNodeModel(/*ArrayList list,*/ MutableNodeHierarchy hierarchy,
+	AssignmentNodeModel(/*Vector list,*/ MutableNodeHierarchy hierarchy,
 			NodeModelDataFactory dataFactory,Document document, boolean containsLeftObjects) {
 		super(/*list,*/ hierarchy, dataFactory);
 		this.containsLeftObjects=containsLeftObjects;
@@ -206,7 +206,7 @@ public class AssignmentNodeModel extends DefaultNodeModel implements ObjectEvent
 		Iterator j;
 		Node parent;
 		Node child;
-		Map assignments=new HashMap();
+		Map assignments=new Hashtable();
 		while (i.hasNext()) { // go thru tasks or resources
 			parent = (Node)i.next();
 			if (! (parent.getImpl() instanceof HasAssignments)) {
@@ -268,9 +268,9 @@ public class AssignmentNodeModel extends DefaultNodeModel implements ObjectEvent
 
 	public void paste(Node parent,List nodes,int position,int actionType){
 		super.paste(parent, nodes, position, actionType);
-		ArrayList roots=new ArrayList();
+		Vector roots=new Vector();
 		HierarchyUtils.extractParents(nodes, roots);
-		final List freeAssignments=new ArrayList();
+		final List freeAssignments=new Vector();
 		for (Iterator i=roots.iterator();i.hasNext();)
 			hierarchy.visitLeaves((Node)i.next(), new Closure(){
 				public void execute(Object o) {

@@ -95,7 +95,7 @@ public class NodeModelFactory {
 	
 
 	public NodeModel createAssignmentNodeModel(DefaultNodeModel model,Document document,boolean containsLeftObjects){
-		return new AssignmentNodeModel(/*(ArrayList)model.getList().clone(),*/(MutableNodeHierarchy)model.getHierarchy().clone(), model.getDataFactory(),document,containsLeftObjects);
+		return new AssignmentNodeModel(/*(Vector)model.getList().clone(),*/(MutableNodeHierarchy)model.getHierarchy().clone(), model.getDataFactory(),document,containsLeftObjects);
 	}
 
 	public NodeModel createNodeModelFromCollection(Collection collection,NodeModelDataFactory dataFactory) {

@@ -61,7 +61,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -144,9 +144,9 @@ public class NodeListTransferHandler extends TransferHandler {
 	    protected Transferable createTransferable(JComponent c, int action) {
 	    	SpreadSheet spreadSheet=getSpreadSheet(c);
 	    	if (spreadSheet==null) return null;
-	    	ArrayList nodes=(ArrayList)spreadSheet.getSelectedNodes().clone();
+	    	Vector nodes=(Vector)spreadSheet.getSelectedNodes().clone();
 	    	
-	    	ArrayList fields=spreadSheet.getSelectedFields();
+	    	Vector fields=spreadSheet.getSelectedFields();
 	    	boolean nodeSelection=(fields==null);
 	    	if (fields==null) fields=spreadSheet.getSelectableFields();
 		    if (action==TransferHandler.COPY){
@@ -192,7 +192,7 @@ public class NodeListTransferHandler extends TransferHandler {
 	            	Object data=t.getTransferData(flavor);
 	        		if (data==null) return false;
 	            	List nodes=null;
-	        		if (data instanceof ArrayList){
+	        		if (data instanceof Vector){
 	        			nodes=(List)data;
 	        			
 	        	    	for (Iterator i=nodes.iterator();i.hasNext();) {
@@ -214,7 +214,7 @@ public class NodeListTransferHandler extends TransferHandler {
 		    	    	SpreadSheet.SpreadSheetAction a=getNodeListPasteAction().getSpreadSheetAction();
 				    	a.execute(nodes);
 	        		}else if (data instanceof String){
-//	        			ArrayList fields=spreadSheet.getSelectedFields();
+//	        			Vector fields=spreadSheet.getSelectedFields();
 //	        			if (fields==null){
 //	        				fields=spreadSheet.getSelectableFields(); //The whole line is selected
 //		        			nodes=NodeListTransferable.stringToNodeList((String)data,spreadSheet,fields,model.getDataFactory());

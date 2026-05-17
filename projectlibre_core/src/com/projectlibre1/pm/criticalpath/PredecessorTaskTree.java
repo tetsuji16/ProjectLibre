@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.criticalpath;
 
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -70,7 +70,7 @@ import com.projectlibre1.pm.dependency.HasDependencies;
 */
 public class PredecessorTaskTree {
 	protected PertLayoutTreeNode root=new PertLayoutTreeNode(null);
-	protected Map taskMap=new HashMap();
+	protected Map taskMap=new Hashtable();
 	
 	public PertLayoutTreeNode getRoot(){
 		return root;

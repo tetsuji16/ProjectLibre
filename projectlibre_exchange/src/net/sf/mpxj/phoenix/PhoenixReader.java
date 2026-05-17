@@ -24,11 +24,11 @@
 package net.sf.mpxj.phoenix;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -109,11 +109,11 @@ public final class PhoenixReader extends AbstractProjectReader
       try
       {
          m_projectFile = new ProjectFile();
-         m_activityMap = new HashMap<String, Task>();
-         m_activityCodeValues = new HashMap<UUID, String>();
-         m_activityCodeSequence = new HashMap<UUID, Integer>();
-         m_activityCodeCache = new HashMap<Activity, Map<UUID, UUID>>();
-         m_codeSequence = new ArrayList<UUID>();
+         m_activityMap = new Hashtable<String, Task>();
+         m_activityCodeValues = new Hashtable<UUID, String>();
+         m_activityCodeSequence = new Hashtable<UUID, Integer>();
+         m_activityCodeCache = new Hashtable<Activity, Map<UUID, UUID>>();
+         m_codeSequence = new Vector<UUID>();
          m_eventManager = m_projectFile.getEventManager();
 
          ProjectConfig config = m_projectFile.getProjectConfig();
@@ -690,7 +690,7 @@ public final class PhoenixReader extends AbstractProjectReader
       Map<UUID, UUID> map = m_activityCodeCache.get(activity);
       if (map == null)
       {
-         map = new HashMap<UUID, UUID>();
+         map = new Hashtable<UUID, UUID>();
          m_activityCodeCache.put(activity, map);
          for (CodeAssignment ca : activity.getCodeAssignment())
          {

@@ -56,7 +56,7 @@
 package com.projectlibre1.field;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class OptionsFilter {
 
 	public Object[] getOptions(Object[] optionKeys, List optionValues, Object obj){
 		if (obj==null) return optionKeys;
-		List keys=new ArrayList(optionKeys.length);
+		List keys=new Vector(optionKeys.length);
 		keys.addAll(Arrays.asList(optionKeys));
 		try {
 			Method m=obj.getClass().getMethod(method, new Class[]{List.class,List.class});
