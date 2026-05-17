@@ -661,7 +661,6 @@ public class Job extends Thread {
 				//System.out.println("Exception: "+getName());
 				exception=e;
 				if (!(e instanceof JobCanceledException)){
-					e.printStackTrace();
 					ErrorLogger.log("Job Exception: " + getName(),e);
 				}
 			}

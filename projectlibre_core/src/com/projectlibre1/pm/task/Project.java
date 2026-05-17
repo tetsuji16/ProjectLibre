@@ -1570,7 +1570,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		try {
 			subprojectHandler = (SubprojectHandler) Class.forName(Messages.getMetaString("SubprojectHandler")).getConstructor(new Class[]{Project.class}).newInstance(this);
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogger.log("SubprojectHandler initialization failed", e);
 			System.out.println("SubprojectHandler not valid in meta.properties");
 			System.exit(-1);
 		}
@@ -2455,7 +2455,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		try {
 			DependencyService.getInstance().connect(NodeList.nodeListToImplList(children, NotAssignmentFilter.getInstance()),eventSource,canBeSuccessorCondition);
 		} catch (InvalidAssociationException e) {
-			e.printStackTrace();
+			ErrorLogger.log("Invalid association while linking siblings", e);
 		}
 		for (Node n : children) // recursively do children
 			linkAllSiblings(n,canBeSuccessorCondition,eventSource);
@@ -2568,7 +2568,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		try {
 			Class.forName(Messages.getMetaString("ProjectRoleManager")).getDeclaredMethod("resetRoles", new Class[] {Project.class, Boolean.class}).invoke(null, new Object[] {this,publicRoles});
 		} catch (Exception e) {
-			e.printStackTrace();
+			ErrorLogger.log("ProjectRoleManager initialization failed", e);
 			System.out.println("ProjectRoleManager not valid in meta.properties");
 			System.exit(-1);
 		}

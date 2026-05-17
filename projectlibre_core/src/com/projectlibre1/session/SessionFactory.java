@@ -59,6 +59,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.projectlibre1.job.Job;
 import com.projectlibre1.job.JobQueue;
@@ -69,6 +71,7 @@ import com.projectlibre1.util.ClassUtils;
  *
  */
 public class SessionFactory {
+    private static final Logger logger = Logger.getLogger(SessionFactory.class.getName());
     protected static SessionFactory instance=null;
     protected SessionFactory() {
     }
@@ -95,13 +98,13 @@ public class SessionFactory {
 			            	sessionImpls.put(key.substring(key.lastIndexOf('.')+1), session);
 			            } catch (InstantiationException e) {
 			                // TODO Auto-generated catch block
-			                e.printStackTrace();
+			                logger.log(Level.WARNING, "Error", e);
 			            } catch (IllegalAccessException e) {
 			                // TODO Auto-generated catch block
-			                e.printStackTrace();
+			                logger.log(Level.WARNING, "Error", e);
 			            } catch (ClassNotFoundException e) {
 			                // TODO Auto-generated catch block
-			                e.printStackTrace();
+			                logger.log(Level.WARNING, "Error", e);
 			            }
 					}
 				}
@@ -124,19 +127,19 @@ public class SessionFactory {
 			return object.getClass().getMethod(method, argsDesc).invoke(object, args);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		}
 		return null;
     }
@@ -146,19 +149,19 @@ public class SessionFactory {
 			return object.getClass().getMethod(method, argsDesc).invoke(object, args);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		}
 		return null;
     }

@@ -430,7 +430,7 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 			try {
 				return (CalendarIterator) pool.borrowObject();
 			} catch (Exception e) {
-				e.printStackTrace();
+				ErrorLogger.log("Failed to borrow CalendarIterator", e);
 				return null;
 			}
 		}
@@ -439,7 +439,7 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 			try {
 				pool.returnObject(object);
 			} catch (Exception e) {
-				e.printStackTrace();
+				ErrorLogger.log("Failed to return CalendarIterator", e);
 			}
 		}
 	}

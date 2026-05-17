@@ -57,6 +57,8 @@ package com.projectlibre1.document;
 
 import java.util.EventListener;
 import java.util.EventObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
@@ -68,6 +70,7 @@ import com.projectlibre1.undo.NodeUndoInfo;
  *
  */
 public class ObjectEvent extends EventObject {
+	private static final Logger logger = Logger.getLogger(ObjectEvent.class.getName());
     
 	public Object getObject() {
 		return object;
@@ -113,7 +116,7 @@ public class ObjectEvent extends EventObject {
 		try {
 			objectEvent = (ObjectEvent) pool.borrowObject();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 			return null;
 		}
 		objectEvent.source = source;
@@ -133,7 +136,7 @@ public class ObjectEvent extends EventObject {
 			pool.returnObject(this);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		}
 	}
 	
