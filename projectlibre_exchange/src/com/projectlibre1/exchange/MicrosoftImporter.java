@@ -55,8 +55,10 @@
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
 package com.projectlibre1.exchange;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.util.Vector;
 import java.util.Date;
 import java.util.Hashtable;
@@ -109,6 +111,9 @@ import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Alert;
 import com.projectlibre1.util.DateTime;
 import com.projectlibre1.util.Environment;
+
+import net.sf.mpxj.writer.ProjectWriter;
+import net.sf.mpxj.writer.ProjectWriterUtility;
 /**
  * This class is based on the project mpxj http://www.tapsterrock.com/mpxj/
  * The enumerated types in projectlibre currently correspond exactly to the types in mpx, so there is no need to convert them.
@@ -151,7 +156,7 @@ public class MicrosoftImporter extends ServerFileImporter{
     @Override
 	public Project loadProject(InputStream in)  throws Exception{
 		log.info("BEGIN: MicrosoftImporter.PrepareResources");
-		parse(in, "xml");
+		parse(in, getFileExtension());
 		log.info("END: MicrosoftImporter.PrepareResources");
 		Environment.setImporting(false);
 		log.info("BEGIN: Finish import");
@@ -162,15 +167,40 @@ public class MicrosoftImporter extends ServerFileImporter{
     
     @Override
 	public boolean saveProject(Project project,OutputStream out) throws Exception{
-		MSPDISerializer serializer = new MSPDISerializer();
-		return serializer.saveProject(project,out);
+		return saveProject(project, out, fileName);
 	}
 
 	@Override
 	public void exportFile() throws Exception {
-		MSPDISerializer serializer = new MSPDISerializer();
-		//serializer.setJob(this);
-		serializer.saveProject(project,fileName);
+		String extension = ""; //$NON-NLS-1$
+		String name = fileName;
+		String tmpFileName = fileName;
+		int i = fileName.lastIndexOf('.');
+		if (i > 0) {
+			extension = fileName.substring(i);
+			name = fileName.substring(0, i);
+		}
+
+		File file = new File(fileName);
+		File tmpFile = file;
+		for (int count = 0; tmpFile.exists(); count++) {
+			tmpFileName = name + "_tmp" + count + extension; //$NON-NLS-1$
+			tmpFile = new File(tmpFileName);
+		}
+
+		FileOutputStream out = new FileOutputStream(tmpFile);
+		try {
+			if (!saveProject(project, out, fileName)) {
+				throw new Exception("Failed to save project: " + fileName); //$NON-NLS-1$
+			}
+		} finally {
+			out.close();
+		}
+
+		if (!file.equals(tmpFile)) {
+			file.delete();
+			tmpFile.renameTo(file);
+		}
 	}
 
 
@@ -238,7 +268,7 @@ public class MicrosoftImporter extends ServerFileImporter{
 					
 				}
 			});
-		else plProject=plImporter.importProject(fileInputStream, "xml", new MspImporter.ProgressClosure() {
+		else plProject=plImporter.importProject(fileInputStream, getFileExtension(), new MspImporter.ProgressClosure() {
 			@Override
 			public void updateProgress(float progress, String label) {
 				setProgress(progress*0.1f);
@@ -399,8 +429,35 @@ public class MicrosoftImporter extends ServerFileImporter{
 			setProgress(1.0f);
 			plProject=null;// remove reference
 //			project.setWasImported(true); //claur
-			return project;
+		return project;
     }
+
+	private boolean saveProject(Project project, OutputStream out, String targetFileName) throws Exception {
+		String extension = getFileExtension(targetFileName);
+		MSPDISerializer serializer = new MSPDISerializer();
+		if ("xml".equals(extension) || extension.length() == 0) {
+			return serializer.saveProject(project, out);
+		}
+
+		ProjectWriter writer = ProjectWriterUtility.getProjectWriter(targetFileName);
+		writer.write(serializer.serializeProject(project).getProjectFile(), out);
+		return true;
+	}
+
+	private String getFileExtension() {
+		return getFileExtension(fileName);
+	}
+
+	private String getFileExtension(String name) {
+		if (name == null) {
+			return "xml"; //$NON-NLS-1$
+		}
+		int extensionPosition = name.lastIndexOf('.');
+		if (extensionPosition == -1 || extensionPosition == name.length() - 1) {
+			return "xml"; //$NON-NLS-1$
+		}
+		return name.substring(extensionPosition + 1).toLowerCase();
+	}
 
 
 	protected void importCalendars() throws Exception{

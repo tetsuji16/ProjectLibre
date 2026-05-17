@@ -35,6 +35,7 @@ public class ProjectMergeService {
 				ResourcePool resourcePool = ResourcePoolFactory.getInstance().createResourcePool("", undoController);
 				resourcePool.setLocal(true);
 				Project project = Project.createProject(resourcePool, undoController);
+				importer.setFileName(fileName);
 				importer.setProject(project);
 				importer.setProjectFactory(ProjectFactory.getInstance());
 				return importer.loadProject(in);

@@ -71,6 +71,7 @@ import net.sf.mpxj.mpx.MPXReader;
 import net.sf.mpxj.mspdi.schema.TimephasedDataType;
 import net.sf.mpxj.planner.PlannerReader;
 import net.sf.mpxj.reader.AbstractProjectReader;
+import net.sf.mpxj.xlsx.XlsxReader;
 
 import com.projectlibre.core.pm.exchange.converters.mpx.MpxAssignmentConverter;
 import com.projectlibre.core.pm.exchange.converters.mpx.MpxCalendarConverter;
@@ -158,6 +159,8 @@ public class MspImporter {
 				reader=new MPXReader();
 			else if (extension.equals("planner"))
 				reader = new PlannerReader();
+			else if (extension.equals("xlsx"))
+				reader = new XlsxReader();
 			mpxProjectFile = reader.read(in);
 			state.setMpxProjectFile(mpxProjectFile);
 		

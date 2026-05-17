@@ -83,6 +83,7 @@ public class FileHelper {
     private FileFilter projectlibreFilter = null;
     private FileFilter microsoftFilter = null;
     private FileFilter microsoftXMLFilter = null;
+    private FileFilter microsoftXlsxFilter = null;
     private FileFilter plannerFilter = null;
     private FileFilter projectFilter = null;
 
@@ -149,6 +150,18 @@ public class FileHelper {
     	    	return Messages.getString("File.microsoftXML") + " (*.xml)";
     	    }
     	};
+    	microsoftXlsxFilter = new FileFilter() {
+    	    public boolean accept(File f) {
+    	    	boolean isAllowed;
+    			String n = f.getName().toLowerCase();
+    	    	if (save) isAllowed = n.endsWith(".xlsx");
+    	    	else isAllowed = n.endsWith(".xlsx");
+    	    	return f.isDirectory() || isAllowed;
+    	    }
+    	    public String getDescription() {
+    	    	return "Excel Workbook (*.xlsx)";
+    	    }
+    	};
     	plannerFilter = new FileFilter() {
     	    public boolean accept(File f) {
     	    	boolean isAllowed;
@@ -165,6 +178,7 @@ public class FileHelper {
     	    public boolean accept(File f) {
     	    	if (projectlibreFilter.accept(f)) return true;
     	    	if (microsoftXMLFilter.accept(f)) return true;
+    	    	if (microsoftXlsxFilter.accept(f)) return true;
     	    	if (plannerFilter.accept(f)) return true;
     	    	if (microsoftFilter.accept(f)) return true;
     	    	return false;
@@ -177,17 +191,24 @@ public class FileHelper {
     	chooser.resetChoosableFileFilters();
     	if (save) {
     		File selectedFile = chooser.getSelectedFile();
-    		if (selectedFile != null && microsoftFilter.accept(selectedFile)) {
+    		if (selectedFile != null && microsoftXlsxFilter.accept(selectedFile)) {
     			if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
     			chooser.addChoosableFileFilter(microsoftXMLFilter);
+    			chooser.addChoosableFileFilter(microsoftXlsxFilter);
+    		} else if (selectedFile != null && microsoftFilter.accept(selectedFile)) {
+    			if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
+    			chooser.addChoosableFileFilter(microsoftXMLFilter);
+    			chooser.addChoosableFileFilter(microsoftXlsxFilter);
     		} else {
     			chooser.addChoosableFileFilter(microsoftXMLFilter);
+    			chooser.addChoosableFileFilter(microsoftXlsxFilter);
     			if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
     		}
     	} else {
     		if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
     		chooser.addChoosableFileFilter(microsoftFilter);
     		chooser.addChoosableFileFilter(microsoftXMLFilter);
+    		chooser.addChoosableFileFilter(microsoftXlsxFilter);
     		chooser.addChoosableFileFilter(plannerFilter);
     		chooser.addChoosableFileFilter(projectFilter);
     	}
@@ -232,6 +253,9 @@ public class FileHelper {
 			if (currentFilter==microsoftXMLFilter){
 				if(!fileName.endsWith(".xml")) fileName+=".xml";
 			}
+			else if (currentFilter==microsoftXlsxFilter){
+				if(!fileName.endsWith(".xlsx")) fileName+=".xlsx";
+			}
 			else if (!fileName.endsWith(".pod")) fileName+=".pod";
 		}
 		
@@ -242,8 +266,8 @@ public class FileHelper {
 
     public static boolean isFileNameAllowed(String fileName,boolean save) {
 		String n = fileName.toLowerCase();
-    	if (save) return n.endsWith(".xml")||n.endsWith("."+DEFAULT_FILE_EXTENSION);
-    	else return n.endsWith(".xml")||n.endsWith(".mpp")||n.endsWith(".mpx")||n.endsWith(".planner")||n.endsWith("."+DEFAULT_FILE_EXTENSION) || n.endsWith(".mpx");
+    	if (save) return n.endsWith(".xml")||n.endsWith(".xlsx")||n.endsWith("."+DEFAULT_FILE_EXTENSION);
+    	else return n.endsWith(".xml")||n.endsWith(".xlsx")||n.endsWith(".mpp")||n.endsWith(".mpx")||n.endsWith(".planner")||n.endsWith("."+DEFAULT_FILE_EXTENSION) || n.endsWith(".mpx");
 	}
 
     public static String getFileExtension(String fileName) {
@@ -285,7 +309,7 @@ public class FileHelper {
     	fileName=fileName.toLowerCase();
     	if (fileName.endsWith(DEFAULT_FILE_EXTENSION))
     		return PROJECTLIBRE_FILE_TYPE;
-    	if (fileName.endsWith("mpp")||fileName.endsWith("mpx")||fileName.endsWith("xml")||fileName.endsWith("planner"))
+    	if (fileName.endsWith("mpp")||fileName.endsWith("mpx")||fileName.endsWith("xml")||fileName.endsWith("xlsx")||fileName.endsWith("planner"))
     			return MSP_FILE_TYPE;
     	return 0;
     }
