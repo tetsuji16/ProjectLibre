@@ -63,10 +63,14 @@ import java.util.Map;
 import org.apache.commons.collections.Closure;
 import org.apache.commons.collections.Transformer;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  */
 public abstract class CommonTransform {
+	protected static final Logger logger = Logger.getLogger(CommonTransform.class.getName());
 
     public abstract boolean isShowEmptyLines();
     public abstract void setShowEmptyLines(boolean showEmptyLines);
@@ -139,7 +143,7 @@ public abstract class CommonTransform {
         if (parameterDialog==null){
             try {
                 parameterDialog=(Closure)Class.forName(REGISTERED_PARAMETER_DIALOG).newInstance();
-            } catch (Exception e) {e.printStackTrace();}
+            } catch (Exception e) {logger.log(Level.WARNING, "Transform error", e);}
         }
         if (parameterDialog!=null){
             parameterDialog.execute(this);

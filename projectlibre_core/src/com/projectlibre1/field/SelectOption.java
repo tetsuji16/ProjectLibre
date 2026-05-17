@@ -60,8 +60,12 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.ClassUtils;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class SelectOption {
+	private static final Logger logger = Logger.getLogger(SelectOption.class.getName());
 	String key;
 	Object value;
 	String object = null;
@@ -126,19 +130,19 @@ public class SelectOption {
 			return ClassUtils.forName(object).getField(objectField).get(null);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Error", e);
 		}
 		return null;
 	}

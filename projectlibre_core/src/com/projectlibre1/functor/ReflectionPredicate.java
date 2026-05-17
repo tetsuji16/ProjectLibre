@@ -57,11 +57,14 @@ package com.projectlibre1.functor;
 
 import org.apache.commons.collections.Predicate;
 import java.lang.reflect.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  */
 public class ReflectionPredicate implements Predicate {
+	private static final Logger logger = Logger.getLogger(ReflectionPredicate.class.getName());
 
 	Method method;
 	/**
@@ -79,13 +82,13 @@ public class ReflectionPredicate implements Predicate {
 			return ((Boolean)method.invoke(arg0,null)).booleanValue();
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Reflection error", e);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Reflection error", e);
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Reflection error", e);
 		}
 		return false;
 	}

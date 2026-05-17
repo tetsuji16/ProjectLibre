@@ -61,6 +61,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.collections.Closure;
 import org.apache.commons.pool.BasePoolableObjectFactory;
@@ -77,6 +79,7 @@ import com.projectlibre1.grouping.core.transform.HierarchicObject;
  *
  */
 public class NodeSorter extends CommonTransform implements Comparator{
+	private static final Logger logger = Logger.getLogger(NodeSorter.class.getName());
 	protected boolean showSummary = true;
 	protected boolean showEmptyLines = true;
 	protected boolean showEndEmptyLines = true;
@@ -163,7 +166,7 @@ public void recycleList(List list) {
 		pool.returnObject(list);
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		logger.log(Level.WARNING, "Sort error", e);
 	}
 }
 

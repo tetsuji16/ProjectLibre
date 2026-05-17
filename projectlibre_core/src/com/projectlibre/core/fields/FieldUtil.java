@@ -219,25 +219,25 @@ public class FieldUtil {
 			}
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.log(java.util.logging.Level.WARNING, "Error", e);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.log(java.util.logging.Level.WARNING, "Error", e);
 		} catch (SecurityException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.log(java.util.logging.Level.WARNING, "Error", e);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.log(java.util.logging.Level.WARNING, "Error", e);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.log(java.util.logging.Level.WARNING, "Error", e);
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.log(java.util.logging.Level.WARNING, "Error", e);
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.log(java.util.logging.Level.WARNING, "Error", e);
 		}
 	}
 	

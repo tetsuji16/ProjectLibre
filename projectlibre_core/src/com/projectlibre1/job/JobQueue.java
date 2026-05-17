@@ -61,6 +61,8 @@ import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ProgressMonitor;
 import javax.swing.event.EventListenerList;
@@ -74,6 +76,7 @@ import com.projectlibre1.util.Environment;
  *
  */
 public class JobQueue extends ThreadGroup{
+	private static final Logger logger = Logger.getLogger(JobQueue.class.getName());
 	public final static int MAX_PROGRESS=10000;
 	protected boolean documentBased = false;
 	public JobQueue(String name,boolean documentBased) {
@@ -217,7 +220,7 @@ public class JobQueue extends ThreadGroup{
 		try {
 		    return (Frame)Class.forName(GRAPHIC_MANAGER).getMethod(methodName,null).invoke(null,null);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.log(Level.WARNING, "Job queue error", e);
 			return null;
 		}
 	}

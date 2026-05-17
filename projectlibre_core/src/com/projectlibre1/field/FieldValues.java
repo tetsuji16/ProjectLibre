@@ -102,8 +102,7 @@ public class FieldValues {
 				f.setValue(object,null,map.get(fieldId),context);
 				f.setReadOnly(readOnly);
 			} catch (FieldParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				ErrorLogger.log("Problem setting field value for " + f.getName() + " in FieldValues", e);
 			}
 		}
 	}
