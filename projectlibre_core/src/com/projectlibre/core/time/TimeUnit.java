@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.time;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 
@@ -172,7 +172,7 @@ public enum TimeUnit{
 	public static TimeUnit getInstance(int id){
 		//not using values()[id] because type can be negative
 		if (reverseMap==null){
-			reverseMap=new HashMap<Integer,TimeUnit>();
+			reverseMap=new Hashtable<Integer,TimeUnit>();
 			for (TimeUnit unit : values())
 				reverseMap.put(unit.getId(),unit);
 		}

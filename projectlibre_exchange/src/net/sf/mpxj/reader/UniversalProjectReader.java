@@ -26,6 +26,7 @@ package net.sf.mpxj.reader;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.sql.Connection;
@@ -33,7 +34,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -73,6 +74,7 @@ import net.sf.mpxj.primavera.suretrak.SureTrakDatabaseReader;
 import net.sf.mpxj.primavera.suretrak.SureTrakSTXFileReader;
 import net.sf.mpxj.projectlibre.ProjectLibreReader;
 import net.sf.mpxj.turboproject.TurboProjectReader;
+import net.sf.mpxj.xlsx.XlsxReader;
 
 /**
  * This class implements a universal project reader: given a file or a stream this reader
@@ -493,27 +495,154 @@ public class UniversalProjectReader implements ProjectReader
     * @param stream schedule data
     * @return ProjectFile instance
     */
-   private ProjectFile handleZipFile(InputStream stream) throws Exception
-   {
-      File dir = null;
+    private ProjectFile handleZipFile(InputStream stream) throws Exception
+    {
+       File dir = null;
 
-      try
-      {
-         dir = InputStreamHelper.writeZipStreamToTempDir(stream);
-         ProjectFile result = handleDirectory(dir);
-         if (result != null)
-         {
-            return result;
-         }
-      }
+       try
+       {
+          dir = InputStreamHelper.writeZipStreamToTempDir(stream);
 
-      finally
-      {
-         FileHelper.deleteQuietly(dir);
-      }
+          // Check if this is an XLSX file by looking for xlsx-specific markers
+          if (isXlsxFile(dir))
+          {
+             // Re-read from the original stream is not possible, so we re-package
+             // the extracted contents back into a temp .xlsx file
+             File xlsxFile = repackToXlsx(dir);
+             try
+             {
+                XlsxReader reader = new XlsxReader();
+                addListeners(reader);
+                return reader.read(xlsxFile);
+             }
+             finally
+             {
+                FileHelper.deleteQuietly(xlsxFile);
+             }
+          }
 
-      return null;
-   }
+          ProjectFile result = handleDirectory(dir);
+          if (result != null)
+          {
+             return result;
+          }
+       }
+
+       finally
+       {
+          FileHelper.deleteQuietly(dir);
+       }
+
+       return null;
+    }
+
+    /**
+     * Check if a ZIP directory contains an XLSX file.
+     * XLSX files contain [Content_Types].xml with spreadsheetml content type
+     * and xl/workbook.xml.
+     *
+     * @param dir extracted ZIP directory
+     * @return true if this appears to be an XLSX file
+     */
+    private boolean isXlsxFile(File dir) throws Exception
+    {
+       // Check for [Content_Types].xml
+       File contentTypes = new File(dir, "[Content_Types].xml");
+       if (!contentTypes.exists())
+       {
+          return false;
+       }
+
+        // Check for xl/workbook.xml
+        File workbook = new File(new File(dir, "xl"), "workbook.xml");
+       if (!workbook.exists())
+       {
+          return false;
+       }
+
+       // Check Content_Types.xml for spreadsheetml content type
+       byte[] buffer = new byte[4096];
+       FileInputStream fis = new FileInputStream(contentTypes);
+       try
+       {
+          int bytesRead = fis.read(buffer);
+          if (bytesRead > 0)
+          {
+             String content = new String(buffer, 0, bytesRead);
+             return content.contains("spreadsheetml");
+          }
+       }
+       finally
+       {
+          fis.close();
+       }
+
+       return false;
+    }
+
+    /**
+     * Re-package extracted ZIP contents back into a temporary .xlsx file.
+     *
+     * @param dir extracted ZIP directory
+     * @return temporary .xlsx file
+     */
+    private File repackToXlsx(File dir) throws Exception
+    {
+       File xlsxFile = File.createTempFile("projectlibre_xlsx_", ".xlsx");
+       xlsxFile.deleteOnExit();
+
+       java.util.zip.ZipOutputStream zos = new java.util.zip.ZipOutputStream(new java.io.FileOutputStream(xlsxFile));
+       try
+       {
+          addDirToZip(dir, dir, zos);
+       }
+       finally
+       {
+          zos.close();
+       }
+
+       return xlsxFile;
+    }
+
+    /**
+     * Add directory contents to a ZIP output stream.
+     */
+    private void addDirToZip(File baseDir, File currentDir, java.util.zip.ZipOutputStream zos) throws Exception
+    {
+       File[] files = currentDir.listFiles();
+       if (files == null)
+       {
+          return;
+       }
+
+       byte[] buffer = new byte[4096];
+       for (File file : files)
+       {
+          String entryName = file.getPath().substring(baseDir.getPath().length() + 1).replace('\\', '/');
+          if (file.isDirectory())
+          {
+             addDirToZip(baseDir, file, zos);
+          }
+          else
+          {
+             zos.putNextEntry(new java.util.zip.ZipEntry(entryName));
+             FileInputStream fis = new FileInputStream(file);
+             try
+             {
+                int len;
+                while ((len = fis.read(buffer)) > 0)
+                {
+                   zos.write(buffer, 0, len);
+                }
+             }
+             finally
+             {
+                fis.close();
+                zos.closeEntry();
+             }
+          }
+       }
+    }
 
    /**
     * We have a directory. Determine if this contains a multi-file database we understand, if so
@@ -589,7 +718,7 @@ public class UniversalProjectReader implements ProjectReader
     */
    private ProjectFile handleFileInDirectory(File directory) throws Exception
    {
-      List<File> directories = new ArrayList<File>();
+      List<File> directories = new Vector<File>();
       File[] files = directory.listFiles();
 
       if (files != null)

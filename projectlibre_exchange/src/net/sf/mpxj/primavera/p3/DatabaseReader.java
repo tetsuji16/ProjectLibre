@@ -26,7 +26,7 @@ package net.sf.mpxj.primavera.p3;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import net.sf.mpxj.primavera.common.ByteColumn;
@@ -55,7 +55,7 @@ class DatabaseReader
    public Map<String, Table> process(File directory, String prefix) throws IOException
    {
       String filePrefix = prefix.toUpperCase();
-      Map<String, Table> tables = new HashMap<String, Table>();
+      Map<String, Table> tables = new Hashtable<String, Table>();
       File[] files = directory.listFiles();
       if (files != null)
       {
@@ -527,7 +527,7 @@ class DatabaseReader
     */
    static final long EPOCH = 441676800000L;
 
-   private static final Map<String, TableDefinition> TABLE_DEFINITIONS = new HashMap<String, TableDefinition>();
+   private static final Map<String, TableDefinition> TABLE_DEFINITIONS = new Hashtable<String, TableDefinition>();
    static
    {
       TABLE_DEFINITIONS.put("AC2", new TableDefinition(512, 34, AC2_COLUMNS));

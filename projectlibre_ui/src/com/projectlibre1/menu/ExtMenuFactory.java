@@ -74,7 +74,7 @@ import com.projectlibre1.pm.graphic.IconManager;
  *
  */
 public class ExtMenuFactory extends MenuFactory {
-	private Hashtable menuItems = new Hashtable();
+	private Hashtable menuItems = new Hashtable<>();
 	public final static String ICON_SUFFIX        = ".icon";
     public final static String ACTION_SUFFIX      = ".action";
     ActionMap actions;

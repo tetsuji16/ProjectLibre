@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.calendar;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -65,8 +65,8 @@ import java.util.Map;
  */
 public class CalendarManager implements Iterable<WorkCalendar>{
 	protected WorkCalendar standardBaseCalendar;
-	protected Map<CalendarId, WorkCalendar> baseCalendarsById=new HashMap<CalendarId, WorkCalendar>();
-	protected Map<String, WorkCalendar> baseCalendarsByName=new HashMap<String, WorkCalendar>();
+	protected Map<CalendarId, WorkCalendar> baseCalendarsById=new Hashtable<CalendarId, WorkCalendar>();
+	protected Map<String, WorkCalendar> baseCalendarsByName=new Hashtable<String, WorkCalendar>();
 	public WorkCalendar addBaseCalendar(WorkCalendar calendar) throws DuplicateCalendarException{
 		if (baseCalendarsById.containsKey(calendar.getId()))
 			throw new DuplicateCalendarException("Calendar id "+calendar.getName()+" already exists");

@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.mpx;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.Map;
@@ -257,7 +257,7 @@ public final class LocaleData extends ListResourceBundle
       };
    }
 
-   private static final HashMap<String, Integer> TIME_UNITS_MAP_DATA = new HashMap<String, Integer>();
+   private static final Hashtable<String, Integer> TIME_UNITS_MAP_DATA = new Hashtable<String, Integer>();
 
    static
    {

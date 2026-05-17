@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -152,7 +152,7 @@ final class MPP14Reader implements MPPVariantReader
          throw new MPXJException(MPXJException.PASSWORD_PROTECTED);
       }
 
-      m_resourceMap = new HashMap<Integer, ProjectCalendar>();
+      m_resourceMap = new Hashtable<Integer, ProjectCalendar>();
       m_projectDir = (DirectoryEntry) root.getEntry("   114");
       m_viewDir = (DirectoryEntry) root.getEntry("   214");
       DirectoryEntry outlineCodeDir = (DirectoryEntry) m_projectDir.getEntry("TBkndOutlCode");
@@ -167,9 +167,9 @@ final class MPP14Reader implements MPPVariantReader
       //FieldMap fm = new FieldMap14(m_file);
       //fm.dumpKnownFieldMaps(m_projectProps);
 
-      m_fontBases = new HashMap<Integer, FontBase>();
-      m_taskSubProjects = new HashMap<Integer, SubProject>();
-      m_parentTasks = new HashMap<Integer, Integer>();
+      m_fontBases = new Hashtable<Integer, FontBase>();
+      m_taskSubProjects = new Hashtable<Integer, SubProject>();
+      m_parentTasks = new Hashtable<Integer, Integer>();
       m_taskOrder = new TreeMap<Long, Integer>();
       m_nullTaskOrder = new TreeMap<Integer, Integer>();
 
@@ -2039,7 +2039,7 @@ final class MPP14Reader implements MPPVariantReader
    private ProjectFile m_file;
    private EventManager m_eventManager;
    private DirectoryEntry m_root;
-   private HashMap<Integer, ProjectCalendar> m_resourceMap;
+   private Hashtable<Integer, ProjectCalendar> m_resourceMap;
    private Var2Data m_outlineCodeVarData;
    private VarMeta m_outlineCodeVarMeta;
    private FixedData m_outlineCodeFixedData;

@@ -23,8 +23,8 @@
 
 package net.sf.mpxj;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Vector;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -123,20 +123,20 @@ public class FilterContainer
    /**
    * List of all task filters.
    */
-   private List<Filter> m_taskFilters = new ArrayList<Filter>();
+   private List<Filter> m_taskFilters = new Vector<Filter>();
 
    /**
     * List of all resource filters.
     */
-   private List<Filter> m_resourceFilters = new ArrayList<Filter>();
+   private List<Filter> m_resourceFilters = new Vector<Filter>();
 
    /**
     * Index of filters by name.
     */
-   private Map<String, Filter> m_filtersByName = new HashMap<String, Filter>();
+   private Map<String, Filter> m_filtersByName = new Hashtable<String, Filter>();
 
    /**
     * Index of filters by ID.
     */
-   private Map<Integer, Filter> m_filtersByID = new HashMap<Integer, Filter>();
+   private Map<Integer, Filter> m_filtersByID = new Hashtable<Integer, Filter>();
 }

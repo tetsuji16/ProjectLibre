@@ -31,7 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +74,7 @@ public final class AstaDatabaseReader implements ProjectReader
    {
       try
       {
-         Map<Integer, String> result = new HashMap<Integer, String>();
+         Map<Integer, String> result = new Hashtable<Integer, String>();
 
          List<Row> rows = getRows("select projid, short_name from project_summary");
          for (Row row : rows)
@@ -520,6 +520,6 @@ public final class AstaDatabaseReader implements ProjectReader
    private boolean m_allocatedConnection;
    private PreparedStatement m_ps;
    private ResultSet m_rs;
-   private Map<String, Integer> m_meta = new HashMap<String, Integer>();
+   private Map<String, Integer> m_meta = new Hashtable<String, Integer>();
    private List<ProjectListener> m_projectListeners;
 }

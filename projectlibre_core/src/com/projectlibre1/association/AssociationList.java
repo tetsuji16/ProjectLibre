@@ -56,7 +56,7 @@
 package com.projectlibre1.association;
 
 import java.text.ParsePosition;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -125,7 +125,7 @@ public class AssociationList implements List {
     }
     
     public static List extractDistinct(List list, boolean leftObject) {
-    	ArrayList result = new ArrayList();
+    	Vector result = new Vector();
     	Association association;
     	Object object;
         for ( Iterator i = list.iterator(); i.hasNext();) {

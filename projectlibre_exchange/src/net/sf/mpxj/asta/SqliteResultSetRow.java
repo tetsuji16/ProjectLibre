@@ -29,7 +29,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -51,7 +51,7 @@ final class SqliteResultSetRow extends MapRow
    public SqliteResultSetRow(ResultSet rs, Map<String, Integer> meta)
       throws SQLException
    {
-      super(new HashMap<String, Object>());
+      super(new Hashtable<String, Object>());
 
       for (Entry<String, Integer> entry : meta.entrySet())
       {

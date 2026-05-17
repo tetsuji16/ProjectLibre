@@ -187,7 +187,7 @@ public final class HelpDialog extends AbstractDialog {
 		JLabel logo = new JLabel(IconManager.getIcon("logo.ProjectLibre"));
 		logo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
-				BrowserControl.displayURL("http://www.projectlibre.com");//$NON-NLS-1$
+				BrowserControl.displayURL("https://github.com/tetsuji16/ProjectLibre");//$NON-NLS-1$
 			}});
 		builder.nextColumn();
 		builder.append(logo); 

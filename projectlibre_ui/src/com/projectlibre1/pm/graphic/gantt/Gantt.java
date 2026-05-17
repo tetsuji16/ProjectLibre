@@ -60,8 +60,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JViewport;
+import javax.swing.KeyStroke;
 
 import com.projectlibre1.pm.graphic.gantt.link_routing.DefaultGanttLinkRouting;
 import com.projectlibre1.pm.graphic.graph.Graph;
@@ -71,6 +78,7 @@ import com.projectlibre1.pm.graphic.graph.LinkRouting;
 import com.projectlibre1.pm.graphic.network.NetworkParamsImpl;
 import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
 import com.projectlibre1.pm.graphic.timescale.ScaledComponent;
+import com.projectlibre1.pm.graphic.views.synchro.ScrollPaneSynchronizer;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.time.HasStartAndEnd;
 import com.projectlibre1.strings.Messages;
@@ -86,12 +94,15 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 //    protected DependencyDialog dependencyPropertiesDialog;
 
 	private static final long serialVersionUID = -1806070019043393474L;
+	private boolean progressLineEnabled = false;
 	public Gantt(Project project,String viewName) {
 		this(new GanttModel(project,viewName),project);
 	}
 	protected Gantt(GanttModel model, Project project) {
 		super(model,project);
 		this.setToolTipText(Messages.getString("Text.rightClickForOptions"));
+		setFocusable(true);
+		installKeyboardActions();
 
 	}
 
@@ -171,6 +182,38 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 	}
 	public void setRouting(LinkRouting routing) {
 		this.routing=routing;
+	}
+
+	public boolean isProgressLineEnabled() {
+		return progressLineEnabled;
+	}
+
+	public void setProgressLineEnabled(boolean progressLineEnabled) {
+		this.progressLineEnabled = progressLineEnabled;
+		repaint();
+	}
+
+	private void installKeyboardActions() {
+		InputMap inputMap = getInputMap(WHEN_FOCUSED);
+		ActionMap actionMap = getActionMap();
+
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), "gantt.zoomOut");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), "gantt.zoomIn");
+
+		actionMap.put("gantt.zoomOut", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				ScrollPaneSynchronizer.zoomOut(Gantt.this);
+			}
+		});
+		actionMap.put("gantt.zoomIn", new AbstractAction() {
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e) {
+				ScrollPaneSynchronizer.zoomIn(Gantt.this);
+			}
+		});
 	}
 
 

@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -458,7 +458,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (memberProject == null)
       {
-         memberProject = new ArrayList<PortfolioTeamMemberType>();
+         memberProject = new Vector<PortfolioTeamMemberType>();
       }
       return this.memberProject;
    }

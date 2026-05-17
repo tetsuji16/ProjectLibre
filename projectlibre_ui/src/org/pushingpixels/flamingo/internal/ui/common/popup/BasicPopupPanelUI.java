@@ -460,8 +460,7 @@ public class BasicPopupPanelUI extends PopupPanelUI {
 		 */
 		void grabWindow(List<PopupPanelManager.PopupInfo> shownPath) {
 			final Toolkit tk = Toolkit.getDefaultToolkit();
-			java.security.AccessController
-					.doPrivileged(new java.security.PrivilegedAction() {
+			java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
 						@Override
                         public Object run() {
 							tk.addAWTEventListener(WindowTracker.this,
@@ -488,8 +487,7 @@ public class BasicPopupPanelUI extends PopupPanelUI {
 		void ungrabWindow() {
 			final Toolkit tk = Toolkit.getDefaultToolkit();
 			// The grab should be removed
-			java.security.AccessController
-					.doPrivileged(new java.security.PrivilegedAction() {
+			java.security.AccessController.doPrivileged(new java.security.PrivilegedAction() {
 						@Override
                         public Object run() {
 							tk.removeAWTEventListener(WindowTracker.this);

@@ -189,7 +189,7 @@ public class PopupPanelManager {
 	/**
 	 * Map of all popup panels and associated {@link Popup} objects.
 	 */
-	protected Map<JPopupPanel, Popup> popupPanels = new HashMap<JPopupPanel, Popup>();
+	protected Map<JPopupPanel, Popup> popupPanels = new Hashtable<JPopupPanel, Popup>();
 
 	/**
 	 * Adds new popup to the tracking structures.
@@ -298,7 +298,7 @@ public class PopupPanelManager {
 	 * @return All currently shown popup panels.
 	 */
 	public List<PopupInfo> getShownPath() {
-		List<PopupInfo> toReturn = new ArrayList<PopupInfo>();
+		List<PopupInfo> toReturn = new Vector<PopupInfo>();
 		for (PopupInfo pInfo : this.shownPath)
 			toReturn.add(pInfo);
 		return toReturn;

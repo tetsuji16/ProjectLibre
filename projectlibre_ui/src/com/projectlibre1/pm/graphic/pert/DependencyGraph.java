@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.pert;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -70,7 +70,7 @@ import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
  *
  */
 public class DependencyGraph{
-	protected HashMap nodeMap=new HashMap();
+	protected Hashtable nodeMap=new Hashtable();
 	protected NodeModelCache cache;
 	
 	public void setCache(NodeModelCache cache){

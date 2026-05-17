@@ -94,9 +94,9 @@ public class CalendarDialogBox extends AbstractDialog{
         Boolean setAsDefault;
         
         Form(CalendarOption option) {
-        	hoursPerDay = new Double(option.getHoursPerDay());
-        	hoursPerWeek = new Double(option.getHoursPerWeek());
-        	daysPerMonth = new Double(option.getDaysPerMonth());
+        	hoursPerDay = Double.valueOf(option.getHoursPerDay());
+        	hoursPerWeek = Double.valueOf(option.getHoursPerWeek());
+        	daysPerMonth = Double.valueOf(option.getDaysPerMonth());
         	startTime = option.getDefaultStartHour() +""; //$NON-NLS-1$
         	endTime = option.getDefaultEndHour()+""; //$NON-NLS-1$
         	
@@ -252,14 +252,14 @@ public class CalendarDialogBox extends AbstractDialog{
     		} else {
     			form.setWeekStart((String)weekStart.getSelectedItem());
     			form.setFiscalYearStart((String)fiscalYearStart.getSelectedItem());  		    
-    			Boolean b1=new Boolean(useStartingYear.isSelected());
+    			Boolean b1=Boolean.valueOf(useStartingYear.isSelected());
     			form.setUseStartingYear(b1);
     			form.setStartTime(startTime.getText());
     			form.setEndTime(endTime.getText());
     			form.setHoursPerDay((Double)hoursPerDay.getValue());
     			form.setHoursPerWeek((Double)hoursPerWeek.getValue());
     			form.setDaysPerMonth((Double)daysPerMonth.getValue());    			
-    			Boolean b2=new Boolean(setAsDefault.isSelected());
+    			Boolean b2=Boolean.valueOf(setAsDefault.isSelected());
     			form.setSetAsDefault(b2);
 
     		}

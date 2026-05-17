@@ -56,8 +56,14 @@
 package com.projectlibre1.pm.graphic.gantt;
 
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
+import java.awt.event.MouseEvent;
+
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
 
 import com.projectlibre1.pm.graphic.graph.GraphInteractor;
 import com.projectlibre1.pm.graphic.graph.GraphUI;
@@ -65,6 +71,7 @@ import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.model.cache.GraphicDependency;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
+import com.projectlibre1.pm.graphic.views.synchro.ScrollPaneSynchronizer;
 import com.projectlibre1.association.InvalidAssociationException;
 import com.projectlibre1.functor.IntervalConsumer;
 import com.projectlibre1.pm.dependency.DependencyService;
@@ -89,6 +96,9 @@ public class GanttInteractor extends GraphInteractor{
 	protected ScheduleInterval selectedInterval;
 	protected int selectedIntervalNumber;
 	protected double t;
+	private boolean panning;
+	private Point panStartPoint;
+	private Point panStartViewPosition;
 	/**
 	 *
 	 */
@@ -160,6 +170,47 @@ public class GanttInteractor extends GraphInteractor{
      	}
     }
     private NodeSelectionIntervalConsumer nodeSelectionIntervalConsumer=new NodeSelectionIntervalConsumer();
+
+    public void mousePressed(MouseEvent e) {
+    	if (isReadOnly()) {
+    		super.mousePressed(e);
+    		return;
+    	}
+    	getGraph().requestFocusInWindow();
+    	if (SwingUtilities.isRightMouseButton(e)) {
+    		super.mousePressed(e);
+    		return;
+    	}
+    	if (!SwingUtilities.isLeftMouseButton(e)) {
+    		super.mousePressed(e);
+    		return;
+    	}
+
+    	select(e.getX(), e.getY());
+    	if (selected == null) {
+    		startPan(e);
+    		return;
+    	}
+    	super.mousePressed(e);
+    }
+
+    public void mouseDragged(MouseEvent e) {
+    	if (panning) {
+    		updatePan(e);
+    		e.consume();
+    		return;
+    	}
+    	super.mouseDragged(e);
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    	if (panning) {
+    		stopPan();
+    		e.consume();
+    		return;
+    	}
+    	super.mouseReleased(e);
+    }
 
     protected void computeNodeSelection(double x,double y){
 		//would have prefered an iterator
@@ -309,9 +360,61 @@ public class GanttInteractor extends GraphInteractor{
     	selectCursor();
     }
 
+    private void startPan(MouseEvent e) {
+    	panning = true;
+    	panStartPoint = e.getPoint();
+    	JViewport viewport = getViewport();
+    	panStartViewPosition = viewport == null ? null : viewport.getViewPosition();
+    	selection = false;
+    	state = NOTHING_SELECTED;
+    	ScrollPaneSynchronizer.invalidateZoomRestore(getGraph());
+    	getGraph().setCursor(new Cursor(Cursor.MOVE_CURSOR));
+    }
 
+    private void updatePan(MouseEvent e) {
+    	JViewport viewport = getViewport();
+    	if (viewport == null || panStartPoint == null || panStartViewPosition == null) {
+    		return;
+    	}
 
+    	Point viewPosition = new Point(panStartViewPosition);
+    	viewPosition.x -= e.getX() - panStartPoint.x;
+    	clampViewPosition(viewport, viewPosition);
+    	viewport.setViewPosition(viewPosition);
+    }
 
+    private void stopPan() {
+    	panning = false;
+    	selection = true;
+    	panStartPoint = null;
+    	panStartViewPosition = null;
+    	reset();
+    	selectCursor();
+    }
+
+    private JViewport getViewport() {
+    	if (getGraph().getParent() instanceof JViewport) {
+    		return (JViewport) getGraph().getParent();
+    	}
+    	return null;
+    }
+
+    private void clampViewPosition(JViewport viewport, Point viewPosition) {
+    	Dimension viewSize = viewport.getViewSize();
+    	Dimension extentSize = viewport.getExtentSize();
+    	int maxX = Math.max(0, viewSize.width - extentSize.width);
+    	int maxY = Math.max(0, viewSize.height - extentSize.height);
+    	if (viewPosition.x < 0) {
+    		viewPosition.x = 0;
+    	} else if (viewPosition.x > maxX) {
+    		viewPosition.x = maxX;
+    	}
+    	if (viewPosition.y < 0) {
+    		viewPosition.y = 0;
+    	} else if (viewPosition.y > maxY) {
+    		viewPosition.y = maxY;
+    	}
+    }
 
     protected void select(int x,int y){
     	if (selection){

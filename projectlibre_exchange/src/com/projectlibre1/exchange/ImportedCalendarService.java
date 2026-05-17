@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.exchange;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import com.projectlibre1.pm.calendar.CalendarService;
@@ -75,7 +75,7 @@ public class ImportedCalendarService {
 			instance = new ImportedCalendarService();
 		return instance;
 	}
-	HashMap importedCalendarMap = new HashMap();
+	Hashtable importedCalendarMap = new Hashtable();
 	public void addImportedCalendar(WorkingCalendar cal, ProjectCalendar mpxCal) {
 		importedCalendarMap.put(mpxCal,cal);
 		CalendarService calendarService=CalendarService.getInstance();
@@ -103,7 +103,7 @@ public class ImportedCalendarService {
 		return null;
 	}
 
-	HashMap exportedCalendarMap = new HashMap();
+	Hashtable exportedCalendarMap = new Hashtable();
 	public void addExportedCalendar(ProjectCalendar mpxCal,WorkingCalendar cal) {
 		exportedCalendarMap.put(cal,mpxCal);
 	}

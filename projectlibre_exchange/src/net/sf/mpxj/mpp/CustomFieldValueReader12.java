@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.mpp;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 
@@ -104,7 +104,7 @@ public class CustomFieldValueReader12 extends CustomFieldValueReader
       // 8 bytes per record
       index += (8 * recordCount);
 
-      Map<UUID, FieldType> map = new HashMap<UUID, FieldType>();
+      Map<UUID, FieldType> map = new Hashtable<UUID, FieldType>();
 
       // 200 byte blocks
       while (index + 200 <= data.length)

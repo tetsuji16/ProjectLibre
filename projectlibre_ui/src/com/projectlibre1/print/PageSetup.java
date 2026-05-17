@@ -64,7 +64,7 @@ import java.awt.print.PageFormat;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.print.PrintService;
 import javax.print.attribute.standard.MediaPrintableArea;
@@ -616,21 +616,21 @@ public class PageSetup{
 		printSettings.setPageFormat((ExtendedPageFormat)document.getPageFormat().clone());
 		printSettings.setPdfService(document.getPrintService() instanceof PDFPrintService);
 
-		ArrayList<ViewSettings> viewSettings=null;
+		Vector<ViewSettings> viewSettings=null;
 		if (printSpreadSheet!=null&&printGantt!=null){
 			GanttSettings s=new GanttSettings();
 			s.setSpreadSheetVisible(printSpreadSheet.isSelected());
 			s.setGanttVisible(printGantt.isSelected());
-			viewSettings=new ArrayList<ViewSettings>(1);
+			viewSettings=new Vector<ViewSettings>(1);
 			viewSettings.add(s);
 		}else{
-			ArrayList<ViewSettings> documentViewSettings=document.getPrintSettings().getViewSettings();
-			if (documentViewSettings!=null) viewSettings=(ArrayList<ViewSettings>)documentViewSettings.clone();
+			Vector<ViewSettings> documentViewSettings=document.getPrintSettings().getViewSettings();
+			if (documentViewSettings!=null) viewSettings=(Vector<ViewSettings>)documentViewSettings.clone();
 		}
 		printSettings.setViewSettings(viewSettings);
 
 		if (!Environment.getStandAlone()){
-			ArrayList<ScalingSettings> scalingSettings=new ArrayList<ScalingSettings>(2);
+			Vector<ScalingSettings> scalingSettings=new Vector<ScalingSettings>(2);
 			ScaleToSettings scaleToSettings=new ScaleToSettings();
 			scaleToSettings.setWidth(((Number)scaleToWidth.getValue()).doubleValue());
 			scaleToSettings.setHeight(((Number)scaleToHeight.getValue()).doubleValue());

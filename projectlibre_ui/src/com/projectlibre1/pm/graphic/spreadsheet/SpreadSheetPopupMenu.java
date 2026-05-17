@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -93,14 +93,18 @@ public class SpreadSheetPopupMenu extends JPopupMenu {
 			String[] actions=spreadSheet.getActionList();
 			if (actions!=null)
 			for (int i=0;i<actions.length;i++){
-				add(spreadSheet.prepareAction(actions[i]),getMenuAction(actions[i]));
+				String actionId = actions[i];
+				add(spreadSheet.prepareAction(actionId),getMenuAction(actionId));
+				if (MenuActionConstants.ACTION_PASTE.equals(actionId)) {
+					add(spreadSheet.prepareAction(MenuActionConstants.ACTION_PASTE_INSERT), getInsertPasteMenuIcon());
+				}
 			}
 		}
 	    
 	    private Map menuActionMap=null;
 	    protected String getMenuAction(String action){
 	    	if (menuActionMap==null){
-	    		menuActionMap=new HashMap();
+	    		menuActionMap=new Hashtable();
 	    		if (Environment.isNewLook()) {
 		    		menuActionMap.put(MenuActionConstants.ACTION_NEW,"menu24.insertTask");
 		    		menuActionMap.put(MenuActionConstants.ACTION_DELETE,"menu24.delete");
@@ -124,6 +128,10 @@ public class SpreadSheetPopupMenu extends JPopupMenu {
 	    		}
 	    	}
 	    	return (String)menuActionMap.get(action);
+	    }
+
+	    protected String getInsertPasteMenuIcon() {
+	    	return Environment.isNewLook() ? "menu24.insertTask" : "menu.insertTask";
 	    }
 	    
 	    private void add(Action action, String iconName) {

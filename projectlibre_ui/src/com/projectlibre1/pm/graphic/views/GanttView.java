@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.views;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
@@ -261,12 +261,12 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	 * @param name
 	 * @return old field array
 	 */
-	public ArrayList setColumns(String name){
-		ArrayList old = spreadSheet.getFieldArray();
-		setColumns((ArrayList) Dictionary.get(spreadsheetCategory,Messages.getString(name)));
+	public Vector setColumns(String name){
+		Vector old = spreadSheet.getFieldArray();
+		setColumns((Vector) Dictionary.get(spreadsheetCategory,Messages.getString(name)));
 		return old;
 	}
-	public void setColumns(ArrayList fields){
+	public void setColumns(Vector fields){
 		spreadSheet.setFieldArray(fields);
 	}
 	/**
@@ -370,6 +370,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	public void restoreWorkspace(WorkspaceSetting w, int context) {
 		Workspace ws = (Workspace) w;
 		spreadSheet.restoreWorkspace(ws.spreadSheet, context);
+		gantt.setProgressLineEnabled(ws.progressLineEnabled);
 		ganttScrollPane.restoreWorkspace(ws.scrollPane, context);
 		setDividerLocation(ws.dividerLocation);
 	}
@@ -377,6 +378,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		Workspace ws = new Workspace();
 		ws.spreadSheet = spreadSheet.createWorkspace(context);
 		ws.scrollPane = ganttScrollPane.createWorkspace(context);
+		ws.progressLineEnabled = gantt.isProgressLineEnabled();
 		ws.dividerLocation = getDividerLocation();
 		return ws;
 	}
@@ -385,6 +387,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		private static final long serialVersionUID = -407561451956813994L;
 		WorkspaceSetting spreadSheet;
 		WorkspaceSetting scrollPane;
+		boolean progressLineEnabled;
 		int dividerLocation;
 		public WorkspaceSetting getSpreadSheet() {
 			return spreadSheet;
@@ -397,6 +400,12 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		}
 		public void setScrollPane(WorkspaceSetting scrollPane) {
 			this.scrollPane = scrollPane;
+		}
+		public boolean isProgressLineEnabled() {
+			return progressLineEnabled;
+		}
+		public void setProgressLineEnabled(boolean progressLineEnabled) {
+			this.progressLineEnabled = progressLineEnabled;
 		}
 		public int getDividerLocation() {
 			return dividerLocation;

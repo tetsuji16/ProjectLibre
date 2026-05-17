@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.model;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -120,7 +120,7 @@ public class NodeModelUtil {
 	}
 
 	public static List extractNodeList(NodeModel nodeModel, Node root) {
-		ArrayList l = new ArrayList();
+		Vector l = new Vector();
 		extractNodeList(nodeModel, root, l);
 		return l;
 	}

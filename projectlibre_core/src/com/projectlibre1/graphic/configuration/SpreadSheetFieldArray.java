@@ -60,7 +60,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -80,11 +80,11 @@ import com.projectlibre1.workspace.WorkspaceSetting;
 /**
  *
  */
-public class SpreadSheetFieldArray extends ArrayList implements NamedItem, Cloneable, WorkspaceSetting {
+public class SpreadSheetFieldArray extends Vector implements NamedItem, Cloneable, WorkspaceSetting {
 	private static final long serialVersionUID = 6310711336308730391L;
 	transient Map map = new LinkedHashMap();
 	transient boolean userCreated = false;
-	ArrayList<Integer> widths = null;//new ArrayList<Integer>();
+	Vector<Integer> widths = null;//new Vector<Integer>();
 	public Object clone() {
 		return super.clone();
 	}
@@ -299,7 +299,7 @@ public class SpreadSheetFieldArray extends ArrayList implements NamedItem, Clone
 	}
 
 	public static Collection toIdArray(Collection fieldArray) {
-		ArrayList result = new ArrayList(fieldArray.size());
+		Vector result = new Vector(fieldArray.size());
 		Iterator i = fieldArray.iterator();
 		while (i.hasNext()) {
 			result.add(TimeDistributedHelper.getIdForObject(i.next()));
@@ -307,7 +307,7 @@ public class SpreadSheetFieldArray extends ArrayList implements NamedItem, Clone
 		return result;
 	}
 	public static Collection fromIdArray(Collection fieldArray) {
-		ArrayList result = new ArrayList(fieldArray.size());
+		Vector result = new Vector(fieldArray.size());
 		Iterator i = fieldArray.iterator();
 		while (i.hasNext()) {
 			result.add(TimeDistributedHelper.getObjectFromId((String) i.next()));
@@ -341,22 +341,22 @@ public class SpreadSheetFieldArray extends ArrayList implements NamedItem, Clone
 		Workspace ws = (Workspace) w;
 		addAll(fromIdArray(ws.fields));
 		if (ws.version>0.0f&&ws.widths!=null&&ws.widths.size()>0){
-			widths=new ArrayList<Integer>(ws.widths.size());
+			widths=new Vector<Integer>(ws.widths.size());
 			widths.addAll(ws.widths);
 		}
 	}
 	public static class Workspace implements WorkspaceSetting {
 		private static final long serialVersionUID = -4517935309304612237L;
-		ArrayList<Integer> widths = new ArrayList<Integer>();
-		ArrayList fields = new ArrayList();
+		Vector<Integer> widths = new Vector<Integer>();
+		Vector fields = new Vector();
 		float version=1.0f;
 	}
 
-	public ArrayList<Integer> getWidths() {
+	public Vector<Integer> getWidths() {
 		return widths;
 	}
 
-	public void setWidths(ArrayList<Integer> widths) {
+	public void setWidths(Vector<Integer> widths) {
 		this.widths = widths;
 	}
 

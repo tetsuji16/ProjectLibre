@@ -134,7 +134,7 @@ public class MSPDISerializer implements ProjectSerializer {
 
     		Map resourceMap=(Map)args[0];
             for (int s=0;s<Settings.numBaselines();s++){
-                TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(new Integer(s));
+                TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(Integer.valueOf(s));
                 if (snapshot==null) continue;
                 AssociationList snapshotAssignments=snapshot.getHasAssignments().getAssignments();
                 if (snapshotAssignments.size()>0){
@@ -148,7 +148,7 @@ public class MSPDISerializer implements ProjectSerializer {
                  
                         
                         projectData.putOPPrAssignmentMap(assignmentData,assignment);
-                        projectData.putOPPrSnapshotIdMap(assignmentData,new Integer(s));
+                        projectData.putOPPrSnapshotIdMap(assignmentData,Integer.valueOf(s));
                         if (s==Snapshottable.CURRENT.intValue()){
                         	MPXConverter.toMPXAssignment(assignment,assignmentData);
                         }
@@ -167,7 +167,7 @@ public class MSPDISerializer implements ProjectSerializer {
     			return false;
     		net.sf.mpxj.Task taskData=(net.sf.mpxj.Task)getTransformationMap().get(outlineChild);
     		net.sf.mpxj.Task parentData=(outlineParent==null)?null:((net.sf.mpxj.Task)getTransformationMap().get(outlineParent));
-   			taskData.setOutlineLevel(new Integer(((parentData==null)?1:(parentData.getOutlineLevel().intValue()+1)))); // outline levels start at 1
+   			taskData.setOutlineLevel(Integer.valueOf(((parentData==null)?1:(parentData.getOutlineLevel().intValue()+1)))); // outline levels start at 1
    			//fix from vitaliff
    			//setSummary is normally done in mpxj post processing
    			if (parentData != null) 

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.menu;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -104,13 +104,13 @@ public class ExtRibbonFactory extends RibbonFactory {
 	}
 	
 
-    public ArrayList getButtonsFromId(String id) {
+    public Vector getButtonsFromId(String id) {
     	String buttonId = getActionStringFromId(id);
-    	ArrayList result = null;
+    	Vector result = null;
     	if (buttonId != null)
-    		result = (ArrayList) toolButtons.get(buttonId);
+    		result = (Vector) toolButtons.get(buttonId);
     	if (result == null)
-    		result = (ArrayList) toolButtons.get(id);
+    		result = (Vector) toolButtons.get(id);
     	return result;
     }
     public String getActionStringFromId(String id) {

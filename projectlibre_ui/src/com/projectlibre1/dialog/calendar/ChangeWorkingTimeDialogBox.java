@@ -65,7 +65,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -189,8 +189,8 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
 		this.undoController = undoController;
 //		ProjectFactory projectFactory = ((MainFrame)owner).getProjectFactory();
 		ProjectFactory projectFactory = GraphicManager.getInstance(this).getProjectFactory();
-		ArrayList projCals = projectFactory.getPortfolio().extractCalendars();
-		projectCalendars = new ArrayList();
+		Vector projCals = projectFactory.getPortfolio().extractCalendars();
+		projectCalendars = new Vector();
 		Iterator i = projCals.iterator();
 		WorkingCalendar current;
 		while (i.hasNext()) { // add all non base cals that are project cals
@@ -230,7 +230,7 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
 		}
 	}
 	private void fillInCalendarNames() {
-		ArrayList all = new ArrayList();
+		Vector all = new Vector();
 		CalendarService service = CalendarService.getInstance();
 		all.addAll(service.getBaseCalendars());
 		all.addAll(projectCalendars);
@@ -536,14 +536,14 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
         sdCalendar.setColorDates(null);
 
 	    DayDescriptor day;
-	    ArrayList flaggedDates=new ArrayList();
-	    ArrayList colorDates=new ArrayList();
+	    Vector flaggedDates=new Vector();
+	    Vector colorDates=new Vector();
 	    while(calendar.getTimeInMillis()<=last){
 	        day=service.getDay(wc,calendar.getTimeInMillis());
 	        if (day.isModified())
-	            flaggedDates.add(new Long(calendar.getTimeInMillis()));
+	            flaggedDates.add(Long.valueOf(calendar.getTimeInMillis()));
 	        if (!day.isWorking())
-	            colorDates.add(new Long(calendar.getTimeInMillis()));
+	            colorDates.add(Long.valueOf(calendar.getTimeInMillis()));
 	        calendar.add(Calendar.DATE,1);
 	    }
 
@@ -569,7 +569,7 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
 	}
 
 	//stupid jdnc calendar use long[]
-	public long[] toLongArray(ArrayList list){
+	public long[] toLongArray(Vector list){
 	    //if (list.size()==0) return null;
 	    long[] array=new long[list.size()];
 	    int j=0;

@@ -30,7 +30,7 @@
 package org.pushingpixels.flamingo.internal.ui.common.popup;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -56,7 +56,7 @@ public class JColorSelectorComponent extends JComponent {
 			JColorSelectorPopupMenu.ColorSelectorCallback colorChooserCallback) {
 		this.setOpaque(true);
 		this.color = color;
-		this.colorChooserCallbacks = new ArrayList<JColorSelectorPopupMenu.ColorSelectorCallback>();
+		this.colorChooserCallbacks = new Vector<JColorSelectorPopupMenu.ColorSelectorCallback>();
 		this.colorChooserCallbacks.add(colorChooserCallback);
 
 		this.updateUI();

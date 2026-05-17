@@ -879,7 +879,7 @@ public final class Assignment implements Schedule, Association, Allocation, Dela
 		}  else if (type instanceof Field) { // treat all baselines
 			Field field = (Field)type;
 			if (field.isIndexed()) {
-				Integer index = new Integer(field.getIndex());
+				Integer index = Integer.valueOf(field.getIndex());
 				if (field.isWork())
 					return baselineData(WORK,clause,index);
 				else
@@ -1628,7 +1628,7 @@ public final class Assignment implements Schedule, Association, Allocation, Dela
 	}
 
 	private boolean isBaselineFieldHidden(int numBaseline,FieldContext fieldContext) {
-		 Assignment baselineAssignment = getBaselineAssignment(new Integer(numBaseline), false);
+		 Assignment baselineAssignment = getBaselineAssignment(Integer.valueOf(numBaseline), false);
 		 if (baselineAssignment == null)
 			 return true;
 

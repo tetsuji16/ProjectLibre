@@ -63,7 +63,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -78,7 +78,7 @@ import com.projectlibre1.util.BrowserControl;
 import com.projectlibre1.util.Environment;
 
 public class HelpUtil implements KeyEventDispatcher {
-	private  HashMap<Component,String> map = new HashMap<Component,String>();
+	private  Hashtable<Component,String> map = new Hashtable<Component,String>();
 	private static HelpUtil instance = null;
 	private static final int DELAY_BETWEEN_HELPS = 5000;
 	private long lastHelpTime = 0L;
@@ -108,7 +108,7 @@ public class HelpUtil implements KeyEventDispatcher {
 		getInstance().map.put(c,address);
 	}
 	public static String getHelpURL(String address) {
-		return Settings.HELP_HOME+address;		
+		return Settings.HELP_HOME;
 	}
 	public static void addDocHelp(Component c, String address) {
 		addHelp(c,getHelpURL(address));
@@ -169,7 +169,7 @@ public class HelpUtil implements KeyEventDispatcher {
 				SpreadSheet ss = (SpreadSheet)th.getTable();
 				Field f = ((SpreadSheetModel)ss.getModel()).getFieldInColumn(col+1);
 				if (f.getHelp()!=null) {
-					BrowserControl.displayURL(Settings.HELP_HOME+f.getHelp());
+					BrowserControl.displayURL(getHelpURL(f.getHelp()));
 					return true;
 				}
 			}

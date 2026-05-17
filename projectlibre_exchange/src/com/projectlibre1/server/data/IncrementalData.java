@@ -56,7 +56,7 @@
 package com.projectlibre1.server.data;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,7 +64,7 @@ public class IncrementalData implements Serializable{
 	private static final long serialVersionUID = 9272293000322L;
 	protected ProjectData project;
 	protected HashSet resources,assignments,links;//,calendars;
-	protected HashMap tasks,enterpriseResources;
+	protected Hashtable tasks,enterpriseResources;
 	//calendars actually serialized inside projects, tasks and enterprise resources
 	public Set getAssignments() {
 		return assignments;
@@ -84,7 +84,7 @@ public class IncrementalData implements Serializable{
 //		this.calendars = calendars;
 //	}
 //	public void addCalendar(CalendarData data) {
-//		if (calendars==null) calendars=new ArrayList();
+//		if (calendars==null) calendars=new Vector();
 //		calendars.add(data);
 //	}
 	public HashSet getLinks() {
@@ -116,25 +116,25 @@ public class IncrementalData implements Serializable{
 		data.emtpy();
 		resources.add(data);
 	}
-	public HashMap getEnterpriseResources() {
+	public Hashtable getEnterpriseResources() {
 		return enterpriseResources;
 	}
-	public void setEnterpriseResources(HashMap enterpriseResources) {
+	public void setEnterpriseResources(Hashtable enterpriseResources) {
 		this.enterpriseResources = enterpriseResources;
 	}
 	public void addEnterpriseResource(EnterpriseResourceData data) {
-		if (enterpriseResources==null) enterpriseResources=new HashMap();
+		if (enterpriseResources==null) enterpriseResources=new Hashtable();
 		data.emtpy();
 		enterpriseResources.put(data,data);
 	}
-	public HashMap getTasks() {
+	public Hashtable getTasks() {
 		return tasks;
 	}
-	public void setTasks(HashMap tasks) {
+	public void setTasks(Hashtable tasks) {
 		this.tasks = tasks;
 	}
 	public void addTask(TaskData data) {
-		if (tasks==null) tasks=new HashMap();
+		if (tasks==null) tasks=new Hashtable();
 		data.emtpy();
 		tasks.put(data,data);
 	}

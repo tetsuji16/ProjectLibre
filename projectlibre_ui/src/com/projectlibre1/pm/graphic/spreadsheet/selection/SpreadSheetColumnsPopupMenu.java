@@ -57,7 +57,7 @@ package com.projectlibre1.pm.graphic.spreadsheet.selection;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
@@ -81,9 +81,9 @@ public class SpreadSheetColumnsPopupMenu extends JPopupMenu {
     
     private class MenuAction extends JRadioButtonMenuItem implements ActionListener {
     	CommonSpreadSheet spreadSheet;
-    	ArrayList fields;
+    	Vector fields;
     	private boolean current = false;
-    	MenuAction(String text, CommonSpreadSheet spreadSheet, ArrayList fields, boolean selected) {
+    	MenuAction(String text, CommonSpreadSheet spreadSheet, Vector fields, boolean selected) {
     		super(text);
     		if (selected)
     			setText("<html><span color=\"blue\"><u><b>" + text + " " + Messages.getString("Text.clickToRename") + "</b></u></span></html>");
@@ -110,7 +110,7 @@ public class SpreadSheetColumnsPopupMenu extends JPopupMenu {
 		Object columnDefinitions[] = Dictionary.getAll(type);
 		for (int i=0; i < columnDefinitions.length; i++) {
 			boolean selected = (spreadSheet.getFieldArray() == columnDefinitions[i]);
-			add(new MenuAction(columnDefinitions[i].toString(),spreadSheet,(ArrayList) columnDefinitions[i], selected));
+			add(new MenuAction(columnDefinitions[i].toString(),spreadSheet,(Vector) columnDefinitions[i], selected));
 		}
     	
     }

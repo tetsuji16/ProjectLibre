@@ -1,5 +1,5 @@
 @echo off
-set JAVA_HOME=C:\Program Files\Java\jdk-21
+set JAVA_HOME=C:\Program Files\Java\jdk-26.0.1
 set ANT_HOME=%CD%
 set PATH=%ANT_HOME%\bin;%JAVA_HOME%\bin;%PATH%
 

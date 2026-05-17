@@ -85,7 +85,7 @@ public abstract class DivisionSummaryVisitor extends NumberSummaryVisitor implem
 		denominator = 0;
 	}
 	public Object getSummary() {
-		return new Double(getValue());
+		return Double.valueOf(getValue());
 	}	
 	public void addToSummary(Object value) { // not used
 	}

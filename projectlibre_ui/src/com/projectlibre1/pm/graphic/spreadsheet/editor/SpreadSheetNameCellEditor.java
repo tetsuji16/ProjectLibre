@@ -57,9 +57,16 @@ package com.projectlibre1.pm.graphic.spreadsheet.editor;
 
 import java.awt.Component;
 
+import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
 
+import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
+import com.projectlibre1.pm.graphic.spreadsheet.renderer.CellUtility;
+import com.projectlibre1.pm.graphic.spreadsheet.renderer.FontManager;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.NameCellComponent;
 
 
@@ -86,11 +93,35 @@ public class SpreadSheetNameCellEditor extends SpreadSheetCellEditorAdapter{
 			lastTable.clearSelection();
 		}
 		lastTable=table;
-		
-		
-//		JTextComponent textComponent=(JTextComponent)editor.getTableCellEditorComponent(table,value,isSelected,row,column);
-		component=NameCellComponent.getComponent(table,value,isSelected,true,row,column/*,textComponent*/);
-		//textComponent.selectAll();
+
+		JComponent textComponent = (JComponent)editor.getTableCellEditorComponent(table,value,isSelected,row,column);
+		if (textComponent instanceof JTextField) {
+			((JTextField)textComponent).setScrollOffset(0);
+		}
+		component = new NameCellComponent(textComponent);
+		component.init();
+		CellUtility.setAppearance(table, value, isSelected, true, row, column, component);
+		if (table.getModel() instanceof SpreadSheetModel) {
+			SpreadSheetModel model = (SpreadSheetModel)table.getModel();
+			GraphicNode node = model.getNode(row);
+			component.setText(value == null ? "" : value.toString());
+			int level = model.getCache().getLevel(node);
+			component.setLevel((node.isVoid()) ? (level + 1) : level);
+			component.setLazy(node.isLazyParent());
+			component.setFetched(node.isFetched());
+			if (model.getCellProperties(node).isCompositeIcon()) {
+				component.setCollapsed(node.isCollapsed());
+			} else {
+				component.setLeaf(node.isVoid());
+			}
+			FontManager.setComponentFont(model.getCellProperties(node), component);
+			component.doLayout();
+		}
+		if (table instanceof SpreadSheet) {
+			SpreadSheet spreadSheet = (SpreadSheet)table;
+			installClipboardActions(spreadSheet, textComponent);
+			installNameFieldTabActions(spreadSheet, textComponent);
+		}
 		return component;
 	}
 	
@@ -99,6 +130,6 @@ public class SpreadSheetNameCellEditor extends SpreadSheetCellEditorAdapter{
 	 * @see javax.swing.CellEditor#getCellEditorValue()
 	 */
 	public Object getCellEditorValue() {
-		return component.getText();//ObjectConverterManager.fromString(component.getText(), String.class);
+		return editor.getCellEditorValue();
 	}
 }

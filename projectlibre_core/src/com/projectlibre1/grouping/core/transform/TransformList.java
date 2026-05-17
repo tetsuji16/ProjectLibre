@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Vector;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -85,9 +85,9 @@ public class TransformList implements NamedItem {
 	
 	String name = null;
 	String id = null;
-	Map elementMap = new HashMap();
-	Map factoryMap = new HashMap();
-	List factories = new ArrayList();
+	Map elementMap = new Hashtable();
+	Map factoryMap = new Hashtable();
+	List factories = new Vector();
 
 	public TransformList() {}
 	
@@ -147,7 +147,7 @@ public class TransformList implements NamedItem {
 	public List getFactories(ViewConfiguration view,String type) {
 	    List authorizedList;
 	    if (view==null){
-	        authorizedList=new ArrayList();
+	        authorizedList=new Vector();
 	        if ("user_filters".equals(type)) authorizedList.add(ViewTransformer.FILTER_NONE_ID);
 	        else if ("user_sorters".equals(type)) authorizedList.add(ViewTransformer.SORTER_NONE_ID);
 	        else if ("user_groupers".equals(type)) authorizedList.add(ViewTransformer.GROUPER_NONE_ID);
@@ -157,7 +157,7 @@ public class TransformList implements NamedItem {
 	        else authorizedList=view.getTransform().getGrouperList();
 	        if (authorizedList==null) return factories;
 	    }
-	    List filtered=new ArrayList();
+	    List filtered=new Vector();
 	    CommonTransformFactory f;
 	    for (Iterator i=factories.iterator();i.hasNext();){
 	        f=(CommonTransformFactory)i.next();

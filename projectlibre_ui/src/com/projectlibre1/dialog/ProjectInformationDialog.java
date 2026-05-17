@@ -129,7 +129,9 @@ public class ProjectInformationDialog extends InformationDialog {
 		map.append(builder,"Field.currentDate"); //$NON-NLS-1$
 		builder.nextLine(2);
 		map.appendSometimesReadOnly(builder,"Field.finishDate"); //$NON-NLS-1$
-		map.append(builder,"Field.statusDate"); //$NON-NLS-1$
+		JComponent statusDateComponent = map.append(builder,"Field.statusDate"); //$NON-NLS-1$
+		if (statusDateComponent != null)
+			statusDateComponent.setToolTipText(Messages.getString("ProjectInformationDialog.StatusDateTooltip")); //$NON-NLS-1$
 		
 		builder.nextLine(2);
 		map.append(builder,"Field.forward"); //$NON-NLS-1$
@@ -255,5 +257,15 @@ public class ProjectInformationDialog extends InformationDialog {
 		if (object != null)	
 			updateAll();
 	}	
-	
+
+	public void onOk() {
+		if (!bind(false))
+			return;
+		Project project = (Project) getObject();
+		if (project != null && !project.isStatusDateSet())
+			project.setStatusDate(System.currentTimeMillis());
+		setDialogResult(javax.swing.JOptionPane.OK_OPTION);
+		setVisible(false);
+	}
+
 }

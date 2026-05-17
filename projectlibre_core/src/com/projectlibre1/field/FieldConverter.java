@@ -59,7 +59,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -76,7 +76,7 @@ import com.projectlibre1.util.DateTime;
  * This class decorates ConvertUtils to use ProjectLibre specific types and validation
  */
 public class FieldConverter  {
-	HashMap<FieldContext,HashMap<Class,Converter>> contextMaps = new HashMap<FieldContext,HashMap<Class,Converter>>();
+	Hashtable<FieldContext,Hashtable<Class,Converter>> contextMaps = new Hashtable<FieldContext,Hashtable<Class,Converter>>();
 	private StringConverter stringConverter;
 	private StringConverter compactStringConverter;
 	
@@ -129,7 +129,7 @@ public class FieldConverter  {
 					result = ConvertUtils.convert((String) value,clazz);
 				else {
 					Converter contextConverter = null;
-					HashMap<Class,Converter> contextMap = contextMaps.get(context);
+					Hashtable<Class,Converter> contextMap = contextMaps.get(context);
 					if (contextMap != null)
 						contextConverter = contextMap.get(clazz);
 					if (contextConverter != null) {
@@ -196,7 +196,7 @@ public class FieldConverter  {
 		
 
 		// short context converters
-		HashMap<Class,Converter> compactMap = new HashMap<Class,Converter>();
+		Hashtable<Class,Converter> compactMap = new Hashtable<Class,Converter>();
 		contextMaps.put(COMPACT_CONVERTER_CONTEXT, compactMap);
 		compactMap.put(String.class,compactStringConverter);
 		// no need for duration or money as parsing is done in long form
@@ -240,11 +240,11 @@ public class FieldConverter  {
 				return null;
 			if (value != null) {
 				if (value instanceof Date) {
-					return new Long(((Date)value).getTime());
+					return Long.valueOf(((Date)value).getTime());
 				} else if (value instanceof GregorianCalendar) {
-					return new Long(((GregorianCalendar)value).getTimeInMillis());
+					return Long.valueOf(((GregorianCalendar)value).getTimeInMillis());
 				} else if (value instanceof Duration || value instanceof Work) {
-					return new Long(((Duration)value).getEncodedMillis());
+					return Long.valueOf(((Duration)value).getEncodedMillis());
 				}
 			}
 			return baseConverter.convert(type,value);
@@ -360,7 +360,7 @@ public class FieldConverter  {
 				 		System.out.println("Error: number is invalid double in MoneyConverter " +value );
 				 		num = 0.0;
 				 	}
-					return new Double(num);
+					return Double.valueOf(num);
 				}
 			}
 			return baseConverter.convert(type,value);

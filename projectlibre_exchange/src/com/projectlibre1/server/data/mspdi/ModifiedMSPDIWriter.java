@@ -26,7 +26,7 @@ package com.projectlibre1.server.data.mspdi;
 import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -218,10 +218,10 @@ public class ModifiedMSPDIWriter extends MSPDIWriter {
 
 	static Log log = LogFactory.getLog(ModifiedMSPDIWriter.class);
 	protected com.projectlibre1.pm.task.Project projectlibre1Project;
-	protected Map projectlibreTaskMap = new HashMap();
-	protected Map projectlibreAssignmentMap = new HashMap();
-	protected Map projectlibreSnapshotIdMap = new HashMap();
-	protected Map timephasedMap = new HashMap();
+	protected Map projectlibreTaskMap = new Hashtable();
+	protected Map projectlibreAssignmentMap = new Hashtable();
+	protected Map projectlibreSnapshotIdMap = new Hashtable();
+	protected Map timephasedMap = new Hashtable();
 	private static Resource UNASSIGNED = null;
 
 
@@ -273,7 +273,7 @@ public class ModifiedMSPDIWriter extends MSPDIWriter {
 		for (int s = 0; s < Settings.numBaselines(); s++) {
 			if (s == Snapshottable.CURRENT.intValue())
 				continue;
-			TaskSnapshot snapshot = (TaskSnapshot) projectlibre1Task.getSnapshot(new Integer(s));
+			TaskSnapshot snapshot = (TaskSnapshot) projectlibre1Task.getSnapshot(Integer.valueOf(s));
 			if (snapshot == null)
 				continue;
 			Project.Tasks.Task.Baseline baseline = m_factory.createProjectTasksTaskBaseline();

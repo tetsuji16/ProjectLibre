@@ -24,7 +24,7 @@
 
 package net.sf.mpxj.mpx;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.ListResourceBundle;
 
 import net.sf.mpxj.CurrencySymbolPosition;
@@ -90,7 +90,7 @@ public final class LocaleData_pt extends ListResourceBundle
          "e%"
       }
    };
-   private static final HashMap<String, Integer> TIME_UNITS_MAP_DATA = new HashMap<String, Integer>();
+   private static final Hashtable<String, Integer> TIME_UNITS_MAP_DATA = new Hashtable<String, Integer>();
 
    static
    {

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.calendar;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 /**
@@ -66,8 +66,8 @@ public class DefaultWorkCalendar implements WorkCalendar{
 	protected WorkCalendar base;
 	protected CalendarId id;
 	protected String name;
-	protected List<WorkCalendarException> exceptions=new ArrayList<WorkCalendarException>();
-	protected List<WorkWeek> weeks=new ArrayList<WorkWeek>();
+	protected List<WorkCalendarException> exceptions=new Vector<WorkCalendarException>();
+	protected List<WorkWeek> weeks=new Vector<WorkWeek>();
 	
 	public DefaultWorkCalendar(){
 		

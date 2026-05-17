@@ -25,7 +25,7 @@ package net.sf.mpxj.mpx;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -278,7 +278,7 @@ public final class MPXJFormats
     */
    private String[] getDateTimePatterns(ProjectProperties properties, String[] timePatterns)
    {
-      List<String> patterns = new ArrayList<String>();
+      List<String> patterns = new Vector<String>();
       char datesep = properties.getDateSeparator();
       DateOrder dateOrder = properties.getDateOrder();
 
@@ -679,7 +679,7 @@ public final class MPXJFormats
     */
    private List<String> generateDateTimePatterns(String datePattern, String[] timePatterns)
    {
-      List<String> patterns = new ArrayList<String>();
+      List<String> patterns = new Vector<String>();
       for (String timePattern : timePatterns)
       {
          patterns.add(datePattern + " " + timePattern);

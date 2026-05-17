@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.network.rendering;
 
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +72,7 @@ import com.projectlibre1.grouping.core.Node;
 public class FormatSelector {
 	protected List selectedFormats;
 	protected GraphParams params;
-	protected Map formMap=new HashMap();
+	protected Map formMap=new Hashtable();
 
 	public FormatSelector(GraphParams params){
 		this.params=params;

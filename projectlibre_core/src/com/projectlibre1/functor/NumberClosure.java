@@ -73,10 +73,10 @@ public abstract class NumberClosure extends Number implements Closure {
 		return value.longValue();
 	}
 	public void setLongValue(long l) {
-		value = new Long(l);
+		value = Long.valueOf(l);
 	}
 	public void setDoubleValue(double d) {
-		value = new Double(d);
+		value = Double.valueOf(d);
 	}
 	public double doubleValue() {
 		return value.doubleValue();

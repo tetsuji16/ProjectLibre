@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.model.cache;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -202,7 +202,7 @@ public class ViewNodeModelCache implements NodeModelCache, ViewTransformerListen
 	}
 
 	public List getElementsAt(int[] i) {
-	    ArrayList list=new ArrayList(i.length);
+	    Vector list=new Vector(i.length);
 	    for (int j=0;j<i.length;j++){
 	        Object element=getElementAt(i[j]);
 	        if (element!=null) list.add(element);
@@ -210,7 +210,7 @@ public class ViewNodeModelCache implements NodeModelCache, ViewTransformerListen
 	    return list;
 	}
 	public List getNodesAt(int[] i) {
-	    ArrayList list=new ArrayList(i.length);
+	    Vector list=new Vector(i.length);
 	    for (int j=0;j<i.length;j++){
 	        Object base=((GraphicNode)getElementAt(i[j])).getNode();
 	        if (base!=null) list.add(base);

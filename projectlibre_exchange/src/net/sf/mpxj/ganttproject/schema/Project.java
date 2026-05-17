@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.ganttproject.schema;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -140,7 +140,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (view == null)
       {
-         view = new ArrayList<View>();
+         view = new Vector<View>();
       }
       return this.view;
    }
@@ -327,7 +327,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (roles == null)
       {
-         roles = new ArrayList<Roles>();
+         roles = new Vector<Roles>();
       }
       return this.roles;
    }

@@ -50,7 +50,7 @@
 
 package org.apache.batik.util.gui.resource;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -147,7 +147,7 @@ public class ResourceManager {
      */
     public List getStringList(String key, String delim, boolean returnDelims) 
 	throws MissingResourceException {
-        List            result = new ArrayList();
+        List            result = new Vector();
         StringTokenizer st     = new StringTokenizer(getString(key),
                                                      delim,
                                                      returnDelims);

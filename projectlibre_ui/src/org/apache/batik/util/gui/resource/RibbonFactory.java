@@ -51,7 +51,7 @@
 package org.apache.batik.util.gui.resource;
 
 import java.awt.Color;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -132,7 +132,7 @@ public class RibbonFactory extends ResourceManager {
 	 * Creates ribbon tasks
 	 */
 	public Collection<RibbonTask> createRibbon(String name, CustomRibbonBandGenerator customBandsGenerator) throws MissingResourceException, ResourceFormatException, MissingListenerException {
-		List<RibbonTask> ribbonTasks=new ArrayList<RibbonTask>();
+		List<RibbonTask> ribbonTasks=new Vector<RibbonTask>();
 		@SuppressWarnings("unchecked")
 		List<String> taskNames = (List<String>)getStringList(name);
 		for (String taskName : taskNames){
@@ -148,7 +148,7 @@ public class RibbonFactory extends ResourceManager {
 	public RibbonTask createRibbonTask(String name, CustomRibbonBandGenerator customBandsGenerator) throws MissingResourceException, ResourceFormatException, MissingListenerException {
 		String title=getString(name+".title");
 
-		List<AbstractRibbonBand<?>> ribbonBands=new ArrayList<AbstractRibbonBand<?>>();
+		List<AbstractRibbonBand<?>> ribbonBands=new Vector<AbstractRibbonBand<?>>();
 		@SuppressWarnings("unchecked")
 		List<String> bandNames = (List<String>)getStringList(name);
 		for (String bandName : bandNames){
@@ -205,7 +205,7 @@ public class RibbonFactory extends ResourceManager {
 			}
 		}
 		
-		List<RibbonBandResizePolicy> resizePolicies = new ArrayList<RibbonBandResizePolicy>();
+		List<RibbonBandResizePolicy> resizePolicies = new Vector<RibbonBandResizePolicy>();
 		resizePolicies.add(new CoreRibbonResizePolicies.Mirror(result.getControlPanel()));
 //		resizePolicies.add(new CoreRibbonResizePolicies.Mid2Low(result.getControlPanel()));
 		result.setResizePolicies(resizePolicies);	
@@ -256,7 +256,7 @@ public class RibbonFactory extends ResourceManager {
 			}
 		}
 		
-		List<RibbonBandResizePolicy> resizePolicies = new ArrayList<RibbonBandResizePolicy>();
+		List<RibbonBandResizePolicy> resizePolicies = new Vector<RibbonBandResizePolicy>();
 		resizePolicies.add(new CoreRibbonResizePolicies.FlowTwoRows(result.getControlPanel()));
 		result.setResizePolicies(resizePolicies);	
 						
@@ -272,7 +272,7 @@ public class RibbonFactory extends ResourceManager {
 	 * Creates ribbon band
 	 */
 	public Collection<AbstractCommandButton> createTaskBar(String name) throws MissingResourceException, ResourceFormatException, MissingListenerException {
-		Collection<AbstractCommandButton> result=new ArrayList<AbstractCommandButton>();
+		Collection<AbstractCommandButton> result=new Vector<AbstractCommandButton>();
 		@SuppressWarnings("unchecked")
 		List<String> buttons = (List<String>)getStringList(name+".TaskBar");
 		for (String s : buttons){

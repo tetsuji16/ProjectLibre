@@ -302,13 +302,13 @@ public class ProjectData extends DocumentData implements HasName,DelegatesFields
 	public ImageLink getScheduleStatusIndicator() {
 		Double spi = (Double)fieldValues.get("Field.spi");
 		if (spi == null)
-			spi = new Double(0.0D);
+			spi = Double.valueOf(0.0D);
 		return EarnedValueCalculator.getInstance().getScheduleStatusIndicator(spi.doubleValue());
 	}
 	public ImageLink getBudgetStatusIndicator() {
 		Double cpi = (Double)fieldValues.get("Field.cpi");
 		if (cpi == null)
-			cpi = new Double(0.0D);
+			cpi = Double.valueOf(0.0D);
 		return EarnedValueCalculator.getInstance().getScheduleStatusIndicator(cpi.doubleValue());
 	}
 	public ImageLink getStatusIndicator() {
@@ -319,9 +319,9 @@ public class ProjectData extends DocumentData implements HasName,DelegatesFields
 			Double spi = (Double)fieldValues.get("Field.spi");
 			Double cpi = (Double)fieldValues.get("Field.cpi");
 			if (spi == null || cpi == null)
-				csi = new Double(0.0D);
+				csi = Double.valueOf(0.0D);
 			else
-				csi = new Double(spi.doubleValue() * cpi.doubleValue());
+				csi = Double.valueOf(spi.doubleValue() * cpi.doubleValue());
 		}
 		return EarnedValueCalculator.getInstance().getStatusIndicator(csi.doubleValue());
 	}

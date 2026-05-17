@@ -28,9 +28,9 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,7 +70,7 @@ class FastTrackData
          is.close();
       }
 
-      List<Integer> blocks = new ArrayList<Integer>();
+      List<Integer> blocks = new Vector<Integer>();
       for (int index = 64; index < m_buffer.length - 11; index++)
       {
          if (matchPattern(PARENT_BLOCK_PATTERNS, index))
@@ -193,7 +193,7 @@ class FastTrackData
    private void readColumnBlock(int startIndex, int blockLength) throws Exception
    {
       int endIndex = startIndex + blockLength;
-      List<Integer> blocks = new ArrayList<Integer>();
+      List<Integer> blocks = new Vector<Integer>();
       for (int index = startIndex; index < endIndex - 11; index++)
       {
          if (matchPattern(CHILD_BLOCK_PATTERNS, index))
@@ -563,7 +563,7 @@ class FastTrackData
       COLUMN_MAP[0x69] = StringColumn.class;
    }
 
-   private static final Map<String, FastTrackTableType> REQUIRED_TABLES = new HashMap<String, FastTrackTableType>();
+   private static final Map<String, FastTrackTableType> REQUIRED_TABLES = new Hashtable<String, FastTrackTableType>();
    static
    {
       REQUIRED_TABLES.put("ACTBARS", FastTrackTableType.ACTBARS);

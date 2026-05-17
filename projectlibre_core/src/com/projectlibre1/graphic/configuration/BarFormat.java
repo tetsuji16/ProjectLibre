@@ -55,6 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.graphic.configuration;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.apache.commons.digester.Digester;
 
 import com.projectlibre1.configuration.Configuration;
@@ -64,10 +67,8 @@ import com.projectlibre1.field.Field;
 import com.projectlibre1.functor.ScheduleIntervalGenerator;
 import com.projectlibre1.strings.Messages;
 
-/**
- *
- */
 public class BarFormat implements NamedItem {
+	private static final Logger log = Logger.getLogger(BarFormat.class.getName());
 	public static final String category="BarFormatCategory";
 
 	public BarFormat() {}
@@ -199,11 +200,11 @@ public class BarFormat implements NamedItem {
 			try {
 				scheduleIntervalGenerator=(ScheduleIntervalGenerator)Class.forName(intervalGenerator).newInstance();
 			} catch (InstantiationException e) {
-				e.printStackTrace();
+				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
+		} catch (ClassNotFoundException e) {
+				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
 			}
 		}
 		return scheduleIntervalGenerator;

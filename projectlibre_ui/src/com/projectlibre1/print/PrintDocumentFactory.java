@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.print;
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 
 import javax.swing.table.TableColumn;
@@ -151,7 +151,7 @@ public class PrintDocumentFactory {
 	}
 
 //	private List<Integer> getColWidth(SpreadSheet sp,SpreadSheetFieldArray fieldArray){
-//		List<Integer> colWidth=new ArrayList<Integer>(fieldArray.size());
+//		List<Integer> colWidth=new Vector<Integer>(fieldArray.size());
 //			colWidth.add(sp.getRowHeader().getColumnModel().getColumn(0).getWidth());
 //			TableColumnModel columnModel=sp.getColumnModel();
 //			TableColumn tc;

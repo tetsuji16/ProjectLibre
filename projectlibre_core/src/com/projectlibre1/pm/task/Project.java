@@ -57,11 +57,11 @@ package com.projectlibre1.pm.task;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EventListener;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -442,7 +442,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		Node oldParentNode = getTaskModel().search(child.getWbsParentTask());
 		if (oldParentNode != null)
 			oldParentNode.getChildren().remove(childNode);
-		ArrayList temp = new ArrayList();
+		Vector temp = new Vector();
 		temp.add(childNode);
 		getTaskModel().move(parentNode, temp, -1,NodeModel.NORMAL);
 		setDefaultRelationship(parentNode,childNode);
@@ -526,6 +526,10 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 			return workCalendar.adjustInsideCalendar(DateTime.midnightTomorrow() -1,true);
 
 		return statusDate;
+	}
+
+	public boolean isStatusDateSet() {
+		return statusDate != 0;
 	}
 
 	/**
@@ -881,7 +885,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 			if (listeners[i] == ProjectListener.class) {
 				if (e == null) {
 					e = new ProjectEvent(source,
-							ProjectEvent.GROUP_DIRTY_CHANGED, this,new Boolean(oldName));
+							ProjectEvent.GROUP_DIRTY_CHANGED, this,Boolean.valueOf(oldName));
 				}
 				((ProjectListener) listeners[i + 1]).groupDirtyChanged(e);
 
@@ -1033,7 +1037,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		final Collection snapshotDetails;
 		final boolean[] foundSnapshot=new boolean[1]; //no undo edit of there is no snapshot
 		if (undo&& i!=null && i.hasNext()){
-			snapshotDetails=new ArrayList();
+			snapshotDetails=new Vector();
 			while (i.hasNext()){
 				NormalTask t=(NormalTask)i.next();
 				TaskBackup taskBackup=(TaskBackup)t.backupDetail(snapshotId);
@@ -2265,7 +2269,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 
 	public final Map getExtraFields() {
 		if (extraFields == null)
-			extraFields = new HashMap();
+			extraFields = new Hashtable();
 		return extraFields;
 	}
 
@@ -2573,7 +2577,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 	public class Workspace implements WorkspaceSetting {
 		private static final long serialVersionUID = 6909144693873463556L;
 		WorkspaceSetting spreadsheetWorkspace;
-		HashMap fieldAliasMap;
+		Hashtable fieldAliasMap;
 		PrintSettings printSettings;
 		CalendarOption calendarOption;
 
@@ -2795,8 +2799,8 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
             int current=Snapshottable.CURRENT.intValue();
             for (int s=0;s<Settings.numGanttBaselines();s++){
                 if (s==current) continue;
-                TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(new Integer(s));
-                if (snapshot!=null) baseLines.add(new Integer(s));
+                TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(Integer.valueOf(s));
+                if (snapshot!=null) baseLines.add(Integer.valueOf(s));
             }
         }
 		int num=(baseLines.size()==0)?0:(((Integer)baseLines.last()).intValue()+1);

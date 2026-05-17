@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -166,7 +166,7 @@ final class MPP9Reader implements MPPVariantReader
          // Passwords matched so let's allow the reading to continue.
       }
 
-      m_resourceMap = new HashMap<Integer, ProjectCalendar>();
+      m_resourceMap = new Hashtable<Integer, ProjectCalendar>();
       m_projectDir = (DirectoryEntry) root.getEntry("   19");
       m_viewDir = (DirectoryEntry) root.getEntry("   29");
       DirectoryEntry outlineCodeDir = (DirectoryEntry) m_projectDir.getEntry("TBkndOutlCode");
@@ -175,8 +175,8 @@ final class MPP9Reader implements MPPVariantReader
       m_projectProps = new Props9(m_inputStreamFactory.getInstance(m_projectDir, "Props"));
       //MPPUtility.fileDump("c:\\temp\\props.txt", m_projectProps.toString().getBytes());
 
-      m_fontBases = new HashMap<Integer, FontBase>();
-      m_taskSubProjects = new HashMap<Integer, SubProject>();
+      m_fontBases = new Hashtable<Integer, FontBase>();
+      m_taskSubProjects = new Hashtable<Integer, SubProject>();
 
       m_file.getProjectProperties().setMppFileType(Integer.valueOf(9));
       m_file.getProjectProperties().setAutoFilter(props9.getBoolean(Props.AUTO_FILTER));
@@ -2081,7 +2081,7 @@ final class MPP9Reader implements MPPVariantReader
    private ProjectFile m_file;
    private EventManager m_eventManager;
    private DirectoryEntry m_root;
-   private HashMap<Integer, ProjectCalendar> m_resourceMap;
+   private Hashtable<Integer, ProjectCalendar> m_resourceMap;
    private Var2Data m_outlineCodeVarData;
    private Props9 m_projectProps;
    private Map<Integer, FontBase> m_fontBases;
@@ -2118,7 +2118,7 @@ final class MPP9Reader implements MPPVariantReader
    private static final int TASK_ID_FIXED_OFFSET = 4;
    private static final int NULL_TASK_BLOCK_SIZE = 8;
 
-   private static final Map<Integer, FieldType> RESOURCE_FIELD_ALIASES = new HashMap<Integer, FieldType>();
+   private static final Map<Integer, FieldType> RESOURCE_FIELD_ALIASES = new Hashtable<Integer, FieldType>();
    static
    {
       RESOURCE_FIELD_ALIASES.put(Integer.valueOf(52), ResourceField.TEXT1);
@@ -2253,7 +2253,7 @@ final class MPP9Reader implements MPPVariantReader
       RESOURCE_FIELD_ALIASES.put(Integer.valueOf(216), ResourceField.COST10);
    }
 
-   private static final Map<Integer, FieldType> TASK_FIELD_ALIASES = new HashMap<Integer, FieldType>();
+   private static final Map<Integer, FieldType> TASK_FIELD_ALIASES = new Hashtable<Integer, FieldType>();
    static
    {
       TASK_FIELD_ALIASES.put(Integer.valueOf(118), TaskField.TEXT1);

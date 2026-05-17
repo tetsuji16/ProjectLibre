@@ -58,7 +58,7 @@ package com.projectlibre1.pm.graphic.model.cache;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.List;
 
@@ -293,7 +293,7 @@ public class GraphicNode implements HierarchicObject{
 
 
 	protected boolean scheduleCaching;
-	protected ArrayList intervals=null;
+	protected Vector intervals=null;
 	protected long start=-1;
 	protected long end=-1;
 	protected int intervalCount=1;
@@ -315,7 +315,7 @@ public class GraphicNode implements HierarchicObject{
 	}
 	public void setScheduleCaching(boolean scheduleCaching) {
 		this.scheduleCaching = scheduleCaching;
-		intervals=(scheduleCaching)?new ArrayList():null;
+		intervals=(scheduleCaching)?new Vector():null;
 		ContainsIntervalConsumer containsConsumer=null;//clean if it wasn't scheduleCaching before
 	}
 
@@ -508,7 +508,7 @@ public class GraphicNode implements HierarchicObject{
 //	}
 
 
-	protected List tmpChildren=new ArrayList();
+	protected List tmpChildren=new Vector();
 	public List getChildren() {
 		return tmpChildren;
 	}

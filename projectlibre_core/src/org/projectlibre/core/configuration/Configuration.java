@@ -57,7 +57,7 @@ package org.projectlibre.core.configuration;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +80,7 @@ import com.projectlibre.core.fields.FieldManager;
  */
 public class Configuration {
 	protected static Configuration instance;
-	protected List<ConfigurationFile> configurations=new ArrayList<ConfigurationFile>();
+	protected List<ConfigurationFile> configurations=new Vector<ConfigurationFile>();
 	protected Dictionary dictionary=new Dictionary();
 	
 	public static synchronized Configuration getInstance(){

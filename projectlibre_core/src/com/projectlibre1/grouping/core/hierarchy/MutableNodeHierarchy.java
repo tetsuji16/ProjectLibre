@@ -56,16 +56,17 @@
 package com.projectlibre1.grouping.core.hierarchy;
 
 
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.event.EventListenerList;
@@ -148,7 +149,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
 
     public void add(Node parent,List children,int position,int actionType){
     	Node p=(parent==null)?root:parent;
-//    	ArrayList trees=new ArrayList();
+//    	Vector trees=new Vector();
 //    	extractParents(children,trees);
     	if (/*trees*/children.size()==0) return;
 
@@ -192,7 +193,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     	int subprojectLevel=getChildrenSubprojectLevel(parent);
 
 
-//    	ArrayList trees=new ArrayList();
+//    	Vector trees=new Vector();
 //    	HierarchyUtils.extractParents(children,trees);
 
     	int childCount=p.getChildCount();
@@ -223,7 +224,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
        	Node[] descendants=addDescendants(/*trees*/children);
 
 
-       	ArrayList<Dependency> dependencies=new ArrayList<Dependency>();
+       	Vector<Dependency> dependencies=new Vector<Dependency>();
 
     	boolean doTransaction = model.getDocument() != null && descendants.length > 0;
     	int transactionId = 0;
@@ -231,16 +232,16 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     		transactionId = model.getDocument().fireMultipleTransaction(0,true);
 
 
-    	ArrayList<Node> insertedNodes=new ArrayList<Node>(descendants.length);
+    	Vector<Node> insertedNodes=new Vector<Node>(descendants.length);
 
     	if (project!=null){
-    		HashMap<Long,Resource> resourceMap=new HashMap<Long,Resource>();
+    		Hashtable<Long,Resource> resourceMap=new Hashtable<Long,Resource>();
     		for (Resource r: (Collection<Resource>)project.getResourcePool().getResourceList())
     			resourceMap.put(r.getUniqueId(),r);
 
-    		HashMap<Long,Task> taskMap=null;
+    		Hashtable<Long,Task> taskMap=null;
     		if (Environment.isKeepExternalLinks()){
-    			taskMap=new HashMap<Long,Task>();
+    			taskMap=new Hashtable<Long,Task>();
     			for (Task t: (Collection<Task>)project.getTasks()) //use model instead?
     				taskMap.put(t.getUniqueId(),t);
     		}
@@ -312,11 +313,11 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
         			//check assignments, if resource not present change it to unassigned
 
         			for (int s=0;s<Settings.numBaselines();s++){
-        				TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(new Integer(s));
+        				TaskSnapshot snapshot=(TaskSnapshot)task.getSnapshot(Integer.valueOf(s));
         		        if (snapshot==null) continue;
     			        AssociationList snapshotAssignments=snapshot.getHasAssignments().getAssignments();
     			        if (snapshotAssignments.size()>0){
-//    			        	ArrayList<Assignment> assignmentsToLink=new ArrayList<Assignment>();
+//    			        	Vector<Assignment> assignmentsToLink=new Vector<Assignment>();
     			            for (Iterator a=snapshotAssignments.listIterator();a.hasNext();){
     			                Assignment assignment=(Assignment)a.next();
     			                Resource resource=assignment.getResource();
@@ -427,7 +428,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
 
     //warning: modify nodes list
     private static Node[] addDescendants(List nodes){
-    	ArrayList descendants=new ArrayList();
+    	Vector descendants=new Vector();
        	for (ListIterator i=nodes.listIterator();i.hasNext();){
        		Node node=(Node)i.next();
        		extractSameProjectBranch(node,descendants);
@@ -441,7 +442,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     	return descendantsArray;
     }
 
-    private static void extractSameProjectBranch(Node parent,ArrayList descendants){
+    private static void extractSameProjectBranch(Node parent,Vector descendants){
 //    	if (parent.getImpl() instanceof Subproject){
 //    		((NodeBridge)parent).removeAllChildren();
 //    		Subproject subproject=(Subproject)parent.getImpl();
@@ -470,7 +471,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
         	int transactionId = 0;
         	if (doTransaction)
         		transactionId = model.getDocument().fireMultipleTransaction(0,true);
- 	        ArrayList removed=new ArrayList();
+ 	        Vector removed=new Vector();
  		    for (Iterator i=nodes.iterator();i.hasNext();){
  		        	LinkedList toRemove=new LinkedList();
  		            removeSubTree((Node)i.next(),model,toRemove,actionType, removeDependencies);
@@ -573,7 +574,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     public void move(Node node,Node newParent,int actionType){
 		setSubprojectLevel(node,getChildrenSubprojectLevel(newParent));
     	newParent.add(node);
-    	ArrayList change=new ArrayList();
+    	Vector change=new Vector();
     	for (Enumeration e=((NodeBridge)node).preorderEnumeration();e.hasMoreElements();)
     		change.add(e.nextElement());
 
@@ -589,14 +590,45 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     public void indent(List nodes,int deltaLevel, NodeModel model,int actionType){
     	boolean doTransaction = model.getDocument() != null;
     	int transactionId = 0;
+    	Map beforePositions = null;
+    	if (model.getUndoableEditSupport()!=null&&isUndo(actionType))
+    		beforePositions = createPositionMap();
     	if (doTransaction)
     		transactionId = model.getDocument().fireMultipleTransaction(0,true);
         List changedParents=internalIndent(nodes,deltaLevel,actionType);
        	if (doTransaction)
     		model.getDocument().fireMultipleTransaction(transactionId,false);
 		if (model.getUndoableEditSupport()!=null&isUndo(actionType)&&changedParents!=null&&changedParents.size()>0){
-			model.getUndoableEditSupport().postEdit(new NodeIndentEdit(model,changedParents,deltaLevel));
+			model.getUndoableEditSupport().postEdit(new NodeIndentEdit(model,changedParents,deltaLevel,
+					createPositions(changedParents, beforePositions), createPositions(changedParents, createPositionMap())));
 		}
+    }
+
+    private Map createPositionMap() {
+    	Map positions = new Hashtable();
+    	for (Iterator i = iterator(); i.hasNext();) {
+    		Object current = i.next();
+    		if (!(current instanceof Node))
+    			continue;
+    		Node node = (Node)current;
+    		Node parent = (Node)node.getParent();
+    		if (parent != null)
+    			positions.put(node, new NodeIndentEdit.Position(parent, node, parent.getIndex(node)));
+    	}
+    	return positions;
+    }
+
+    private List createPositions(List nodes, Map positionsByNode) {
+    	List positions = new Vector();
+    	if (nodes == null || positionsByNode == null)
+    		return positions;
+    	for (Iterator i = nodes.iterator(); i.hasNext();) {
+    		Object node = i.next();
+    		Object position = positionsByNode.get(node);
+    		if (position != null)
+    			positions.add(position);
+    	}
+    	return positions;
     }
 
 
@@ -608,7 +640,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
         LinkedList nodesToChange=new LinkedList();
         HierarchyUtils.extractParents(nodes,nodesToChange);
 
-        List modifiedVoids=new ArrayList();
+        List modifiedVoids=new Vector();
 
         //exclude Assignments and VoidNodes
         if (deltaLevel>0){
@@ -739,7 +771,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
          return buildList(null);
    }
     private List buildList(Node parent) {
-        List list=new ArrayList();
+        List list=new Vector();
         buildList(parent,list);
         return list;
    }
@@ -799,7 +831,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     public Object clone(){
     		Alert.error("clone not implemented");
     		return null;
-            //return new MutableNodeHierarchy((HashMap)parents.clone(),(MultiHashMap)children.clone(),(HashMap)voidNodes.clone());
+            //return new MutableNodeHierarchy((Hashtable)parents.clone(),(MultiHashMap)children.clone(),(Hashtable)voidNodes.clone());
     }
 
 
@@ -937,7 +969,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
 	 * @param event
 	 */
 	public void checkEndVoidNodes(boolean subproject,int actionType){
-		ArrayList inserted=new ArrayList();
+		Vector inserted=new Vector();
 
 		if (!subproject) checkSubprojectEndVoidNodes(root,inserted);
 		int nbEndVoids=subproject?nbMultiprojectEndVoidNodes:nbEndVoidNodes;

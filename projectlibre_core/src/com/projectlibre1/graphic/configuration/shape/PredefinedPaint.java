@@ -60,7 +60,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.TexturePaint;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
+import java.util.Hashtable;
 
 /**
  *
@@ -148,11 +148,11 @@ public class PredefinedPaint extends TexturePaint {
 	  {"DOT_LINE2",DOT_LINE2},
 	  {"DOT_LINE",DOT_LINE}
 	};
-	private static HashMap shapePaintMap = null;
+	private static Hashtable shapePaintMap = null;
 	
-	public static HashMap getShapePaints() {
+	public static Hashtable getShapePaints() {
 		if (shapePaintMap == null) {
-			shapePaintMap = new HashMap();
+			shapePaintMap = new Hashtable();
 			for (int i = 0; i < data.length; i++) {
 				Object row[] = data[i];
 				shapePaintMap.put(row[0], row[1]);

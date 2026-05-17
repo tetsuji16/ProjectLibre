@@ -86,14 +86,14 @@ public class JBandControlPanel extends AbstractBandControlPanel implements
 
 		public ControlPanelGroup(String groupTitle) {
 			this.groupTitle = groupTitle;
-			this.ribbonButtons = new HashMap<RibbonElementPriority, java.util.List<AbstractCommandButton>>();
-			this.ribbonButtonsPriorities = new HashMap<AbstractCommandButton, RibbonElementPriority>();
-			this.ribbonGalleries = new HashMap<RibbonElementPriority, java.util.List<JRibbonGallery>>();
-			this.ribbonGalleriesPriorities = new HashMap<JRibbonGallery, RibbonElementPriority>();
+			this.ribbonButtons = new Hashtable<RibbonElementPriority, java.util.List<AbstractCommandButton>>();
+			this.ribbonButtonsPriorities = new Hashtable<AbstractCommandButton, RibbonElementPriority>();
+			this.ribbonGalleries = new Hashtable<RibbonElementPriority, java.util.List<JRibbonGallery>>();
+			this.ribbonGalleriesPriorities = new Hashtable<JRibbonGallery, RibbonElementPriority>();
 			this.hasGalleries = false;
 			this.galleryCount = 0;
-			this.coreComps = new ArrayList<JRibbonComponent>();
-			this.coreCompRowSpans = new HashMap<JRibbonComponent, Integer>();
+			this.coreComps = new Vector<JRibbonComponent>();
+			this.coreCompRowSpans = new Hashtable<JRibbonComponent, Integer>();
 		}
 
 		public String getGroupTitle() {
@@ -201,7 +201,7 @@ public class JBandControlPanel extends AbstractBandControlPanel implements
 
 			if (!this.ribbonButtons.containsKey(newPriority)) {
 				this.ribbonButtons.put(newPriority,
-						new ArrayList<AbstractCommandButton>());
+						new Vector<AbstractCommandButton>());
 			}
 			this.ribbonButtons.get(newPriority).add(ribbonButton);
 		}
@@ -226,7 +226,7 @@ public class JBandControlPanel extends AbstractBandControlPanel implements
 
 			if (!this.ribbonGalleries.containsKey(newPriority)) {
 				this.ribbonGalleries.put(newPriority,
-						new ArrayList<JRibbonGallery>());
+						new Vector<JRibbonGallery>());
 			}
 			this.ribbonGalleries.get(newPriority).add(ribbonGallery);
 		}
@@ -340,7 +340,7 @@ public class JBandControlPanel extends AbstractBandControlPanel implements
 		super();
 
 		this.controlPanelGroups = new LinkedList<ControlPanelGroup>();
-		this.galleryNameMap = new HashMap<String, JRibbonGallery>();
+		this.galleryNameMap = new Hashtable<String, JRibbonGallery>();
 	}
 
 	/**

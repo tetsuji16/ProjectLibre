@@ -109,8 +109,8 @@ public class ScheduleService {
 			return;
 		Field completedField=getCompletedField();
 		Object oldValue=completedField.getValue(schedule);
-		if (oldValue==null) oldValue=new Long(schedule.getActualStart());
-		Object value=new Long(completed);
+		if (oldValue==null) oldValue=Long.valueOf(schedule.getActualStart());
+		Object value=Long.valueOf(completed);
 		completedField.setValue(schedule,eventSource,value);
 		if (undoableEditSupport!=null&&!(eventSource instanceof UndoableEdit)){
 			undoableEditSupport.postEdit(new FieldEdit(completedField,schedule,value,oldValue,eventSource,null));

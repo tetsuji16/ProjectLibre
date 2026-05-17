@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.calendar;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -107,7 +107,7 @@ public class WorkingHours implements Cloneable, Serializable {
 		long end;
 		WorkRange thisRange;
 		WorkRange otherRange;
-		ArrayList list = new ArrayList();
+		Vector list = new Vector();
 		for(;;) {
 			// check boundary conditions.  if one of the working hours is exhausted, then no more intersection
 			if (thisIndex == workRange.length)

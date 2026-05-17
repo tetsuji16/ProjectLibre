@@ -25,7 +25,7 @@
 package net.sf.mpxj.mpx;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 
@@ -298,5 +298,5 @@ final class TaskModel
    /**
     * Map used to store task field numbers.
     */
-   private HashMap<String, Integer> m_taskNumbers = new HashMap<String, Integer>();
+   private Hashtable<String, Integer> m_taskNumbers = new Hashtable<String, Integer>();
 }
