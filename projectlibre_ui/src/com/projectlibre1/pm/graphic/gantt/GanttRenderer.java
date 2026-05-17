@@ -119,8 +119,11 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	 *
 	 */
 	private static final long serialVersionUID = -7437190083991277084L;
-	private static final Stroke PROGRESS_LINE_STROKE = new BasicStroke(2.0f);
-	private static final Color PROGRESS_LINE_COLOR = new Color(0xFF0000);
+	private static final Stroke PROGRESS_LINE_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	private static final Stroke PROGRESS_LINE_HALO_STROKE = new BasicStroke(4.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+	private static final Color PROGRESS_LINE_COLOR = new Color(0xCC0000);
+	private static final Color PROGRESS_LINE_HALO_COLOR = Color.WHITE;
+	private static final int PROGRESS_LINE_POINT_SIZE = 6;
 	protected NodeRenderer nodeRenderer = new NodeRenderer();
 	protected LinkRenderer linkRenderer = new LinkRenderer();
 	protected HorizontalLineRenderer horizontalLineRenderer = new HorizontalLineRenderer();
@@ -553,13 +556,39 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 		Color oldColor = g2.getColor();
 		Stroke oldStroke = g2.getStroke();
-		g2.setColor(PROGRESS_LINE_COLOR);
-		g2.setStroke(PROGRESS_LINE_STROKE);
-		g2.draw(path);
+		paintProgressLinePath(g2, path, PROGRESS_LINE_HALO_COLOR, PROGRESS_LINE_HALO_STROKE);
+		paintProgressLinePath(g2, path, PROGRESS_LINE_COLOR, PROGRESS_LINE_STROKE);
+		paintProgressLinePoints(g2);
 		if (oldColor != null)
 			g2.setColor(oldColor);
 		if (oldStroke != null)
 			g2.setStroke(oldStroke);
+	}
+
+	private void paintProgressLinePath(Graphics2D g2, GeneralPath path, Color color, Stroke stroke) {
+		g2.setColor(color);
+		g2.setStroke(stroke);
+		g2.draw(path);
+	}
+
+	private void paintProgressLinePoints(Graphics2D g2) {
+		CoordinatesConverter coord=((GanttParams)graphInfo).getCoord();
+		if (coord == null)
+			return;
+		int size = PROGRESS_LINE_POINT_SIZE;
+		int half = size / 2;
+		for (Iterator i=nodeList.iterator(); i.hasNext();) {
+			GraphicNode node = (GraphicNode)i.next();
+			if (!shouldIncludeInProgressLine(node))
+				continue;
+			Task task = (Task)node.getNode().getImpl();
+			int x = (int)Math.round(getProgressLineX(coord, task));
+			int y = (int)Math.round(getProgressLineY(node));
+			g2.setColor(PROGRESS_LINE_HALO_COLOR);
+			g2.fillOval(x - half - 1, y - half - 1, size + 2, size + 2);
+			g2.setColor(PROGRESS_LINE_COLOR);
+			g2.fillOval(x - half, y - half, size, size);
+		}
 	}
 
 	private GeneralPath createProgressLinePath() {
@@ -568,20 +597,24 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			return null;
 
 		GeneralPath path = null;
+		double statusX = Double.NaN;
 		for (Iterator i=nodeList.iterator(); i.hasNext();) {
 			GraphicNode node = (GraphicNode)i.next();
 			if (!shouldIncludeInProgressLine(node))
 				continue;
 
 			Task task = (Task)node.getNode().getImpl();
-			double x = getProgressLineX(coord, task);
+			if (Double.isNaN(statusX))
+				statusX = getStatusLineX(coord, task);
+			double progressX = getProgressLineX(coord, task);
 			double y = getProgressLineY(node);
 			if (path == null) {
 				path = new GeneralPath();
-				path.moveTo((float)x, (float)y);
+				path.moveTo((float)statusX, (float)y);
 			} else {
-				path.lineTo((float)x, (float)y);
+				path.lineTo((float)statusX, (float)y);
 			}
+			path.lineTo((float)progressX, (float)y);
 		}
 		return path;
 	}
@@ -609,14 +642,22 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		long start = task.getStart();
 		long end = task.getEnd();
 		double progress = clampProgress(task.getPercentComplete());
-		Project project = task.getProject();
-		long statusDate = project == null ? System.currentTimeMillis() : project.getStatusDate();
+		long statusDate = getStatusDate(task);
 		long progressDate = start + Math.round((end - start) * progress);
 		// Zero-progress tasks should anchor to the status date so the progress line
 		// stays aligned instead of jumping back to the task start.
 		if (progress == 0.0d)
 			progressDate = statusDate;
 		return coord.toX(progressDate);
+	}
+
+	private double getStatusLineX(CoordinatesConverter coord, Task task) {
+		return coord.toX(getStatusDate(task));
+	}
+
+	private long getStatusDate(Task task) {
+		Project project = task.getProject();
+		return project == null ? System.currentTimeMillis() : project.getStatusDate();
 	}
 
 	private double getProgressLineY(GraphicNode node) {

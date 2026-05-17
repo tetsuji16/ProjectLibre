@@ -1,6 +1,10 @@
 package test.com.projectlibre1.exchange;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 import junit.framework.TestCase;
 import net.sf.mpxj.ProjectFile;
@@ -48,5 +52,42 @@ public class XlsxSupportTest extends TestCase {
 		});
 
 		assertNotNull(imported);
+	}
+
+	public void testMspImporterTreatsXmlContentWithXlsxExtensionAsXml() throws Exception {
+		File tempFile = File.createTempFile("projectlibre-xlsx-xml-fallback", ".xlsx");
+		tempFile.deleteOnExit();
+
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+			+ "<Project xmlns=\"http://schemas.microsoft.com/project\">"
+			+ "<Name>Fallback</Name>"
+			+ "<Tasks>"
+			+ "<Task><UID>0</UID><ID>0</ID><Name>Project Summary</Name><Summary>1</Summary></Task>"
+			+ "<Task><UID>1</UID><ID>1</ID><Name>XML Task</Name></Task>"
+			+ "</Tasks>"
+			+ "</Project>";
+		FileOutputStream out = new FileOutputStream(tempFile);
+		try {
+			out.write(xml.getBytes(StandardCharsets.UTF_8));
+		} finally {
+			out.close();
+		}
+
+		MspImporter importer = new MspImporter();
+		Method prepare = MspImporter.class.getDeclaredMethod("prepareProjectStream", InputStream.class);
+		prepare.setAccessible(true);
+		Method normalize = MspImporter.class.getDeclaredMethod("normalizeExtension", String.class, InputStream.class);
+		normalize.setAccessible(true);
+
+		InputStream in = null;
+		try {
+			in = (InputStream) prepare.invoke(importer, new java.io.FileInputStream(tempFile));
+			String normalized = (String) normalize.invoke(importer, "xlsx", in);
+			assertEquals("xml", normalized);
+		} finally {
+			if (in != null) {
+				in.close();
+			}
+		}
 	}
 }

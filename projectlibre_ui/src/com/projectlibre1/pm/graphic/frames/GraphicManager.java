@@ -136,6 +136,7 @@ import com.projectlibre1.configuration.FieldDictionary;
 import com.projectlibre1.configuration.Settings;
 import com.projectlibre1.collaboration.CollaborationMetadataStore;
 import com.projectlibre1.collaboration.CollaborationSession;
+import com.projectlibre1.collaboration.ProjectMergeService;
 import com.projectlibre1.contrib.ClassLoaderUtils;
 import com.projectlibre1.dialog.AboutDialog;
 import com.projectlibre1.dialog.AbstractDialog;
@@ -585,6 +586,11 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		if (session == null) {
 			return;
 		}
+		session.setExternalReloadHandler(new CollaborationSession.ExternalProjectReloadHandler() {
+			public void reload(Project changedProject) {
+				refreshProjectFromExternalFile(changedProject);
+			}
+		});
 		project.setCollaborationSession(session);
 		project.setCollaborationWorkspace(session.loadWorkspace());
 		session.start();
@@ -608,6 +614,37 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 			WorkspaceSetting workspace = frame.createWorkspace(SavableToWorkspace.VIEW);
 			project.setCollaborationWorkspace(workspace);
 			session.saveWorkspace(workspace);
+		}
+	}
+
+	private void refreshProjectFromExternalFile(Project project) {
+		if (project == null || project.getFileName() == null) {
+			return;
+		}
+		CollaborationSession session = project.getCollaborationSession();
+		if (!isActiveProject(project)) {
+			return;
+		}
+		String fileName = project.getFileName();
+		ProjectMergeService.ApplyResult result = new ProjectMergeService().applyExternalTaskUpdates(project, fileName,
+			session == null ? null : session.getLocalLocks());
+		if (session != null) {
+			session.afterExternalProjectRefresh();
+		}
+		if (result.hasChanges()) {
+			repaintProject(project);
+		}
+	}
+
+	private boolean isActiveProject(Project project) {
+		DocumentFrame current = getCurrentFrame();
+		return current != null && project.equals(current.getProject());
+	}
+
+	private void repaintProject(Project project) {
+		DocumentFrame frame = getFrameForProject(project);
+		if (frame != null) {
+			frame.repaint();
 		}
 	}
 
