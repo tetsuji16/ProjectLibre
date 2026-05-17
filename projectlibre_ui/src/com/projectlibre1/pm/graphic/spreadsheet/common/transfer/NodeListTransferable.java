@@ -67,6 +67,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -90,6 +92,7 @@ import com.projectlibre1.pm.task.Task;
  *
  */
 public class NodeListTransferable implements Transferable {
+    private static final Logger logger = Logger.getLogger(NodeListTransferable.class.getName());
     private static final int NODE_LIST = 0;
     private static final int STRING = 1;
     private static final int PLAIN_TEXT = 2;
@@ -287,7 +290,9 @@ public class NodeListTransferable implements Transferable {
 			else if (st.hasMoreTokens()) st.nextToken();
 			try{
 				model.setValueAt(valueS,row0,++col);
-			}catch(Exception e){}
+			}catch(Exception e){
+				logger.log(Level.FINE, "Failed to set cell value at row {0}, col {1}", new Object[]{row0, col});
+			}
 		}
 		fieldContext.setRound(round);
 	}

@@ -65,6 +65,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JFrame;
 
@@ -73,6 +75,7 @@ import com.projectlibre1.util.Environment;
 import com.projectlibre1.util.FontUtil;
 
 public class ApplicationStartupFactory extends StartupFactory {
+	private static final Logger logger = Logger.getLogger(ApplicationStartupFactory.class.getName());
 
 	public ApplicationStartupFactory(String args[]){
 		this(ApplicationStartupFactory.extractOpts(args));
@@ -80,7 +83,9 @@ public class ApplicationStartupFactory extends StartupFactory {
 	public ApplicationStartupFactory(Hashtable opts) {
 		try{
 			Class.forName("java.net.CookieHandler").getMethod("setDefault",new Class[]{CookieHandler.class}).invoke(null,new Object[]{null});
-		}catch(Exception e){}
+		}catch(Exception e){
+			logger.log(Level.FINE, "Failed to reset CookieHandler", e);
+		}
 
 		this.opts=opts;
 		dumpOpts();

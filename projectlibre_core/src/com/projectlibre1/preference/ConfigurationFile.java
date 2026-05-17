@@ -67,11 +67,14 @@ import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
 import com.projectlibre1.session.FileHelper;
 
 public class ConfigurationFile {
+	private static final Logger logger = Logger.getLogger(ConfigurationFile.class.getName());
 	   
 	private static final String[] OPENPROJ_CONF_DIRS={".projectlibre","ProjectLibre"};
 	private static File confFile;
@@ -108,11 +111,11 @@ public class ConfigurationFile {
 			File f=new File(confDir,OPENPROJ_CONF_FILE);
 			if (!f.exists()) return null;
 			confProps=new Properties();
-			try {
-				FileInputStream in=new FileInputStream(f);
+			try (FileInputStream in = new FileInputStream(f)) {
 				confProps.load(in);
-				in.close();
-			} catch (Exception e) {}
+			} catch (IOException e) {
+				logger.log(Level.WARNING, "Failed to load configuration from {0}", f);
+			}
 		}
 		return confProps.getProperty(key);
 	}

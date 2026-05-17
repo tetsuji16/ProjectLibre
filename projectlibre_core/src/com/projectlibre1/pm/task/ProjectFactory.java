@@ -65,6 +65,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -97,6 +99,7 @@ import com.projectlibre1.util.Environment;
  *
  */
 public class ProjectFactory {
+	private static final Logger logger = Logger.getLogger(ProjectFactory.class.getName());
 	private static int untitledCount = 0;
 	private String server = null;
 	Portfolio portfolio; // for now just one portfolio.  Perhaps portfolio should reference project factory and not like this
@@ -385,7 +388,12 @@ public class ProjectFactory {
 			session.schedule(job);
 			try {
 				if (opt.isSync()) job.waitResult();
-			} catch (Exception e) {}
+			} catch (Exception e) {
+				if (e instanceof InterruptedException) {
+					Thread.currentThread().interrupt();
+				}
+				logger.log(Level.WARNING, "Error while waiting for job result", e);
+			}
 		}
 	}
 
