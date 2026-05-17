@@ -1,0 +1,37 @@
+# Build output
+**/bin/
+**/build/
+**/dist/
+**/packages/
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# Ant
+*.bak
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Sisyphus session files
+.sisyphus/
