@@ -30,7 +30,7 @@
 package org.pushingpixels.flamingo.api.common.icon;
 
 import java.awt.*;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.pushingpixels.flamingo.api.common.AsynchronousLoadListener;
 import org.pushingpixels.flamingo.api.common.AsynchronousLoading;
@@ -89,7 +89,7 @@ public class DecoratedResizableIcon implements ResizableIcon,
 	public DecoratedResizableIcon(ResizableIcon delegate,
 			IconDecorator... decorators) {
 		this.delegate = delegate;
-		this.decorators = new Vector<IconDecorator>();
+		this.decorators = new ArrayList<IconDecorator>();
 		if (decorators != null) {
 			for (IconDecorator decorator : decorators) {
 				this.decorators.add(decorator);

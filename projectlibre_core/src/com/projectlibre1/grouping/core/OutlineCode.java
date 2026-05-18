@@ -54,7 +54,7 @@
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
 package com.projectlibre1.grouping.core;
-import java.util.Vector;
+import java.util.ArrayList;
 /**
  *
  */
@@ -80,7 +80,7 @@ public class OutlineCode extends Format {
 	static final int CHARACTERS = 3;
 	private static final int ANY_LENGTH = 0;
 	
-	private Vector masks = new Vector();
+	private ArrayList masks = new ArrayList();
 	private transient Pattern pattern = null;
 
 	/* (non-Javadoc)
@@ -131,7 +131,7 @@ public class OutlineCode extends Format {
 	 * @return
 	 */
 	private String getPattern( Iterator i, String previousSeparator) {
-		StringBuffer pattern = new StringBuffer();
+		StringBuilder pattern = new StringBuilder();
 		Mask mask = (Mask)i.next();
 		pattern.append(mask.getPattern(previousSeparator));
 		if (i.hasNext()) {
@@ -178,8 +178,8 @@ public class OutlineCode extends Format {
 		 * @param previousSeparator - if not empty, this expression is prefixed with previous mask's separator
 		 * @return
 		 */
-		StringBuffer getPattern(String previousSeparator) {
-			StringBuffer result = new StringBuffer("(");
+		StringBuilder getPattern(String previousSeparator) {
+			StringBuilder result = new StringBuilder("(");
 			result.append(previousSeparator);
 			switch (type) {
 				case NUMBERS:

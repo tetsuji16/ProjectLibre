@@ -67,7 +67,7 @@ public abstract class IndicatorsComponent {
 	}
 
 	protected abstract void init();
-	public abstract void setIndicators(Object value,JComponent label,StringBuffer text,boolean isSelected, boolean hasFocus);
+	public abstract void setIndicators(Object value,JComponent label,StringBuilder text,boolean isSelected, boolean hasFocus);
 	public abstract boolean acceptValue(Object value);
 	
 	protected Color bgColor;

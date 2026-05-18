@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.assignment;
 
 import java.text.ParseException;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -76,7 +76,7 @@ import com.projectlibre1.util.ClassUtils;
  */
 public class AssignmentEntry implements HasRequestDemandType, BelongsToDocument,CanSupplyRateUnit {
 	HasAssignments resource;
-	Vector assignments;
+	ArrayList assignments;
 	Document document;
 
 	private static Field rateFieldInstance = null;
@@ -90,7 +90,7 @@ public class AssignmentEntry implements HasRequestDemandType, BelongsToDocument,
 	/**
 	 * 
 	 */
-	public AssignmentEntry(HasAssignments resource, Vector assignments, Document document) {
+	public AssignmentEntry(HasAssignments resource, ArrayList assignments, Document document) {
 		this.resource = resource;
 		this.assignments = assignments;
 		this.document = document;
@@ -170,7 +170,7 @@ public class AssignmentEntry implements HasRequestDemandType, BelongsToDocument,
 	
 	private void addAssignment(Assignment assignment) {
 		if (assignments == null)
-			assignments = new Vector();
+			assignments = new ArrayList();
 		assignments.add(assignment);
 	}
 	

@@ -59,8 +59,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -163,7 +163,7 @@ public class DocumentFrame extends NamedFrame implements
 	protected UsageDetailView taskUsageView;
 	protected UsageDetailView resourceUsageView;
 	protected BaseView reportView;
-	private static Vector ganttColumns = null; // static is ok?
+	private static ArrayList ganttColumns = null; // static is ok?
 	private FindDialog findDialog = null;
 	protected CoordinatesConverter coord;
 	protected Project project;
@@ -883,7 +883,7 @@ public class DocumentFrame extends NamedFrame implements
 		activateTopView(getGanttView(),ACTION_GANTT);
 	}
 
-	public Vector getGanttColumns() {
+	public ArrayList getGanttColumns() {
 		return ganttColumns;
 	}
 	public void activateTrackingGanttView() {
@@ -1134,7 +1134,7 @@ public class DocumentFrame extends NamedFrame implements
 
 	}
 
-	private Vector<ResourceInTeamFilter> resourcesInTeamFilters=new Vector<ResourceInTeamFilter>();
+	private ArrayList<ResourceInTeamFilter> resourcesInTeamFilters=new ArrayList<ResourceInTeamFilter>();
 
 	public Closure addTransformerInitializationClosure(){
 		return new Closure(){
@@ -1319,10 +1319,10 @@ public class DocumentFrame extends NamedFrame implements
 		String bottomViewName;
 		WorkspaceSetting coord;
 		WorkspaceSetting mainView;
-		Hashtable views;
+		HashMap views = new HashMap();
 		public void saveViewWorkspace(String name, BaseView view) {
 			if (views  == null)
-				views = new Hashtable();
+				views = new HashMap();
 			if (view != null)
 				views.put(name, view.createWorkspace(SavableToWorkspace.VIEW));
 		}
@@ -1350,10 +1350,10 @@ public class DocumentFrame extends NamedFrame implements
 		public void setCoord(WorkspaceSetting coord) {
 			this.coord = coord;
 		}
-		public Hashtable getViews() {
+		public HashMap getViews() {
 			return views;
 		}
-		public void setViews(Hashtable views) {
+		public void setViews(HashMap views) {
 			this.views = views;
 		}
 		public WorkspaceSetting getMainView() {

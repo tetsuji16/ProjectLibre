@@ -27,7 +27,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.mpxj.common.StreamHelper;
@@ -121,7 +121,7 @@ class TableReader
       int deletedFlag = getShort(buffer, 0);
       if (deletedFlag != 0)
       {
-         Map<String, Object> row = new Hashtable<String, Object>();
+         Map<String, Object> row = new HashMap<String, Object>();
          for (ColumnDefinition column : m_definition.getColumns())
          {
             Object value = column.read(0, buffer);

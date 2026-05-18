@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.task;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -234,7 +234,7 @@ public class Portfolio implements Document, NodeModelDataFactory {
 		boolean exitOnClose=true;
 		if (closeStatus!=null&&closeStatus.length>0) closeStatus[0]=true;
     	final Job job=new Job(SessionFactory.getInstance().getLocalSession().getJobQueue(),"removeAllProjects","Removing projects...",true);
-		Vector toRemove=new Vector();
+		ArrayList toRemove = new ArrayList();
 		for (Iterator i=nodeModel.iterator();i.hasNext();){
 			Node node=(Node)i.next();
 			if (!node.isRoot()) toRemove.add(node);
@@ -313,7 +313,7 @@ public class Portfolio implements Document, NodeModelDataFactory {
 	}
 
 	public Collection getDirtyProjectList() {
-		final Vector list = new Vector();
+		final ArrayList list = new ArrayList();
 		forProjects(new Closure() {
 			public void execute(Object arg0) {
 				if (((Project)arg0).needsSaving())
@@ -323,7 +323,7 @@ public class Portfolio implements Document, NodeModelDataFactory {
 	}
 
 	public Collection getWritableProjectList() {
-		final Vector list = new Vector();
+		final ArrayList list = new ArrayList();
 		forProjects(new Closure() {
 			public void execute(Object arg0) {
 				if (!((Project)arg0).isReadOnly())
@@ -360,7 +360,7 @@ public class Portfolio implements Document, NodeModelDataFactory {
 		this.dirty = dirty;
 	}
 
-	public Vector extractCalendars() {
+	public ArrayList extractCalendars() {
 		return WorkingCalendar.extractCalendars(nodeModel.getHierarchy());
 	}
 

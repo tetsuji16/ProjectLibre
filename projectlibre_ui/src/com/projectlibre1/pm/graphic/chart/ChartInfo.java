@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.chart;
 
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jfree.chart.JFreeChart;
@@ -90,7 +90,7 @@ public class ChartInfo implements Serializable, SelectionNodeListener, ScheduleE
 	ChartView chartView;
 	
 	boolean simple;
-	List selectedObjects = new Vector();
+	List selectedObjects = new ArrayList();
 	ChartModel model;
 	ChartLegend chartLegend;
 	JFreeChart chart;

@@ -58,7 +58,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -74,18 +74,18 @@ import com.projectlibre1.util.DateTime;
  */
 public abstract class ValueObjectForIntervalTable implements NodeModelDataFactory, Serializable, Cloneable {
 	static final long serialVersionUID = 7728399282882L;
-	protected Vector valueObjects = new Vector();
+	protected ArrayList valueObjects = new ArrayList();
 	protected String name;
 	public List getList() {
 		return Collections.unmodifiableList(valueObjects);
 	}
-	public Vector getValueObjects(){ //serialization
+	public ArrayList getValueObjects(){ //serialization
 		return valueObjects;
 	}
 	public ValueObjectForIntervalTable() {
 		
 	}
-	public ValueObjectForIntervalTable(String name,Vector valueObjects) { //serialization
+	public ValueObjectForIntervalTable(String name, ArrayList valueObjects) { //serialization
 		this.name=name;
 		this.valueObjects=valueObjects;
 	}
@@ -255,7 +255,7 @@ public abstract class ValueObjectForIntervalTable implements NodeModelDataFactor
 	
 	protected static ValueObjectForIntervalTable deserialize(ObjectInputStream s,ValueObjectForIntervalTable v) throws IOException, ClassNotFoundException  {
 		v.name=(String)s.readObject();
-		v.valueObjects=(Vector)s.readObject();
+		v.valueObjects=(ArrayList) s.readObject();
 		return v;
 	}
 	
@@ -263,7 +263,7 @@ public abstract class ValueObjectForIntervalTable implements NodeModelDataFactor
 		try {
 			ValueObjectForIntervalTable v=(ValueObjectForIntervalTable)super.clone();
 			v.name=(name==null)?null:new String(name);
-			Vector newList=new Vector();
+			ArrayList newList = new ArrayList();
 			for (Iterator i=valueObjects.iterator();i.hasNext();){
 				newList.add(((ValueObjectForInterval)i.next()).clone());
 			}

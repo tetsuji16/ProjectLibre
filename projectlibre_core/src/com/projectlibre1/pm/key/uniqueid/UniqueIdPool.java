@@ -177,7 +177,7 @@ public class UniqueIdPool {
 	}
 	
 	public String dump(){
-		StringBuffer buf=new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append('{');
 		synchronized(serverIntervals){
 			for (Iterator i=serverIntervals.iterator();i.hasNext();){

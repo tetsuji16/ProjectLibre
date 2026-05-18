@@ -57,7 +57,7 @@ package com.projectlibre1.pm.costing;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.projectlibre1.grouping.core.model.NodeModel;
 import com.projectlibre1.interval.ValueObjectForInterval;
@@ -74,7 +74,7 @@ public class CostRateTable extends ValueObjectForIntervalTable{
 		super();
 //		initUndo();
 	}
-	public CostRateTable(String name,Vector valueObjects) { //serialization
+	public CostRateTable(String name, ArrayList valueObjects) { //serialization
 		super(name,valueObjects);
 //		initUndo();
 	}

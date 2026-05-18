@@ -60,7 +60,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -103,14 +103,14 @@ public class NodeListTransferable implements Transferable {
     private DataFlavor nodeListDataFlavor;
     private Set flavorSet;
 
-	protected Vector nodeList;
-	protected Vector fields;
+	protected ArrayList nodeList;
+	protected ArrayList fields;
 	protected SpreadSheet spreadsheet;
 	protected int[] rows,cols;
 	protected boolean nodeSelection;
 	//protected String sdata;
 
-	public NodeListTransferable(Vector nodeList,Vector fields,SpreadSheet spreadSheet,int[] rows,int[] cols, boolean nodeSelection) {
+	public NodeListTransferable(ArrayList nodeList, ArrayList fields,SpreadSheet spreadSheet,int[] rows,int[] cols, boolean nodeSelection) {
 		this.nodeSelection=nodeSelection;
 		try {
 			nodeListDataFlavor=new DataFlavor(NODE_LIST_MIME_TYPE);
@@ -155,7 +155,7 @@ public class NodeListTransferable implements Transferable {
 		if (!flavorSet.contains(flavor)) throw new UnsupportedFlavorException(flavor);
 		if (nodeListDataFlavor.equals(flavor)){
 			NodeModel model=((CommonSpreadSheetModel)spreadsheet.getModel()).getCache().getModel();
-//			Vector nl=nodeList;
+//			ArrayList nl =nodeList;
 //			nodeList=new Vector(nl.size());
 //			nodeList.addAll(model.copy(nl,NodeModel.SILENT));
 			return model.copy(nodeList,NodeModel.SILENT);
@@ -177,13 +177,13 @@ public class NodeListTransferable implements Transferable {
 //}
 	
 	public static String nodeListToString(List nodeList,SpreadSheet spreadsheet,List fields){
-		StringBuffer sb=new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (Iterator i=nodeList.iterator();i.hasNext();){
 			nodeToString((Node)i.next(),sb,spreadsheet,fields);
 		}
 		return sb.toString();
 	}
-	public static void nodeToString(Node node,StringBuffer sb,SpreadSheet spreadsheet,List fields){
+	public static void nodeToString(Node node, StringBuilder sb, SpreadSheet spreadsheet, List fields){
 		CommonSpreadSheetModel model=(CommonSpreadSheetModel)spreadsheet.getModel();
 		Object value;
 		Field field;
@@ -207,7 +207,7 @@ public class NodeListTransferable implements Transferable {
 	
 	
 	public static String selectionToString(SpreadSheet spreadsheet,int[] rows, int[] cols){
-		StringBuffer sb=new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		Object value;
 		for (int r=0;r<rows.length;r++){
 			for (int c=0;c<cols.length;c++){
@@ -226,8 +226,8 @@ public class NodeListTransferable implements Transferable {
 	
 	
 
-	public static Vector stringToNodeList(String s,SpreadSheet spreadsheet,List fields,NodeModelDataFactory factory){
-		Vector list=new Vector();
+	public static ArrayList stringToNodeList(String s,SpreadSheet spreadsheet,List fields,NodeModelDataFactory factory){
+		ArrayList list = new ArrayList();
 		StringTokenizer st=new StringTokenizer(s,"\n\r");
 		Node node;
 		while (st.hasMoreTokens()){
@@ -266,8 +266,74 @@ public class NodeListTransferable implements Transferable {
 	public static void pasteString(String s,SpreadSheet spreadsheet){
 		int[] rows=spreadsheet.getSelectedRows();
 		int[] cols=spreadsheet.getSelectedColumns();
+		if (rows.length>0&&cols.length>0&&pasteStringIntoSelection(s,spreadsheet,rows,cols))
+			return;
 		if (rows.length>0&&cols.length>0)
 			pasteString(s,spreadsheet,rows[0],cols[0]);
+	}
+
+	private static boolean pasteStringIntoSelection(String s,SpreadSheet spreadsheet,int[] rows,int[] cols){
+		String[][] values=parseClipboardTable(s);
+		if (values.length==0||values[0].length==0)
+			return false;
+		if (rows.length==1&&cols.length==1)
+			return false;
+		CommonSpreadSheetModel model=(CommonSpreadSheetModel)spreadsheet.getModel();
+		FieldContext fieldContext=model.getFieldContext();
+		boolean round=fieldContext.isRound();
+		fieldContext.setRound(true);
+		try {
+			if (values.length==1&&values[0].length==1){
+				for (int i=0;i<rows.length;i++)
+					for (int j=0;j<cols.length;j++)
+						setValueAt(model,values[0][0],rows[i],cols[j]);
+				return true;
+			}
+			if (values.length==1&&values[0].length==cols.length){
+				for (int i=0;i<rows.length;i++)
+					for (int j=0;j<cols.length;j++)
+						setValueAt(model,values[0][j],rows[i],cols[j]);
+				return true;
+			}
+			if (values[0].length==1&&values.length==rows.length){
+				for (int i=0;i<rows.length;i++)
+					for (int j=0;j<cols.length;j++)
+						setValueAt(model,values[i][0],rows[i],cols[j]);
+				return true;
+			}
+			if (values.length==rows.length&&values[0].length==cols.length){
+				for (int i=0;i<rows.length;i++)
+					for (int j=0;j<cols.length;j++)
+						setValueAt(model,values[i][j],rows[i],cols[j]);
+				return true;
+			}
+			return false;
+		} finally {
+			fieldContext.setRound(round);
+		}
+	}
+
+	private static String[][] parseClipboardTable(String s){
+		if (s==null)
+			return new String[0][0];
+		String[] rows=s.replace("\r\n","\n").replace('\r','\n').split("\n",-1);
+		if (rows.length>0&&rows[rows.length-1].length()==0){
+			String[] trimmed=new String[rows.length-1];
+			System.arraycopy(rows,0,trimmed,0,trimmed.length);
+			rows=trimmed;
+		}
+		String[][] values=new String[rows.length][];
+		for (int i=0;i<rows.length;i++)
+			values[i]=rows[i].split("\t",-1);
+		return values;
+	}
+
+	private static void setValueAt(CommonSpreadSheetModel model,String value,int row,int column){
+		try{
+			model.setValueAt(value,row,column+1);
+		}catch(Exception e){
+			logger.log(Level.FINE, "Failed to paste cell value at row {0}, col {1}", new Object[]{row, column});
+		}
 	}
 	public static void pasteString(String s,SpreadSheet spreadsheet,int row0, int col0){
 		StringTokenizer st=new StringTokenizer(s,"\n");
@@ -302,7 +368,7 @@ public class NodeListTransferable implements Transferable {
 //		return nodeSelection;
 //	}
 //	
-//	public Vector getSelectedFields(){
+//	public ArrayList getSelectedFields(){
 //		return (nodeSelection)?spreadsheet.getSelectableFields():spreadsheet.getSelectedFields();
 //	}
 

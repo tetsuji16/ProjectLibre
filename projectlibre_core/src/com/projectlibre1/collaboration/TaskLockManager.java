@@ -1,6 +1,6 @@
 package com.projectlibre1.collaboration;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -83,7 +83,7 @@ public class TaskLockManager {
 	}
 
 	public void releaseAll() {
-		List<Long> locks = new Vector<Long>(localLocks);
+		List<Long> locks = new ArrayList<Long>(localLocks);
 		for (Long taskId : locks) {
 			release(taskId.longValue());
 		}

@@ -56,7 +56,7 @@
 package com.projectlibre1.field;
 
 import java.lang.reflect.Method;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -67,7 +67,7 @@ public  class OptionsFilter {
 	private String method;
 
 	public Object[] getOptionValues(Object obj, String method, String[] optionKeys, Object[] optionValues) {
-		List keys=new Vector(optionKeys.length);
+		List keys=new ArrayList(optionKeys.length);
 		keys.addAll(Arrays.asList(optionKeys));
 		try {
 			Method m=obj.getClass().getMethod(method, new Class[]{List.class,List.class});
@@ -84,7 +84,7 @@ public  class OptionsFilter {
 
 	public Object[] getOptions(Object[] optionKeys, List optionValues, Object obj){
 		if (obj==null) return optionKeys;
-		List keys=new Vector(optionKeys.length);
+		List keys=new ArrayList(optionKeys.length);
 		keys.addAll(Arrays.asList(optionKeys));
 		try {
 			Method m=obj.getClass().getMethod(method, new Class[]{List.class,List.class});

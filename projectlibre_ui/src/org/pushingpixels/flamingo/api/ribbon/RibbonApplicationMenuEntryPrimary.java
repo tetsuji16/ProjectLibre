@@ -130,8 +130,8 @@ public class RibbonApplicationMenuEntryPrimary extends
 	public RibbonApplicationMenuEntryPrimary(ResizableIcon icon, String text,
 			ActionListener mainActionListener, CommandButtonKind entryKind) {
 		super(icon, text, mainActionListener, entryKind);
-		this.groupTitles = new Vector<String>();
-		this.groupEntries = new Vector<List<RibbonApplicationMenuEntrySecondary>>();
+		this.groupTitles = new ArrayList<String>();
+		this.groupEntries = new ArrayList<List<RibbonApplicationMenuEntrySecondary>>();
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class RibbonApplicationMenuEntryPrimary extends
 	public synchronized int addSecondaryMenuGroup(String groupTitle,
 			RibbonApplicationMenuEntrySecondary... entries) {
 		this.groupTitles.add(groupTitle);
-		List<RibbonApplicationMenuEntrySecondary> entryList = new Vector<RibbonApplicationMenuEntrySecondary>();
+		List<RibbonApplicationMenuEntrySecondary> entryList = new ArrayList<RibbonApplicationMenuEntrySecondary>();
 		this.groupEntries.add(entryList);
 		for (RibbonApplicationMenuEntrySecondary entry : entries) {
 			entryList.add(entry);

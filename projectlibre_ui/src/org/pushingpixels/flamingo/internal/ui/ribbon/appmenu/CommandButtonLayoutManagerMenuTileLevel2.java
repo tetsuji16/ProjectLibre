@@ -34,7 +34,7 @@ import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeEvent;
 import java.text.AttributedString;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JSeparator;
 
@@ -183,7 +183,7 @@ public class CommandButtonLayoutManagerMenuTileLevel2 implements
 					.getText());
 			lineLayoutInfo.textRect.height = labelHeight;
 
-			result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+			result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 			result.textLayoutInfoList.add(lineLayoutInfo);
 
 			String extraText = commandButton.getExtraText();
@@ -228,7 +228,7 @@ public class CommandButtonLayoutManagerMenuTileLevel2 implements
 						.stringWidth(extraLineLayoutInfo2.text);
 				extraLineLayoutInfo2.textRect.height = labelHeight;
 
-				result.extraTextLayoutInfoList = new Vector<TextLayoutInfo>();
+				result.extraTextLayoutInfoList = new ArrayList<TextLayoutInfo>();
 				result.extraTextLayoutInfoList.add(extraLineLayoutInfo1);
 				result.extraTextLayoutInfoList.add(extraLineLayoutInfo2);
 			}
@@ -305,7 +305,7 @@ public class CommandButtonLayoutManagerMenuTileLevel2 implements
 			lineLayoutInfo.textRect.y = ins.top + layoutVGap / 2;
 			lineLayoutInfo.textRect.height = labelHeight;
 
-			result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+			result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 			result.textLayoutInfoList.add(lineLayoutInfo);
 
 			String extraText = commandButton.getExtraText();
@@ -352,7 +352,7 @@ public class CommandButtonLayoutManagerMenuTileLevel2 implements
 						* labelHeight;
 				extraLineLayoutInfo2.textRect.height = labelHeight;
 
-				result.extraTextLayoutInfoList = new Vector<TextLayoutInfo>();
+				result.extraTextLayoutInfoList = new ArrayList<TextLayoutInfo>();
 				result.extraTextLayoutInfoList.add(extraLineLayoutInfo1);
 				result.extraTextLayoutInfoList.add(extraLineLayoutInfo2);
 			}

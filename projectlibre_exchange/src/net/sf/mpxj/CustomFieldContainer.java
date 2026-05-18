@@ -23,7 +23,7 @@
 
 package net.sf.mpxj;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -133,7 +133,7 @@ public class CustomFieldContainer implements Iterable<CustomField>
    {
       if (!m_aliasValueMap.containsKey(alias))
       {
-         m_aliasValueMap.put(alias, new Hashtable<Integer, Object>());
+         m_aliasValueMap.put(alias, new HashMap<Integer, Object>());
       }
       m_aliasValueMap.get(alias).put(uid, value);
    }
@@ -155,8 +155,8 @@ public class CustomFieldContainer implements Iterable<CustomField>
       return null;
    }
 
-   private Map<FieldType, CustomField> m_configMap = new Hashtable<FieldType, CustomField>();
-   private Map<Integer, CustomFieldValueItem> m_valueMap = new Hashtable<Integer, CustomFieldValueItem>();
-   private Map<Pair<FieldTypeClass, String>, FieldType> m_aliasMap = new Hashtable<Pair<FieldTypeClass, String>, FieldType>();
-   private Map<String, Map<Integer, Object>> m_aliasValueMap = new Hashtable<String, Map<Integer, Object>>();
+   private Map<FieldType, CustomField> m_configMap = new HashMap<FieldType, CustomField>();
+   private Map<Integer, CustomFieldValueItem> m_valueMap = new HashMap<Integer, CustomFieldValueItem>();
+   private Map<Pair<FieldTypeClass, String>, FieldType> m_aliasMap = new HashMap<Pair<FieldTypeClass, String>, FieldType>();
+   private Map<String, Map<Integer, Object>> m_aliasValueMap = new HashMap<String, Map<Integer, Object>>();
 }

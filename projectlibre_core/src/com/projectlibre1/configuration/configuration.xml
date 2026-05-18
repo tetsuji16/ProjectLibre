@@ -417,9 +417,8 @@
 			</field>
 		</class>
 		<class name="com.projectlibre1.pm.task.TaskSpecificFields">
-			<!--- read only below is temporary because it doesnt work correctly yet -->
 			<field property="percentWorkComplete"
-				id="Field.percentWorkComplete" percent="true" readOnly="true">
+				id="Field.percentWorkComplete" percent="true">
 				<range minimum="0" maximum="1" step="0.05" />
 			</field>
 

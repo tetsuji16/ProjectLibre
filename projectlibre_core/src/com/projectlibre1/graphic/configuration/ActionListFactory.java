@@ -75,7 +75,7 @@ public class ActionListFactory {
 	
 	
 	public ActionList getActionList() throws InvalidFormulaException{
-	    StringBuffer classText=new StringBuffer();
+	    StringBuilder classText = new StringBuilder();
 	    classText.append("package com.projectlibre1.graphic.configuration;\n");
 	    classText.append("import com.projectlibre1.grouping.core.model.NodeModel;\n");
 	    classText.append("import com.projectlibre1.util.Environment;\n");

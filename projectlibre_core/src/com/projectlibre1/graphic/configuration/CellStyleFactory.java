@@ -92,7 +92,7 @@ public class CellStyleFactory {
 			}
 			return null;
 		}else if (formulaText!=null){
-		    StringBuffer classText=new StringBuffer();
+		    StringBuilder classText = new StringBuilder();
 		    classText.append("package com.projectlibre1.graphic.configuration;\n");
 		    classText.append("import com.projectlibre1.pm.graphic.model.cache.GraphicNode;\n");
 		    classText.append("public class CellStyle").append(count++).append(" implements CellStyle{\n");

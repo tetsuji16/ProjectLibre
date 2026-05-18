@@ -60,7 +60,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.mpxj.Duration;
@@ -127,7 +127,7 @@ public class MspImporter {
 		//Identity the type of conversion. It will be used AssignmentConverter
 		if (state.isMspdi()) 
 			state.setMpxTimephasedMap(((ImprovedMSPDIReader)reader).getTimephasedMap());
-		else state.setMpxTimephasedMap(new Hashtable<ResourceAssignment,List<TimephasedDataType>>());
+		else state.setMpxTimephasedMap(new HashMap<ResourceAssignment, List<TimephasedDataType>>());
 
 		Project project=new Project();
 

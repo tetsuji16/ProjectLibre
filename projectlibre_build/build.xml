@@ -821,11 +821,12 @@
 
 
 
-	<target name="jpackage-msi" depends="dist, fatjar">
+	<target name="jpackage-msi" depends="dist">
 		<mkdir dir="${packages}/jpackage-msi/source" />
 		<copy todir="${packages}/jpackage-msi/source" >
-			<fileset dir="${packages}">
-				<include name="projectlibre-${version}.jar"/>
+			<fileset dir="${dist}">
+				<include name="projectlibre.jar"/>
+				<include name="lib/*.jar"/>
 			</fileset>
 			<fileset dir="${resources}/wix/msi_images">
 				<include name="projectlibre.ico"/>

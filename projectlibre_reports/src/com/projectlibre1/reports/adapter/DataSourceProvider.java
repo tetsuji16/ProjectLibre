@@ -56,7 +56,7 @@
 package com.projectlibre1.reports.adapter;
 
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import net.sf.jasperreports.engine.JRBand;
@@ -131,7 +131,7 @@ public class DataSourceProvider implements JRDataSourceProvider {
 		return instance;
 	}
 	
-	Hashtable map = new Hashtable();
+	HashMap map = new HashMap();
 	
 	
 	/* (non-Javadoc)

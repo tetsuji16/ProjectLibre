@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.script;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +74,7 @@ public class ContextStore  implements NamedItem {
 
 	protected String name = null;
 	protected String id = null;
-	protected Map<Integer, List<ConverterContext>> contexts=new Hashtable<Integer, List<ConverterContext>>();
+	protected Map<Integer, List<ConverterContext>> contexts=new HashMap<Integer, List<ConverterContext>>();
 
 
 	public String getCategory() {
@@ -107,7 +107,7 @@ public class ContextStore  implements NamedItem {
 	public void addContext(ConverterContext ctx) {
 		List<ConverterContext> list=contexts.get(ctx.getType());
 		if (list==null){
-			list=new Vector<ConverterContext>();
+			list=new ArrayList<ConverterContext>();
 			contexts.put(ctx.getType(),list);
 		}
 		if (ctx.getName() == null) //TODO contexts should be named
@@ -126,7 +126,7 @@ public class ContextStore  implements NamedItem {
 		List<ConverterContext> ctxs=contexts.get(type);
 		List<ConverterContext> c=null;
 		if (ctxs!=null){
-			c=new Vector<ConverterContext>(ctxs.size());
+			c=new ArrayList<ConverterContext>(ctxs.size());
 			for (ConverterContext ctx: ctxs){
 				if (filter==null||filter.evaluate(ctx)) c.add((ConverterContext)ctx.clone());
 			}

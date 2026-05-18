@@ -95,7 +95,7 @@ public class ResourceIndicatorsComponent extends IndicatorsComponent{
 	}
 	
 	
-	public void setIndicators(Object value,JComponent label,StringBuffer text,boolean isSelected, boolean hasFocus){
+	public void setIndicators(Object value,JComponent label,StringBuilder text,boolean isSelected, boolean hasFocus){
 		HasResourceIndicators indicators = (HasResourceIndicators)value;
 		if (indicators.isInTeam()) {
 			label.add(team);

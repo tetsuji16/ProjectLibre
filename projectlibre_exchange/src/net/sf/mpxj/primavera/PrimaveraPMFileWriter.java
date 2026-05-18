@@ -26,11 +26,11 @@ package net.sf.mpxj.primavera;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EnumSet;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -740,7 +740,7 @@ public final class PrimaveraPMFileWriter extends AbstractProjectWriter
    private List<UDFAssignmentType> writeUDFType(FieldTypeClass type, FieldContainer mpxj)
    {
       CustomFieldContainer customFields = m_projectFile.getCustomFields();
-      List<UDFAssignmentType> out = new Vector<UDFAssignmentType>(customFields.size());
+      List<UDFAssignmentType> out = new ArrayList<UDFAssignmentType>(customFields.size());
       for (CustomField cf : customFields)
       {
          FieldType fieldType = cf.getFieldType();
@@ -1076,7 +1076,7 @@ public final class PrimaveraPMFileWriter extends AbstractProjectWriter
       "Saturday"
    };
 
-   private static final Map<RelationType, String> RELATION_TYPE_MAP = new Hashtable<RelationType, String>();
+   private static final Map<RelationType, String> RELATION_TYPE_MAP = new HashMap<RelationType, String>();
    static
    {
       RELATION_TYPE_MAP.put(RelationType.FINISH_START, "Finish to Start");
@@ -1085,7 +1085,7 @@ public final class PrimaveraPMFileWriter extends AbstractProjectWriter
       RELATION_TYPE_MAP.put(RelationType.START_FINISH, "Start to Finish");
    }
 
-   private static final Map<ConstraintType, String> CONSTRAINT_TYPE_MAP = new Hashtable<ConstraintType, String>();
+   private static final Map<ConstraintType, String> CONSTRAINT_TYPE_MAP = new HashMap<ConstraintType, String>();
    static
    {
       CONSTRAINT_TYPE_MAP.put(ConstraintType.START_NO_LATER_THAN, "Start On or Before");

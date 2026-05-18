@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.model.cache;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -66,7 +66,7 @@ import com.projectlibre1.pm.graphic.model.transform.CacheTransformer;
  *
  */
 public abstract class VisibleElements{
-    protected Vector elements;
+	protected ArrayList elements;
     protected CacheTransformer transformer;
     protected List events;
     protected String viewName;
@@ -74,15 +74,15 @@ public abstract class VisibleElements{
     public VisibleElements(String viewName,CacheTransformer transformer) {
         this.transformer=transformer;
         this.viewName=viewName;
-        elements=new Vector();
-        events=new Vector();
+        elements=new ArrayList();
+        events=new ArrayList();
     }
     
     
-    public Vector getElements() {
+    public ArrayList getElements() {
         return elements;
     }
-	void setElements(Vector elements) {
+	void setElements(ArrayList elements) {
 		this.elements = elements;
 	}
     
@@ -123,7 +123,7 @@ public abstract class VisibleElements{
 	public boolean isVisible(Object element){
 		return elements.contains(element);
 	}
-	public Vector getVisibleElements() {
+	public ArrayList getVisibleElements() {
 		return elements;
 	}
     

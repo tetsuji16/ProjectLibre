@@ -56,7 +56,7 @@
 package com.projectlibre1.dialog.assignment;
 
 import java.awt.event.ActionEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -201,7 +201,7 @@ public final class AssignmentDialog extends AbstractDialog implements DocumentSe
 		NormalTask task;
 		Iterator t = selectedTasks.iterator();
 		Object current = null;
-		List taskList=new Vector();
+		List taskList=new ArrayList();
 		while (t.hasNext()) { // go thru all selected tasks
 			current = t.next();
 			if (! (current instanceof NormalTask))
@@ -216,7 +216,7 @@ public final class AssignmentDialog extends AbstractDialog implements DocumentSe
 	}
 	
 	public void assign(Resource resource, double units) {
-		Vector list = new Vector();
+		ArrayList list = new ArrayList();
 		list.add(resource);
 		assign(list,units);
 	}
@@ -380,7 +380,7 @@ public final class AssignmentDialog extends AbstractDialog implements DocumentSe
 //			projectName.setText(project == null ? "" : "Resources from: " + project.getName());
 	}
 	
-	private static Vector emptyList = new Vector();
+	private static ArrayList emptyList = new ArrayList();
 	public void documentSelected(DocumentSelectedEvent evt) {
 		setDocumentFrame(evt.getCurrent());
 		spreadSheetPane.setProject(getDocumentFrame().getProject());

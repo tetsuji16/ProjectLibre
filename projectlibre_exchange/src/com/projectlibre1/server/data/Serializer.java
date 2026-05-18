@@ -59,12 +59,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -249,7 +249,7 @@ public class Serializer {
 
 
             //assignments
-            final Collection assignments=(flatAssignments==null)?new Vector():flatAssignments;
+            final Collection assignments=(flatAssignments==null)?new ArrayList():flatAssignments;
             if (taskDirty)
             forAssignments(task, new AssignmentClosure(){ //claur
             	public void execute(Assignment assignment,int s){
@@ -344,11 +344,11 @@ public class Serializer {
 
     //flatAssignments and flatLinks mustn't be null if incremental
     protected void saveTasks(Project project,ProjectData projectData,Map resourceMap,Collection flatAssignments,Collection flatLinks,boolean incremental,SerializeOptions options) throws Exception{
-    	Vector<Long> unchangedTasks=null;
-    	Vector<Long> unchangedLinks=null;
+    	ArrayList<Long> unchangedTasks = null;
+    	ArrayList<Long> unchangedLinks = null;
     	if (incremental){
-    		unchangedTasks=new Vector<Long>();
-    		unchangedLinks=new Vector<Long>();
+    		unchangedTasks=new ArrayList<Long>();
+    		unchangedLinks=new ArrayList<Long>();
     		//taskLinker.setUnchanged(unchangedTasks);
     	}
     	this.markAncestorsOfDirtyTasksDirty(project);
@@ -376,7 +376,7 @@ public class Serializer {
 
             Iterator j=task.getPredecessorList().iterator();
 	        if (j.hasNext()){
-	            List predecessors=new Vector();
+	            List predecessors=new ArrayList();
 	            while (j.hasNext()){
 	                Dependency dependency=(Dependency)j.next();
 	                LinkData linkData;
@@ -492,7 +492,7 @@ public class Serializer {
         long t=System.currentTimeMillis();
         Collection<DistributionData> dist=(Collection<DistributionData>)(new DistributionConverter()).createDistributionData(project,incrementalDistributions);
     	if (dist==null){
-    		dist=new Vector<DistributionData>();
+    		dist=new ArrayList<DistributionData>();
     	}
 		projectData.setDistributions(dist);
 		projectData.setIncrementalDistributions(incrementalDistributions);
@@ -503,7 +503,7 @@ public class Serializer {
     		project.setDistributionMap(distMap);
     	}
     	TreeMap<DistributionData, DistributionData> newDistMap=new TreeMap<DistributionData, DistributionData>(new DistributionComparator());
-    	//Vector<DistributionData> toInsertInOld=new Vector<DistributionData>();
+    	//ArrayList<DistributionData> toInsertInOld=new ArrayList<DistributionData>();
 
     	//insert, update dist
     	for (Iterator<DistributionData> i=dist.iterator();i.hasNext();){
@@ -555,7 +555,7 @@ public class Serializer {
 
 
     	// send project field values to server too
-        Hashtable fieldValues = FieldValues.getValues(FieldDictionary.getInstance().getProjectFields(),project);
+        HashMap fieldValues = FieldValues.getValues(FieldDictionary.getInstance().getProjectFields(),project);
         if (project.getContainingSubprojectTask() != null) { // special case in which we want to use the duration from subproject task
         	Object durationFieldValue = Configuration.getFieldFromId("Field.duration").getValue(project.getContainingSubprojectTask(), null);
         	fieldValues.put("Field.duration", durationFieldValue);
@@ -819,7 +819,7 @@ public class Serializer {
 
 
     	//resources
-    	final Map resourceNodeMap=new Hashtable();
+    	final Map resourceNodeMap=new HashMap();
     	ResourcePool resourcePool = ResourcePoolFactory.getInstance().createResourcePool(project.getName(),undoController);
     	resourcePool.setMaster(project.isMaster());
     	resourcePool.setLocal(project.isLocal());
@@ -904,7 +904,7 @@ public class Serializer {
 
     	//tasks
     	Collection tasks=projectData.getTasks();
-    	Map taskNodeMap=new Hashtable();
+    	Map taskNodeMap=new HashMap();
     	long projectId = project.getUniqueId();
     	NormalTask task;
 
@@ -997,7 +997,7 @@ public class Serializer {
 
 
     			//assignments
-    			List assignments=new Vector();
+    			List assignments=new ArrayList();
 //    			if (Environment.isNoPodServer()&&task.getPersistedAssignments()!=null){ //claur
 //    				assignments.addAll(task.getPersistedAssignments());
 //    			}
@@ -1106,7 +1106,7 @@ public class Serializer {
     		// note that their task names have been transformed to hold the name of the project
     		Collection referringSubprojectTaskData=projectData.getReferringSubprojectTasks();
     		if (tasks!=null&&referringSubprojectTaskData!=null){
-    			Vector referringSubprojectTasks = new Vector(referringSubprojectTaskData.size());
+    			ArrayList referringSubprojectTasks = new ArrayList(referringSubprojectTaskData.size());
     			project.setReferringSubprojectTasks(referringSubprojectTasks);
     			for (Iterator i=referringSubprojectTaskData.iterator();i.hasNext();){
     				TaskData taskData=(TaskData)i.next();
@@ -1165,7 +1165,7 @@ public class Serializer {
     		Node summaryNode=null;
 
 
-    		Map<Long, Node> subprojectsMap=new Hashtable<Long, Node>();
+    		Map<Long, Node> subprojectsMap=new HashMap<Long, Node>();
     		for (Iterator i=tasks.iterator();i.hasNext();){
     			TaskData taskData=(TaskData)i.next();
     			TaskData parentData=taskData.getParentTask();
@@ -1430,7 +1430,7 @@ public class Serializer {
 //    }
     public static void setEnterpriseResources(Collection resources,ResourcePool resourcePool,Session reindex) throws IOException, ClassNotFoundException{
         if (resources!=null){
-        	Map resourceNodeMap=new Hashtable();
+        	Map resourceNodeMap=new HashMap();
             for (Iterator i=resources.iterator();i.hasNext();){
                 EnterpriseResourceData resourceData=(EnterpriseResourceData)i.next();
                 ResourceImpl resource=deserializeResourceAndAddToPool(resourceData,resourcePool,reindex);
@@ -1580,15 +1580,15 @@ public class Serializer {
     }
     protected Collection serialize(Collection objs,SerializedDataObjectFactory factory) throws IOException{
     	if (objs == null)
-    		return new Vector(); // a user crashed here due to null objs.
+    		return new ArrayList(); // a user crashed here due to null objs.
 
-        Collection r=new Vector(objs.size());
+        Collection r=new ArrayList(objs.size());
         for (Iterator i=objs.iterator();i.hasNext();)
             r.add(SerializeUtil.serialize((DataObject)i.next(),factory));
         return r;
     }
     protected Collection deserialize(Collection objs,Session reindex) throws IOException, ClassNotFoundException{
-        Collection r=new Vector(objs.size());
+        Collection r=new ArrayList(objs.size());
         for (Iterator i=objs.iterator();i.hasNext();)
             r.add(SerializeUtil.deserialize((SerializedDataObject)i.next(),reindex));
         return r;
@@ -1670,7 +1670,7 @@ public class Serializer {
 
 
     public static Map createIdMap(Collection c){
-    	Map map=new Hashtable();
+    	Map map=new HashMap();
         if (c!=null){
 	        for (Iterator i=c.iterator();i.hasNext();){
 	        	DataObject d=(DataObject)i.next();
@@ -1692,7 +1692,7 @@ public class Serializer {
 		b.append(builder.toString());
     }
     private void printTaskDataHierarchy(Collection tasks,final StringBuilder b){
-    	Map taskMap=new Hashtable();
+    	Map taskMap=new HashMap();
     	for (Iterator i=tasks.iterator();i.hasNext();){
     		TaskData taskData=(TaskData)i.next();
     		if (taskData == null)

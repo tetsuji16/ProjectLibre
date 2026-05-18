@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.turboproject;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,7 +36,7 @@ class TableA2TAB extends Table
     */
    @Override protected void readRow(int uniqueID, byte[] data)
    {
-      Map<String, Object> map = new Hashtable<String, Object>();
+      Map<String, Object> map = new HashMap<String, Object>();
       map.put("UNIQUE_ID", Integer.valueOf(uniqueID));
       map.put("DESCRIPTION", PEPUtility.getString(data, 50, 51));
       map.put("FIRST_CHILD_TASK_ID", Integer.valueOf(PEPUtility.getShort(data, 116)));

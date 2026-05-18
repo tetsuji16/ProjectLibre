@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.primavera;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.mpxj.FieldType;
@@ -96,6 +96,6 @@ class UserFieldCounters
       m_counters.clear();
    }
 
-   private final Map<String, Integer> m_counters = new Hashtable<String, Integer>();
+   private final Map<String, Integer> m_counters = new HashMap<String, Integer>();
    private final String[][] m_names = new String[UserFieldDataType.values().length][];
 }

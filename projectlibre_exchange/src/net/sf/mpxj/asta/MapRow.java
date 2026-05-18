@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.asta;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -214,5 +214,5 @@ class MapRow implements Row
       }
    }
    protected Map<String, Object> m_map;
-   private List<Row> m_childRows = new Vector<Row>();
+   private List<Row> m_childRows = new ArrayList<Row>();
 }

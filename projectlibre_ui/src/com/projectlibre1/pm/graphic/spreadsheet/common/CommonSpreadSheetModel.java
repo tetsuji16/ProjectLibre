@@ -54,7 +54,7 @@
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.common;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -117,7 +117,7 @@ public class CommonSpreadSheetModel extends AbstractTableModel implements CacheL
     public void graphicNodesCompositeEvent(CompositeCacheEvent compositeEvent){
         for (Iterator i=compositeEvent.getNodeEvents().iterator();i.hasNext();){
             final CacheEvent e=(CacheEvent)i.next();
-            Vector intervals=new Vector();
+            ArrayList intervals = new ArrayList();
             e.forIntervals(new Closure() {
                 public void execute(Object obj) {
                     intervals.add(obj);
@@ -168,13 +168,13 @@ public class CommonSpreadSheetModel extends AbstractTableModel implements CacheL
             fireTableRowsDeleted(start, end);
     }
 	
-//	public CommonSpreadSheetModel(NodeModel model,Vector fieldArray,CellStyle cellStyle,String viewName) {
+//	public CommonSpreadSheetModel(NodeModel model, ArrayList fieldArray,CellStyle cellStyle,String viewName) {
 //		this(NodeModelCacheFactory.getInstance().createDefaultCache(model,viewName),fieldArray,cellStyle);
 //	}
-	public Vector getFieldArray() {
+	public ArrayList getFieldArray() {
 		return colModel.getFieldArray();
 	}
-	public void setFieldArray(Vector fieldArray) {
+	public void setFieldArray(ArrayList fieldArray) {
 		colModel.setFieldArray(fieldArray);
 	}
 

@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -93,7 +93,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (project == null)
       {
-         project = new Vector<ProjectListType.Project>();
+         project = new ArrayList<ProjectListType.Project>();
       }
       return this.project;
    }
@@ -223,7 +223,7 @@ import javax.xml.bind.annotation.XmlType;
       {
          if (baselineProject == null)
          {
-            baselineProject = new Vector<ProjectListType.Project.BaselineProject>();
+            baselineProject = new ArrayList<ProjectListType.Project.BaselineProject>();
          }
          return this.baselineProject;
       }

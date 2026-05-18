@@ -25,11 +25,11 @@ package net.sf.mpxj.mpp;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -661,7 +661,7 @@ abstract class FieldMap
       StringWriter sw = new StringWriter();
       PrintWriter pw = new PrintWriter(sw);
 
-      Vector<FieldItem> items = new Vector<FieldItem>(m_map.values());
+      ArrayList<FieldItem> items = new ArrayList<FieldItem>(m_map.values());
       Collections.sort(items);
 
       pw.println("[FieldMap");
@@ -1430,7 +1430,7 @@ abstract class FieldMap
 
    private ProjectProperties m_properties;
    protected CustomFieldContainer m_customFields;
-   private Map<FieldType, FieldItem> m_map = new Hashtable<FieldType, FieldItem>();
+   private Map<FieldType, FieldItem> m_map = new HashMap<FieldType, FieldItem>();
    private int[] m_maxFixedDataSize = new int[MAX_FIXED_DATA_BLOCKS];
 
    private static final Integer[] TASK_KEYS =

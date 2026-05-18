@@ -93,9 +93,9 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -239,7 +239,7 @@ protected int helpSpaceWidth = 30;
 // Cached paint objects for performance optimization
 protected GradientPaint ribbonBackgroundGradient = null;
 protected GradientPaint taskAreaGradient = null;
-protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients = new Hashtable<>();
+protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients = new HashMap<>();
 
 /*
  * (non-Javadoc)
@@ -254,7 +254,7 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 	 * Creates a new basic ribbon UI delegate.
 	 */
 	public ProjectLibreRibbonUI() {
-		this.taskToggleButtons = new Hashtable<RibbonTask, JRibbonTaskToggleButton>();
+		this.taskToggleButtons = new HashMap<RibbonTask, JRibbonTaskToggleButton>();
 		this.taskToggleButtonGroup = new CommandToggleButtonGroup();
 		this.taskToggleButtonGroup.setAllowsClearingSelection(false);
 	}
@@ -1966,7 +1966,7 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 			int totalPrefWidth = 0;
 			int totalMinWidth = 0;
 			List<RibbonTask> visibleTasks = getCurrentlyShownRibbonTasks();
-			Map<JRibbonTaskToggleButton, Integer> diffMap = new Hashtable<JRibbonTaskToggleButton, Integer>();
+			Map<JRibbonTaskToggleButton, Integer> diffMap = new HashMap<JRibbonTaskToggleButton, Integer>();
 			int totalDiff = 0;
 			for (RibbonTask task : visibleTasks) {
 				JRibbonTaskToggleButton tabButton = taskToggleButtons.get(task);
@@ -2290,7 +2290,7 @@ protected Map<RibbonContextualTaskGroup, GradientPaint> contextualGroupGradients
 	 * @return The list of currently shown ribbon tasks.
 	 */
 	protected List<RibbonTask> getCurrentlyShownRibbonTasks() {
-		List<RibbonTask> result = new Vector<RibbonTask>();
+		List<RibbonTask> result = new ArrayList<RibbonTask>();
 
 		// add all regular tasks
 		for (int i = 0; i < this.ribbon.getTaskCount(); i++) {

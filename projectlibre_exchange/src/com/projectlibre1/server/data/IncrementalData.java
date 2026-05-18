@@ -56,7 +56,7 @@
 package com.projectlibre1.server.data;
 
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -64,7 +64,7 @@ public class IncrementalData implements Serializable{
 	private static final long serialVersionUID = 9272293000322L;
 	protected ProjectData project;
 	protected HashSet resources,assignments,links;//,calendars;
-	protected Hashtable tasks,enterpriseResources;
+	protected HashMap tasks,enterpriseResources;
 	//calendars actually serialized inside projects, tasks and enterprise resources
 	public Set getAssignments() {
 		return assignments;
@@ -116,25 +116,25 @@ public class IncrementalData implements Serializable{
 		data.emtpy();
 		resources.add(data);
 	}
-	public Hashtable getEnterpriseResources() {
+	public HashMap getEnterpriseResources() {
 		return enterpriseResources;
 	}
-	public void setEnterpriseResources(Hashtable enterpriseResources) {
+	public void setEnterpriseResources(HashMap enterpriseResources) {
 		this.enterpriseResources = enterpriseResources;
 	}
 	public void addEnterpriseResource(EnterpriseResourceData data) {
-		if (enterpriseResources==null) enterpriseResources=new Hashtable();
+		if (enterpriseResources==null) enterpriseResources=new HashMap();
 		data.emtpy();
 		enterpriseResources.put(data,data);
 	}
-	public Hashtable getTasks() {
+	public HashMap getTasks() {
 		return tasks;
 	}
-	public void setTasks(Hashtable tasks) {
+	public void setTasks(HashMap tasks) {
 		this.tasks = tasks;
 	}
 	public void addTask(TaskData data) {
-		if (tasks==null) tasks=new Hashtable();
+		if (tasks==null) tasks=new HashMap();
 		data.emtpy();
 		tasks.put(data,data);
 	}

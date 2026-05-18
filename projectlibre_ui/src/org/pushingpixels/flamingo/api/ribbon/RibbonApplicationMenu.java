@@ -140,10 +140,10 @@ public class RibbonApplicationMenu {
 	 * Creates an empty ribbon application menu.
 	 */
 	public RibbonApplicationMenu() {
-		this.primaryEntries = new Vector<List<RibbonApplicationMenuEntryPrimary>>();
+		this.primaryEntries = new ArrayList<List<RibbonApplicationMenuEntryPrimary>>();
 		this.primaryEntries
-				.add(new Vector<RibbonApplicationMenuEntryPrimary>());
-		this.footerEntries = new Vector<RibbonApplicationMenuEntryFooter>();
+				.add(new ArrayList<RibbonApplicationMenuEntryPrimary>());
+		this.footerEntries = new ArrayList<RibbonApplicationMenuEntryFooter>();
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class RibbonApplicationMenu {
 					"Cannot add menu entries after the menu has been set on the ribbon");
 		}
 		this.primaryEntries
-				.add(new Vector<RibbonApplicationMenuEntryPrimary>());
+				.add(new ArrayList<RibbonApplicationMenuEntryPrimary>());
 	}
 
 	/**

@@ -26,7 +26,7 @@ package net.sf.mpxj.mpp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +147,7 @@ final class MPP12Reader implements MPPVariantReader
          throw new MPXJException(MPXJException.PASSWORD_PROTECTED);
       }
 
-      m_resourceMap = new Hashtable<Integer, ProjectCalendar>();
+      m_resourceMap = new HashMap<Integer, ProjectCalendar>();
       m_projectDir = (DirectoryEntry) root.getEntry("   112");
       m_viewDir = (DirectoryEntry) root.getEntry("   212");
       DirectoryEntry outlineCodeDir = (DirectoryEntry) m_projectDir.getEntry("TBkndOutlCode");
@@ -161,8 +161,8 @@ final class MPP12Reader implements MPPVariantReader
 
       //MPPUtility.fileDump("c:\\temp\\props.txt", m_projectProps.toString().getBytes());
 
-      m_fontBases = new Hashtable<Integer, FontBase>();
-      m_taskSubProjects = new Hashtable<Integer, SubProject>();
+      m_fontBases = new HashMap<Integer, FontBase>();
+      m_taskSubProjects = new HashMap<Integer, SubProject>();
       m_taskOrder = new TreeMap<Long, Integer>();
       m_nullTaskOrder = new TreeMap<Integer, Integer>();
 
@@ -2083,7 +2083,7 @@ final class MPP12Reader implements MPPVariantReader
    private ProjectFile m_file;
    private EventManager m_eventManager;
    private DirectoryEntry m_root;
-   private Hashtable<Integer, ProjectCalendar> m_resourceMap;
+   private HashMap<Integer, ProjectCalendar> m_resourceMap;
    private Var2Data m_outlineCodeVarData;
    private VarMeta m_outlineCodeVarMeta;
    private FixedData m_outlineCodeFixedData;

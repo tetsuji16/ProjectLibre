@@ -27,7 +27,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -1018,14 +1018,14 @@ public final class PrimaveraPMFileReader extends AbstractProjectReader
    private ProjectFile m_projectFile;
    private EventManager m_eventManager;
    private List<ProjectListener> m_projectListeners;
-   private Map<Integer, Integer> m_clashMap = new Hashtable<Integer, Integer>();
-   private Map<Integer, ProjectCalendar> m_calMap = new Hashtable<Integer, ProjectCalendar>();
+   private Map<Integer, Integer> m_clashMap = new HashMap<Integer, Integer>();
+   private Map<Integer, ProjectCalendar> m_calMap = new HashMap<Integer, ProjectCalendar>();
 
    private static final int NAMESPACE_SCOPE = 512;
    private static final String NAMESPACE_REGEX = "xmlns=\\\".*BusinessObjects\\\"";
    private static final String NAMESPACE_REPLACEMENT = "xmlns=\"http://xmlns.oracle.com/Primavera/P6/V17.7/API/BusinessObjects\"";
 
-   private static final Map<String, net.sf.mpxj.ResourceType> RESOURCE_TYPE_MAP = new Hashtable<String, net.sf.mpxj.ResourceType>();
+   private static final Map<String, net.sf.mpxj.ResourceType> RESOURCE_TYPE_MAP = new HashMap<String, net.sf.mpxj.ResourceType>();
    static
    {
       RESOURCE_TYPE_MAP.put(null, net.sf.mpxj.ResourceType.WORK);
@@ -1034,7 +1034,7 @@ public final class PrimaveraPMFileReader extends AbstractProjectReader
       RESOURCE_TYPE_MAP.put("Nonlabor", net.sf.mpxj.ResourceType.MATERIAL);
    }
 
-   private static final Map<String, ConstraintType> CONSTRAINT_TYPE_MAP = new Hashtable<String, ConstraintType>();
+   private static final Map<String, ConstraintType> CONSTRAINT_TYPE_MAP = new HashMap<String, ConstraintType>();
    static
    {
       CONSTRAINT_TYPE_MAP.put("Start On", ConstraintType.MUST_START_ON);
@@ -1048,7 +1048,7 @@ public final class PrimaveraPMFileReader extends AbstractProjectReader
       CONSTRAINT_TYPE_MAP.put("Mandatory Finish", ConstraintType.MUST_FINISH_ON);
    }
 
-   private static final Map<String, Priority> PRIORITY_MAP = new Hashtable<String, Priority>();
+   private static final Map<String, Priority> PRIORITY_MAP = new HashMap<String, Priority>();
    static
    {
       PRIORITY_MAP.put("Top", Priority.getInstance(Priority.HIGHEST));
@@ -1058,7 +1058,7 @@ public final class PrimaveraPMFileReader extends AbstractProjectReader
       PRIORITY_MAP.put("Lowest", Priority.getInstance(Priority.LOWEST));
    }
 
-   private static final Map<String, RelationType> RELATION_TYPE_MAP = new Hashtable<String, RelationType>();
+   private static final Map<String, RelationType> RELATION_TYPE_MAP = new HashMap<String, RelationType>();
    static
    {
       RELATION_TYPE_MAP.put("Finish to Start", RelationType.FINISH_START);
@@ -1067,7 +1067,7 @@ public final class PrimaveraPMFileReader extends AbstractProjectReader
       RELATION_TYPE_MAP.put("Start to Finish", RelationType.START_FINISH);
    }
 
-   private static final Map<String, Day> DAY_MAP = new Hashtable<String, Day>();
+   private static final Map<String, Day> DAY_MAP = new HashMap<String, Day>();
    static
    {
       DAY_MAP.put("Monday", Day.MONDAY);
@@ -1079,7 +1079,7 @@ public final class PrimaveraPMFileReader extends AbstractProjectReader
       DAY_MAP.put("Sunday", Day.SUNDAY);
    }
 
-   private static final Map<String, Boolean> MILESTONE_MAP = new Hashtable<String, Boolean>();
+   private static final Map<String, Boolean> MILESTONE_MAP = new HashMap<String, Boolean>();
    static
    {
       MILESTONE_MAP.put("Task Dependent", Boolean.FALSE);

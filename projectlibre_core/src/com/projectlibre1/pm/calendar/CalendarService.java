@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.calendar;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -72,9 +72,9 @@ import com.projectlibre1.timescale.CalendarUtil;
  */
 public class CalendarService {
 	private static CalendarService instance = null;
-	Vector baseCalendars = new Vector();
-	Vector derivedCalendars = new Vector();
-	Vector assignmentCalendars = new Vector();
+	ArrayList baseCalendars = new ArrayList();
+	ArrayList derivedCalendars = new ArrayList();
+	ArrayList assignmentCalendars = new ArrayList();
 
 	public static CalendarService getInstance() {
 		if (instance == null)
@@ -430,7 +430,7 @@ public class CalendarService {
 	}
 
 
-//	Hashtable importedCalendarMap = new Hashtable();
+//	HashMap importedCalendarMap = new Hashtable();
 //	public void addImportedCalendar(WorkingCalendar cal, MPXCalendar mpxCal) {
 //		importedCalendarMap.put(mpxCal,cal);
 //		if (cal.isBaseCalendar()) {
@@ -455,7 +455,7 @@ public class CalendarService {
 //		return null;
 //	}
 //
-//	Hashtable exportedCalendarMap = new Hashtable();
+//	HashMap exportedCalendarMap = new Hashtable();
 //	public void addExportedCalendar(MPXCalendar mpxCal,WorkingCalendar cal) {
 //		exportedCalendarMap.put(cal,mpxCal);
 //	}
@@ -509,10 +509,10 @@ public class CalendarService {
 //		}
 //	}
 //
-	public final Vector getBaseCalendars() {
+	public ArrayList getBaseCalendars() {
 		return baseCalendars;
 	}
-	public final Vector getDerivedCalendars() {
+	public ArrayList getDerivedCalendars() {
 		return derivedCalendars;
 	}
 

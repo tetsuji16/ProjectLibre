@@ -71,8 +71,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -237,7 +237,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			((CommonSpreadSheetModel) getModel()).getCache().removeNodeModelListener(this);
 		super.cleanUp();
 	}
-	public void setCache(NodeModelCache cache, Vector fieldArray, CellStyle cellStyle, ActionList actionList) {
+	public void setCache(NodeModelCache cache, ArrayList fieldArray, CellStyle cellStyle, ActionList actionList) {
 		// if (getCache()!=null) getCache().close();
 		if (getCache() != null)
 			getCache().getReference().close(); // deepClose
@@ -488,7 +488,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			action.actionPerformed(new ActionEvent(this, event.getID(), String.valueOf(actionKey), event.getWhen(), event.getModifiers()));
 	}
 
-	public void setFieldArray(Vector fieldArray) {
+	public void setFieldArray(ArrayList fieldArray) {
 		((SpreadSheetColumnModel) getColumnModel()).setFieldArray(fieldArray);
 		createDefaultColumnsFromModel(fieldArray);
 		resizeAndRepaintHeader();
@@ -505,7 +505,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		
 	}
 
-	public void createDefaultColumnsFromModel(Vector fieldArray) {
+	public void createDefaultColumnsFromModel(ArrayList fieldArray) {
 			// Remove any current columns
 			TableColumnModel cm = getColumnModel();
 			while (cm.getColumnCount() > 0) {
@@ -850,7 +850,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			return null;
 		}
 		if (actionMap==null){
-			actionMap=new Hashtable();
+			actionMap=new HashMap();
 			addActions(getActionList());
 		}
 		return (CommonSpreadSheetAction) actionMap.get(actionId);
@@ -901,7 +901,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	public void setActions(String[] actions){
 		//replace default actions
 		actionList=actions;
-		if (actionMap==null) actionMap=new Hashtable();
+		if (actionMap==null) actionMap=new HashMap();
 		else actionMap.clear();
 		addActions(actions);
 	}
@@ -1011,7 +1011,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 				final ResourcePool resourcePool=(ResourcePool)getCache().getModel().getDataFactory();
 				Project project=(Project)resourcePool.getProjects().get(0);
 					if (nodes==null||nodes.size()==0) return;
-					final Vector descriptors=new Vector();
+					final ArrayList descriptors = new ArrayList();
 					Session session=SessionFactory.getInstance().getSession(false);
 					Job job=(Job)SessionFactory.callNoEx(session,"getLoadProjectDescriptorsJob",new Class[]{boolean.class,java.util.List.class,boolean.class},new Object[]{true,descriptors,true});
 					job.addSwingRunnable(new JobRunnable("Local: addNodes"){
@@ -1023,7 +1023,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 							final Closure getter=new Closure(){
 								public void execute(Object obj){
 									ResourceAdditionDialog.Form form=(ResourceAdditionDialog.Form)obj;
-									List nodes=new Vector();
+									List nodes=new ArrayList();
 									for (Iterator i=form.getSelectedResources().iterator();i.hasNext();){
 										try {
 											nodes.add(NodeFactory.getInstance().createNode(Serializer.deserializeResourceAndAddToPool((EnterpriseResourceData)i.next(),resourcePool,null)));
@@ -1042,7 +1042,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 							ResourceAdditionDialog.Form form=new ResourceAdditionDialog.Form();
 							try{
 								List resources=(List)SessionFactory.call(SessionFactory.getInstance().getSession(false),"retrieveResourceDescriptors",null,null);
-								Hashtable resourceMap=new Hashtable();
+								HashMap resourceMap = new HashMap();
 								for (Iterator i=resources.iterator();i.hasNext();){
 									EnterpriseResourceData data=(EnterpriseResourceData)i.next();
 									resourceMap.put(Long.valueOf(data.getUniqueId()),data);

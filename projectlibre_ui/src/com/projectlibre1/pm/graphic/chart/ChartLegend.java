@@ -63,7 +63,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -138,9 +138,9 @@ public class ChartLegend  implements SelectionNodeListener, Serializable , Savab
 	
 	boolean simple;
 	ChartInfo chartInfo;
-	List selectedObjects = new Vector();
-	List selectedResourcesFromTasks = new Vector();
-	List selectedResourcesOnTree = new Vector();
+	List selectedObjects = new ArrayList();
+	List selectedResourcesFromTasks = new ArrayList();
+	List selectedResourcesOnTree = new ArrayList();
 	TransformComboBox filterComboBox = null;
 	JList tracesList;
 
@@ -386,7 +386,7 @@ public class ChartLegend  implements SelectionNodeListener, Serializable , Savab
 	}
 	
 	private List pathsToList(TreePath[] paths) {
-		List list = new Vector();
+		List list = new ArrayList();
 		if (paths != null) {
 			for (int i=0; i < paths.length; i++) {
 				list.add(((GraphicNode)paths[i].getLastPathComponent()).getNode().getImpl());
@@ -452,7 +452,7 @@ public class ChartLegend  implements SelectionNodeListener, Serializable , Savab
 		if (implList.isEmpty() || !(implList.get(0) instanceof Project)) 
 			return implList;
 	
-		final List resultList = new Vector();
+		final List resultList = new ArrayList();
 		Iterator i = implList.iterator();
 		while (i.hasNext()) {
 			((Project)i.next()).forTasks(new Closure(){
@@ -483,7 +483,7 @@ public class ChartLegend  implements SelectionNodeListener, Serializable , Savab
 	}
 	
 	private List extractResources(List list) {
-		Vector resList = new Vector();
+		ArrayList resList = new ArrayList();
 		Iterator i = list.iterator();
 		Object obj;
 		while (i.hasNext()) {

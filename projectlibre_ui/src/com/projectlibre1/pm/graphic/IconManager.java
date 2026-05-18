@@ -58,7 +58,7 @@ package com.projectlibre1.pm.graphic;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.net.URL;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -74,8 +74,8 @@ import com.projectlibre1.util.ClassLoaderUtils;
  */
 public class IconManager {
 	protected static ClassLoader classLoader=ClassLoaderUtils.getLocalClassLoader();
-	protected static Hashtable icons = new Hashtable();
-	protected static Hashtable ribbonIcons = new Hashtable();
+	protected static HashMap icons = new HashMap();
+	protected static HashMap ribbonIcons = new HashMap();
 	private final static String[] iconPackages = new String[] {
 			"com/projectlibre1/pm/graphic/images/"
 			,"com/projectlibre1/pm/graphic/images/big/"

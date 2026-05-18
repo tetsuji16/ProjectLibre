@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.assignment.contour;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import com.projectlibre1.datatype.DurationFormat;
@@ -118,11 +118,11 @@ public abstract class AbstractContour implements Cloneable{
 	 * Returns an array list containing elements of bucket array 
 	 * @return
 	 */
-	public Vector toArrayList() {
+	public ArrayList toArrayList() {
 		if (contourBuckets == null)
 			return null;
 
-		Vector list = new Vector(contourBuckets.length);
+		ArrayList list = new ArrayList(contourBuckets.length);
 		for (int i=0; i < contourBuckets.length; i++) {
 			list.add(contourBuckets[i]);
 		}
@@ -170,7 +170,7 @@ public abstract class AbstractContour implements Cloneable{
 	}
 
 	public String toString(long assignmentDuration) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		if (contourBuckets == null)
 			return null;
 		for (int i=0; i < contourBuckets.length; i++) {

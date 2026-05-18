@@ -25,7 +25,7 @@ package net.sf.mpxj.mpx;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.mpxj.Day;
@@ -284,7 +284,7 @@ final class RecurrenceUtility
    /**
     * Map to allow conversion of a TimeUnit instance back to an integer.
     */
-   private static final Map<TimeUnit, Integer> UNITS_MAP = new Hashtable<TimeUnit, Integer>();
+   private static final Map<TimeUnit, Integer> UNITS_MAP = new HashMap<TimeUnit, Integer>();
    static
    {
       for (int loop = 0; loop < DURATION_UNITS.length; loop++)
@@ -296,7 +296,7 @@ final class RecurrenceUtility
    /**
     * Map of integer values to RecurrenceType instances.
     */
-   private static final Map<Integer, RecurrenceType> RECURRENCE_TYPE_MAP = new Hashtable<Integer, RecurrenceType>();
+   private static final Map<Integer, RecurrenceType> RECURRENCE_TYPE_MAP = new HashMap<Integer, RecurrenceType>();
    static
    {
       RECURRENCE_TYPE_MAP.put(Integer.valueOf(1), RecurrenceType.DAILY);
@@ -308,7 +308,7 @@ final class RecurrenceUtility
    /**
     * Map of  RecurrenceType instances to integer values.
     */
-   private static final Map<RecurrenceType, Integer> RECURRENCE_VALUE_MAP = new Hashtable<RecurrenceType, Integer>();
+   private static final Map<RecurrenceType, Integer> RECURRENCE_VALUE_MAP = new HashMap<RecurrenceType, Integer>();
    static
    {
       RECURRENCE_VALUE_MAP.put(RecurrenceType.DAILY, Integer.valueOf(1));
@@ -335,7 +335,7 @@ final class RecurrenceUtility
    /**
     * Map from Day instance to MPX day index.
     */
-   private static final Map<Day, Integer> DAY_MAP = new Hashtable<Day, Integer>();
+   private static final Map<Day, Integer> DAY_MAP = new HashMap<Day, Integer>();
    static
    {
       DAY_MAP.put(Day.MONDAY, Integer.valueOf(1));

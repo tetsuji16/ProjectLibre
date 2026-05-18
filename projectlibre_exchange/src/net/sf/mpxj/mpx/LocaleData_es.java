@@ -24,7 +24,7 @@
 
 package net.sf.mpxj.mpx;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.ListResourceBundle;
 import java.util.Map;
 
@@ -94,7 +94,7 @@ public final class LocaleData_es extends ListResourceBundle
             // Elapsed Percent - Porcentaje Transcurridos
    };
 
-   private static final Map<String, Integer> TIME_UNITS_MAP_DATA = new Hashtable<String, Integer>();
+   private static final Map<String, Integer> TIME_UNITS_MAP_DATA = new HashMap<String, Integer>();
 
    static
    {

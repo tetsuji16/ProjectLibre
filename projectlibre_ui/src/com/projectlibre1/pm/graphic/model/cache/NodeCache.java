@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.model.cache;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -90,8 +90,8 @@ public class NodeCache extends CellCache {
 	public void updateVisibleElements(VisibleNodes v, Set updates){
 //		long t0=System.currentTimeMillis();
 
-		Vector visibleElements=v.getElements();
-	    Vector oldList=(Vector)visibleElements.clone();
+		ArrayList visibleElements =v.getElements();
+	    ArrayList oldList =(ArrayList) visibleElements.clone();
 		
 		visibleElements.clear();
 		int minLevel=-1;
@@ -125,16 +125,16 @@ public class NodeCache extends CellCache {
 //	}
 
 	
-	public static void applyUpdates(Vector oldList, Vector newList, Set updates, List events, Object source){
-	    Vector o=(Vector)oldList.clone();
-		Vector n=(Vector)newList.clone();
+	public static void applyUpdates(ArrayList oldList, ArrayList newList, Set updates, List events, Object source){
+	    ArrayList o =(ArrayList) oldList.clone();
+		ArrayList n =(ArrayList) newList.clone();
 		
 //		long t0=System.currentTimeMillis();
-		Vector removeList=null;
-		Vector removeNodeList=null;
+		ArrayList removeList =null;
+		ArrayList removeNodeList =null;
 		//if (removeFunctor!=null){
-			removeList=new Vector();
-			removeNodeList=new Vector();
+			removeList=new ArrayList();
+			removeNodeList=new ArrayList();
 			createRemoveDiff(o,n,removeNodeList,removeList,updates);
 			if (removeList.size()>0){
 				//removeFunctor.execute(removeNodeList,removeList);
@@ -144,11 +144,11 @@ public class NodeCache extends CellCache {
 //			long t1=System.currentTimeMillis();
 //			System.out.println("\t\t\tcache applyUpdates#1 ran in "+(t1-t0)+"ms");
 		
-		Vector insertList=null;
-		Vector insertNodeList=null;
+		ArrayList insertList =null;
+		ArrayList insertNodeList =null;
 		//if (insertFunctor!=null){
-			insertList=new Vector();
-			insertNodeList=new Vector();
+			insertList=new ArrayList();
+			insertNodeList=new ArrayList();
 			createRemoveDiff(n,o,insertNodeList,insertList,updates);
 			if (insertList.size()>0){
 			    events.add(new CacheEvent(source,CacheEvent.NODES_INSERTED,(List)insertNodeList.clone(),(List)insertList.clone()));
@@ -191,7 +191,7 @@ public class NodeCache extends CellCache {
 	}
 	
 	
-	protected static void createRemoveDiff(Vector oldList,Vector newList,Vector nodeDiff,Vector intervaldiff,Set updates){
+	protected static void createRemoveDiff(ArrayList oldList, ArrayList newList, ArrayList nodeDiff, ArrayList intervaldiff,Set updates){
 		Collection newCol=getContainsCollection(newList);
 		int row=0;
 		int begin=-1;
@@ -219,9 +219,7 @@ public class NodeCache extends CellCache {
 	}
 	
 	
-	protected static void createPermutationDiff(Vector oldList,Vector newList,
-			Vector removeNodeList,Vector insertNodeList,
-			Vector removeIntervalList,Vector insertIntervalList,
+	protected static void createPermutationDiff(ArrayList oldList, ArrayList newList, ArrayList removeNodeList, ArrayList insertNodeList, ArrayList removeIntervalList, ArrayList insertIntervalList,
 			Set updates){
 	    //oldList and newList have the same size and contains the same elements
 	    ListIterator o=oldList.listIterator();
@@ -251,7 +249,7 @@ public class NodeCache extends CellCache {
 	}
 	
 	
-	protected static void createUpdateDiff(Vector newList, Vector nodeDiff,Vector diff,Set updates){
+	protected static void createUpdateDiff(ArrayList newList, ArrayList nodeDiff, ArrayList diff,Set updates){
 		if (updates!=null&&updates.size()>0){
 			Collection updatesCol=getContainsCollection(updates);
 			int begin=-1;

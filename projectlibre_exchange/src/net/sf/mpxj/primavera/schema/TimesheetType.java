@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -487,7 +487,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (resourceHour == null)
       {
-         resourceHour = new Vector<ResourceHourType>();
+         resourceHour = new ArrayList<ResourceHourType>();
       }
       return this.resourceHour;
    }

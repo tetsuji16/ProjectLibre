@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.pm.exchange;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +75,7 @@ public class ImprovedMSPDIReader extends MSPDIReader {
 	
 	private Resource unassignedResource=null;
 	
-	protected void readResources(Project project, Hashtable calendarMap) {
+	protected void readResources(Project project, HashMap calendarMap) {
 		super.readResources(project,calendarMap);
 		
 		//replace null by unassigned resource
@@ -89,7 +89,7 @@ public class ImprovedMSPDIReader extends MSPDIReader {
 	
 	
 	
-	protected Map<ResourceAssignment,List<TimephasedDataType>> rawTimephasedMap = new Hashtable<ResourceAssignment,List<TimephasedDataType>>();
+	protected Map<ResourceAssignment,List<TimephasedDataType>> rawTimephasedMap = new HashMap<ResourceAssignment, List<TimephasedDataType>>();
 	
 	@Override
 	public ResourceAssignment readAssignment(Project.Assignments.Assignment assignment, SplitTaskFactory splitFactory, TimephasedWorkNormaliser normaliser) {

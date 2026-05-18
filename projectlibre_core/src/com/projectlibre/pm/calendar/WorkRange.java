@@ -125,7 +125,7 @@ public class WorkRange{
 
 	
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append('\t').append("type=").append(type).append('\n');
 		
 		

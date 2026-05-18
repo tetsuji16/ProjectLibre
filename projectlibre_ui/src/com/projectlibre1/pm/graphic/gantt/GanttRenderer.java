@@ -70,7 +70,7 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.text.DateFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -597,24 +597,20 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			return null;
 
 		GeneralPath path = null;
-		double statusX = Double.NaN;
 		for (Iterator i=nodeList.iterator(); i.hasNext();) {
 			GraphicNode node = (GraphicNode)i.next();
 			if (!shouldIncludeInProgressLine(node))
 				continue;
 
 			Task task = (Task)node.getNode().getImpl();
-			if (Double.isNaN(statusX))
-				statusX = getStatusLineX(coord, task);
 			double progressX = getProgressLineX(coord, task);
 			double y = getProgressLineY(node);
 			if (path == null) {
 				path = new GeneralPath();
-				path.moveTo((float)statusX, (float)y);
+				path.moveTo((float)progressX, (float)y);
 			} else {
-				path.lineTo((float)statusX, (float)y);
+				path.lineTo((float)progressX, (float)y);
 			}
-			path.lineTo((float)progressX, (float)y);
 		}
 		return path;
 	}
@@ -642,22 +638,21 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		long start = task.getStart();
 		long end = task.getEnd();
 		double progress = clampProgress(task.getPercentComplete());
-		long statusDate = getStatusDate(task);
-		long progressDate = start + Math.round((end - start) * progress);
-		// Zero-progress tasks should anchor to the status date so the progress line
-		// stays aligned instead of jumping back to the task start.
-		if (progress == 0.0d)
-			progressDate = statusDate;
+		long today = getStatusDate(task);
+		long progressDate;
+		if (progress == 1.0d && end <= today)
+			progressDate = today;
+		else if (progress == 0.0d && start >= today)
+			progressDate = today;
+		else
+			progressDate = start + Math.round((end - start) * progress);
 		return coord.toX(progressDate);
-	}
-
-	private double getStatusLineX(CoordinatesConverter coord, Task task) {
-		return coord.toX(getStatusDate(task));
 	}
 
 	private long getStatusDate(Task task) {
 		Project project = task.getProject();
-		return project == null ? System.currentTimeMillis() : project.getStatusDate();
+		long statusDate = project == null ? 0L : project.getStatusDate();
+		return statusDate == 0L ? System.currentTimeMillis() : statusDate;
 	}
 
 	private double getProgressLineY(GraphicNode node) {
@@ -776,7 +771,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	}
 
 
-	Vector nodeList=new Vector();
+	ArrayList nodeList = new ArrayList();
     public void paint(Graphics g) {
     	paint(g,null);
     }

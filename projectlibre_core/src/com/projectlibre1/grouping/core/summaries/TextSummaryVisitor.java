@@ -58,12 +58,12 @@ package com.projectlibre1.grouping.core.summaries;
  *  
  */
 public abstract class TextSummaryVisitor extends SummaryVisitor {
-	protected StringBuffer summary;
+	protected StringBuilder summary;
 	public TextSummaryVisitor() {
 		super();
 	}
 	public void reset() {
-		summary = new StringBuffer();
+		summary = new StringBuilder();
 	}
 	public Object getSummary() {
 		return summary.toString();

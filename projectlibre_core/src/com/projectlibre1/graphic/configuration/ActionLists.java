@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.graphic.configuration;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,9 +81,9 @@ public class ActionLists implements NamedItem {
 	
 	String name = null;
 	String id = null;
-	Map actionListMap = new Hashtable();
-	Map factoryMap = new Hashtable();
-	List factories = new Vector();
+	Map actionListMap = new HashMap();
+	Map factoryMap = new HashMap();
+	List factories = new ArrayList();
 
 	public ActionLists() {}
 	

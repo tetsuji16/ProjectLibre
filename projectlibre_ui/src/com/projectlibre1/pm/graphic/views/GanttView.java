@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.views;
 
 import java.awt.Dimension;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
@@ -266,12 +266,12 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	 * @param name
 	 * @return old field array
 	 */
-	public Vector setColumns(String name){
-		Vector old = spreadSheet.getFieldArray();
-		setColumns((Vector) Dictionary.get(spreadsheetCategory,Messages.getString(name)));
+	public ArrayList setColumns(String name){
+		ArrayList old = spreadSheet.getFieldArray();
+		setColumns((ArrayList) Dictionary.get(spreadsheetCategory,Messages.getString(name)));
 		return old;
 	}
-	public void setColumns(Vector fields){
+	public void setColumns(ArrayList fields){
 		spreadSheet.setFieldArray(fields);
 	}
 	/**

@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.turboproject;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.mpxj.Duration;
@@ -42,7 +42,7 @@ class TableCONTAB extends Table
    {
       if (data[0] != (byte) 0xFF)
       {
-         Map<String, Object> map = new Hashtable<String, Object>();
+         Map<String, Object> map = new HashMap<String, Object>();
          map.put("UNIQUE_ID", Integer.valueOf(uniqueID));
          map.put("TASK_ID_1", Integer.valueOf(PEPUtility.getShort(data, 1)));
          map.put("TASK_ID_2", Integer.valueOf(PEPUtility.getShort(data, 3)));

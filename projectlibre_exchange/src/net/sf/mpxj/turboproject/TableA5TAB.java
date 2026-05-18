@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.turboproject;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.mpxj.Duration;
@@ -40,7 +40,7 @@ class TableA5TAB extends Table
     */
    @Override protected void readRow(int uniqueID, byte[] data)
    {
-      Map<String, Object> map = new Hashtable<String, Object>();
+      Map<String, Object> map = new HashMap<String, Object>();
       map.put("UNIQUE_ID", Integer.valueOf(uniqueID));
 
       int originalDuration = PEPUtility.getShort(data, 22);

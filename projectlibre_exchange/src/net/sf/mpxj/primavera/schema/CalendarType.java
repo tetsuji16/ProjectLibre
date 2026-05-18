@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -799,7 +799,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
       {
          if (holidayOrException == null)
          {
-            holidayOrException = new Vector<CalendarType.HolidayOrExceptions.HolidayOrException>();
+            holidayOrException = new ArrayList<CalendarType.HolidayOrExceptions.HolidayOrException>();
          }
          return this.holidayOrException;
       }
@@ -886,7 +886,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
          {
             if (workTime == null)
             {
-               workTime = new Vector<WorkTimeType>();
+               workTime = new ArrayList<WorkTimeType>();
             }
             return this.workTime;
          }
@@ -971,7 +971,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
       {
          if (standardWorkHours == null)
          {
-            standardWorkHours = new Vector<CalendarType.StandardWorkWeek.StandardWorkHours>();
+            standardWorkHours = new ArrayList<CalendarType.StandardWorkWeek.StandardWorkHours>();
          }
          return this.standardWorkHours;
       }
@@ -1070,7 +1070,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
          {
             if (workTime == null)
             {
-               workTime = new Vector<WorkTimeType>();
+               workTime = new ArrayList<WorkTimeType>();
             }
             return this.workTime;
          }

@@ -54,7 +54,7 @@
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
 package com.projectlibre1.grouping.core;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -65,7 +65,7 @@ import com.projectlibre1.grouping.core.transform.filtering.NotVoidFilter;
 /**
  * It holds all the nodes of a model.
  */
-public class NodeList extends Vector {
+public class NodeList extends ArrayList {
 	/**
 	 *  
 	 */
@@ -107,8 +107,8 @@ public class NodeList extends Vector {
 	}
 	public static List nodeListToImplList(Collection nodeList,NodeFilter filter) {
 		if (nodeList == null) // happens in certain cases
-			return new Vector();
-		List implList = new Vector(nodeList.size());
+			return new ArrayList();
+		List implList = new ArrayList(nodeList.size());
 		Iterator i = nodeList.iterator();
 		Node current;
 		while (i.hasNext()) {

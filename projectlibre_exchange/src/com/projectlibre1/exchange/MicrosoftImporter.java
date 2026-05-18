@@ -59,9 +59,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -125,10 +125,10 @@ public class MicrosoftImporter extends ServerFileImporter{
 	protected com.projectlibre.pm.tasks.Project plProject= null;
 	protected OpImportState state=new OpImportState();
 	List allTasks = null;
-	Vector subprojects;
+	ArrayList subprojects;
 	private Date earliestStart = DateTime.getMaxDate();
-	protected Hashtable taskMap = new Hashtable(); // keeps track of mapping mpx tasks to projectlibre1 tasks
-	private Hashtable resourceMap = new Hashtable(); // keeps track of mappy mpx resources to projectlibre1 resources
+	protected HashMap taskMap = new HashMap(); // keeps track of mapping mpx tasks to projectlibre1 tasks
+	private HashMap resourceMap = new HashMap(); // keeps track of mappy mpx resources to projectlibre1 resources
 	List allResources=null;
 	public static boolean ADD_SUMMARY_TASK = false; //Environment.isAddSummaryTask(); // whether to automatically add an extra project summary task or not //claur
 	private static final String ABORT = "Job aborted"; //$NON-NLS-1$
@@ -305,7 +305,7 @@ public class MicrosoftImporter extends ServerFileImporter{
     public Job getImportFileJob(){
 		System.out.println("MicrosoftImporter.getImportFileJob()");
 
-    	subprojects = new Vector();
+    	subprojects = new ArrayList();
     	errorDescription = null;
     	lastException = null;
     	Session session=SessionFactory.getInstance().getSession(resourceMapping==null);
@@ -512,7 +512,7 @@ public class MicrosoftImporter extends ServerFileImporter{
 		});
 	}
 
-	protected boolean importResources(Hashtable resourceMap,Closure importLocalResources) throws Exception{
+	protected boolean importResources(HashMap resourceMap,Closure importLocalResources) throws Exception{
 		ResourceMappingForm form=getResourceMapping();
 
 
@@ -532,7 +532,7 @@ public class MicrosoftImporter extends ServerFileImporter{
 			project.setTemporaryLocal(true);
 			Object srcResource;
 			EnterpriseResourceData data;
-			Map enterpriseResourceDataMap=new Hashtable();
+			Map enterpriseResourceDataMap=new HashMap();
 			for (Iterator i=form.getResources().iterator();i.hasNext();){
 				data=(EnterpriseResourceData)i.next();
 				if (data.isLocal()) {
@@ -724,7 +724,7 @@ public class MicrosoftImporter extends ServerFileImporter{
 //		System.out.println("Mapping res " + id + "   " + value);
 		resourceMap.put(id, value);
 	}
-	public Hashtable getResourceMap() {
+	public HashMap getResourceMap() {
 		return resourceMap;
 	}
 }

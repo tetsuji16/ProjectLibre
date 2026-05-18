@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -264,7 +264,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (shiftPeriod == null)
       {
-         shiftPeriod = new Vector<ShiftPeriodType>();
+         shiftPeriod = new ArrayList<ShiftPeriodType>();
       }
       return this.shiftPeriod;
    }

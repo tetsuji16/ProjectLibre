@@ -161,7 +161,7 @@ public class DependencyFormat extends AssociationFormat {
 		string.append(parameters.getIdField().getValue(task,null));
 		boolean hasLag = !Duration.isZero(dependency.getLag());
 
-		StringBuffer details = new StringBuffer();
+		StringBuilder details = new StringBuilder();
 		if (!DependencyType.isDefault(dependency.getDependencyType()) || hasLag)
 			details.append(DependencyType.mapValueToString( Integer.valueOf(dependency.getDependencyType())));
 

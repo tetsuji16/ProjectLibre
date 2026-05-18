@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.dialog;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -71,7 +72,7 @@ import com.projectlibre1.strings.Messages;
 public final class ResourceAdditionDialog extends AbstractDialog {
 	private static final long serialVersionUID = -2638004002538054771L;
 	public static class Form {
-		protected Vector selectedResources=new Vector<>();
+		protected Vector selectedResources = new Vector<>();
 
 		public Vector getSelectedResources() {
 			return selectedResources;

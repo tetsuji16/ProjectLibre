@@ -55,9 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.undo;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -78,12 +78,12 @@ public class ScheduleBackupEdit  extends AbstractUndoableEdit{
 	 */
 	public ScheduleBackupEdit(Object schedule, Object source) {
 		super();
-		backups=new Hashtable();
+		backups=new HashMap();
 		Collection collection;
 		if (schedule instanceof Collection){
 			collection=(Collection)schedule;
 		}else{
-			collection=new Vector(1);
+			collection=new ArrayList(1);
 			collection.add(schedule);
 		}
 		for (Iterator i=collection.iterator();i.hasNext();){

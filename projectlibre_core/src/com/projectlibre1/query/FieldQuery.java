@@ -56,7 +56,7 @@
 package com.projectlibre1.query;
 
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -72,7 +72,7 @@ public class FieldQuery {
 	 * @return
 	 */
 	public static Map countsForDiscreteValues(Collection collection, Field field) {
-		Map<Object,Integer> map = new Hashtable<Object,Integer>();
+		Map<Object,Integer> map = new HashMap<Object, Integer>();
 		if (collection == null)
 			return map;
 		Iterator i = collection.iterator();
@@ -90,7 +90,7 @@ public class FieldQuery {
 	}
 
 	public static Map sumsForDiscreteValues(Collection collection, Field keyField, Field valueField, boolean workToHours) {
-		Map<Object,Number> map = new Hashtable<Object,Number>();
+		Map<Object,Number> map = new HashMap<Object, Number>();
 		if (collection == null)
 			return map;
 		Iterator i = collection.iterator();

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.dialog;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -78,8 +78,8 @@ import com.projectlibre1.util.DateTime;
 public final class TransformParameterDialog extends AbstractDialog implements Closure{
 
 
-	List labels=new Vector();
-	List valueComponents=new Vector();
+	List labels=new ArrayList();
+	List valueComponents=new ArrayList();
 	CommonTransform transform;
 
 	public TransformParameterDialog() {

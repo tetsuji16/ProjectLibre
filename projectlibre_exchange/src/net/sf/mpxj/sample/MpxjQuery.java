@@ -24,7 +24,7 @@
 package net.sf.mpxj.sample;
 
 import java.text.SimpleDateFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -279,10 +279,10 @@ public class MpxjQuery
          SimpleDateFormat df = new SimpleDateFormat("dd/MM/yy");
 
          TimescaleUtility timescale = new TimescaleUtility();
-         Vector<DateRange> dates = timescale.createTimescale(task.getStart(), TimescaleUnits.DAYS, days);
+         ArrayList<DateRange> dates = timescale.createTimescale(task.getStart(), TimescaleUnits.DAYS, days);
          TimephasedUtility timephased = new TimephasedUtility();
 
-         Vector<Duration> durations = timephased.segmentWork(assignment.getCalendar(), assignment.getTimephasedWork(), TimescaleUnits.DAYS, dates);
+         ArrayList<Duration> durations = timephased.segmentWork(assignment.getCalendar(), assignment.getTimephasedWork(), TimescaleUnits.DAYS, dates);
          for (DateRange range : dates)
          {
             System.out.print(df.format(range.getStart()) + "\t");

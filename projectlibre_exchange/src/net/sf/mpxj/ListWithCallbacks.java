@@ -24,7 +24,7 @@
 package net.sf.mpxj;
 
 import java.util.AbstractList;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,5 +111,5 @@ public abstract class ListWithCallbacks<T> extends AbstractList<T>
       return removed;
    }
 
-   private final List<T> m_list = new Vector<T>();
+   private final List<T> m_list = new ArrayList<T>();
 }

@@ -25,7 +25,7 @@
 package net.sf.mpxj.mpx;
 
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
 
 import net.sf.mpxj.MPXJException;
@@ -266,5 +266,5 @@ final class ResourceModel
    /**
     * Map to store Resource field Numbers.
     */
-   private Hashtable<String, Integer> m_resourceNumbers = new Hashtable<String, Integer>();
+   private HashMap<String, Integer> m_resourceNumbers = new HashMap<String, Integer>();
 }

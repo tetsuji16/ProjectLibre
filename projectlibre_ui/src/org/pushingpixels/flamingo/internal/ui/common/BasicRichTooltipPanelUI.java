@@ -33,7 +33,7 @@ import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.AffineTransform;
 import java.text.AttributedString;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.*;
@@ -75,9 +75,9 @@ public class BasicRichTooltipPanelUI extends RichTooltipPanelUI {
 	}
 
 	public BasicRichTooltipPanelUI() {
-		this.titleLabels = new Vector<JLabel>();
-		this.descriptionLabels = new Vector<JLabel>();
-		this.footerLabels = new Vector<JLabel>();
+		this.titleLabels = new ArrayList<JLabel>();
+		this.descriptionLabels = new ArrayList<JLabel>();
+		this.footerLabels = new ArrayList<JLabel>();
 	}
 
 	/*

@@ -54,7 +54,7 @@
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.time;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.EventListener;
 
 import javax.swing.event.EventListenerList;
@@ -78,23 +78,23 @@ import com.projectlibre1.util.Alert;
  *  
  */
 public class TimeSpreadSheetModel extends CommonSpreadSheetModel implements TimeScaleListener{
-	protected Vector selectedFieldArray;
+	protected ArrayList selectedFieldArray;
 	//timescale
 	protected CoordinatesConverter coord;
-	protected Vector timeIntervals; // cache: data filled by 
+	protected ArrayList timeIntervals; // cache: data filled by 
 	FieldContext fieldContext = new FieldContext(); // this is re-used like a renderer
 	//TimeSpreadSheetModel with coord.getProjectTimeIterator()
-	Vector fieldArray;
-	public final Vector getFieldArray() {
+	ArrayList fieldArray;
+	public ArrayList getFieldArray() {
 		return fieldArray;
 	}
 
 
-	public TimeSpreadSheetModel(NodeModelCache cache,Vector fieldArray, CellStyle cellStyle, ActionList actionList) {
+	public TimeSpreadSheetModel(NodeModelCache cache, ArrayList fieldArray, CellStyle cellStyle, ActionList actionList) {
 		super(cache,null,cellStyle,actionList);
 		this.fieldArray = fieldArray;
-		selectedFieldArray=new Vector();
-		timeIntervals=new Vector();
+		selectedFieldArray=new ArrayList();
+		timeIntervals=new ArrayList();
 		resetSelectedFieldArray();
 		//initCellStyle();
 		setFieldContext(fieldContext);
@@ -120,7 +120,7 @@ public class TimeSpreadSheetModel extends CommonSpreadSheetModel implements Time
 //    }
 
 	
-//	public TimeSpreadSheetModel(NodeModel model,Vector fieldArray, CellStyle cellStyle,String viewName) {
+//	public TimeSpreadSheetModel(NodeModel model, ArrayList fieldArray, CellStyle cellStyle,String viewName) {
 //		super(NodeModelCacheFactory.getInstance().createDefaultCache(model,viewName),fieldArray,cellStyle);
 //		selectedFieldArray=new Vector();
 //		resetSelectedFieldArray();
@@ -153,14 +153,14 @@ public class TimeSpreadSheetModel extends CommonSpreadSheetModel implements Time
 		}
 	}
 
-	public void setFieldArray(Vector fieldArray) {
+	public void setFieldArray(ArrayList fieldArray) {
 		this.fieldArray = fieldArray;
 		resetSelectedFieldArray();
 	}
-	public Vector getSelectedFieldArray() {
+	public ArrayList getSelectedFieldArray() {
 		return selectedFieldArray;
 	}
-	public void setSelectedFieldArray(Vector selectedFieldArray) {
+	public void setSelectedFieldArray(ArrayList selectedFieldArray) {
 		int oldSize=this.selectedFieldArray.size();
 		this.selectedFieldArray = selectedFieldArray;
 		//only size is used

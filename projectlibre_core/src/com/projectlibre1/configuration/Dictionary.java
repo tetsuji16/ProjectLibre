@@ -57,7 +57,7 @@ package com.projectlibre1.configuration;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.commons.digester.Digester;
 
@@ -99,7 +99,7 @@ public class Dictionary implements ProvidesDigesterEvents {
 	public Dictionary() {
 	}
 
-	private Hashtable mainMap = new Hashtable<>();
+	private HashMap mainMap = new HashMap<>();
 
 	public static void add(NamedItem namedItem) {
 		add(namedItem,false);
@@ -109,9 +109,9 @@ public class Dictionary implements ProvidesDigesterEvents {
 
 		for (int i = 0; i < categories.length; i++) {
 			String category = categories[i];
-			Hashtable subMap = (Hashtable) getInstance().mainMap.get(category);
+			HashMap subMap = (HashMap) getInstance().mainMap.get(category);
 			if (subMap == null) {
-				subMap = new Hashtable<>();
+				subMap = new HashMap<>();
 				getInstance().mainMap.put(category, subMap);
 			}
 			if (!subMap.containsValue(namedItem)) {
@@ -130,20 +130,20 @@ public class Dictionary implements ProvidesDigesterEvents {
 
 		for (int i = 0; i < categories.length; i++) {
 			String category = categories[i];
-			Hashtable subMap = (Hashtable) getInstance().mainMap.get(category);
+			HashMap subMap = (HashMap) getInstance().mainMap.get(category);
 			subMap.remove(namedItem.getName());
 		}
 
 	}
 	public static NamedItem get(Object category, String name) {
-		Hashtable subMap = (Hashtable) getInstance().mainMap.get(category);
+		HashMap subMap = (HashMap) getInstance().mainMap.get(category);
 		if (subMap == null)
 			return null;
 		return (NamedItem) subMap.get(name);
 	}
 
 	public static Object[] getAll(Object category) {
-		Hashtable subMap = (Hashtable) getInstance().mainMap.get(category);
+		HashMap subMap = (HashMap) getInstance().mainMap.get(category);
 		Object[] array = subMap.values().toArray();
 		Arrays.sort(array,namedItemComparator);
 		return array;

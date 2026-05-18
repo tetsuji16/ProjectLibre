@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.field;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -106,7 +106,7 @@ public abstract class Select implements Map {
 		if (result == null || !allowNull)
 			return result;
 		// if a null element should be added, add it at front
-		List resultWithNull=new Vector(result.size()+1);
+		List resultWithNull=new ArrayList(result.size()+1);
 		resultWithNull.add(null);
 		return resultWithNull;
 	}
@@ -275,7 +275,7 @@ public abstract class Select implements Map {
 	public static String toConfigurationXMLOptions(LinkedHashMap map, String keyPrefix) {
 //		MapIterator i = map.i();
 		Iterator i = map.keySet().iterator();
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		HashSet duplicateSet = new HashSet(); // don't allow duplicate keys
 		while (i.hasNext()) {
 			String key = (String) i.next();
@@ -305,7 +305,7 @@ public abstract class Select implements Map {
 		this.sortKeys = sortKeys;
 	}
 	public String documentOptions() {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		for (Object key : getKeyArrayWithoutNull()) {
 			if (result.length() > 0)
 				result.append(", ");

@@ -55,7 +55,7 @@
  *******************************************************************************/
 package org.projectlibre.core.configuration.adapters;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -132,7 +132,7 @@ public class DictionaryAdapter<T> extends XmlAdapter<DictionaryAdapterList<T>, M
     
    @Override
     public Map<String, T> unmarshal(DictionaryAdapterList<T> list) throws Exception {
-        Hashtable<String, T> map = new Hashtable<String, T>(); 
+        HashMap<String, T> map = new HashMap<String, T>(); 
     	for (T element : list.getEntry()) {
             map.put(((HasStringId)element).getId(), element); //T must implement HasName
         }

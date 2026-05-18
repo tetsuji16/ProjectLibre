@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.menu;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -102,13 +102,13 @@ public class ExtToolBarFactory extends ToolBarFactory {
 	}
 	
 
-    public Vector getButtonsFromId(String id) {
+    public ArrayList getButtonsFromId(String id) {
     	String buttonId = getActionStringFromId(id);
-    	Vector result = null;
+    	ArrayList result = null;
     	if (buttonId != null)
-    		result = (Vector) toolButtons.get(buttonId);
+    		result = (ArrayList) toolButtons.get(buttonId);
     	if (result == null)
-    		result = (Vector) toolButtons.get(id);
+    		result = (ArrayList) toolButtons.get(id);
     	return result;
     }
     public String getActionStringFromId(String id) {

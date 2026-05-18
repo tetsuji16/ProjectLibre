@@ -59,7 +59,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.comparators.ComparableComparator;
@@ -374,7 +374,7 @@ public class ClassUtils {
 			
 		}
 		
-		private static Hashtable<Class,Comparator> comparatorMap = null;
+		private static HashMap<Class,Comparator> comparatorMap = null;
 		private static final Comparator defaultTextComparator=
 				new Comparator() {
 					public int compare(Object o1, Object o2) {
@@ -383,7 +383,7 @@ public class ClassUtils {
 
 		public static Comparator getComparator(Class clazz) {
 			if (comparatorMap == null) {
-				comparatorMap = new Hashtable<Class,Comparator>();
+				comparatorMap = new HashMap<Class, Comparator>();
 				comparatorMap.put(String.class,
 						new Comparator() {
 							public int compare(Object o1, Object o2) {

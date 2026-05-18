@@ -30,7 +30,7 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -223,7 +223,7 @@ public class MSPDIReader extends AbstractProjectReader //claur removed final to 
          DatatypeConverter.setParentFile(m_projectFile);
          Project project = (Project) unmarshaller.unmarshal(doc);
 
-         Hashtable<BigInteger, ProjectCalendar> calendarMap = new Hashtable<BigInteger, ProjectCalendar>();
+         HashMap<BigInteger, ProjectCalendar> calendarMap = new HashMap<BigInteger, ProjectCalendar>();
 
          readProjectProperties(project);
          readProjectExtendedAttributes(project);
@@ -377,7 +377,7 @@ public class MSPDIReader extends AbstractProjectReader //claur removed final to 
     * @param project Root node of the MSPDI file
     * @param map Map of calendar UIDs to names
     */
-   private void readCalendars(Project project, Hashtable<BigInteger, ProjectCalendar> map)
+   private void readCalendars(Project project, HashMap<BigInteger, ProjectCalendar> map)
    {
       Project.Calendars calendars = project.getCalendars();
       if (calendars != null)
@@ -415,7 +415,7 @@ public class MSPDIReader extends AbstractProjectReader //claur removed final to 
     * @param baseCalendars list of calendars and base calendar IDs
     * @param map map of calendar ID values and calendar objects
     */
-   private static void updateBaseCalendarNames(List<Pair<ProjectCalendar, BigInteger>> baseCalendars, Hashtable<BigInteger, ProjectCalendar> map)
+   private static void updateBaseCalendarNames(List<Pair<ProjectCalendar, BigInteger>> baseCalendars, HashMap<BigInteger, ProjectCalendar> map)
    {
       for (Pair<ProjectCalendar, BigInteger> pair : baseCalendars)
       {
@@ -437,7 +437,7 @@ public class MSPDIReader extends AbstractProjectReader //claur removed final to 
     * @param map Map of calendar UIDs to names
     * @param baseCalendars list of base calendars
     */
-   private void readCalendar(Project.Calendars.Calendar calendar, Hashtable<BigInteger, ProjectCalendar> map, List<Pair<ProjectCalendar, BigInteger>> baseCalendars)
+   private void readCalendar(Project.Calendars.Calendar calendar, HashMap<BigInteger, ProjectCalendar> map, List<Pair<ProjectCalendar, BigInteger>> baseCalendars)
    {
       ProjectCalendar bc = m_projectFile.addCalendar();
       bc.setUniqueID(NumberHelper.getInteger(calendar.getUID()));
@@ -862,7 +862,7 @@ public class MSPDIReader extends AbstractProjectReader //claur removed final to 
     * @param project Root node of the MSPDI file
     * @param calendarMap Map of calendar UIDs to names
     */
-   protected void readResources(Project project, Hashtable<BigInteger, ProjectCalendar> calendarMap) //claur changed to protected
+   protected void readResources(Project project, HashMap<BigInteger, ProjectCalendar> calendarMap) //claur changed to protected
    {
       Project.Resources resources = project.getResources();
       if (resources != null)
@@ -880,7 +880,7 @@ public class MSPDIReader extends AbstractProjectReader //claur removed final to 
     * @param xml Resource data
     * @param calendarMap Map of calendar UIDs to names
     */
-   private void readResource(Project.Resources.Resource xml, Hashtable<BigInteger, ProjectCalendar> calendarMap)
+   private void readResource(Project.Resources.Resource xml, HashMap<BigInteger, ProjectCalendar> calendarMap)
    {
       Resource mpx = m_projectFile.addResource();
 

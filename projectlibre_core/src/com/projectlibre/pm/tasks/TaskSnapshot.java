@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.tasks;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,7 +67,7 @@ import com.projectlibre.pm.scheduling.Schedule;
  *
  */
 public class TaskSnapshot implements Schedule{
-	protected List<Assignment> assignments=new Vector<Assignment>();
+	protected List<Assignment> assignments=new ArrayList<Assignment>();
 	protected Date start,finish;
 	protected Duration duration;
 	
@@ -100,7 +100,7 @@ public class TaskSnapshot implements Schedule{
 	}
 	
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("TaskSnapshot\n");
 		
 		s.append(tab).append("\t").append("assignments=\n");

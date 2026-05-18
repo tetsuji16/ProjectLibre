@@ -58,7 +58,7 @@ package com.projectlibre1.dialog;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -281,7 +281,7 @@ public final class ProjectDialog extends FieldDialog { // extends FieldDialog fo
 		startDateChooser = CalendarFactory.createDateField();
 		manager = new JTextField();
 		name = new JTextField();
-		Vector choices = new Vector();
+		ArrayList choices = new ArrayList();
 		choices.add(new String());
 		choices.addAll(ResourcePoolFactory.getInstance().getResourcePools());
 		resourcePool = new JComboBox(choices.toArray());

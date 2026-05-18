@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.assignment.contour;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.projectlibre1.pm.time.MutableInterval;
@@ -190,8 +190,8 @@ public class PersonalContour extends AbstractContour {
 	 * @param newBucket
 	 * @return
 	 */	
-	private Vector bucketsBeforeDuration(long atDuration) {
-		Vector newList = new Vector();
+	private ArrayList bucketsBeforeDuration(long atDuration) {
+		ArrayList newList = new ArrayList();
 		boolean inserted = false;
 		PersonalContourBucket bucket = null;
 		long cursorDuration = 0;
@@ -214,8 +214,8 @@ public class PersonalContour extends AbstractContour {
 		return newList;
 	}		
 
-	private Vector bucketsAfterDuration(long atDuration, boolean excludeFiller) {
-		Vector newList = new Vector();
+	private ArrayList bucketsAfterDuration(long atDuration, boolean excludeFiller) {
+		ArrayList newList = new ArrayList();
 		boolean inserted = false;
 		PersonalContourBucket bucket = null;
 		long cursorDuration = 0;
@@ -244,7 +244,7 @@ public class PersonalContour extends AbstractContour {
 	 * @return
 	 */
 	public AbstractContour removeFillerAfter(long atDuration) {
-		Vector newList = bucketsBeforeDuration(atDuration);
+		ArrayList newList = bucketsBeforeDuration(atDuration);
 		newList.addAll(bucketsAfterDuration(atDuration,false)); // exclude filler
 		return getInstance(newList).makePacked();
 	}
@@ -254,7 +254,7 @@ public class PersonalContour extends AbstractContour {
  * @param end
  * @return an interval which is a superset of the start,end interval
  */	public MutableInterval getRangeThatIntervalCanBeMoved(long start, long end) {
-		Vector tempList = bucketsBeforeDuration(start);
+		ArrayList tempList = bucketsBeforeDuration(start);
 		long startConstraint = start;
 		long endConstraint = Long.MAX_VALUE; // by default unbounded 
 		if (tempList.size() > 0) {
@@ -276,7 +276,7 @@ public class PersonalContour extends AbstractContour {
 	}
 	
 	public PersonalContour setInterval(long startDuration, long endDuration, double units) {
-		Vector newList = new Vector();
+		ArrayList newList = new ArrayList();
 		newList.addAll(bucketsBeforeDuration(startDuration));
 		newList.add(PersonalContourBucket.getInstance(endDuration - startDuration, units));
 		newList.addAll(bucketsAfterDuration(endDuration, false));
@@ -290,7 +290,7 @@ public class PersonalContour extends AbstractContour {
  * @param newBucket
  * @return
  */	public PersonalContour insertBucket(long atDuration, AbstractContourBucket newBucket) {
-		Vector newList = new Vector();
+		ArrayList newList = new ArrayList();
 		boolean inserted = false;
 		PersonalContourBucket bucket = null;
 		long cursorDuration = 0;
@@ -313,7 +313,7 @@ public class PersonalContour extends AbstractContour {
 // 	public PersonalContour setContiguousDuration(long startOfRegion, long duration) {
 // 		
 // 		//not yet implemented
-//		Vector newList = new Vector();
+//		ArrayList newList = new Vector();
 //		boolean inserted = false;
 //		PersonalContourBucket bucket = null;
 //		long cursorDuration = 0;
@@ -376,7 +376,7 @@ public class PersonalContour extends AbstractContour {
  */	public PersonalContour shift(long start, long end, long shiftDuration) {
 		if (shiftDuration == 0)
 			return this;
-		Vector newList = new Vector();
+		ArrayList newList = new ArrayList();
 		if (shiftDuration > 0) {
 			// we are shifting to right, so remove a period corresponding to shiftDuration immediately after the interval
 			newList.addAll(bucketsBeforeDuration(end));
@@ -409,7 +409,7 @@ public class PersonalContour extends AbstractContour {
 		if (extendDuration == 0)
 			return this;
 		PersonalContour result;
-		Vector newList = new Vector();
+		ArrayList newList = new ArrayList();
 		if (extendDuration > 0) {
 			newList.addAll(bucketsBeforeDuration(end));
 			newList.addAll(bucketsAfterDuration(end+extendDuration, false));
@@ -428,7 +428,7 @@ public class PersonalContour extends AbstractContour {
 		if (extendDuration == 0)
 			return this;
 		PersonalContour result;
-		Vector newList = new Vector();
+		ArrayList newList = new ArrayList();
 		PersonalContour temp = extendBucket(start,-extendDuration); // extend at point
 		if (extendDuration < 0) {
 			newList.addAll(temp.bucketsBeforeDuration(start+extendDuration)); // add all up to new start - extend duration is neg
@@ -446,7 +446,7 @@ public class PersonalContour extends AbstractContour {
  * Return an optimized contour that has no superflous info
  * @return
  */	private PersonalContour makePacked() {
-		Vector newList = new Vector();
+		ArrayList newList = new ArrayList();
 		PersonalContourBucket previous = null;
 		PersonalContourBucket bucket = null;
 		// go thru each bucket
@@ -498,9 +498,9 @@ public class PersonalContour extends AbstractContour {
 //	}
 
 	public AbstractContour adjustUnits(double multiplier, long startingFrom) {
-		Vector newList = new Vector();
+		ArrayList newList = new ArrayList();
 		newList.addAll(bucketsBeforeDuration(startingFrom));
-		Vector remainingBuckets = bucketsAfterDuration(startingFrom, false);
+		ArrayList remainingBuckets = bucketsAfterDuration(startingFrom, false);
 		for (int i=0; i < remainingBuckets.size(); i++) {
 			newList.add(((PersonalContourBucket)remainingBuckets.get(i)).adjustUnits(multiplier));
 		}
@@ -524,8 +524,8 @@ public class PersonalContour extends AbstractContour {
 			return newContour;
 		}
 
-		Vector newList = bucketsBeforeDuration(actualDuration);
-		Vector after = bucketsAfterDuration(actualDuration,false);
+		ArrayList newList = bucketsBeforeDuration(actualDuration);
+		ArrayList after = bucketsAfterDuration(actualDuration,false);
 		for (int i = 0; i < after.size(); i++) {
 			newList.add(((PersonalContourBucket)after.get(i)).adjustWork(multiplier));
 		}
@@ -608,12 +608,12 @@ public class PersonalContour extends AbstractContour {
 	 * @return
 	 */
 	public AbstractContour removeEmptyBucketAtDuration(long atDuration) {
-		Vector afterList = bucketsAfterDuration(atDuration,false);
+		ArrayList afterList = bucketsAfterDuration(atDuration,false);
 		// if nothing after or starts with a non null bucket
 		if (afterList.isEmpty() || ((AbstractContourBucket)afterList.get(0)).getUnits() != 0)
 			return this;
 		afterList.remove(0); // remove blank bucket
-		Vector newList = bucketsBeforeDuration(atDuration);
+		ArrayList newList = bucketsBeforeDuration(atDuration);
 		newList.addAll(afterList); // exclude filler
 		return getInstance(newList).makePacked();
 

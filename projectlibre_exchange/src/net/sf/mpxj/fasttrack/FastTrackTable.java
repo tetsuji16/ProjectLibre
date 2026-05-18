@@ -23,8 +23,8 @@
 
 package net.sf.mpxj.fasttrack;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import net.sf.mpxj.TimeUnit;
@@ -111,7 +111,7 @@ class FastTrackTable implements Iterable<MapRow>
 
       if (index == m_rows.size())
       {
-         result = new MapRow(this, new Hashtable<FastTrackField, Object>());
+         result = new MapRow(this, new HashMap<FastTrackField, Object>());
          m_rows.add(result);
       }
       else
@@ -124,5 +124,5 @@ class FastTrackTable implements Iterable<MapRow>
 
    private final FastTrackData m_data;
    private final FastTrackTableType m_type;
-   private final Vector<MapRow> m_rows = new Vector<MapRow>();
+   private final ArrayList<MapRow> m_rows = new ArrayList<MapRow>();
 }

@@ -32,9 +32,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -382,7 +382,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
     */
    private Map<Integer, List<Row>> createWorkPatternAssignmentMap(List<Row> rows) throws ParseException
    {
-      Map<Integer, List<Row>> map = new Hashtable<Integer, List<Row>>();
+      Map<Integer, List<Row>> map = new HashMap<Integer, List<Row>>();
       for (Row row : rows)
       {
          Integer calendarID = row.getInteger("ID");
@@ -400,7 +400,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
     */
    private List<Row> createWorkPatternAssignmentRowList(String workPatterns) throws ParseException
    {
-      List<Row> list = new Vector<Row>();
+      List<Row> list = new ArrayList<Row>();
       String[] patterns = workPatterns.split(",|:");
       int index = 1;
       while (index < patterns.length)
@@ -409,7 +409,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
          Date startDate = AstaDataType.parseBasicTimestamp(patterns[index + 3]);
          Date endDate = AstaDataType.parseBasicTimestamp(patterns[index + 4]);
 
-         Map<String, Object> map = new Hashtable<String, Object>();
+         Map<String, Object> map = new HashMap<String, Object>();
          map.put("WORK_PATTERN", workPattern);
          map.put("START_DATE", startDate);
          map.put("END_DATE", endDate);
@@ -430,7 +430,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
     */
    private Map<Integer, List<Row>> createExceptionAssignmentMap(List<Row> rows)
    {
-      Map<Integer, List<Row>> map = new Hashtable<Integer, List<Row>>();
+      Map<Integer, List<Row>> map = new HashMap<Integer, List<Row>>();
       for (Row row : rows)
       {
          Integer calendarID = row.getInteger("ID");
@@ -448,7 +448,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
     */
    private List<Row> createExceptionAssignmentRowList(String exceptionData)
    {
-      List<Row> list = new Vector<Row>();
+      List<Row> list = new ArrayList<Row>();
       String[] exceptions = exceptionData.split(",|:");
       int index = 1;
       while (index < exceptions.length)
@@ -457,7 +457,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
          Date endDate = AstaDataType.parseEpochTimestamp(exceptions[index + 1]);
          //Integer exceptionTypeID = Integer.valueOf(exceptions[index + 2]);
 
-         Map<String, Object> map = new Hashtable<String, Object>();
+         Map<String, Object> map = new HashMap<String, Object>();
          map.put("STARU_DATE", startDate);
          map.put("ENE_DATE", endDate);
 
@@ -477,7 +477,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
     */
    private Map<Integer, List<Row>> createTimeEntryMap(List<Row> rows) throws ParseException
    {
-      Map<Integer, List<Row>> map = new Hashtable<Integer, List<Row>>();
+      Map<Integer, List<Row>> map = new HashMap<Integer, List<Row>>();
       for (Row row : rows)
       {
          Integer workPatternID = row.getInteger("ID");
@@ -495,7 +495,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
     */
    private List<Row> createTimeEntryRowList(String shiftData) throws ParseException
    {
-      List<Row> list = new Vector<Row>();
+      List<Row> list = new ArrayList<Row>();
       String[] shifts = shiftData.split(",|:");
       int index = 1;
       while (index < shifts.length)
@@ -510,7 +510,7 @@ public final class AstaDatabaseFileReader implements ProjectReader
             Date startTime = AstaDataType.parseBasicTime(shifts[index + 1]);
             Date endTime = AstaDataType.parseBasicTime(shifts[index + 2]);
 
-            Map<String, Object> map = new Hashtable<String, Object>();
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("START_TIME", startTime);
             map.put("END_TIME", endTime);
             map.put("EXCEPTIOP", exceptionTypeID);
@@ -529,6 +529,6 @@ public final class AstaDatabaseFileReader implements ProjectReader
    private Connection m_connection;
    private PreparedStatement m_ps;
    private ResultSet m_rs;
-   private Map<String, Integer> m_meta = new Hashtable<String, Integer>();
+   private Map<String, Integer> m_meta = new HashMap<String, Integer>();
    private List<ProjectListener> m_projectListeners;
 }

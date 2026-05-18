@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.tasks;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.projectlibre.core.nodes.AbstractNode;
@@ -69,7 +69,7 @@ import com.projectlibre.pm.scheduling.Schedule;
  */
 public class Task extends AbstractNode implements Schedule, HasCalendar{
 	protected SnapshotList snapshotList=new SnapshotList();
-//	protected List<Assignment> assignments=new Vector<Assignment>();
+//	protected List<Assignment> assignments=new ArrayList<Assignment>();
 	protected TaskHistory history;
 	protected WorkCalendar calendar;
 	
@@ -121,7 +121,7 @@ public class Task extends AbstractNode implements Schedule, HasCalendar{
 	
 	@Override
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("Task #").append(hashCode()).append('\n');
 		s.append(super.toString(tab+"\t"));
 		

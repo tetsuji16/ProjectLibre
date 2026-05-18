@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.commons.collections.Closure;
@@ -208,7 +208,7 @@ public abstract class CommonTransformFactory extends CommonTransform{
 	    t.setShowAssignments(isShowAssignments());
 	    t.setPreserveHierarchy(isPreserveHierarchy());
 	    if (subTransforms!=null){
-	        Vector sub=new Vector();
+	        ArrayList sub = new ArrayList();
 	        for (Iterator i=subTransforms.iterator();i.hasNext();)
 	            sub.add(((CommonTransformFactory)i.next()).getTransform());
 	        t.setSubTransforms(sub);
@@ -227,7 +227,7 @@ public abstract class CommonTransformFactory extends CommonTransform{
     
     public void addFactory(CommonTransformFactory factory){
     	if (factory.isServer()&&Environment.getStandAlone()) return;
-        if (subTransforms==null) subTransforms=new Vector();
+        if (subTransforms==null) subTransforms=new ArrayList();
         subTransforms.add(factory);
     }
     

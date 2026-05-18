@@ -31,7 +31,7 @@ package org.pushingpixels.flamingo.internal.ui.ribbon;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JSeparator;
 
@@ -154,7 +154,7 @@ public class CommandButtonLayoutManagerBigFixedLandscape implements
 		lineLayoutInfo.textRect.width = labelWidth;
 		lineLayoutInfo.textRect.height = labelHeight;
 
-		result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+		result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 		result.textLayoutInfoList.add(lineLayoutInfo);
 
 		return result;

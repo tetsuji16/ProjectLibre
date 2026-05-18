@@ -56,7 +56,7 @@
 package com.projectlibre1.session;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
@@ -83,7 +83,7 @@ public class SessionFactory {
     protected Map<String,Session> sessionImpls=null;
     protected void initSessions(){
     	if (sessionImpls==null){
-    		sessionImpls=new Hashtable<String, Session>();
+    		sessionImpls=new HashMap<String, Session>();
     		String impls=Messages.getMetaString("SessionImpls");
     		if (impls!=null){
     			StringTokenizer st=new StringTokenizer(impls,";");
@@ -170,7 +170,7 @@ public class SessionFactory {
     	sessionImpls = null;
     }
     
-    private final Map credentials=new Hashtable();
+    private final Map credentials=new HashMap();
     public void setCredentials(Map credentials){
     	if (credentials!=null){
     		this.credentials.clear();

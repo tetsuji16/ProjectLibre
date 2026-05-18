@@ -56,8 +56,8 @@
 package com.projectlibre1.job;
 
 import java.awt.Component;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -89,7 +89,7 @@ public class Job extends Thread {
 	protected JobQueue jobQueue;
 	protected String title;
 	protected boolean showProgess, sync;
-	protected List runnables=new Vector();
+	protected List runnables=new ArrayList();
 	protected InternalRunnable exceptionHandlerRunnable;
 	protected JobMutex mutex;
 	protected Mutex globalMutex,groupMutex;
@@ -119,7 +119,7 @@ public class Job extends Thread {
 //    	System.out.println("Job "+getName()+": "+s);
 //		log.info("Job "+getName()+": "+s);
     }
-    private final Hashtable times=new Hashtable<>();
+	private final HashMap times=new HashMap<>();
     public void logBegin(String s){
     	log(s+"...");
 		times.put(s,Long.valueOf(System.currentTimeMillis()));

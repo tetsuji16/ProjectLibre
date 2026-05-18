@@ -23,7 +23,7 @@
 
 package net.sf.mpxj;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.mpxj.common.NumberHelper;
@@ -119,7 +119,7 @@ public abstract class ProjectEntityContainer<T extends ProjectEntityWithUniqueID
    }
 
    protected final ProjectFile m_projectFile;
-   protected Map<Integer, T> m_uniqueIDMap = new Hashtable<Integer, T>();
+   protected Map<Integer, T> m_uniqueIDMap = new HashMap<Integer, T>();
 
    /**
     * Maximum unique ID value MS Project will accept.

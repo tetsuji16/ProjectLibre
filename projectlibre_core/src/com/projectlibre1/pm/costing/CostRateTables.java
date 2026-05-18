@@ -59,7 +59,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.projectlibre1.configuration.Settings;
 import com.projectlibre1.datatype.Rate;
@@ -201,7 +201,7 @@ public class CostRateTables implements Cost, Serializable, Cloneable {
 	public void serialize(ObjectOutputStream s) throws IOException {
 	    s.writeObject(names);
 	    
-	    Vector[] costRates=new Vector[costRateTableArray.length];
+	    ArrayList[] costRates=new ArrayList[costRateTableArray.length];
 	    for (int i=0;i<costRates.length;i++){
 	    	costRates[i]=(costRateTableArray[i]==null)?null:costRateTableArray[i].getValueObjects();
 	    }
@@ -211,7 +211,7 @@ public class CostRateTables implements Cost, Serializable, Cloneable {
 	public static CostRateTables deserialize(ObjectInputStream s) throws IOException, ClassNotFoundException  {
 		CostRateTables t=new CostRateTables();
 		t.names=(String[])s.readObject();
-		Vector[] costRates=(Vector[])s.readObject();
+		ArrayList[] costRates=(ArrayList[])s.readObject();
 		t.costRateTableArray=new CostRateTable[costRates.length];
 	    for (int i=0;i<costRates.length;i++){
 	    	t.costRateTableArray[i]=(costRates[i]==null)?null:new CostRateTable(t.names[i],costRates[i]);

@@ -24,9 +24,9 @@
 package net.sf.mpxj.mpp;
 
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -71,7 +71,7 @@ abstract class AbstractCalendarFactory implements CalendarFactory
     * @param resourceMap map of resources to calendars
     * @throws IOException
     */
-   @Override public void processCalendarData(DirectoryEntry projectDir, Props projectProps, DocumentInputStreamFactory inputStreamFactory, Hashtable<Integer, ProjectCalendar> resourceMap) throws IOException
+   @Override public void processCalendarData(DirectoryEntry projectDir, Props projectProps, DocumentInputStreamFactory inputStreamFactory, HashMap<Integer, ProjectCalendar> resourceMap) throws IOException
    {
       DirectoryEntry calDir = (DirectoryEntry) projectDir.getEntry("TBkndCal");
 
@@ -94,7 +94,7 @@ abstract class AbstractCalendarFactory implements CalendarFactory
       //      System.out.println(calFixed2Meta);
       //      System.out.println(calFixed2Data);
 
-      Hashtable<Integer, ProjectCalendar> calendarMap = new Hashtable<Integer, ProjectCalendar>();
+      HashMap<Integer, ProjectCalendar> calendarMap = new HashMap<Integer, ProjectCalendar>();
       int items = calFixedData.getItemCount();
       List<Pair<ProjectCalendar, Integer>> baseCalendars = new LinkedList<Pair<ProjectCalendar, Integer>>();
       byte[] defaultCalendarData = projectProps.getByteArray(Props.DEFAULT_CALENDAR_HOURS);
@@ -205,7 +205,7 @@ abstract class AbstractCalendarFactory implements CalendarFactory
       Date start;
       long duration;
       Day day;
-      List<DateRange> dateRanges = new Vector<DateRange>(5);
+      List<DateRange> dateRanges = new ArrayList<DateRange>(5);
 
       for (index = 0; index < 7; index++)
       {
@@ -292,7 +292,7 @@ abstract class AbstractCalendarFactory implements CalendarFactory
     * @param baseCalendars list of calendars and base calendar IDs
     * @param map map of calendar ID values and calendar objects
     */
-   private void updateBaseCalendarNames(List<Pair<ProjectCalendar, Integer>> baseCalendars, Hashtable<Integer, ProjectCalendar> map)
+   private void updateBaseCalendarNames(List<Pair<ProjectCalendar, Integer>> baseCalendars, HashMap<Integer, ProjectCalendar> map)
    {
       for (Pair<ProjectCalendar, Integer> pair : baseCalendars)
       {

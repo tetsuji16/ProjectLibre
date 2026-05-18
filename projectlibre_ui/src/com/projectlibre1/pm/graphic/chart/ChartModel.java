@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.chart;
 
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -114,7 +114,7 @@ public class ChartModel implements TimeDistributedConstants, Serializable {
 		Object current;
 		Assignment assignment;	
 		double resourceMaxUnits = 0;
-		Vector assignmentResourcesUsed = new Vector();
+		ArrayList assignmentResourcesUsed = new ArrayList();
 		boolean hasValues = false;
 		while (i.hasNext()) { //loop thru tasks
 			current = i.next();

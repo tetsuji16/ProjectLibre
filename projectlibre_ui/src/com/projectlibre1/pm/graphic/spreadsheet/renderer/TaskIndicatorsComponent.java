@@ -123,7 +123,7 @@ public class TaskIndicatorsComponent extends IndicatorsComponent{
 	
 	
 	
-	public void setIndicators(Object value,JComponent label,StringBuffer text,boolean isSelected, boolean hasFocus){
+	public void setIndicators(Object value,JComponent label,StringBuilder text,boolean isSelected, boolean hasFocus){
 		HasTaskIndicators indicators = (HasTaskIndicators)value;
 
 		if (indicators.getWorkCalendar() != null) {

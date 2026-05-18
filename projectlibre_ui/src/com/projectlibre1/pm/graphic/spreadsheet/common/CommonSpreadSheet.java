@@ -62,7 +62,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
 import java.util.LinkedList;
@@ -197,21 +197,21 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		return ((CommonSpreadSheetModel)model).getCache();
 	}
 
-	public void setFieldArray(Vector fieldArray){
+	public void setFieldArray(ArrayList fieldArray){
 		((SpreadSheetColumnModel)getColumnModel()).setFieldArray(fieldArray);
 //
 //		((CommonSpreadSheetModel)getModel()).setFieldArray(fieldArray);
 	}
-	public final Vector getFieldArray() {
+	public ArrayList getFieldArray() {
 		return ((CommonSpreadSheetModel)getModel()).getFieldArray();
 	}
 
-	public final SpreadSheetFieldArray getFieldArrayWithWidths(Vector fieldArray) {
+	public final SpreadSheetFieldArray getFieldArrayWithWidths(ArrayList fieldArray) {
 		if (fieldArray == null)
 			fieldArray =   getFieldArray();
 		// the widths don't work now anyway, and someone had a crash due to code below
 		SpreadSheetColumnModel cols = (SpreadSheetColumnModel)getColumnModel();
-		Vector<Integer> colWidths=new Vector<Integer>(cols.getColumnCount());
+		ArrayList<Integer> colWidths = new ArrayList<Integer>(cols.getColumnCount());
 		colWidths.add(-1); //id column ignored
 		for (int i=0; i < cols.getColumnCount(); i++)
 			colWidths.add(cols.getColumn(i).getWidth());
@@ -282,7 +282,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			column = 0;
 		if (row < 0 || column < 0)
 			return;
-		if (editCellAt(row, column, new StartEditEvent(this, caretAtEnd, null)) && caretAtEnd) {
+		if (editCellAt(row, column, new StartEditEvent(this, caretAtEnd, null, false)) && caretAtEnd) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					requestEditorFocus();
@@ -301,11 +301,14 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			column = 0;
 		if (row < 0 || column < 0)
 			return;
-		if (editCellAt(row, column, new StartEditEvent(this, false, Character.valueOf(e.getKeyChar())))) {
+		final boolean clearTextOnStart = shouldClearFieldOnTypedDigit(row, column, e.getKeyChar());
+		if (editCellAt(row, column, new StartEditEvent(this, false, Character.valueOf(e.getKeyChar()), clearTextOnStart))) {
 			final char typedChar = e.getKeyChar();
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					requestEditorFocus();
+					if (clearTextOnStart)
+						clearEditorText();
 					seedEditorWithTypedChar(typedChar);
 				}
 			});
@@ -344,6 +347,24 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			return;
 		text.setText(String.valueOf(c));
 		text.setCaretPosition(text.getDocument().getLength());
+	}
+
+	private void clearEditorText() {
+		JTextComponent text = getEditorTextComponent();
+		if (text == null)
+			return;
+		text.setText("");
+		resetEditorHorizontalOffset(text);
+		text.setCaretPosition(0);
+	}
+
+	private boolean shouldClearFieldOnTypedDigit(int row, int column, char typedChar) {
+		if (!Character.isDigit(typedChar))
+			return false;
+		if (!(getModel() instanceof SpreadSheetModel))
+			return false;
+		Field field = ((SpreadSheetModel)getModel()).getFieldInColumn(column + 1);
+		return field != null && field.isDate() && (field.isStartValue() || field.isEndValue());
 	}
 
 	private void positionEditorCaretToEnd() {
@@ -491,11 +512,13 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		private static final long serialVersionUID = 1L;
 		private final boolean caretAtEnd;
 		private final Character typedChar;
+		private final boolean clearTextOnStart;
 
-		private StartEditEvent(Object source, boolean caretAtEnd, Character typedChar) {
+		private StartEditEvent(Object source, boolean caretAtEnd, Character typedChar, boolean clearTextOnStart) {
 			super(source);
 			this.caretAtEnd = caretAtEnd;
 			this.typedChar = typedChar;
+			this.clearTextOnStart = clearTextOnStart;
 		}
 	}
 
@@ -556,7 +579,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     	return true;
     }
     public List getSelectedDeletableRows() {
-    	Vector list = getSelectedNodes();
+    	ArrayList list = getSelectedNodes();
     	CollectionUtils.filter(list, new Predicate() {
 			public boolean evaluate(Object arg0) {
 				return isNodeDeletable((Node)arg0);
@@ -572,37 +595,37 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     	return nodes;
 
     }
-    public Vector getSelectedNodes(){
+    public ArrayList getSelectedNodes(){
         SpreadSheetModel model=(SpreadSheetModel)getModel();
 		int[] rows=getSelectedRows();
-		Vector nodes=new Vector(rows.length);
+		ArrayList nodes = new ArrayList(rows.length);
 		for (int i=0;i<rows.length;i++){
 		    nodes.add(model.getNode(rows[i]).getNode());
 		}
 		return nodes;
     }
-    public Vector getSelectedNodesImpl(){
+    public ArrayList getSelectedNodesImpl(){
         SpreadSheetModel model=(SpreadSheetModel)getModel();
 		int[] rows=getSelectedRows();
-		Vector nodes=new Vector(rows.length);
+		ArrayList nodes = new ArrayList(rows.length);
 		for (int i=0;i<rows.length;i++){
 		    nodes.add(model.getNode(rows[i]).getNode().getImpl());
 		}
 		return nodes;
     }
-    public Vector getSelectedFields(){
+    public ArrayList getSelectedFields(){
     	if (getRowHeader().getSelectedColumns().length>0) return null;
 		int[] columns=getSelectedColumns();
-		Vector fields=new Vector(columns.length);
+		ArrayList fields = new ArrayList(columns.length);
 		List fieldArray=getFieldArray();
 		for (int i=0;i<columns.length;i++){
 			fields.add(fieldArray.get(columns[i]+1));
 		}
 		return fields;
     }
-    public Vector getSelectableFields(){
+    public ArrayList getSelectableFields(){
     	List fa=getFieldArray();
-    	Vector fields=new Vector(fa.size());
+    	ArrayList fields = new ArrayList(fa.size());
     	fields.addAll(fa);
     	if (fields.size()>0) fields.remove(0); //ID not selectable
     	return fields;
@@ -671,16 +694,20 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     		boolean selectAll = true;
     		boolean caretAtEnd = false;
     		Character typedChar = null;
+    		boolean clearTextOnStart = false;
     		if (e instanceof StartEditEvent) {
     			selectAll = false;
     			caretAtEnd = ((StartEditEvent)e).caretAtEnd;
     			typedChar = ((StartEditEvent)e).typedChar;
+    			clearTextOnStart = ((StartEditEvent)e).clearTextOnStart;
     		} else if (e == null) {
     			selectAll = false;
     			caretAtEnd = true;
     		}
 
     		JTextComponent text = (comp instanceof JTextComponent) ? (JTextComponent) comp : getEditorTextComponent();
+    		if (text != null)
+    			installCommitAndMoveDownAction(text, row, column);
     		boolean shouldUseKeyboardFocusableSelectAll = !(caretAtEnd || typedChar != null);
     		if (comp instanceof KeyboardFocusable && shouldUseKeyboardFocusableSelectAll)
     			((KeyboardFocusable)comp).selectAll(selectAll);
@@ -689,7 +716,14 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     			if (nameCell && !mouseEditingNameCell) {
     				resetEditorHorizontalOffset(text);
     			}
-    			if (typedChar != null) {
+    			if (clearTextOnStart) {
+    				text.setText(typedChar == null ? "" : String.valueOf(typedChar));
+    				if (nameCell) {
+    					resetEditorHorizontalOffset(text);
+    				}
+    				text.setCaretPosition(text.getDocument().getLength());
+    				selectAll = false;
+    			} else if (typedChar != null) {
     				text.setText(String.valueOf(typedChar));
     				if (nameCell) {
     					resetEditorHorizontalOffset(text);
@@ -903,7 +937,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     		int col=getEditingColumn();
     		TableCellEditor editor=getCellEditor();
     		editor.cancelCellEditing();
-    		editCellAt(row,col,new StartEditEvent(this, true, null));
+    		editCellAt(row,col,new StartEditEvent(this, true, null, false));
     	}
     }
 

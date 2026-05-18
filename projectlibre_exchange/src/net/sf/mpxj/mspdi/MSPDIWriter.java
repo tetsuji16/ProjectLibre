@@ -26,7 +26,7 @@ package net.sf.mpxj.mspdi;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -420,7 +420,7 @@ public class MSPDIWriter extends AbstractProjectWriter //claur final removed
       // A quirk of MS Project is that these exceptions must be
       // in date order in the file, otherwise they are ignored
       //
-      List<ProjectCalendarException> exceptions = new Vector<ProjectCalendarException>(bc.getCalendarExceptions());
+      List<ProjectCalendarException> exceptions = new ArrayList<ProjectCalendarException>(bc.getCalendarExceptions());
       if (!exceptions.isEmpty())
       {
          Collections.sort(exceptions);
@@ -1884,7 +1884,7 @@ public class MSPDIWriter extends AbstractProjectWriter //claur final removed
     */
    private List<AssignmentField> getAllAssignmentExtendedAttributes()
    {
-      Vector<AssignmentField> result = new Vector<AssignmentField>();
+      ArrayList<AssignmentField> result = new ArrayList<AssignmentField>();
       result.addAll(Arrays.asList(AssignmentFieldLists.CUSTOM_COST));
       result.addAll(Arrays.asList(AssignmentFieldLists.CUSTOM_DATE));
       result.addAll(Arrays.asList(AssignmentFieldLists.CUSTOM_DURATION));
@@ -1911,7 +1911,7 @@ public class MSPDIWriter extends AbstractProjectWriter //claur final removed
     */
    private List<TaskField> getAllTaskExtendedAttributes()
    {
-      Vector<TaskField> result = new Vector<TaskField>();
+      ArrayList<TaskField> result = new ArrayList<TaskField>();
       result.addAll(Arrays.asList(TaskFieldLists.CUSTOM_TEXT));
       result.addAll(Arrays.asList(TaskFieldLists.CUSTOM_START));
       result.addAll(Arrays.asList(TaskFieldLists.CUSTOM_FINISH));
@@ -1937,7 +1937,7 @@ public class MSPDIWriter extends AbstractProjectWriter //claur final removed
     */
    private List<ResourceField> getAllResourceExtendedAttributes()
    {
-      Vector<ResourceField> result = new Vector<ResourceField>();
+      ArrayList<ResourceField> result = new ArrayList<ResourceField>();
       result.addAll(Arrays.asList(ResourceFieldLists.CUSTOM_TEXT));
       result.addAll(Arrays.asList(ResourceFieldLists.CUSTOM_START));
       result.addAll(Arrays.asList(ResourceFieldLists.CUSTOM_FINISH));

@@ -65,7 +65,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -189,8 +189,8 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
 		this.undoController = undoController;
 //		ProjectFactory projectFactory = ((MainFrame)owner).getProjectFactory();
 		ProjectFactory projectFactory = GraphicManager.getInstance(this).getProjectFactory();
-		Vector projCals = projectFactory.getPortfolio().extractCalendars();
-		projectCalendars = new Vector();
+		ArrayList projCals = projectFactory.getPortfolio().extractCalendars();
+		projectCalendars = new ArrayList();
 		Iterator i = projCals.iterator();
 		WorkingCalendar current;
 		while (i.hasNext()) { // add all non base cals that are project cals
@@ -230,7 +230,7 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
 		}
 	}
 	private void fillInCalendarNames() {
-		Vector all = new Vector();
+		ArrayList all = new ArrayList();
 		CalendarService service = CalendarService.getInstance();
 		all.addAll(service.getBaseCalendars());
 		all.addAll(projectCalendars);
@@ -536,8 +536,8 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
         sdCalendar.setColorDates(null);
 
 	    DayDescriptor day;
-	    Vector flaggedDates=new Vector();
-	    Vector colorDates=new Vector();
+	    ArrayList flaggedDates = new ArrayList();
+	    ArrayList colorDates = new ArrayList();
 	    while(calendar.getTimeInMillis()<=last){
 	        day=service.getDay(wc,calendar.getTimeInMillis());
 	        if (day.isModified())
@@ -569,7 +569,7 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
 	}
 
 	//stupid jdnc calendar use long[]
-	public long[] toLongArray(Vector list){
+	public long[] toLongArray(ArrayList list){
 	    //if (list.size()==0) return null;
 	    long[] array=new long[list.size()];
 	    int j=0;

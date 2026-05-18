@@ -57,7 +57,7 @@ package com.projectlibre1.graphic.configuration.shape;
 
 import java.awt.BasicStroke;
 import java.awt.Stroke;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /**
  *
@@ -71,7 +71,7 @@ public class PredefinedStroke {
 	public static final BasicStroke LARGE_FRAMED = new BasicStroke(3f); // Default
 	public static final BasicStroke SOLID = null; // is always null - means no stroke
 	
-	private static Hashtable predefinedStrokeMap = null;
+	private static HashMap predefinedStrokeMap = null;
 	
 	private static void initialize() {
 		predefinedStrokeMap.put("DASHED", DASHED);
@@ -79,9 +79,9 @@ public class PredefinedStroke {
 		predefinedStrokeMap.put("LARGE_FRAMED", LARGE_FRAMED);
 	}
 	
-	private static Hashtable getPredefinedStrokeMap() {
+	private static HashMap getPredefinedStrokeMap() {
 		if (predefinedStrokeMap == null) {
-			predefinedStrokeMap = new Hashtable();
+			predefinedStrokeMap = new HashMap();
 			initialize();
 		}
 		return predefinedStrokeMap;

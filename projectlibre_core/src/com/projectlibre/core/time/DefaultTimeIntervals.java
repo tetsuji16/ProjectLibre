@@ -201,7 +201,7 @@ public class DefaultTimeIntervals implements TimeIntervals {
 
 	@Override
 	public String toString() {
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		int i=0;
 		for (TimeInterval interval : intervals){
 			if (!(i++ == 0)) s.append(", ");

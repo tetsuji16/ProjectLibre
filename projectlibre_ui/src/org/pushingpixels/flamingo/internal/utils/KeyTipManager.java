@@ -121,7 +121,7 @@ public class KeyTipManager {
 
 		public KeyTipChain(JComponent chainParentComponent) {
 			this.chainParentComponent = chainParentComponent;
-			this.links = new Vector<KeyTipLink>();
+			this.links = new ArrayList<KeyTipLink>();
 			this.keyTipLookupIndex = 0;
 		}
 
@@ -136,7 +136,7 @@ public class KeyTipManager {
 
 	private KeyTipManager() {
 		this.isShowingKeyTips = false;
-		this.keyTipChains = new Vector<KeyTipChain>();
+		this.keyTipChains = new ArrayList<KeyTipChain>();
 		this.listenerList = new EventListenerList();
 		this.processingQueue = new LinkedBlockingQueue<Character>();
 		this.processingThread = new ProcessingThread();

@@ -25,7 +25,7 @@ package net.sf.mpxj;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -2016,12 +2016,12 @@ public final class ProjectCalendar extends ProjectCalendarWeek implements Projec
    /**
     * List of exceptions to the base calendar.
     */
-   private List<ProjectCalendarException> m_exceptions = new Vector<ProjectCalendarException>();
+   private List<ProjectCalendarException> m_exceptions = new ArrayList<ProjectCalendarException>();
 
    /**
     * List of exceptions, including expansion of recurring exceptions.
     */
-   private List<ProjectCalendarException> m_expandedExceptions = new Vector<ProjectCalendarException>();
+   private List<ProjectCalendarException> m_expandedExceptions = new ArrayList<ProjectCalendarException>();
 
    /**
     * Flag indicating if the list of exceptions is sorted.
@@ -2041,7 +2041,7 @@ public final class ProjectCalendar extends ProjectCalendarWeek implements Projec
    /**
     * List of calendars derived from this calendar instance.
     */
-   private Vector<ProjectCalendar> m_derivedCalendars = new Vector<ProjectCalendar>();
+   private ArrayList<ProjectCalendar> m_derivedCalendars = new ArrayList<ProjectCalendar>();
 
    /**
     * Caches used to speed up date calculations.
@@ -2055,7 +2055,7 @@ public final class ProjectCalendar extends ProjectCalendarWeek implements Projec
    /**
     * Work week definitions.
     */
-   private Vector<ProjectCalendarWeek> m_workWeeks = new Vector<ProjectCalendarWeek>();
+   private ArrayList<ProjectCalendarWeek> m_workWeeks = new ArrayList<ProjectCalendarWeek>();
 
    private Integer m_minutesPerDay;
    private Integer m_minutesPerWeek;

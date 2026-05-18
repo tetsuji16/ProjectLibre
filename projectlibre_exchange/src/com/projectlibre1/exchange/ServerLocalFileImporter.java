@@ -59,13 +59,13 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.projectlibre1.server.data.AssignmentData;
 import com.projectlibre1.server.data.DistributionData;
@@ -89,7 +89,7 @@ import com.projectlibre1.util.Environment;
  */
 public class ServerLocalFileImporter extends ServerFileImporter {
 	private static final String ABORT = "Job aborted"; //$NON-NLS-1$
-	//private Hashtable resourceMap = new Hashtable(); // keeps track of imported resources to server resources
+	//private HashMap resourceMap = new Hashtable(); // keeps track of imported resources to server resources
 	public ServerLocalFileImporter() {
 		super();
 	}
@@ -134,7 +134,7 @@ public class ServerLocalFileImporter extends ServerFileImporter {
     	        System.out.println("Loading...Done in "+(t2-t1)+" ms"); //$NON-NLS-1$ //$NON-NLS-2$
 
     	        Collection<ResourceData> rs=(Collection<ResourceData>)projectData.getResources();
-    	        List<EnterpriseResourceData> ers=new Vector<EnterpriseResourceData>(rs.size());
+    	        List<EnterpriseResourceData> ers=new ArrayList<EnterpriseResourceData>(rs.size());
     	        for (ResourceData r: rs){
     	        	ers.add(r.getEnterpriseResource());
     	        }
@@ -217,8 +217,8 @@ public class ServerLocalFileImporter extends ServerFileImporter {
 				return true;
 			}
 
-			List<ResourceData> resources=new Vector<ResourceData>();
-			Map<Long,ResourceData> resourceMap=new Hashtable<Long,ResourceData>();
+			List<ResourceData> resources=new ArrayList<ResourceData>();
+			Map<Long,ResourceData> resourceMap=new HashMap<Long, ResourceData>();
 
 			Iterator r = form.getResources().iterator();
 			while(r.hasNext()){
@@ -233,7 +233,7 @@ public class ServerLocalFileImporter extends ServerFileImporter {
 			projectData.setResources(resources);
 
 
-			Map<Long,ResourceData> idMap=new Hashtable<Long,ResourceData>();
+			Map<Long,ResourceData> idMap=new HashMap<Long, ResourceData>();
 			Iterator ir = form.getImportedResources().iterator();
 			Iterator sr = form.getSelectedResources().iterator();
 			while(ir.hasNext()){
@@ -292,9 +292,9 @@ public class ServerLocalFileImporter extends ServerFileImporter {
 		if (form==null) return;
 
 
-        Vector<Object> projectlibre1Resources = new Vector<>();
+        ArrayList<Object> projectlibre1Resources = new ArrayList<>();
         //map the existint project resourse impls for later use
-        _localResourceMap = new Hashtable<Long, com.projectlibre1.pm.resource.Resource>();
+        _localResourceMap = new HashMap<Long, com.projectlibre1.pm.resource.Resource>();
 
 		EnterpriseResourceData unassigned=new EnterpriseResourceData();
 		unassigned.setUniqueId(EnterpriseResource.UNASSIGNED_ID);
@@ -329,7 +329,7 @@ public class ServerLocalFileImporter extends ServerFileImporter {
 	protected void renumberProject() throws Exception{
 		Session session=SessionFactory.getInstance().getSession(false);
 		//renumber tasks
-		Map<Long,Long> idMap=new Hashtable<Long,Long>();
+		Map<Long,Long> idMap=new HashMap<Long, Long>();
 		for (TaskData task:(Collection<TaskData>)projectData.getTasks()){
 			long oldUniqueId=task.getUniqueId();
 			long uniqueId=session.getId();

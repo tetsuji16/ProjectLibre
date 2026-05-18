@@ -61,8 +61,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +102,7 @@ public class FormComponent extends JPanel{
 	
 	public FormComponent(List selectedFormats,int zoom,boolean editor,boolean texture){
 		super();
-		fieldComponents=new Hashtable();
+		fieldComponents=new HashMap();
 		this.selectedFormats=selectedFormats;
 		this.editor=editor;
 		this.zoom=zoom;
@@ -193,7 +193,7 @@ public class FormComponent extends JPanel{
 	
 	
 	public List getChange(){
-		Vector change=new Vector();
+		ArrayList change = new ArrayList();
 		for (Iterator i=fieldComponents.keySet().iterator();i.hasNext();){
 			String fieldId=(String)i.next();
 			Object component=fieldComponents.get(fieldId);

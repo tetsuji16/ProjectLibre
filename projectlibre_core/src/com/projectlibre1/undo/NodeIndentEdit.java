@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.undo;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -113,7 +113,7 @@ public class NodeIndentEdit extends AbstractUndoableEdit{
 	private boolean restorePositions(List positions) {
 		if (positions == null || positions.size() == 0)
 			return false;
-		List sorted = new Vector(positions);
+		List sorted = new ArrayList(positions);
 		Collections.sort(sorted, new Comparator() {
 			public int compare(Object o1, Object o2) {
 				Position p1 = (Position)o1;
@@ -127,7 +127,7 @@ public class NodeIndentEdit extends AbstractUndoableEdit{
 			Position position = (Position)i.next();
 			if (position == null || position.parent == null || position.node == null)
 				continue;
-			List one = new Vector(1);
+			List one = new ArrayList(1);
 			one.add(position.node);
 			int index = Math.max(0, Math.min(position.index, position.parent.getChildCount()));
 			model.getHierarchy().add(position.parent, one, index, NodeModel.EVENT);

@@ -24,9 +24,9 @@
 package net.sf.mpxj.mpp;
 
 import java.io.IOException;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -148,7 +148,7 @@ public class CustomFieldValueReader9
       FixedMeta fm = new FixedMeta(new DocumentInputStream(((DocumentEntry) outlineCodeDir.getEntry("FixedMeta"))), 10);
       FixedData fd = new FixedData(fm, new DocumentInputStream(((DocumentEntry) outlineCodeDir.getEntry("FixedData"))));
 
-      Map<Integer, FieldType> map = new Hashtable<Integer, FieldType>();
+      Map<Integer, FieldType> map = new HashMap<Integer, FieldType>();
 
       int items = fm.getItemCount();
       for (int loop = 0; loop < items; loop++)
@@ -171,7 +171,7 @@ public class CustomFieldValueReader9
       VarMeta outlineCodeVarMeta = new VarMeta9(new DocumentInputStream(((DocumentEntry) outlineCodeDir.getEntry("VarMeta"))));
       Var2Data outlineCodeVarData = new Var2Data(outlineCodeVarMeta, new DocumentInputStream(((DocumentEntry) outlineCodeDir.getEntry("Var2Data"))));
 
-      Map<FieldType, List<Pair<String, String>>> valueMap = new Hashtable<FieldType, List<Pair<String, String>>>();
+      Map<FieldType, List<Pair<String, String>>> valueMap = new HashMap<FieldType, List<Pair<String, String>>>();
 
       for (Integer id : outlineCodeVarMeta.getUniqueIdentifierArray())
       {
@@ -182,7 +182,7 @@ public class CustomFieldValueReader9
          List<Pair<String, String>> list = valueMap.get(fieldType);
          if (list == null)
          {
-            list = new Vector<Pair<String, String>>();
+            list = new ArrayList<Pair<String, String>>();
             valueMap.put(fieldType, list);
          }
          list.add(new Pair<String, String>(value, description));
@@ -249,7 +249,7 @@ public class CustomFieldValueReader9
     */
    private List<Object> convertType(DataType type, byte[] data)
    {
-      List<Object> result = new Vector<Object>();
+      List<Object> result = new ArrayList<Object>();
       int index = 0;
 
       while (index < data.length)

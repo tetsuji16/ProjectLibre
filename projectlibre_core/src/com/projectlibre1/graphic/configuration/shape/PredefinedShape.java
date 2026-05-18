@@ -56,7 +56,7 @@
 package com.projectlibre1.graphic.configuration.shape;
 
 import java.awt.geom.GeneralPath;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import com.projectlibre1.util.ArrayUtils;
 
@@ -222,11 +222,11 @@ public class PredefinedShape {
 
 	}
 
-	private static Hashtable predefinedShapeMap = null;
+	private static HashMap predefinedShapeMap = null;
 
-	private static Hashtable getPredefinedShapeMap() {
+	private static HashMap getPredefinedShapeMap() {
 		if (predefinedShapeMap == null) {
-			predefinedShapeMap = new Hashtable();
+			predefinedShapeMap = new HashMap();
 			initialize();
 		}
 		return predefinedShapeMap;

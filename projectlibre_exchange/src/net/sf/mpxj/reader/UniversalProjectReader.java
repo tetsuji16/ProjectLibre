@@ -34,7 +34,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -718,7 +718,7 @@ public class UniversalProjectReader implements ProjectReader
     */
    private ProjectFile handleFileInDirectory(File directory) throws Exception
    {
-      List<File> directories = new Vector<File>();
+      List<File> directories = new ArrayList<File>();
       File[] files = directory.listFiles();
 
       if (files != null)

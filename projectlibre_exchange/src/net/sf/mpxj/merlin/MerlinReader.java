@@ -36,7 +36,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -664,7 +664,7 @@ public class MerlinReader implements ProjectReader
    private Connection m_connection;
    private PreparedStatement m_ps;
    private ResultSet m_rs;
-   private Map<String, Integer> m_meta = new Hashtable<String, Integer>();
+   private Map<String, Integer> m_meta = new HashMap<String, Integer>();
    private List<ProjectListener> m_projectListeners;
    private DocumentBuilder m_documentBuilder;
    private DateFormat m_calendarTimeFormat = new SimpleDateFormat("HH:mm:ss");

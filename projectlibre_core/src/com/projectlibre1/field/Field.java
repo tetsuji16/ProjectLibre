@@ -61,7 +61,7 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
@@ -1826,7 +1826,7 @@ public class Field implements SummaryNames, Cloneable, Comparable, Finder, Compa
 	}
 
 	public Object[] findAllInCollection(Object value, Collection collection) {
-		Vector result = new Vector();
+		ArrayList result = new ArrayList();
 		Iterator i = collection.iterator();
 		Object current;
 		while (i.hasNext()) {

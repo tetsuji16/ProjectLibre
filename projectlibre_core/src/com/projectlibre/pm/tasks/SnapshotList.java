@@ -87,7 +87,7 @@ public class SnapshotList {
 	}
 	
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("SnapshotList\n");
 		int i=0;
 		for (TaskSnapshot snapshot : snapshots){

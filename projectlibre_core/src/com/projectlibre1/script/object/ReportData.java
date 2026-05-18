@@ -56,7 +56,7 @@
 package com.projectlibre1.script.object;
 
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReportData implements Serializable {
@@ -64,12 +64,12 @@ public class ReportData implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 7661171774472765421L;
-	Vector<List<Object>> field = new Vector<List<Object>>();
+	ArrayList<List<Object>> field = new ArrayList<List<Object>>();
 
 	
 
 
-	public Vector<List<Object>> getField() {
+	public ArrayList<List<Object>> getField() {
 		return field;
 	}
 	

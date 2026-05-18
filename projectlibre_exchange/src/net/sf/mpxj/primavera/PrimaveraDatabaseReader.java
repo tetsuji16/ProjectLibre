@@ -31,8 +31,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +77,7 @@ public final class PrimaveraDatabaseReader implements ProjectReader
    {
       try
       {
-         Map<Integer, String> result = new Hashtable<Integer, String>();
+         Map<Integer, String> result = new HashMap<Integer, String>();
 
          List<Row> rows = getRows("select proj_id, proj_short_name from " + m_schema + "project where delete_date is null");
          for (Row row : rows)
@@ -159,7 +159,7 @@ public final class PrimaveraDatabaseReader implements ProjectReader
    public List<ProjectFile> readAll() throws MPXJException
    {
       Map<Integer, String> projects = listProjects();
-      List<ProjectFile> result = new Vector<ProjectFile>(projects.keySet().size());
+      List<ProjectFile> result = new ArrayList<ProjectFile>(projects.keySet().size());
       for (Integer id : projects.keySet())
       {
          setProjectID(id.intValue());
@@ -252,7 +252,7 @@ public final class PrimaveraDatabaseReader implements ProjectReader
             {
                if ("sched_calendar_on_relationship_lag".equals(keyValues[i]))
                {
-                  Map<String, Object> customProperties = new Hashtable<String, Object>();
+                  Map<String, Object> customProperties = new HashMap<String, Object>();
                   customProperties.put("LagCalendar", keyValues[i + 1]);
                   m_reader.getProject().getProjectProperties().setCustomProperties(customProperties);
                   break;
@@ -683,7 +683,7 @@ public final class PrimaveraDatabaseReader implements ProjectReader
    private boolean m_allocatedConnection;
    private PreparedStatement m_ps;
    private ResultSet m_rs;
-   private Map<String, Integer> m_meta = new Hashtable<String, Integer>();
+   private Map<String, Integer> m_meta = new HashMap<String, Integer>();
    private List<ProjectListener> m_projectListeners;
    private UserFieldCounters m_taskUdfCounters = new UserFieldCounters();
    private UserFieldCounters m_resourceUdfCounters = new UserFieldCounters();

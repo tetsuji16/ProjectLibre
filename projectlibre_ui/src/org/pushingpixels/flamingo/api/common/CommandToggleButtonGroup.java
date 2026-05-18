@@ -48,7 +48,7 @@ public class CommandToggleButtonGroup implements Serializable {
 	/**
 	 * Contains all group buttons.
 	 */
-	protected Vector<JCommandToggleButton> buttons;
+	protected ArrayList<JCommandToggleButton> buttons;
 
 	/**
 	 * Map of registered model change listeners.
@@ -84,8 +84,8 @@ public class CommandToggleButtonGroup implements Serializable {
 	 * Creates a new button group.
 	 */
 	public CommandToggleButtonGroup() {
-		this.buttons = new Vector<JCommandToggleButton>();
-		this.modelChangeListeners = new Hashtable<JCommandToggleButton, ChangeListener>();
+		this.buttons = new ArrayList<JCommandToggleButton>();
+		this.modelChangeListeners = new HashMap<JCommandToggleButton, ChangeListener>();
 		this.allowsClearingSelection = true;
 	}
 
@@ -126,7 +126,7 @@ public class CommandToggleButtonGroup implements Serializable {
 		if (b == null) {
 			return;
 		}
-		buttons.addElement(b);
+		buttons.add(b);
 
 		boolean wasSelectionNull = (this.selection == null);
 		if (b.getActionModel().isSelected()) {
@@ -166,7 +166,7 @@ public class CommandToggleButtonGroup implements Serializable {
 		if (b == null) {
 			return;
 		}
-		buttons.removeElement(b);
+		buttons.remove(b);
 		boolean wasSelected = (b == selection);
 		if (wasSelected) {
 			selection = null;

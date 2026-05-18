@@ -83,7 +83,7 @@ public class WorkDay extends WorkRange{
 	
 	@Override
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("WorkDay #").append(hashCode()).append('\n');
 		s.append(super.toString(tab));
 		return s.toString();

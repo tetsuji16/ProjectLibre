@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.gantt;
 
 import java.awt.Frame;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Locale;
 
 import javax.swing.JOptionPane;
@@ -75,7 +75,7 @@ public class Main {
 		System.setProperty("apple.awt.application.name","ProjectLibre");
 		System.setProperty("apple.laf.useScreenMenuBar","true");
 		Locale.setDefault(ConfigurationFile.getLocale());
-		Hashtable opts=ApplicationStartupFactory.extractOpts(args);
+		HashMap opts =ApplicationStartupFactory.extractOpts(args);
 		String osName=System.getProperty("os.name").toLowerCase();
 		if (osName.startsWith("linux")){
 			String javaExec=ConfigurationFile.getRunProperty("JAVA_EXE");
@@ -99,7 +99,7 @@ public class Main {
 
 
 		boolean newLook = false;
-//		Hashtable opts = ApplicationStartupFactory.extractOpts(args); // allow setting menu look on command line - primarily for testing or webstart args
+//		HashMap opts = ApplicationStartupFactory.extractOpts(args); // allow setting menu look on command line - primarily for testing or webstart args
 //		newLook = opts.get("menu") == null;
 
 		Environment.setNewLook(newLook);

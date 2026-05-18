@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.assignment.contour;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.projectlibre1.configuration.Configuration;
 import com.projectlibre1.pm.time.ImmutableInterval;

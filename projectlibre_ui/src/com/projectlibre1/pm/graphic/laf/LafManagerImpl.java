@@ -57,11 +57,21 @@ package com.projectlibre1.pm.graphic.laf;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Window;
+import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -79,6 +89,9 @@ public class LafManagerImpl implements LafManager {
     protected static LookAndFeel plaf = null; // for substance
     protected static GraphicManager graphicManager;
 	private static Boolean lafOK = null;
+	private static boolean dialogButtonArrowTraversalInstalled = false;
+	private static final int BUTTON_AXIS_HORIZONTAL = 0;
+	private static final int BUTTON_AXIS_VERTICAL = 1;
     public LafManagerImpl(GraphicManager graphicManager){
     	this.graphicManager=graphicManager;
     }
@@ -138,7 +151,107 @@ public class LafManagerImpl implements LafManager {
     public void initLookAndFeel() {
 		if (plaf == null)
 			getPlaf();
+		installDialogButtonArrowTraversal();
     }
+
+	private static void installDialogButtonArrowTraversal() {
+		if (dialogButtonArrowTraversalInstalled)
+			return;
+		dialogButtonArrowTraversalInstalled = true;
+		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(new java.awt.KeyEventDispatcher() {
+			public boolean dispatchKeyEvent(KeyEvent e) {
+				if (e == null || e.getID() != KeyEvent.KEY_PRESSED)
+					return false;
+				int keyCode = e.getKeyCode();
+				if (keyCode != KeyEvent.VK_RIGHT && keyCode != KeyEvent.VK_LEFT && keyCode != KeyEvent.VK_DOWN && keyCode != KeyEvent.VK_UP)
+					return false;
+				if (moveDialogButtonFocus(getButtonFocusDirection(keyCode), getButtonFocusAxis(keyCode))) {
+					e.consume();
+					return true;
+				}
+				return false;
+			}
+		});
+	}
+
+	private static int getButtonFocusDirection(int keyCode) {
+		return keyCode == KeyEvent.VK_RIGHT || keyCode == KeyEvent.VK_DOWN ? 1 : -1;
+	}
+
+	private static int getButtonFocusAxis(int keyCode) {
+		return keyCode == KeyEvent.VK_UP || keyCode == KeyEvent.VK_DOWN ? BUTTON_AXIS_VERTICAL : BUTTON_AXIS_HORIZONTAL;
+	}
+
+	private static boolean moveDialogButtonFocus(int direction, int requestedAxis) {
+		Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+		if (!(focusOwner instanceof JButton))
+			return false;
+		Window dialog = SwingUtilities.getWindowAncestor(focusOwner);
+		if (!(dialog instanceof Dialog))
+			return false;
+
+		List buttons = new ArrayList();
+		collectFocusableButtons(dialog, buttons);
+		if (buttons.size() < 2)
+			return false;
+		int buttonAxis = getDialogButtonAxis(dialog, buttons);
+		if (buttonAxis != requestedAxis)
+			return false;
+		sortButtons(dialog, buttons, buttonAxis);
+		int current = buttons.indexOf(focusOwner);
+		if (current < 0)
+			return false;
+		int target = current + direction;
+		if (target < 0 || target >= buttons.size())
+			return true;
+		((Component)buttons.get(target)).requestFocusInWindow();
+		return true;
+	}
+
+	private static void collectFocusableButtons(Container container, List buttons) {
+		Component[] components = container.getComponents();
+		for (int i = 0; i < components.length; i++) {
+			Component component = components[i];
+			if (component instanceof JButton && component.isVisible() && component.isEnabled() && component.isFocusable())
+				buttons.add(component);
+			if (component instanceof Container)
+				collectFocusableButtons((Container)component, buttons);
+		}
+	}
+
+	private static int getDialogButtonAxis(Container dialog, List buttons) {
+		int minX = Integer.MAX_VALUE;
+		int minY = Integer.MAX_VALUE;
+		int maxX = Integer.MIN_VALUE;
+		int maxY = Integer.MIN_VALUE;
+		for (int i = 0; i < buttons.size(); i++) {
+			Rectangle bounds = getDialogRelativeBounds(dialog, (Component)buttons.get(i));
+			minX = Math.min(minX, bounds.x);
+			minY = Math.min(minY, bounds.y);
+			maxX = Math.max(maxX, bounds.x + bounds.width);
+			maxY = Math.max(maxY, bounds.y + bounds.height);
+		}
+		return (maxY - minY) > (maxX - minX) ? BUTTON_AXIS_VERTICAL : BUTTON_AXIS_HORIZONTAL;
+	}
+
+	private static void sortButtons(final Container dialog, List buttons, final int axis) {
+		Collections.sort(buttons, new Comparator() {
+			public int compare(Object o1, Object o2) {
+				Rectangle b1 = getDialogRelativeBounds(dialog, (Component)o1);
+				Rectangle b2 = getDialogRelativeBounds(dialog, (Component)o2);
+				if (axis == BUTTON_AXIS_VERTICAL) {
+					int y = b1.y - b2.y;
+					return y == 0 ? b1.x - b2.x : y;
+				}
+				int x = b1.x - b2.x;
+				return x == 0 ? b1.y - b2.y : x;
+			}
+		});
+	}
+
+	private static Rectangle getDialogRelativeBounds(Container dialog, Component component) {
+		return SwingUtilities.convertRectangle(component.getParent(), component.getBounds(), dialog);
+	}
 
 
 	/* (non-Javadoc)

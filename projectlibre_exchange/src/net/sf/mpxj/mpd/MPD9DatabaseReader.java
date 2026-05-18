@@ -29,7 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,7 +77,7 @@ public final class MPD9DatabaseReader extends MPD9AbstractReader
    {
       try
       {
-         Map<Integer, String> result = new Hashtable<Integer, String>();
+         Map<Integer, String> result = new HashMap<Integer, String>();
 
          List<ResultSetRow> rows = getRows("SELECT PROJ_ID, PROJ_NAME FROM MSP_PROJECTS");
          for (ResultSetRow row : rows)
@@ -713,7 +713,7 @@ public final class MPD9DatabaseReader extends MPD9AbstractReader
    private Connection m_connection;
    private PreparedStatement m_ps;
    private ResultSet m_rs;
-   private Map<String, Integer> m_meta = new Hashtable<String, Integer>();
+   private Map<String, Integer> m_meta = new HashMap<String, Integer>();
    private List<ProjectListener> m_projectListeners;
    private boolean m_hasResourceBaselines;
    private boolean m_hasTaskBaselines;

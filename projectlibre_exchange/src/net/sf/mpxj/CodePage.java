@@ -25,7 +25,7 @@ package net.sf.mpxj;
 
 import java.nio.charset.Charset;
 import java.util.EnumSet;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.mpxj.common.CharsetHelper;
@@ -93,7 +93,7 @@ public enum CodePage
    private String m_value;
    private Charset m_charset;
 
-   private static final Map<String, CodePage> NAME_MAP = new Hashtable<String, CodePage>();
+   private static final Map<String, CodePage> NAME_MAP = new HashMap<String, CodePage>();
    static
    {
       for (CodePage e : EnumSet.allOf(CodePage.class))

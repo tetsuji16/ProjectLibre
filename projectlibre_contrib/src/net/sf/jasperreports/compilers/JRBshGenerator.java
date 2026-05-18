@@ -34,7 +34,7 @@ package net.sf.jasperreports.compilers;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -73,17 +73,17 @@ public class JRBshGenerator
 	{
 		jasperDesign = jrDesign;
 
-		fieldPrefixMap = new Hashtable();
+		fieldPrefixMap = new HashMap();
 		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
 		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "");
 		fieldPrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
 		
-		variablePrefixMap = new Hashtable();
+		variablePrefixMap = new HashMap();
 		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
 		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
 		variablePrefixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
 		
-		methodSuffixMap = new Hashtable();
+		methodSuffixMap = new HashMap();
 		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_OLD),       "Old");
 		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_ESTIMATED), "Estimated");
 		methodSuffixMap.put(new Byte(JRExpression.EVALUATION_DEFAULT),   "");
@@ -105,7 +105,7 @@ public class JRBshGenerator
 	 */
 	protected String generateScript() throws JRException
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		/*   */
 		sb.append("//\n");
@@ -300,7 +300,7 @@ public class JRBshGenerator
 	 */
 	private String generateMethod(byte evaluationType) throws JRException
 	{
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		/*   */
 		sb.append("    Object evaluate");
@@ -367,7 +367,7 @@ public class JRBshGenerator
 		JRField jrField = null;
 		JRVariable jrVariable = null;
 
-		StringBuffer sbuffer = new StringBuffer();
+		StringBuilder sbuffer = new StringBuilder();
 
 		JRExpressionChunk[] chunks = expression.getChunks();
 		JRExpressionChunk chunk = null;
