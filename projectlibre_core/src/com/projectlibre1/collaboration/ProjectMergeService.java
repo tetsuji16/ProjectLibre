@@ -134,8 +134,7 @@ public class ProjectMergeService {
 				importer.importFile();
 				return importer.getProject();
 			}
-			InputStream in = new FileInputStream(fileName);
-			try {
+			try (InputStream in = new FileInputStream(fileName)) {
 				FileImporter importer = LocalSession.getImporter(LocalSession.MICROSOFT_PROJECT_IMPORTER);
 				DataFactoryUndoController undoController = new DataFactoryUndoController();
 				ResourcePool resourcePool = ResourcePoolFactory.getInstance().createResourcePool("", undoController);
@@ -145,8 +144,6 @@ public class ProjectMergeService {
 				importer.setProject(project);
 				importer.setProjectFactory(ProjectFactory.getInstance());
 				return importer.loadProject(in);
-			} finally {
-				in.close();
 			}
 		} catch (Exception e) {
 			return null;

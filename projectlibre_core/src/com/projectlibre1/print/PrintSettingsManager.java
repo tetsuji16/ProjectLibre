@@ -72,10 +72,8 @@ public class PrintSettingsManager {
 			if (tmpLocalSettings==null){
 				byte[] buf=Preferences.userNodeForPackage(PrintSettings.class).getByteArray("printSettings",null);
 				if (buf!=null){
-					try {
-						ObjectInputStream in=new ObjectInputStream(new ByteArrayInputStream(buf));
+					try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(buf))) {
 						tmpLocalSettings=(PrintSettings)in.readObject();
-						in.close();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -102,12 +100,10 @@ public class PrintSettingsManager {
 					printSettings.spreadsheetWorkspace=null; //don't save field array and sizes
 					tmpLocalSettings=printSettings;
 					if (persist){
-						try {
-							ByteArrayOutputStream buf=new ByteArrayOutputStream();
-							ObjectOutputStream out=new ObjectOutputStream(buf);
+						try (ByteArrayOutputStream buf = new ByteArrayOutputStream();
+							ObjectOutputStream out = new ObjectOutputStream(buf)) {
 							out.writeObject(printSettings);
 							out.flush();
-							out.close();
 							Preferences.userNodeForPackage(PrintSettings.class).putByteArray("printSettings",buf.toByteArray());
 						} catch (Exception e) {
 							e.printStackTrace();

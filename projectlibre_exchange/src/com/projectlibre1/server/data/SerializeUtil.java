@@ -77,18 +77,18 @@ public class SerializeUtil {
 
 
     public static byte[] serializeToByteArray(Object data) throws IOException {
-        ByteArrayOutputStream bout=new ByteArrayOutputStream();
-        ObjectOutputStream out=new ObjectOutputStream(bout);
-        out.writeObject(data);
-        out.close();
-        bout.close();
-    	return bout.toByteArray();
+        try (ByteArrayOutputStream bout = new ByteArrayOutputStream();
+             ObjectOutputStream out = new ObjectOutputStream(bout)) {
+            out.writeObject(data);
+            return bout.toByteArray();
+        }
     }
 
     public static Object deserializeFromByteArray(byte[] bytes) throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bin=new ByteArrayInputStream(bytes);
-        ObjectInputStream in=new ObjectInputStream(bin);
-        return in.readObject();
+        try (ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
+             ObjectInputStream in = new ObjectInputStream(bin)) {
+            return in.readObject();
+        }
     }
 
     public static SerializedDataObject serialize(DataObject data, SerializedDataObjectFactory factory) throws IOException{
