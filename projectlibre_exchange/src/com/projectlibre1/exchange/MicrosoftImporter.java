@@ -188,13 +188,10 @@ public class MicrosoftImporter extends ServerFileImporter{
 			tmpFile = new File(tmpFileName);
 		}
 
-		FileOutputStream out = new FileOutputStream(tmpFile);
-		try {
+		try (FileOutputStream out = new FileOutputStream(tmpFile)) {
 			if (!saveProject(project, out, fileName)) {
 				throw new Exception("Failed to save project: " + fileName); //$NON-NLS-1$
 			}
-		} finally {
-			out.close();
 		}
 
 		if (!file.equals(tmpFile)) {

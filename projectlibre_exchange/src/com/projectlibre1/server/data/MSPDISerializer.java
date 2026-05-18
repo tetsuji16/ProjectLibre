@@ -58,6 +58,7 @@ package com.projectlibre1.server.data;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -325,8 +326,8 @@ public class MSPDISerializer implements ProjectSerializer {
 		}
 		
 		
-		try {
-			if (saveProject(project,new FileOutputStream(tmpFile))
+		try (FileOutputStream fos = new FileOutputStream(tmpFile)) {
+			if (saveProject(project, fos)
 					 && tmpFile.length()>0){
 				if (!file.equals(tmpFile)){
 					file.delete();
@@ -334,7 +335,7 @@ public class MSPDISerializer implements ProjectSerializer {
 				}
 				return true;
 			}
-		} catch (FileNotFoundException e) {
+		} catch (IOException e) {
 		}
 		if (file.equals(tmpFile))
 			Alert.error(Messages.getString("Message.saveError"));
