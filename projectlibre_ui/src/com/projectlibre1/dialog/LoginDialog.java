@@ -124,10 +124,10 @@ public final class LoginDialog extends AbstractDialog {
 			Object ps=ClassLoaderUtils.getLocalClassLoader().loadClass("javax.jnlp.ServiceManager").getMethod("lookup",new Class[]{String.class}).invoke(null,new Object[]{"javax.jnlp.PersistenceService"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 //			Object ps=Class.forName("javax.jnlp.ServiceManager").getMethod("lookup",new Class[]{String.class}).invoke(null,new Object[]{"javax.jnlp.PersistenceService"});
 			Object contents=ps.getClass().getMethod("get",new Class[]{URL.class}).invoke(ps,new Object[]{serverUrl}); //$NON-NLS-1$
-			ObjectInputStream in=new ObjectInputStream((InputStream)ClassLoaderUtils.getLocalClassLoader().loadClass("javax.jnlp.FileContents").getMethod("getInputStream",null).invoke(contents,null)); //$NON-NLS-1$ //$NON-NLS-2$
+			try (ObjectInputStream in = new ObjectInputStream((InputStream)ClassLoaderUtils.getLocalClassLoader().loadClass("javax.jnlp.FileContents").getMethod("getInputStream",null).invoke(contents,null))) { //$NON-NLS-1$ //$NON-NLS-2$
 //			ObjectInputStream in=new ObjectInputStream((InputStream)Class.forName("javax.jnlp.FileContents").getMethod("getInputStream",null).invoke(contents,null));
 			form=(LoginForm)in.readObject();
-			in.close();
+			}
 		} catch (Exception e) {
 			logger.log(Level.FINE, "Failed to load login form from JNLP persistence service", e);
 		}
