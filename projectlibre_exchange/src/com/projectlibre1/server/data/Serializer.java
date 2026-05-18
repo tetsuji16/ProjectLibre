@@ -1547,11 +1547,8 @@ public class Serializer {
     }
     protected void writeTmpFile(SerializedDataObject data,Count count) throws IOException{
     	if (tmpDir!=null&&count!=null)
-    	try {
-			File f=new File(tmpDir,data.getPrefix()+"_"+count.count);
-			FileOutputStream out=new FileOutputStream(f);
+    	try (FileOutputStream out = new FileOutputStream(new File(tmpDir,data.getPrefix()+"_"+count.count))) {
 			if (data.getSerialized()!=null) out.write(data.getSerialized());
-			out.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
