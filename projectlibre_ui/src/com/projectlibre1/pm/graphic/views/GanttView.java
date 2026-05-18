@@ -122,6 +122,8 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	FieldContext fieldContext;
 	CellStyle cellStyle;
 	private boolean tracking = false;
+	private boolean standardProgressLineEnabled = false;
+	private boolean trackingProgressLineEnabled = true;
 	public static final String spreadsheetCategory=taskSpreadsheetCategory;
 
 
@@ -374,6 +376,10 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		Workspace ws = (Workspace) w;
 		spreadSheet.restoreWorkspace(ws.spreadSheet, context);
 		gantt.setProgressLineEnabled(ws.progressLineEnabled);
+		if (tracking)
+			trackingProgressLineEnabled = ws.progressLineEnabled;
+		else
+			standardProgressLineEnabled = ws.progressLineEnabled;
 		ganttScrollPane.restoreWorkspace(ws.scrollPane, context);
 		setDividerLocation(ws.dividerLocation);
 	}
@@ -437,7 +443,15 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		return tracking;
 	}
 	public void setTracking(boolean tracking) {
+		if (gantt != null) {
+			if (this.tracking)
+				trackingProgressLineEnabled = gantt.isProgressLineEnabled();
+			else
+				standardProgressLineEnabled = gantt.isProgressLineEnabled();
+		}
 		this.tracking = tracking;
+		if (gantt != null)
+			gantt.setProgressLineEnabled(tracking ? trackingProgressLineEnabled : standardProgressLineEnabled);
 		HelpUtil.addDocHelp(this,tracking ? "Tracking_Gantt_Chart":"Gantt_Chart");
 	}
 
