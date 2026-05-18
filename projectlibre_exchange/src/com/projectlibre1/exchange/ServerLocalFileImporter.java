@@ -123,10 +123,10 @@ public class ServerLocalFileImporter extends ServerFileImporter {
     	        //DataUtil serializer=new DataUtil();
     	        System.out.println("Loading "+importer.getFileName()+"..."); //$NON-NLS-1$ //$NON-NLS-2$
 
-    	        long t1=System.currentTimeMillis();
-    	        ObjectInputStream in=new ObjectInputStream(new FileInputStream(importer.getFileName()));
-    	        Object obj=in.readObject();
-    	        if (obj instanceof String) obj=in.readObject(); //check version in the future
+     	        long t1=System.currentTimeMillis();
+     	        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(importer.getFileName()))) {
+     	        Object obj=in.readObject();
+     	        if (obj instanceof String) obj=in.readObject(); //check version in the future
     	        projectData=(ProjectData)obj;
     	        projectData.setMaster(false);
     	        projectData.setLocal(false);
@@ -139,13 +139,14 @@ public class ServerLocalFileImporter extends ServerFileImporter {
     	        	ers.add(r.getEnterpriseResource());
     	        }
 
-				((ServerFileImporter)importer).prepareResources(ers,null,false);
+			((ServerFileImporter)importer).prepareResources(ers,null,false);
 				renumberProject();
 
-    	        setProgress(1.0f);
+     	        setProgress(1.0f);
                 return null;
-    		}
-        });
+     	        }
+     		}
+         });
 
     	job.addSwingRunnable(new JobRunnable("Import resources",1.0f){ //$NON-NLS-1$
 			public Object run() throws Exception{
