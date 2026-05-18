@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.model.cache;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.HashSet;
@@ -79,8 +79,8 @@ public class DependencyCache extends CellCache {
 	    }
 	}
 	public void updateAllVisibleElements(VisibleDependencies v){	    
-		Vector visibleDependencies=v.getElements();
-		Vector visibleNodes=v.getVisibleNodes().getElements();
+		ArrayList visibleDependencies =v.getElements();
+		ArrayList visibleNodes =v.getVisibleNodes().getElements();
 		Collection visibleNodesCol=getContainsCollection(visibleNodes);
 		visibleDependencies.clear();
 		for(Iterator i=getCacheIterator();i.hasNext();){
@@ -100,17 +100,17 @@ public class DependencyCache extends CellCache {
 	    }
 	}
 	public void updateVisibleElements(VisibleDependencies v,Set change){
-	    Vector visibleNodes=v.getVisibleNodes().getElements();
-	    Vector removed=new Vector();
-		Vector inserted=new Vector();
-		Vector changed=new Vector();
+	    ArrayList visibleNodes =v.getVisibleNodes().getElements();
+	    ArrayList removed = new ArrayList();
+		ArrayList inserted = new ArrayList();
+		ArrayList changed = new ArrayList();
 		changed.addAll(change);
         updateVisibleElements(v.getElements(),visibleNodes,removed,inserted,changed);
 		if (removed.size()>0) v.addEvent(new CacheEvent(this,CacheEvent.NODES_REMOVED,removed,null));
 		if (inserted.size()>0) v.addEvent(new CacheEvent(this,CacheEvent.NODES_INSERTED,inserted,null));
 		if (changed.size()>0) v.addEvent(new CacheEvent(this,CacheEvent.NODES_CHANGED,changed,null));
 	}
-	private void updateVisibleElements(Vector visibleDependencies,Vector visibleNodes, Vector removed, Vector inserted, Vector changed){
+	private void updateVisibleElements(ArrayList visibleDependencies, ArrayList visibleNodes, ArrayList removed, ArrayList inserted, ArrayList changed){
 		Collection visibleNodesCol=getContainsCollection(visibleNodes);
 		Collection visibleDependenciesCol=getContainsCollection(visibleDependencies);
 		HashSet visibleDependenciesSet=(visibleDependenciesCol instanceof HashSet)?(HashSet)visibleDependenciesCol:new HashSet(visibleDependenciesCol);

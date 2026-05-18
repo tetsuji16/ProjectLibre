@@ -59,7 +59,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.commons.beanutils.ConversionException;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -76,7 +76,7 @@ import com.projectlibre1.util.DateTime;
  * This class decorates ConvertUtils to use ProjectLibre specific types and validation
  */
 public class FieldConverter  {
-	Hashtable<FieldContext,Hashtable<Class,Converter>> contextMaps = new Hashtable<FieldContext,Hashtable<Class,Converter>>();
+	HashMap<FieldContext,HashMap<Class,Converter>> contextMaps = new HashMap<FieldContext, HashMap<Class,Converter>>();
 	private StringConverter stringConverter;
 	private StringConverter compactStringConverter;
 	
@@ -129,7 +129,7 @@ public class FieldConverter  {
 					result = ConvertUtils.convert((String) value,clazz);
 				else {
 					Converter contextConverter = null;
-					Hashtable<Class,Converter> contextMap = contextMaps.get(context);
+					HashMap<Class, Converter> contextMap = contextMaps.get(context);
 					if (contextMap != null)
 						contextConverter = contextMap.get(clazz);
 					if (contextConverter != null) {
@@ -196,7 +196,7 @@ public class FieldConverter  {
 		
 
 		// short context converters
-		Hashtable<Class,Converter> compactMap = new Hashtable<Class,Converter>();
+		HashMap<Class, Converter> compactMap = new HashMap<Class, Converter>();
 		contextMaps.put(COMPACT_CONVERTER_CONTEXT, compactMap);
 		compactMap.put(String.class,compactStringConverter);
 		// no need for duration or money as parsing is done in long form

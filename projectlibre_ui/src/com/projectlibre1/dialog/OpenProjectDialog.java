@@ -137,7 +137,7 @@ public final class OpenProjectDialog extends AbstractDialog {
 	}
 
 	protected void initControls() {
-//		Vector v=new Vector();
+//		ArrayList v =new Vector();
 //		v.addAll(projects);
 //		list=new ActionJList(v);
 //		  list.addActionListener(

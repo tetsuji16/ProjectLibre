@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.ganttproject.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -69,7 +69,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (role == null)
       {
-         role = new Vector<Role>();
+         role = new ArrayList<Role>();
       }
       return this.role;
    }

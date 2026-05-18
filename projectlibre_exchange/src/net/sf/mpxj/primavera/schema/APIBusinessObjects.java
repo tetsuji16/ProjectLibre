@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -489,7 +489,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectResourceCategory == null)
       {
-         projectResourceCategory = new Vector<ProjectResourceCategoryType>();
+         projectResourceCategory = new ArrayList<ProjectResourceCategoryType>();
       }
       return this.projectResourceCategory;
    }
@@ -520,7 +520,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (unitOfMeasure == null)
       {
-         unitOfMeasure = new Vector<UnitOfMeasureType>();
+         unitOfMeasure = new ArrayList<UnitOfMeasureType>();
       }
       return this.unitOfMeasure;
    }
@@ -551,7 +551,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (costAccount == null)
       {
-         costAccount = new Vector<CostAccountType>();
+         costAccount = new ArrayList<CostAccountType>();
       }
       return this.costAccount;
    }
@@ -582,7 +582,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (currency == null)
       {
-         currency = new Vector<CurrencyType>();
+         currency = new ArrayList<CurrencyType>();
       }
       return this.currency;
    }
@@ -613,7 +613,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (udfType == null)
       {
-         udfType = new Vector<UDFTypeType>();
+         udfType = new ArrayList<UDFTypeType>();
       }
       return this.udfType;
    }
@@ -644,7 +644,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (udfCode == null)
       {
-         udfCode = new Vector<UDFCodeType>();
+         udfCode = new ArrayList<UDFCodeType>();
       }
       return this.udfCode;
    }
@@ -675,7 +675,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (expenseCategory == null)
       {
-         expenseCategory = new Vector<ExpenseCategoryType>();
+         expenseCategory = new ArrayList<ExpenseCategoryType>();
       }
       return this.expenseCategory;
    }
@@ -706,7 +706,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (notebookTopic == null)
       {
-         notebookTopic = new Vector<NotebookTopicType>();
+         notebookTopic = new ArrayList<NotebookTopicType>();
       }
       return this.notebookTopic;
    }
@@ -737,7 +737,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (wbsCategory == null)
       {
-         wbsCategory = new Vector<WBSCategoryType>();
+         wbsCategory = new ArrayList<WBSCategoryType>();
       }
       return this.wbsCategory;
    }
@@ -768,7 +768,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (fundingSource == null)
       {
-         fundingSource = new Vector<FundingSourceType>();
+         fundingSource = new ArrayList<FundingSourceType>();
       }
       return this.fundingSource;
    }
@@ -799,7 +799,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (thresholdParameter == null)
       {
-         thresholdParameter = new Vector<ThresholdParameterType>();
+         thresholdParameter = new ArrayList<ThresholdParameterType>();
       }
       return this.thresholdParameter;
    }
@@ -830,7 +830,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (obs == null)
       {
-         obs = new Vector<OBSType>();
+         obs = new ArrayList<OBSType>();
       }
       return this.obs;
    }
@@ -861,7 +861,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (shiftPeriod == null)
       {
-         shiftPeriod = new Vector<ShiftPeriodType>();
+         shiftPeriod = new ArrayList<ShiftPeriodType>();
       }
       return this.shiftPeriod;
    }
@@ -892,7 +892,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (shift == null)
       {
-         shift = new Vector<ShiftType>();
+         shift = new ArrayList<ShiftType>();
       }
       return this.shift;
    }
@@ -923,7 +923,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (calendar == null)
       {
-         calendar = new Vector<CalendarType>();
+         calendar = new ArrayList<CalendarType>();
       }
       return this.calendar;
    }
@@ -954,7 +954,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectCodeType == null)
       {
-         projectCodeType = new Vector<ProjectCodeTypeType>();
+         projectCodeType = new ArrayList<ProjectCodeTypeType>();
       }
       return this.projectCodeType;
    }
@@ -985,7 +985,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectCode == null)
       {
-         projectCode = new Vector<ProjectCodeType>();
+         projectCode = new ArrayList<ProjectCodeType>();
       }
       return this.projectCode;
    }
@@ -1016,7 +1016,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceCodeType == null)
       {
-         resourceCodeType = new Vector<ResourceCodeTypeType>();
+         resourceCodeType = new ArrayList<ResourceCodeTypeType>();
       }
       return this.resourceCodeType;
    }
@@ -1047,7 +1047,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceCode == null)
       {
-         resourceCode = new Vector<ResourceCodeType>();
+         resourceCode = new ArrayList<ResourceCodeType>();
       }
       return this.resourceCode;
    }
@@ -1078,7 +1078,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceCurve == null)
       {
-         resourceCurve = new Vector<ResourceCurveType>();
+         resourceCurve = new ArrayList<ResourceCurveType>();
       }
       return this.resourceCurve;
    }
@@ -1109,7 +1109,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (role == null)
       {
-         role = new Vector<RoleType>();
+         role = new ArrayList<RoleType>();
       }
       return this.role;
    }
@@ -1140,7 +1140,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (roleRate == null)
       {
-         roleRate = new Vector<RoleRateType>();
+         roleRate = new ArrayList<RoleRateType>();
       }
       return this.roleRate;
    }
@@ -1171,7 +1171,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (roleLimit == null)
       {
-         roleLimit = new Vector<RoleLimitType>();
+         roleLimit = new ArrayList<RoleLimitType>();
       }
       return this.roleLimit;
    }
@@ -1202,7 +1202,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resource == null)
       {
-         resource = new Vector<ResourceType>();
+         resource = new ArrayList<ResourceType>();
       }
       return this.resource;
    }
@@ -1233,7 +1233,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceRate == null)
       {
-         resourceRate = new Vector<ResourceRateType>();
+         resourceRate = new ArrayList<ResourceRateType>();
       }
       return this.resourceRate;
    }
@@ -1264,7 +1264,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityCodeType == null)
       {
-         activityCodeType = new Vector<ActivityCodeTypeType>();
+         activityCodeType = new ArrayList<ActivityCodeTypeType>();
       }
       return this.activityCodeType;
    }
@@ -1295,7 +1295,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityCode == null)
       {
-         activityCode = new Vector<ActivityCodeType>();
+         activityCode = new ArrayList<ActivityCodeType>();
       }
       return this.activityCode;
    }
@@ -1326,7 +1326,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (financialPeriod == null)
       {
-         financialPeriod = new Vector<FinancialPeriodType>();
+         financialPeriod = new ArrayList<FinancialPeriodType>();
       }
       return this.financialPeriod;
    }
@@ -1357,7 +1357,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceRole == null)
       {
-         resourceRole = new Vector<ResourceRoleType>();
+         resourceRole = new ArrayList<ResourceRoleType>();
       }
       return this.resourceRole;
    }
@@ -1388,7 +1388,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (eps == null)
       {
-         eps = new Vector<EPSType>();
+         eps = new ArrayList<EPSType>();
       }
       return this.eps;
    }
@@ -1419,7 +1419,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (documentCategory == null)
       {
-         documentCategory = new Vector<DocumentCategoryType>();
+         documentCategory = new ArrayList<DocumentCategoryType>();
       }
       return this.documentCategory;
    }
@@ -1450,7 +1450,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (documentStatusCode == null)
       {
-         documentStatusCode = new Vector<DocumentStatusCodeType>();
+         documentStatusCode = new ArrayList<DocumentStatusCodeType>();
       }
       return this.documentStatusCode;
    }
@@ -1481,7 +1481,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskCategory == null)
       {
-         riskCategory = new Vector<RiskCategoryType>();
+         riskCategory = new ArrayList<RiskCategoryType>();
       }
       return this.riskCategory;
    }
@@ -1512,7 +1512,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskThreshold == null)
       {
-         riskThreshold = new Vector<RiskThresholdType>();
+         riskThreshold = new ArrayList<RiskThresholdType>();
       }
       return this.riskThreshold;
    }
@@ -1543,7 +1543,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskThresholdLevel == null)
       {
-         riskThresholdLevel = new Vector<RiskThresholdLevelType>();
+         riskThresholdLevel = new ArrayList<RiskThresholdLevelType>();
       }
       return this.riskThresholdLevel;
    }
@@ -1574,7 +1574,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskMatrix == null)
       {
-         riskMatrix = new Vector<RiskMatrixType>();
+         riskMatrix = new ArrayList<RiskMatrixType>();
       }
       return this.riskMatrix;
    }
@@ -1605,7 +1605,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskMatrixScore == null)
       {
-         riskMatrixScore = new Vector<RiskMatrixScoreType>();
+         riskMatrixScore = new ArrayList<RiskMatrixScoreType>();
       }
       return this.riskMatrixScore;
    }
@@ -1636,7 +1636,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskMatrixThreshold == null)
       {
-         riskMatrixThreshold = new Vector<RiskMatrixThresholdType>();
+         riskMatrixThreshold = new ArrayList<RiskMatrixThresholdType>();
       }
       return this.riskMatrixThreshold;
    }
@@ -1667,7 +1667,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activity == null)
       {
-         activity = new Vector<ActivityType>();
+         activity = new ArrayList<ActivityType>();
       }
       return this.activity;
    }
@@ -1698,7 +1698,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityCodeAssignment == null)
       {
-         activityCodeAssignment = new Vector<ActivityCodeAssignmentType>();
+         activityCodeAssignment = new ArrayList<ActivityCodeAssignmentType>();
       }
       return this.activityCodeAssignment;
    }
@@ -1729,7 +1729,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityCodeUpdate == null)
       {
-         activityCodeUpdate = new Vector<ActivityCodeUpdateType>();
+         activityCodeUpdate = new ArrayList<ActivityCodeUpdateType>();
       }
       return this.activityCodeUpdate;
    }
@@ -1760,7 +1760,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityComment == null)
       {
-         activityComment = new Vector<ActivityCommentType>();
+         activityComment = new ArrayList<ActivityCommentType>();
       }
       return this.activityComment;
    }
@@ -1791,7 +1791,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityExpense == null)
       {
-         activityExpense = new Vector<ActivityExpenseType>();
+         activityExpense = new ArrayList<ActivityExpenseType>();
       }
       return this.activityExpense;
    }
@@ -1822,7 +1822,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityFilter == null)
       {
-         activityFilter = new Vector<ActivityFilterType>();
+         activityFilter = new ArrayList<ActivityFilterType>();
       }
       return this.activityFilter;
    }
@@ -1853,7 +1853,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityNote == null)
       {
-         activityNote = new Vector<ActivityNoteType>();
+         activityNote = new ArrayList<ActivityNoteType>();
       }
       return this.activityNote;
    }
@@ -1884,7 +1884,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityNoteUpdate == null)
       {
-         activityNoteUpdate = new Vector<ActivityNoteUpdateType>();
+         activityNoteUpdate = new ArrayList<ActivityNoteUpdateType>();
       }
       return this.activityNoteUpdate;
    }
@@ -1915,7 +1915,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityOwner == null)
       {
-         activityOwner = new Vector<ActivityOwnerType>();
+         activityOwner = new ArrayList<ActivityOwnerType>();
       }
       return this.activityOwner;
    }
@@ -1946,7 +1946,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityPeriodActual == null)
       {
-         activityPeriodActual = new Vector<ActivityPeriodActualType>();
+         activityPeriodActual = new ArrayList<ActivityPeriodActualType>();
       }
       return this.activityPeriodActual;
    }
@@ -1977,7 +1977,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityRisk == null)
       {
-         activityRisk = new Vector<ActivityRiskType>();
+         activityRisk = new ArrayList<ActivityRiskType>();
       }
       return this.activityRisk;
    }
@@ -2008,7 +2008,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityStep == null)
       {
-         activityStep = new Vector<ActivityStepType>();
+         activityStep = new ArrayList<ActivityStepType>();
       }
       return this.activityStep;
    }
@@ -2039,7 +2039,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityStepCreate == null)
       {
-         activityStepCreate = new Vector<ActivityStepCreateType>();
+         activityStepCreate = new ArrayList<ActivityStepCreateType>();
       }
       return this.activityStepCreate;
    }
@@ -2070,7 +2070,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityStepDelete == null)
       {
-         activityStepDelete = new Vector<ActivityStepDeleteType>();
+         activityStepDelete = new ArrayList<ActivityStepDeleteType>();
       }
       return this.activityStepDelete;
    }
@@ -2101,7 +2101,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityStepTemplate == null)
       {
-         activityStepTemplate = new Vector<ActivityStepTemplateType>();
+         activityStepTemplate = new ArrayList<ActivityStepTemplateType>();
       }
       return this.activityStepTemplate;
    }
@@ -2132,7 +2132,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityStepTemplateItem == null)
       {
-         activityStepTemplateItem = new Vector<ActivityStepTemplateItemType>();
+         activityStepTemplateItem = new ArrayList<ActivityStepTemplateItemType>();
       }
       return this.activityStepTemplateItem;
    }
@@ -2163,7 +2163,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityStepUpdate == null)
       {
-         activityStepUpdate = new Vector<ActivityStepUpdateType>();
+         activityStepUpdate = new ArrayList<ActivityStepUpdateType>();
       }
       return this.activityStepUpdate;
    }
@@ -2194,7 +2194,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (activityUpdate == null)
       {
-         activityUpdate = new Vector<ActivityUpdateType>();
+         activityUpdate = new ArrayList<ActivityUpdateType>();
       }
       return this.activityUpdate;
    }
@@ -2225,7 +2225,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (baselineType == null)
       {
-         baselineType = new Vector<BaselineTypeType>();
+         baselineType = new ArrayList<BaselineTypeType>();
       }
       return this.baselineType;
    }
@@ -2256,7 +2256,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (cbs == null)
       {
-         cbs = new Vector<CBSType>();
+         cbs = new ArrayList<CBSType>();
       }
       return this.cbs;
    }
@@ -2287,7 +2287,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (cbsDurationSummary == null)
       {
-         cbsDurationSummary = new Vector<CBSDurationSummaryType>();
+         cbsDurationSummary = new ArrayList<CBSDurationSummaryType>();
       }
       return this.cbsDurationSummary;
    }
@@ -2318,7 +2318,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (changeSet == null)
       {
-         changeSet = new Vector<ChangeSetType>();
+         changeSet = new ArrayList<ChangeSetType>();
       }
       return this.changeSet;
    }
@@ -2349,7 +2349,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (document == null)
       {
-         document = new Vector<DocumentType>();
+         document = new ArrayList<DocumentType>();
       }
       return this.document;
    }
@@ -2380,7 +2380,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (epsBudgetChangeLog == null)
       {
-         epsBudgetChangeLog = new Vector<EPSBudgetChangeLogType>();
+         epsBudgetChangeLog = new ArrayList<EPSBudgetChangeLogType>();
       }
       return this.epsBudgetChangeLog;
    }
@@ -2411,7 +2411,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (epsFunding == null)
       {
-         epsFunding = new Vector<EPSFundingType>();
+         epsFunding = new ArrayList<EPSFundingType>();
       }
       return this.epsFunding;
    }
@@ -2442,7 +2442,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (epsNote == null)
       {
-         epsNote = new Vector<EPSNoteType>();
+         epsNote = new ArrayList<EPSNoteType>();
       }
       return this.epsNote;
    }
@@ -2473,7 +2473,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (epsSpendingPlan == null)
       {
-         epsSpendingPlan = new Vector<EPSSpendingPlanType>();
+         epsSpendingPlan = new ArrayList<EPSSpendingPlanType>();
       }
       return this.epsSpendingPlan;
    }
@@ -2504,7 +2504,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (gatewayDeployment == null)
       {
-         gatewayDeployment = new Vector<GatewayDeploymentType>();
+         gatewayDeployment = new ArrayList<GatewayDeploymentType>();
       }
       return this.gatewayDeployment;
    }
@@ -2535,7 +2535,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (globalPreferences == null)
       {
-         globalPreferences = new Vector<GlobalPreferencesType>();
+         globalPreferences = new ArrayList<GlobalPreferencesType>();
       }
       return this.globalPreferences;
    }
@@ -2566,7 +2566,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (globalProfile == null)
       {
-         globalProfile = new Vector<GlobalProfileType>();
+         globalProfile = new ArrayList<GlobalProfileType>();
       }
       return this.globalProfile;
    }
@@ -2597,7 +2597,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (globalReplace == null)
       {
-         globalReplace = new Vector<GlobalReplaceType>();
+         globalReplace = new ArrayList<GlobalReplaceType>();
       }
       return this.globalReplace;
    }
@@ -2628,7 +2628,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (importOptionsTemplate == null)
       {
-         importOptionsTemplate = new Vector<ImportOptionsTemplateType>();
+         importOptionsTemplate = new ArrayList<ImportOptionsTemplateType>();
       }
       return this.importOptionsTemplate;
    }
@@ -2659,7 +2659,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (issueHistory == null)
       {
-         issueHistory = new Vector<IssueHistoryType>();
+         issueHistory = new ArrayList<IssueHistoryType>();
       }
       return this.issueHistory;
    }
@@ -2690,7 +2690,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (jobService == null)
       {
-         jobService = new Vector<JobServiceType>();
+         jobService = new ArrayList<JobServiceType>();
       }
       return this.jobService;
    }
@@ -2721,7 +2721,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (location == null)
       {
-         location = new Vector<LocationType>();
+         location = new ArrayList<LocationType>();
       }
       return this.location;
    }
@@ -2752,7 +2752,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (mspTemplate == null)
       {
-         mspTemplate = new Vector<MSPTemplateType>();
+         mspTemplate = new ArrayList<MSPTemplateType>();
       }
       return this.mspTemplate;
    }
@@ -2783,7 +2783,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (overheadCode == null)
       {
-         overheadCode = new Vector<OverheadCodeType>();
+         overheadCode = new ArrayList<OverheadCodeType>();
       }
       return this.overheadCode;
    }
@@ -2814,7 +2814,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (project == null)
       {
-         project = new Vector<ProjectType>();
+         project = new ArrayList<ProjectType>();
       }
       return this.project;
    }
@@ -2845,7 +2845,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (baselineProject == null)
       {
-         baselineProject = new Vector<BaselineProjectType>();
+         baselineProject = new ArrayList<BaselineProjectType>();
       }
       return this.baselineProject;
    }
@@ -2876,7 +2876,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectBudgetChangeLog == null)
       {
-         projectBudgetChangeLog = new Vector<ProjectBudgetChangeLogType>();
+         projectBudgetChangeLog = new ArrayList<ProjectBudgetChangeLogType>();
       }
       return this.projectBudgetChangeLog;
    }
@@ -2907,7 +2907,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectCodeAssignment == null)
       {
-         projectCodeAssignment = new Vector<ProjectCodeAssignmentType>();
+         projectCodeAssignment = new ArrayList<ProjectCodeAssignmentType>();
       }
       return this.projectCodeAssignment;
    }
@@ -2938,7 +2938,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectDeployment == null)
       {
-         projectDeployment = new Vector<ProjectDeploymentType>();
+         projectDeployment = new ArrayList<ProjectDeploymentType>();
       }
       return this.projectDeployment;
    }
@@ -2969,7 +2969,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectDocument == null)
       {
-         projectDocument = new Vector<ProjectDocumentType>();
+         projectDocument = new ArrayList<ProjectDocumentType>();
       }
       return this.projectDocument;
    }
@@ -3000,7 +3000,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectFunding == null)
       {
-         projectFunding = new Vector<ProjectFundingType>();
+         projectFunding = new ArrayList<ProjectFundingType>();
       }
       return this.projectFunding;
    }
@@ -3031,7 +3031,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectIssue == null)
       {
-         projectIssue = new Vector<ProjectIssueType>();
+         projectIssue = new ArrayList<ProjectIssueType>();
       }
       return this.projectIssue;
    }
@@ -3062,7 +3062,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectNote == null)
       {
-         projectNote = new Vector<ProjectNoteType>();
+         projectNote = new ArrayList<ProjectNoteType>();
       }
       return this.projectNote;
    }
@@ -3093,7 +3093,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectPortfolio == null)
       {
-         projectPortfolio = new Vector<ProjectPortfolioType>();
+         projectPortfolio = new ArrayList<ProjectPortfolioType>();
       }
       return this.projectPortfolio;
    }
@@ -3124,7 +3124,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectProfile == null)
       {
-         projectProfile = new Vector<ProjectProfileType>();
+         projectProfile = new ArrayList<ProjectProfileType>();
       }
       return this.projectProfile;
    }
@@ -3155,7 +3155,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectResource == null)
       {
-         projectResource = new Vector<ProjectResourceType>();
+         projectResource = new ArrayList<ProjectResourceType>();
       }
       return this.projectResource;
    }
@@ -3186,7 +3186,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectResourceQuantity == null)
       {
-         projectResourceQuantity = new Vector<ProjectResourceQuantityType>();
+         projectResourceQuantity = new ArrayList<ProjectResourceQuantityType>();
       }
       return this.projectResourceQuantity;
    }
@@ -3217,7 +3217,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectSpendingPlan == null)
       {
-         projectSpendingPlan = new Vector<ProjectSpendingPlanType>();
+         projectSpendingPlan = new ArrayList<ProjectSpendingPlanType>();
       }
       return this.projectSpendingPlan;
    }
@@ -3248,7 +3248,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (projectThreshold == null)
       {
-         projectThreshold = new Vector<ProjectThresholdType>();
+         projectThreshold = new ArrayList<ProjectThresholdType>();
       }
       return this.projectThreshold;
    }
@@ -3279,7 +3279,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (relationship == null)
       {
-         relationship = new Vector<RelationshipType>();
+         relationship = new ArrayList<RelationshipType>();
       }
       return this.relationship;
    }
@@ -3310,7 +3310,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceAccess == null)
       {
-         resourceAccess = new Vector<ResourceAccessType>();
+         resourceAccess = new ArrayList<ResourceAccessType>();
       }
       return this.resourceAccess;
    }
@@ -3341,7 +3341,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceAssignment == null)
       {
-         resourceAssignment = new Vector<ResourceAssignmentType>();
+         resourceAssignment = new ArrayList<ResourceAssignmentType>();
       }
       return this.resourceAssignment;
    }
@@ -3372,7 +3372,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceAssignmentCreate == null)
       {
-         resourceAssignmentCreate = new Vector<ResourceAssignmentCreateType>();
+         resourceAssignmentCreate = new ArrayList<ResourceAssignmentCreateType>();
       }
       return this.resourceAssignmentCreate;
    }
@@ -3403,7 +3403,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceAssignmentPeriodActual == null)
       {
-         resourceAssignmentPeriodActual = new Vector<ResourceAssignmentPeriodActualType>();
+         resourceAssignmentPeriodActual = new ArrayList<ResourceAssignmentPeriodActualType>();
       }
       return this.resourceAssignmentPeriodActual;
    }
@@ -3434,7 +3434,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceAssignmentUpdate == null)
       {
-         resourceAssignmentUpdate = new Vector<ResourceAssignmentUpdateType>();
+         resourceAssignmentUpdate = new ArrayList<ResourceAssignmentUpdateType>();
       }
       return this.resourceAssignmentUpdate;
    }
@@ -3465,7 +3465,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceCodeAssignment == null)
       {
-         resourceCodeAssignment = new Vector<ResourceCodeAssignmentType>();
+         resourceCodeAssignment = new ArrayList<ResourceCodeAssignmentType>();
       }
       return this.resourceCodeAssignment;
    }
@@ -3496,7 +3496,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceHour == null)
       {
-         resourceHour = new Vector<ResourceHourType>();
+         resourceHour = new ArrayList<ResourceHourType>();
       }
       return this.resourceHour;
    }
@@ -3527,7 +3527,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceLocation == null)
       {
-         resourceLocation = new Vector<ResourceLocationType>();
+         resourceLocation = new ArrayList<ResourceLocationType>();
       }
       return this.resourceLocation;
    }
@@ -3558,7 +3558,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resourceTeam == null)
       {
-         resourceTeam = new Vector<ResourceTeamType>();
+         resourceTeam = new ArrayList<ResourceTeamType>();
       }
       return this.resourceTeam;
    }
@@ -3589,7 +3589,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (risk == null)
       {
-         risk = new Vector<RiskType>();
+         risk = new ArrayList<RiskType>();
       }
       return this.risk;
    }
@@ -3620,7 +3620,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskImpact == null)
       {
-         riskImpact = new Vector<RiskImpactType>();
+         riskImpact = new ArrayList<RiskImpactType>();
       }
       return this.riskImpact;
    }
@@ -3651,7 +3651,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskResponseAction == null)
       {
-         riskResponseAction = new Vector<RiskResponseActionType>();
+         riskResponseAction = new ArrayList<RiskResponseActionType>();
       }
       return this.riskResponseAction;
    }
@@ -3682,7 +3682,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskResponseActionImpact == null)
       {
-         riskResponseActionImpact = new Vector<RiskResponseActionImpactType>();
+         riskResponseActionImpact = new ArrayList<RiskResponseActionImpactType>();
       }
       return this.riskResponseActionImpact;
    }
@@ -3713,7 +3713,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (riskResponsePlan == null)
       {
-         riskResponsePlan = new Vector<RiskResponsePlanType>();
+         riskResponsePlan = new ArrayList<RiskResponsePlanType>();
       }
       return this.riskResponsePlan;
    }
@@ -3744,7 +3744,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (roleTeam == null)
       {
-         roleTeam = new Vector<RoleTeamType>();
+         roleTeam = new ArrayList<RoleTeamType>();
       }
       return this.roleTeam;
    }
@@ -3775,7 +3775,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (scheduleCheckOption == null)
       {
-         scheduleCheckOption = new Vector<ScheduleCheckOptionType>();
+         scheduleCheckOption = new ArrayList<ScheduleCheckOptionType>();
       }
       return this.scheduleCheckOption;
    }
@@ -3806,7 +3806,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (scheduleOptions == null)
       {
-         scheduleOptions = new Vector<ScheduleOptionsType>();
+         scheduleOptions = new ArrayList<ScheduleOptionsType>();
       }
       return this.scheduleOptions;
    }
@@ -3837,7 +3837,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (timesheet == null)
       {
-         timesheet = new Vector<TimesheetType>();
+         timesheet = new ArrayList<TimesheetType>();
       }
       return this.timesheet;
    }
@@ -3868,7 +3868,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (timesheetAudit == null)
       {
-         timesheetAudit = new Vector<TimesheetAuditType>();
+         timesheetAudit = new ArrayList<TimesheetAuditType>();
       }
       return this.timesheetAudit;
    }
@@ -3899,7 +3899,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (timesheetDelegate == null)
       {
-         timesheetDelegate = new Vector<TimesheetDelegateType>();
+         timesheetDelegate = new ArrayList<TimesheetDelegateType>();
       }
       return this.timesheetDelegate;
    }
@@ -3930,7 +3930,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (timesheetPeriod == null)
       {
-         timesheetPeriod = new Vector<TimesheetPeriodType>();
+         timesheetPeriod = new ArrayList<TimesheetPeriodType>();
       }
       return this.timesheetPeriod;
    }
@@ -3961,7 +3961,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (udfValue == null)
       {
-         udfValue = new Vector<UDFValueType>();
+         udfValue = new ArrayList<UDFValueType>();
       }
       return this.udfValue;
    }
@@ -3992,7 +3992,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (updateBaselineOption == null)
       {
-         updateBaselineOption = new Vector<UpdateBaselineOptionType>();
+         updateBaselineOption = new ArrayList<UpdateBaselineOptionType>();
       }
       return this.updateBaselineOption;
    }
@@ -4023,7 +4023,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (user == null)
       {
-         user = new Vector<UserType>();
+         user = new ArrayList<UserType>();
       }
       return this.user;
    }
@@ -4054,7 +4054,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (userDefinedValueUpdate == null)
       {
-         userDefinedValueUpdate = new Vector<UserDefinedValueUpdateType>();
+         userDefinedValueUpdate = new ArrayList<UserDefinedValueUpdateType>();
       }
       return this.userDefinedValueUpdate;
    }
@@ -4085,7 +4085,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (userFieldTitle == null)
       {
-         userFieldTitle = new Vector<UserFieldTitleType>();
+         userFieldTitle = new ArrayList<UserFieldTitleType>();
       }
       return this.userFieldTitle;
    }
@@ -4116,7 +4116,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (userInterfaceView == null)
       {
-         userInterfaceView = new Vector<UserInterfaceViewType>();
+         userInterfaceView = new ArrayList<UserInterfaceViewType>();
       }
       return this.userInterfaceView;
    }
@@ -4147,7 +4147,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (userLicense == null)
       {
-         userLicense = new Vector<UserLicenseType>();
+         userLicense = new ArrayList<UserLicenseType>();
       }
       return this.userLicense;
    }
@@ -4178,7 +4178,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (userOBS == null)
       {
-         userOBS = new Vector<UserOBSType>();
+         userOBS = new ArrayList<UserOBSType>();
       }
       return this.userOBS;
    }
@@ -4209,7 +4209,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (wbs == null)
       {
-         wbs = new Vector<WBSType>();
+         wbs = new ArrayList<WBSType>();
       }
       return this.wbs;
    }
@@ -4240,7 +4240,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (wbsMilestone == null)
       {
-         wbsMilestone = new Vector<WBSMilestoneType>();
+         wbsMilestone = new ArrayList<WBSMilestoneType>();
       }
       return this.wbsMilestone;
    }

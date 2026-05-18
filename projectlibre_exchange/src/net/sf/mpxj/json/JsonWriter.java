@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -550,7 +550,7 @@ public final class JsonWriter extends AbstractProjectWriter
 
    private static final Charset DEFAULT_ENCODING = CharsetHelper.UTF8;
 
-   private static Map<String, DataType> TYPE_MAP = new Hashtable<String, DataType>();
+   private static Map<String, DataType> TYPE_MAP = new HashMap<String, DataType>();
    static
    {
       TYPE_MAP.put(Boolean.class.getName(), DataType.BOOLEAN);

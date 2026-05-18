@@ -8,10 +8,10 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -691,7 +691,7 @@ public class CollaborationMetadataStore {
 		}
 
 		private List<Object> parseArray() {
-			List<Object> list = new Vector<Object>();
+			List<Object> list = new ArrayList<Object>();
 			index++;
 			while (true) {
 				skipWhitespace();

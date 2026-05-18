@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.script.object;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.projectlibre1.datatype.Duration;
@@ -122,7 +122,7 @@ public class DistributionHolder implements HasId,HasName,MutableHasStartAndEnd,T
 		this.children = children;
 	}
 	public void addChild(DistributionHolder child){
-		if (children==null) children=new Vector<DistributionHolder>();
+		if (children==null) children=new ArrayList<DistributionHolder>();
 		children.add(child);
 	}
 	public Object getExtension() {

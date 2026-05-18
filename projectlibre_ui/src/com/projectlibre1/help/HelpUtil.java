@@ -63,7 +63,7 @@ import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -78,7 +78,7 @@ import com.projectlibre1.util.BrowserControl;
 import com.projectlibre1.util.Environment;
 
 public class HelpUtil implements KeyEventDispatcher {
-	private  Hashtable<Component,String> map = new Hashtable<Component,String>();
+	private  HashMap<Component,String> map = new HashMap<Component, String>();
 	private static HelpUtil instance = null;
 	private static final int DELAY_BETWEEN_HELPS = 5000;
 	private long lastHelpTime = 0L;

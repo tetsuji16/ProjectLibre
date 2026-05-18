@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.field;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -71,7 +71,7 @@ public class StaticSelect extends Select {
 	DualHashBidiMap stringMap = new DualHashBidiMap();
 	DualHashBidiMap objectMap = null;
 	Object[] keyArray = null;
-	Vector orderedValueList = new Vector();
+	ArrayList orderedValueList = new ArrayList();
 	boolean integerValues = true;
 	
 	public StaticSelect() {
@@ -104,7 +104,7 @@ public class StaticSelect extends Select {
 	
 	public String toString() {
 		MapIterator i = stringMap.mapIterator();
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		while (i.hasNext()) {
 			i.next();
 			result.append("[key]" + i.getKey() + " [value]" + i.getValue() + "\n");

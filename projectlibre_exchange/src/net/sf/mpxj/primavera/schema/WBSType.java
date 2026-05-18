@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -5129,7 +5129,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (udf == null)
       {
-         udf = new Vector<UDFAssignmentType>();
+         udf = new ArrayList<UDFAssignmentType>();
       }
       return this.udf;
    }
@@ -5186,7 +5186,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (wbsResourceSpread == null)
       {
-         wbsResourceSpread = new Vector<ProjectResourceSpreadType>();
+         wbsResourceSpread = new ArrayList<ProjectResourceSpreadType>();
       }
       return this.wbsResourceSpread;
    }
@@ -5217,7 +5217,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (wbsRoleSpread == null)
       {
-         wbsRoleSpread = new Vector<ProjectRoleSpreadType>();
+         wbsRoleSpread = new ArrayList<ProjectRoleSpreadType>();
       }
       return this.wbsRoleSpread;
    }

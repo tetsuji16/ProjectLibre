@@ -1,6 +1,6 @@
 package com.projectlibre.pm.scheduling;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,7 +23,7 @@ public enum EarnedValueMethod {
 	}
 	public static EarnedValueMethod getInstance(int id){
 		if (reverseMap==null){
-			reverseMap=new Hashtable<Integer,EarnedValueMethod>();
+			reverseMap=new HashMap<Integer, EarnedValueMethod>();
 			for (EarnedValueMethod ct : values())
 				reverseMap.put(ct.getId(),ct);
 		}

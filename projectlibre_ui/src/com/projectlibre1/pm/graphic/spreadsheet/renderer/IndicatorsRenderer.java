@@ -92,7 +92,7 @@ public class IndicatorsRenderer extends DefaultTableCellRenderer implements Offl
 			//indicatorsComponent.setLook(label,isSelected,hasFocus);
 			if (table!=null) label.setBackground(table.getBackground());
 			label.setLayout(new BoxLayout(label, BoxLayout.X_AXIS));
-			StringBuffer text = new StringBuffer();
+			StringBuilder text = new StringBuilder();
 			
 			// I would like to also show a gif next to the text as MS does.  unfortunately, this is not doable
 			// with the html tag, since there is no way to refrence the image from the jar (darn)

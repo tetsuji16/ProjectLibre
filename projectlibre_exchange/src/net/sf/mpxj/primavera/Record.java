@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.primavera;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -282,7 +282,7 @@ class Record
 
    private String m_field;
    private String m_value;
-   private List<Record> m_records = new Vector<Record>();
+   private List<Record> m_records = new ArrayList<Record>();
 
    private static final String SEPARATOR = new String(new byte[]
    {

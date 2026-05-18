@@ -59,7 +59,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -492,7 +492,7 @@ public class HasAssignmentsImpl implements HasAssignments, HasTimeDistributedDat
 
     public static List extractOppositeList(List list, boolean leftObject) {
     	Iterator i = list.iterator();
-    	Vector assignments = new Vector();
+    	ArrayList assignments = new ArrayList();
     	while (i.hasNext()) { // go thru tasks or resources
     		Object object = i.next();
 			if (! (object instanceof HasAssignments))

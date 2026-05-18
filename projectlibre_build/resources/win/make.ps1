@@ -5,6 +5,9 @@ param(
     [string]$JavaHome = $env:JAVA_HOME
 )
 
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Push-Location $scriptDir
+
 $AppVersion = "@version@"
 $RuntimeModules = "@jpackage_modules@"
 $BundledJavaHome = "@bundled_jdk_windows@"
@@ -30,7 +33,8 @@ $jpackageArgs = @(
     "--name", "ProjectLibre",
     "--app-version", $AppVersion,
     "--input", "source",
-    "--main-jar", "projectlibre-$AppVersion.jar",
+    "--main-jar", "projectlibre.jar",
+    "--main-class", "com.projectlibre1.main.Main",
     "--icon", "source/projectlibre.ico",
     "--license-file", "source/license/license.txt",
     "--add-modules", $RuntimeModules,
@@ -50,5 +54,12 @@ if ($PackageType -eq "msi") {
 }
 
 & $JpackagePath @jpackageArgs
+$exitCode = $LASTEXITCODE
+
+if ($exitCode -ne 0) {
+    Pop-Location
+    exit $exitCode
+}
 
 Write-Host "$PackageType package created in '$OutputDir'" -ForegroundColor Green
+Pop-Location

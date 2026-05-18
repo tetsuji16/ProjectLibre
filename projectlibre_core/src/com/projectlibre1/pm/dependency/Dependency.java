@@ -438,7 +438,7 @@ public class Dependency implements Association, BelongsToDocument, DataObject {
 	}
 
 	public String htmlString() {
-	    StringBuffer s=new StringBuffer();
+	    StringBuilder s = new StringBuilder();
 	    s.append("<html><body>");
 	    s.append(Messages.getString("Gantt.tooltip.link")).append(": ");
 	    s.append(DependencyType.toLongString(getDependencyType())).append(" ");

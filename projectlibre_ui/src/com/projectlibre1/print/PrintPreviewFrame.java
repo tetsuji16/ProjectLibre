@@ -76,7 +76,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -228,7 +228,7 @@ public class PrintPreviewFrame extends JFrame implements  ActionMap, MenuActionC
 		if (pageSetupComponent==null) return;
 		boolean visible=!pageSetupComponent.isVisible();
 		pageSetupComponent.setVisible(visible);
-//		Vector buttons=menuManager.getToolBarFactory().getButtonsFromId("PrintPreviewFormat");
+//		ArrayList buttons =menuManager.getToolBarFactory().getButtonsFromId("PrintPreviewFormat");
 //		if (buttons!=null&&buttons.size()==1){
 //			JButton b=(JButton)buttons.get(0);
 //			b.setIcon(IconManager.getIcon("print.format"));
@@ -448,7 +448,7 @@ public class PrintPreviewFrame extends JFrame implements  ActionMap, MenuActionC
 			GraphPageable gp=(GraphPageable)document;
 
 			boolean visible=gp.getRenderer().getParams().isLeftPartVisible();
-			Vector buttons=menuManager.getToolBarFactory().getButtonsFromId("PrintPreviewLeftView");
+			ArrayList buttons =menuManager.getToolBarFactory().getButtonsFromId("PrintPreviewLeftView");
 			if (buttons!=null&&buttons.size()==1){
 				JButton b=(JButton)buttons.get(0);
 				b.setIcon(IconManager.getIcon(visible?"print.leftView":"print.leftViewHidden"));

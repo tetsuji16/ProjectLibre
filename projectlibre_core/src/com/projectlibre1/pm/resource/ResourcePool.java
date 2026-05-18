@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.pm.resource;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -84,8 +84,8 @@ import com.projectlibre1.undo.DataFactoryUndoController;
  */
 public class ResourcePool implements Document, NodeModelDataFactory {
 	private String name = "";
-	private Vector resourceList = new Vector();
-	private Vector projects = new Vector();
+	private ArrayList resourceList = new ArrayList();
+	private ArrayList projects = new ArrayList();
 	private ObjectEventManager objectEventManager = new ObjectEventManager();
 	private int resourceIdCounter = 0;
 	private WorkingCalendar defaultCalendar;
@@ -104,10 +104,10 @@ public class ResourcePool implements Document, NodeModelDataFactory {
 		return pool;
 	}
 	
-    private transient Hashtable<Long,Resource> idMap = null;
+    private transient HashMap<Long,Resource> idMap = null;
 	public Resource findById(long id) {
 		if (idMap == null) {
-		    idMap = new Hashtable<Long,Resource>();
+		    idMap = new HashMap<Long, Resource>();
 			Iterator i = getResourceList().iterator();
 			Resource resource;
 			while (i.hasNext()) {
@@ -164,7 +164,7 @@ public class ResourcePool implements Document, NodeModelDataFactory {
 	/**
 	 * @return Returns the resourceList.
 	 */
-	public Vector getResourceList() {
+	public ArrayList getResourceList() {
 		return resourceList;
 	}
 	
@@ -257,7 +257,7 @@ public class ResourcePool implements Document, NodeModelDataFactory {
 	/**
 	 * @return Returns the projects.
 	 */
-	public Vector getProjects() {
+	public ArrayList getProjects() {
 		return projects;
 	}
 	/**
@@ -318,7 +318,7 @@ public class ResourcePool implements Document, NodeModelDataFactory {
 		return defaultCalendar;
 	}
 	
-	public Vector extractCalendars() {
+	public ArrayList extractCalendars() {
 		return WorkingCalendar.extractCalendars(resourceList);
 	}
 	
@@ -399,7 +399,7 @@ public class ResourcePool implements Document, NodeModelDataFactory {
 	public static final Object[] userResources() {
 		Iterator i = globalPool.getResourceList().iterator();
 		Resource resource;
-		Vector result = new Vector();
+		ArrayList result = new ArrayList();
 		while (i.hasNext()) {
 			resource = (Resource)i.next();
 			if (resource.isUser())
@@ -437,7 +437,7 @@ public class ResourcePool implements Document, NodeModelDataFactory {
 		Node oldParentNode = getResourceOutline().search(getRbsParentResource(child));
 		if (oldParentNode != null)
 			oldParentNode.getChildren().remove(childNode);
-		Vector temp = new Vector();
+		ArrayList temp = new ArrayList();
 		temp.add(childNode);
 		getResourceOutline().move(parentNode, temp, -1,NodeModel.NORMAL);
 	}

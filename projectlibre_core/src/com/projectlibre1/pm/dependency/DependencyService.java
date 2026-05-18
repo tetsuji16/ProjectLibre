@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.dependency;
 
 import java.text.MessageFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -226,7 +226,7 @@ public class DependencyService {
 	 * @throws InvalidAssociationException
 	 */
 	public void connect(List tasks, Object eventSource, Predicate canBeSuccessorCondition) throws InvalidAssociationException {
-		Vector newDependencies = new Vector();
+		ArrayList newDependencies = new ArrayList();
 		// try making new dependencies between all items earlier to all items later, thereby checking all possible circularities
 		HasDependencies pred;
 		HasDependencies succ;

@@ -78,7 +78,7 @@ public class NodeSorterFactory extends CommonTransformFactory{
 	    CommonTransform t=getTransformFromDefinition();
 	    if (t!=null) return t;
 	    if (formulaText==null&&subTransforms==null) return null;
-		StringBuffer classText=new StringBuffer();
+		StringBuilder classText = new StringBuilder();
 	    classText.append("package com.projectlibre1.grouping.core.transform.sorting;\n");
 	    classText.append("import com.projectlibre1.grouping.core.Node;\n");
 	    classText.append("import com.projectlibre1.datatype.*;\n");

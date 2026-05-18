@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.writer;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,7 +87,7 @@ public final class ProjectWriterUtility
       return (WRITER_MAP.keySet());
    }
 
-   private static final Map<String, Class<? extends ProjectWriter>> WRITER_MAP = new Hashtable<String, Class<? extends ProjectWriter>>();
+   private static final Map<String, Class<? extends ProjectWriter>> WRITER_MAP = new HashMap<String, Class<? extends ProjectWriter>>();
    static
    {
        WRITER_MAP.put("MPX", MPXWriter.class);

@@ -79,7 +79,7 @@ public class CommandInfo implements Serializable{
 		this.args = args;
 	}
 	public String toString(){
-		StringBuffer buf=new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append(name);
 		if (args!=null&&args.length>0){
 			buf.append('[');

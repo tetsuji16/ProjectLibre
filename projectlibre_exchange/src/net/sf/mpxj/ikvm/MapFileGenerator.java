@@ -40,7 +40,7 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -508,7 +508,7 @@ public class MapFileGenerator
 
    private List<String> m_responseList;
 
-   private static final Map<Class<?>, String> TYPE_MAP = new Hashtable<Class<?>, String>();
+   private static final Map<Class<?>, String> TYPE_MAP = new HashMap<Class<?>, String>();
    static
    {
       TYPE_MAP.put(boolean.class, "Z");

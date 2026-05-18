@@ -57,11 +57,11 @@ package com.projectlibre1.pm.task;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EventListener;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -442,7 +442,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		Node oldParentNode = getTaskModel().search(child.getWbsParentTask());
 		if (oldParentNode != null)
 			oldParentNode.getChildren().remove(childNode);
-		Vector temp = new Vector();
+		ArrayList temp = new ArrayList();
 		temp.add(childNode);
 		getTaskModel().move(parentNode, temp, -1,NodeModel.NORMAL);
 		setDefaultRelationship(parentNode,childNode);
@@ -1037,7 +1037,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		final Collection snapshotDetails;
 		final boolean[] foundSnapshot=new boolean[1]; //no undo edit of there is no snapshot
 		if (undo&& i!=null && i.hasNext()){
-			snapshotDetails=new Vector();
+			snapshotDetails=new ArrayList();
 			while (i.hasNext()){
 				NormalTask t=(NormalTask)i.next();
 				TaskBackup taskBackup=(TaskBackup)t.backupDetail(snapshotId);
@@ -2269,7 +2269,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 
 	public final Map getExtraFields() {
 		if (extraFields == null)
-			extraFields = new Hashtable();
+			extraFields = new HashMap();
 		return extraFields;
 	}
 
@@ -2577,7 +2577,7 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 	public class Workspace implements WorkspaceSetting {
 		private static final long serialVersionUID = 6909144693873463556L;
 		WorkspaceSetting spreadsheetWorkspace;
-		Hashtable fieldAliasMap;
+		HashMap fieldAliasMap = new HashMap();
 		PrintSettings printSettings;
 		CalendarOption calendarOption;
 

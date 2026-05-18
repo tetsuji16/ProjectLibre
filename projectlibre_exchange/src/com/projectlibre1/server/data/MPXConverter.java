@@ -347,7 +347,7 @@ private static int autoId = 0;
 	public static String removeInvalidChars(String in) { // had case of user with newlines in task names
 		if (in == null)
 			return null;
-		StringBuffer inBuf = new StringBuffer(in);
+		StringBuilder inBuf = new StringBuilder(in);
 		for (int i = 0; i <inBuf.length(); i++) {
 			char c = inBuf.charAt(i);
 			if (c == '\r' || c == '\n' || c == '\t') // using escape chars of the form &#x0000; is not good - they show up in MSP literally. MSP doesn't seem to support newlines anyway

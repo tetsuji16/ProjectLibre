@@ -91,7 +91,7 @@ public class WorkCalendarException extends WorkRange{
 
 	@Override
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("WorkCalendarException #").append(hashCode()).append('\n');
 		s.append(tab).append('\t').append("end=").append(start).append('\n');
 		s.append(tab).append('\t').append("end=").append(start).append('\n');

@@ -56,7 +56,7 @@
 package com.projectlibre1.algorithm.buffer;
 
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
 import org.apache.commons.lang.time.DateUtils;
@@ -68,7 +68,7 @@ import com.projectlibre1.pm.calendar.WorkCalendar;
  */
 public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 	static final long serialVersionUID = 8900927827L;
-	Vector values = new Vector(); //(x,y pairs) //TODO a set would be better because this is often sparse
+	ArrayList values = new ArrayList(); //(x,y pairs) //TODO a set would be better because this is often sparse
 	double yScale;
 	private static final Double ZERO = Double.valueOf(0.0D);
 //	boolean dayByDay;
@@ -294,7 +294,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
  		return c;
  	}
 
-	public final Vector getValues() {
+	public ArrayList getValues() {
 		return values;
 	}
 	

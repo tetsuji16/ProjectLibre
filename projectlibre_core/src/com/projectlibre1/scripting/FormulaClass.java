@@ -58,13 +58,13 @@ package com.projectlibre1.scripting;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.projectlibre1.field.InvalidFormulaException;
 
 public class FormulaClass {
-	Vector formulas = new Vector();
+	ArrayList formulas = new ArrayList();
 	String className;
 	private boolean init = false;
 	private static final String imports="";
@@ -106,7 +106,7 @@ public class FormulaClass {
 	
 	
 	private String buildClassText() {
-		StringBuffer text = new StringBuffer();
+		StringBuilder text = new StringBuilder();
 		text.append(imports);
 		text.append("class " + className + " {");
 		

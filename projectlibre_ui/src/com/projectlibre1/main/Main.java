@@ -56,7 +56,7 @@
 package com.projectlibre1.main;
 
 import java.text.MessageFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
@@ -85,12 +85,12 @@ public class Main {
 		Environment.setStandAlone(true);
 		String[] formatedArgs;
 		if (args!=null && args.length>0){
-			Vector<String> nonEmptyArgs=new Vector<String>(args.length);
+			ArrayList<String> nonEmptyArgs = new ArrayList<String>(args.length);
 			for (int i=0;i<args.length;i++){
 				if (args[i]!=null&& args[i].length()>0) nonEmptyArgs.add(args[i]);
 			}
 			if (nonEmptyArgs.size()>0){
-				Vector<String> formatedList=new Vector<String>();
+				ArrayList<String> formatedList = new ArrayList<String>();
 				String s1,s2;
 				for (Iterator<String> i=nonEmptyArgs.iterator();i.hasNext();){
 					s1=i.next();

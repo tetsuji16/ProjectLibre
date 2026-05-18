@@ -55,15 +55,16 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.hierarchy;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.EventListener;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Stack;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.tree.TreeNode;
@@ -114,10 +115,9 @@ public abstract class AbstractMutableNodeHierarchy implements NodeHierarchy{
 
     	public ShallowPreorderInterator(TreeNode rootNode,int maxLevel,boolean returnRoot) {
     	    super();
-    	    Vector v = new Vector(1);
-    	    v.addElement(rootNode);	// PENDING: don't really need a vector
-    	    stack = new Stack();
-    	    stack.push(v.elements());
+    	    ArrayList v = new ArrayList(1);
+    	    v.add(rootNode);	// PENDING: don't really need a ArrayList stack = new Stack();
+    	    stack.push(Collections.enumeration(v));
     	    levelStack=new Stack<Integer>();
     	    levelStack.push(0);
     	    this.maxLevel=maxLevel;
@@ -441,7 +441,7 @@ public abstract class AbstractMutableNodeHierarchy implements NodeHierarchy{
 	 * @return
 	 */
 	public List toList(final boolean isNode, final Predicate filter) {
-		final Vector list = new Vector();
+		final ArrayList list = new ArrayList();
     	visitAll(new Closure(){
 			public void execute(Object node) {
 				if (filter != null  && !filter.evaluate(((Node) node).getImpl()))

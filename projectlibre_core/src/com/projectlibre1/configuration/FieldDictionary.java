@@ -59,7 +59,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -90,7 +90,7 @@ import com.projectlibre1.util.Environment;
 public class FieldDictionary {
 	private static Log log = LogFactory.getLog(FieldDictionary.class);
 	private HashedMap map = new HashedMap();
-	private Hashtable actionsMap = new Hashtable();
+	private HashMap actionsMap = new HashMap();
 	public void addField(Field field) {
 		if (field.isServer()&&Environment.getStandAlone()) return;
 		field.setClass(clazz);
@@ -282,7 +282,7 @@ public class FieldDictionary {
 		digester.addSetNext("*/field/permission","setAccessControl","com.projectlibre1.field.FieldAccessible");
 
 	}
-	private static void tabbedStringToHtmlRow(StringBuffer result,String colString, boolean header) {
+	private static void tabbedStringToHtmlRow(StringBuilder result,String colString, boolean header) {
 		result.append("<tr>");
 		String [] cols= colString.split("\t");
 		for (String col : cols)
@@ -290,7 +290,7 @@ public class FieldDictionary {
 		result.append("</tr>");
 	}
 
-	private static void fieldsToHtmlTable(final StringBuffer result,String title,Collection fields) {
+	private static void fieldsToHtmlTable(final StringBuilder result,String title,Collection fields) {
 		result.append("<p><b>").append(title).append("</b><br />");
 		result.append("<table border='1'>");
 		tabbedStringToHtmlRow(result,Field.getMetadataStringHeader(),true);
@@ -303,7 +303,7 @@ public class FieldDictionary {
 		result.append("</p>");
 	}
 	public static void generateFieldDoc(String fileName) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		result.append("<html><body>");
 		fieldsToHtmlTable(result,"Project Fields",FieldDictionary.getInstance().getProjectFields());
 		fieldsToHtmlTable(result,"Resource Fields",FieldDictionary.getInstance().getProjectFields());
@@ -326,8 +326,8 @@ public class FieldDictionary {
 		generateFieldDoc("d:/pod/fields.html");
 	}
 	
-	public static Hashtable getAliasMap() {
-		Hashtable aliasMap = new Hashtable();
+	public static HashMap getAliasMap() {
+		HashMap aliasMap = new HashMap();
 		MapIterator i = getInstance().map.mapIterator();
 		while (i.hasNext()) {
 			Object key = i.next();
@@ -338,7 +338,7 @@ public class FieldDictionary {
 		return aliasMap;
 	}
 
-	public static void setAliasMap(Hashtable aliasMap) {
+	public static void setAliasMap(HashMap aliasMap) {
 		if (aliasMap == null)
 			return;
 		Iterator i = aliasMap.keySet().iterator();

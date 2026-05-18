@@ -55,14 +55,14 @@
  *******************************************************************************/
 package org.projectlibre.core.configuration.adapters;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAnyElement;
 
  
 public class DictionaryAdapterList<T> { 
-    protected List<T> entry = new Vector<T>();
+    protected List<T> entry = new ArrayList<T>();
  
     @XmlAnyElement(lax=true)
     public List<T> getEntry() {

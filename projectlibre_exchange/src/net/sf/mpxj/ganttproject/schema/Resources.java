@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.ganttproject.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -70,7 +70,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (customPropertyDefinition == null)
       {
-         customPropertyDefinition = new Vector<CustomPropertyDefinition>();
+         customPropertyDefinition = new ArrayList<CustomPropertyDefinition>();
       }
       return this.customPropertyDefinition;
    }
@@ -101,7 +101,7 @@ import javax.xml.bind.annotation.XmlType;
    {
       if (resource == null)
       {
-         resource = new Vector<Resource>();
+         resource = new ArrayList<Resource>();
       }
       return this.resource;
    }

@@ -55,12 +55,12 @@
  *******************************************************************************/
 package org.projectlibre.core.configuration.adapters;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
  
 public class MapAdapterList<K, V> { 
-    protected List<MapAdapterEntry<K, V>> entry = new Vector<MapAdapterEntry<K, V>>();
+    protected List<MapAdapterEntry<K, V>> entry = new ArrayList<MapAdapterEntry<K, V>>();
  
     public List<MapAdapterEntry<K, V>> getEntry() {
         return entry;

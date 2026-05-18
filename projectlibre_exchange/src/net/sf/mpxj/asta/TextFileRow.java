@@ -24,7 +24,7 @@
 package net.sf.mpxj.asta;
 
 import java.sql.Types;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 
 import net.sf.mpxj.MPXJException;
@@ -45,7 +45,7 @@ class TextFileRow extends MapRow
    public TextFileRow(TableDefinition table, List<String> data, boolean epochDateFormat)
       throws MPXJException
    {
-      super(new Hashtable<String, Object>());
+      super(new HashMap<String, Object>());
 
       ColumnDefinition[] columns = table.getColumns();
       for (int index = 0; index < columns.length; index++)

@@ -107,7 +107,7 @@ public class HyperLinkToolTip extends JToolTip {
 	private static final String htmlPrefix = "<html><font face=\"Dialog\" size=\"2\">";//$NON-NLS-1$
 	
 	public static String helpTipText(String text,String helpLink, String demoLink, String docLink) {
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		result.append(htmlPrefix); 
 		result.append(text);
 //		if (Settings.SHOW_HELP_LINKS && helpLink != null) {

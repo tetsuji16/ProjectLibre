@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.print;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import com.projectlibre1.graphic.configuration.SpreadSheetCategories;
 import com.projectlibre1.graphic.configuration.SpreadSheetFieldArray;
@@ -67,8 +67,8 @@ public class PrintSettings implements WorkspaceSetting,Cloneable{
 	protected ExtendedPageFormat pageFormat;
 	protected boolean pdfService=false;
 	protected transient String printServiceName;
-	protected Vector<ViewSettings> viewSettings;
-	protected Vector<ScalingSettings> scalingSettings;
+	protected ArrayList<ViewSettings> viewSettings;
+	protected ArrayList<ScalingSettings> scalingSettings;
 	protected int scalingIndex;
 	protected transient SpreadSheetFieldArray fieldArray;
 	protected transient boolean empty;
@@ -104,11 +104,11 @@ public class PrintSettings implements WorkspaceSetting,Cloneable{
 			PrintSettings c=(PrintSettings)super.clone();
 			if (pageFormat!=null) c.pageFormat=(ExtendedPageFormat)pageFormat.clone();
 			if (c.viewSettings!=null){
-				c.viewSettings=new Vector<ViewSettings>(viewSettings.size());
+				c.viewSettings=new ArrayList<ViewSettings>(viewSettings.size());
 				for (ViewSettings s: viewSettings) c.viewSettings.add((ViewSettings)s.clone());
 			}
 			if (c.scalingSettings!=null){
-				c.scalingSettings=new Vector<ScalingSettings>(scalingSettings.size());
+				c.scalingSettings=new ArrayList<ScalingSettings>(scalingSettings.size());
 				for (ScalingSettings s: scalingSettings) c.scalingSettings.add((ScalingSettings)s.clone());
 			}
 			return c;
@@ -116,11 +116,11 @@ public class PrintSettings implements WorkspaceSetting,Cloneable{
 		return null;
 	}
 
-	public Vector<ScalingSettings> getScalingSettings() {
+	public ArrayList<ScalingSettings> getScalingSettings() {
 		return scalingSettings;
 	}
 
-	public Vector<ViewSettings> getViewSettings() {
+	public ArrayList<ViewSettings> getViewSettings() {
 		return viewSettings;
 	}
 
@@ -132,11 +132,11 @@ public class PrintSettings implements WorkspaceSetting,Cloneable{
 		this.scalingIndex = scalingIndex;
 	}
 
-	public void setScalingSettings(Vector<ScalingSettings> scalingSettings) {
+	public void setScalingSettings(ArrayList<ScalingSettings> scalingSettings) {
 		this.scalingSettings = scalingSettings;
 	}
 
-	public void setViewSettings(Vector<ViewSettings> viewSettings) {
+	public void setViewSettings(ArrayList<ViewSettings> viewSettings) {
 		this.viewSettings = viewSettings;
 	}
 

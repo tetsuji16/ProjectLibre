@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.utility;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -50,9 +50,9 @@ public final class TimescaleUtility
     * @param segmentCount number of segments (columns) required
     * @return array of date ranges
     */
-   public final Vector<DateRange> createTimescale(Date startDate, TimescaleUnits segmentUnit, int segmentCount)
+   public final ArrayList<DateRange> createTimescale(Date startDate, TimescaleUnits segmentUnit, int segmentCount)
    {
-      Vector<DateRange> result = new Vector<DateRange>(segmentCount);
+      ArrayList<DateRange> result = new ArrayList<DateRange>(segmentCount);
 
       Calendar cal = Calendar.getInstance();
       cal.setTime(startDate);

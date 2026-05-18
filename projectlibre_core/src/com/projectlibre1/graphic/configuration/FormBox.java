@@ -155,7 +155,7 @@ public class FormBox {
 
 
 	public String toString(){
-		StringBuffer buf=new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append("id=").append(id);
 		buf.append(" fieldId=").append(fieldId);
 		buf.append("textId=").append(textId);

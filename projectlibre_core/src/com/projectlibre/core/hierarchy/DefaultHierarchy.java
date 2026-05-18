@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.hierarchy;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
@@ -68,7 +68,7 @@ import com.projectlibre.core.nodes.Node;
  */
 public class DefaultHierarchy implements Hierarchy{
 	protected HierarchyNode root;
-	protected Map<Node,HierarchyNode> reverseIndex=new Hashtable<Node, HierarchyNode>();
+	protected Map<Node,HierarchyNode> reverseIndex=new HashMap<Node, HierarchyNode>();
 	public DefaultHierarchy(){
 		root=new DefaultHierarchyNode(new DefaultNode());
 	}

@@ -57,7 +57,7 @@ package com.projectlibre1.pm.task;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -162,7 +162,7 @@ public class ProjectFactory {
 				if (((Boolean)SessionFactory.callNoEx(session,"isLocalAccess",null,null)).booleanValue())
 					resources=(List)SessionFactory.call(session,"retrieveResourceHierarchy",null,null);
 				else{
-					resources=new Vector();
+					resources=new ArrayList();
 
 					Job job=(Job)SessionFactory.callNoEx(session,"getLoadResourceHierarchyJob", new Class[]{boolean.class,List.class},new Object[]{true,resources});
 					job.addSync();
@@ -399,7 +399,7 @@ public class ProjectFactory {
 
 	public Job getSaveProjectJob(final Project project, final SaveOptions opt){
 		// Save the project and all of its subprojects
-		final List projects=new Vector();
+		final List projects=new ArrayList();
 		DeepChildWalker.recursivelyTreatBranch(portfolio.getNodeModel(), project,  new Closure() {
 			boolean dirty=false;
 			public void execute(Object arg0) {
@@ -442,7 +442,7 @@ public class ProjectFactory {
 
 	public Job getCloseProjectsOnServerJob(Project project){
 		// Save the project and all of its subprojects
-		final List projects=new Vector();
+		final List projects=new ArrayList();
 		DeepChildWalker.recursivelyTreatBranch(portfolio.getNodeModel(), project,  new Closure() {
 			public void execute(Object arg0) {
 				Object impl = ((Node)arg0).getImpl();
@@ -461,8 +461,8 @@ public class ProjectFactory {
 
 
 	public Job getCloseProjectsOnServerJob(Collection projects) {
-		List<Project> localProjects=new Vector<Project>();
-		List<Project> serverProjects=new Vector<Project>();
+		List<Project> localProjects=new ArrayList<Project>();
+		List<Project> serverProjects=new ArrayList<Project>();
 		for (Project project : (Collection<Project>)projects) {
 			if (project.isReadOnly()) continue;
 			if (project.isLocal()) localProjects.add(project);
@@ -533,8 +533,8 @@ public class ProjectFactory {
 				return null;
 		}
 
-		final Vector toRemove = new Vector();
-		final Vector projects=new Vector();
+		final ArrayList toRemove = new ArrayList();
+		final ArrayList projects = new ArrayList();
 		DeepChildWalker.recursivelyTreatBranch(portfolio.getNodeModel(), project,  new Closure() {
 			public void execute(Object arg0) {
 				Node node = (Node)arg0;

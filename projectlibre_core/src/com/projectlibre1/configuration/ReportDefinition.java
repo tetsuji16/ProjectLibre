@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.configuration;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.apache.commons.digester.Digester;
 
@@ -87,14 +87,14 @@ public class ReportDefinition implements NamedItem {
 		this.collectionType = collectionType;
 	}
 	private Object reportObject = null;
-	private Hashtable reportColumnDefinitions = new Hashtable<>();
+	private HashMap reportColumnDefinitions = new HashMap<>();
 	/**
 	 * @return Returns the columnsList.
 	 */
-	public Vector getColumnsList() {
+	public ArrayList getColumnsList() {
 		return columnsList;
 	}
-	private Vector columnsList = new Vector();
+	private ArrayList columnsList = new ArrayList();
 
 	
 	/**
@@ -161,12 +161,12 @@ public class ReportDefinition implements NamedItem {
 		return ((ReportColumns)columnsList.get(columnsList.size()-1)).getFieldArray();
 		
 	}
-	public final Object getReportObject(Vector columns) {
+	public final Object getReportObject(ArrayList columns) {
 		if (columns == null)
 			return reportObject;
 		return reportColumnDefinitions.get(columns);
 	}
-	public final void setReportObject(Object reportObject, Vector columns) {
+	public final void setReportObject(Object reportObject, ArrayList columns) {
 		if (columns == null)
 			this.reportObject = reportObject;
 		else

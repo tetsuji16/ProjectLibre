@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +66,7 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 
 import com.projectlibre1.pm.graphic.spreadsheet.editor.MoneyEditor;
+import com.projectlibre1.pm.graphic.spreadsheet.editor.PercentEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.RateEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SimpleComboBoxEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SimpleEditor;
@@ -94,8 +95,8 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 
 	int colWidth = 0;
 
-	private Vector fieldArray; //changes when columns are moved - needed to update the current definition
-	private Vector originalFieldArray; // will not change
+	private ArrayList fieldArray; //changes when columns are moved - needed to update the current definition
+	private ArrayList originalFieldArray; // will not change
 	private Map<String,Integer> colWidthMap;
 
 	boolean svg;
@@ -104,14 +105,14 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 	 *            TODO
 	 *
 	 */
-	public SpreadSheetColumnModel(final Vector fieldArray) {
+	public SpreadSheetColumnModel(final ArrayList fieldArray) {
 		this(fieldArray,null);
 
 	}
-	public SpreadSheetColumnModel(Vector fieldArray,List<Integer> colWidthList) {
+	public SpreadSheetColumnModel(ArrayList fieldArray,List<Integer> colWidthList) {
 		super();
 		setFieldArray(fieldArray);
-		colWidthMap=new Hashtable<String,Integer>();
+		colWidthMap=new HashMap<String, Integer>();
 		if (fieldArray instanceof SpreadSheetFieldArray){
 			SpreadSheetFieldArray sa=(SpreadSheetFieldArray)fieldArray;
 			if (colWidthList==null&&sa!=null&&sa.getWidths()!=null&&sa.getWidths().size()>0){
@@ -164,11 +165,13 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 					// overridden and dynamic combos are filled there
 					tc.setCellEditor(new SpreadSheetCellEditorAdapter(new SimpleComboBoxEditor(new DefaultComboBoxModel(field.getOptions(null)))));
 				} else if (field.getRange() != null) {
-					if (field.isPercent())
+					if (field.isPercent()) {
 						tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new PercentRenderer()));
-					else
+						tc.setCellEditor(new SpreadSheetCellEditorAdapter(new PercentEditor()));
+					} else {
 						tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new SimpleRenderer()));
-					tc.setCellEditor(new SpreadSheetCellEditorAdapter(new SpinEditor(field)));
+						tc.setCellEditor(new SpreadSheetCellEditorAdapter(new SpinEditor(field)));
+					}
 				} else if (field.isRate()) {
 					tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new RateRenderer()));
 					tc.setCellEditor(new SpreadSheetCellEditorAdapter(new RateEditor(null, field.isMoney(),field.isPercent(),true)));
@@ -177,6 +180,7 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 					tc.setCellEditor(new SpreadSheetCellEditorAdapter(new MoneyEditor()));
 				} else if (field.isPercent()) {
 					tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new PercentRenderer()));
+					tc.setCellEditor(new SpreadSheetCellEditorAdapter(new PercentEditor()));
 				} else if (field.isDate()) {
 					tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new DateRenderer()));
 				} else if (field.isBoolean()){
@@ -215,13 +219,13 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 		fieldArray = f.move(columnIndex+1, newIndex+1);
 	}
 
-	public Vector getFieldArray() {
+	public ArrayList getFieldArray() {
 		return fieldArray;
 	}
 
-	public void setFieldArray(Vector fieldArray) {
+	public void setFieldArray(ArrayList fieldArray) {
 		this.fieldArray = fieldArray;
-		originalFieldArray = (Vector) fieldArray.clone();
+		originalFieldArray = (ArrayList) fieldArray.clone();
 	}
 
 	public int getColWidth() {

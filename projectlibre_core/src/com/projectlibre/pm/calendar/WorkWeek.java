@@ -86,7 +86,7 @@ public class WorkWeek{
 	}
 
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("WorkWeek #").append(hashCode()).append('\n');
 		
 		

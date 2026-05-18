@@ -56,11 +56,11 @@
 package com.projectlibre1.grouping.core.hierarchy;
 
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -149,7 +149,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
 
     public void add(Node parent,List children,int position,int actionType){
     	Node p=(parent==null)?root:parent;
-//    	Vector trees=new Vector();
+//    	ArrayList trees =new Vector();
 //    	extractParents(children,trees);
     	if (/*trees*/children.size()==0) return;
 
@@ -193,7 +193,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     	int subprojectLevel=getChildrenSubprojectLevel(parent);
 
 
-//    	Vector trees=new Vector();
+//    	ArrayList trees =new Vector();
 //    	HierarchyUtils.extractParents(children,trees);
 
     	int childCount=p.getChildCount();
@@ -224,7 +224,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
        	Node[] descendants=addDescendants(/*trees*/children);
 
 
-       	Vector<Dependency> dependencies=new Vector<Dependency>();
+       	ArrayList<Dependency> dependencies = new ArrayList<Dependency>();
 
     	boolean doTransaction = model.getDocument() != null && descendants.length > 0;
     	int transactionId = 0;
@@ -232,16 +232,16 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     		transactionId = model.getDocument().fireMultipleTransaction(0,true);
 
 
-    	Vector<Node> insertedNodes=new Vector<Node>(descendants.length);
+    	ArrayList<Node> insertedNodes = new ArrayList<Node>(descendants.length);
 
     	if (project!=null){
-    		Hashtable<Long,Resource> resourceMap=new Hashtable<Long,Resource>();
+    		HashMap<Long, Resource> resourceMap = new HashMap<Long, Resource>();
     		for (Resource r: (Collection<Resource>)project.getResourcePool().getResourceList())
     			resourceMap.put(r.getUniqueId(),r);
 
-    		Hashtable<Long,Task> taskMap=null;
+    		HashMap<Long, Task> taskMap = null;
     		if (Environment.isKeepExternalLinks()){
-    			taskMap=new Hashtable<Long,Task>();
+    			taskMap=new HashMap<Long, Task>();
     			for (Task t: (Collection<Task>)project.getTasks()) //use model instead?
     				taskMap.put(t.getUniqueId(),t);
     		}
@@ -317,7 +317,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
         		        if (snapshot==null) continue;
     			        AssociationList snapshotAssignments=snapshot.getHasAssignments().getAssignments();
     			        if (snapshotAssignments.size()>0){
-//    			        	Vector<Assignment> assignmentsToLink=new Vector<Assignment>();
+//    			        	ArrayList<Assignment> assignmentsToLink=new ArrayList<Assignment>();
     			            for (Iterator a=snapshotAssignments.listIterator();a.hasNext();){
     			                Assignment assignment=(Assignment)a.next();
     			                Resource resource=assignment.getResource();
@@ -428,7 +428,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
 
     //warning: modify nodes list
     private static Node[] addDescendants(List nodes){
-    	Vector descendants=new Vector();
+    	ArrayList descendants = new ArrayList();
        	for (ListIterator i=nodes.listIterator();i.hasNext();){
        		Node node=(Node)i.next();
        		extractSameProjectBranch(node,descendants);
@@ -442,7 +442,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     	return descendantsArray;
     }
 
-    private static void extractSameProjectBranch(Node parent,Vector descendants){
+    private static void extractSameProjectBranch(Node parent, ArrayList descendants){
 //    	if (parent.getImpl() instanceof Subproject){
 //    		((NodeBridge)parent).removeAllChildren();
 //    		Subproject subproject=(Subproject)parent.getImpl();
@@ -471,7 +471,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
         	int transactionId = 0;
         	if (doTransaction)
         		transactionId = model.getDocument().fireMultipleTransaction(0,true);
- 	        Vector removed=new Vector();
+ 	        ArrayList removed = new ArrayList();
  		    for (Iterator i=nodes.iterator();i.hasNext();){
  		        	LinkedList toRemove=new LinkedList();
  		            removeSubTree((Node)i.next(),model,toRemove,actionType, removeDependencies);
@@ -574,7 +574,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     public void move(Node node,Node newParent,int actionType){
 		setSubprojectLevel(node,getChildrenSubprojectLevel(newParent));
     	newParent.add(node);
-    	Vector change=new Vector();
+    	ArrayList change = new ArrayList();
     	for (Enumeration e=((NodeBridge)node).preorderEnumeration();e.hasMoreElements();)
     		change.add(e.nextElement());
 
@@ -605,7 +605,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     }
 
     private Map createPositionMap() {
-    	Map positions = new Hashtable();
+    	Map positions = new HashMap();
     	for (Iterator i = iterator(); i.hasNext();) {
     		Object current = i.next();
     		if (!(current instanceof Node))
@@ -619,7 +619,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
     }
 
     private List createPositions(List nodes, Map positionsByNode) {
-    	List positions = new Vector();
+    	List positions = new ArrayList();
     	if (nodes == null || positionsByNode == null)
     		return positions;
     	for (Iterator i = nodes.iterator(); i.hasNext();) {
@@ -640,7 +640,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
         LinkedList nodesToChange=new LinkedList();
         HierarchyUtils.extractParents(nodes,nodesToChange);
 
-        List modifiedVoids=new Vector();
+        List modifiedVoids=new ArrayList();
 
         //exclude Assignments and VoidNodes
         if (deltaLevel>0){
@@ -771,7 +771,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
          return buildList(null);
    }
     private List buildList(Node parent) {
-        List list=new Vector();
+        List list=new ArrayList();
         buildList(parent,list);
         return list;
    }
@@ -969,7 +969,7 @@ public class MutableNodeHierarchy extends AbstractMutableNodeHierarchy{
 	 * @param event
 	 */
 	public void checkEndVoidNodes(boolean subproject,int actionType){
-		Vector inserted=new Vector();
+		ArrayList inserted = new ArrayList();
 
 		if (!subproject) checkSubprojectEndVoidNodes(root,inserted);
 		int nbEndVoids=subproject?nbMultiprojectEndVoidNodes:nbEndVoidNodes;

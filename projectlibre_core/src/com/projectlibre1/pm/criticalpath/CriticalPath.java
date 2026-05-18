@@ -636,7 +636,7 @@ public class CriticalPath implements SchedulingAlgorithm {
 	}
 	
 	public static String getTrace() {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		buf.append(ToStringBuilder.reflectionToString(lastInstance));
 		buf.append("\nProject: " +  lastInstance.project + " Task: " + traceTask + " reverse=" + traceTask.isReverseScheduled() + " parent ="+traceTask.isParent());
 		return buf.toString();

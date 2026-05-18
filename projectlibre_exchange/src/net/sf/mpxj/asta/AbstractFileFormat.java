@@ -24,7 +24,7 @@
 package net.sf.mpxj.asta;
 
 import java.sql.Types;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -40,7 +40,7 @@ abstract class AbstractFileFormat
     */
    public Map<Integer, TableDefinition> tableDefinitions()
    {
-      Map<Integer, TableDefinition> result = new Hashtable<Integer, TableDefinition>();
+      Map<Integer, TableDefinition> result = new HashMap<Integer, TableDefinition>();
 
       result.put(Integer.valueOf(2), new TableDefinition("PROJECT_SUMMARY", columnDefinitions(PROJECT_SUMMARY_COLUMNS, projectSummaryColumnsOrder())));
       result.put(Integer.valueOf(7), new TableDefinition("BAR", columnDefinitions(BAR_COLUMNS, barColumnsOrder())));
@@ -208,7 +208,7 @@ abstract class AbstractFileFormat
     */
    private Map<String, ColumnDefinition> makeColumnMap(ColumnDefinition[] columns)
    {
-      Map<String, ColumnDefinition> map = new Hashtable<String, ColumnDefinition>();
+      Map<String, ColumnDefinition> map = new HashMap<String, ColumnDefinition>();
       for (ColumnDefinition def : columns)
       {
          map.put(def.getName(), def);

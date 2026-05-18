@@ -136,7 +136,7 @@ public class CoreRibbonResizePolicies {
 	 */
 	public static List<RibbonBandResizePolicy> getCorePoliciesPermissive(
 			JRibbonBand ribbonBand) {
-		List<RibbonBandResizePolicy> result = new Vector<RibbonBandResizePolicy>();
+		List<RibbonBandResizePolicy> result = new ArrayList<RibbonBandResizePolicy>();
 		result.add(new CoreRibbonResizePolicies.None(ribbonBand
 				.getControlPanel()));
 		result.add(new CoreRibbonResizePolicies.Low2Mid(ribbonBand
@@ -168,7 +168,7 @@ public class CoreRibbonResizePolicies {
 	 */
 	public static List<RibbonBandResizePolicy> getCorePoliciesRestrictive(
 			JRibbonBand ribbonBand) {
-		List<RibbonBandResizePolicy> result = new Vector<RibbonBandResizePolicy>();
+		List<RibbonBandResizePolicy> result = new ArrayList<RibbonBandResizePolicy>();
 		result.add(new CoreRibbonResizePolicies.Mirror(ribbonBand
 				.getControlPanel()));
 		result.add(new CoreRibbonResizePolicies.Mid2Low(ribbonBand
@@ -194,7 +194,7 @@ public class CoreRibbonResizePolicies {
 	 */
 	public static List<RibbonBandResizePolicy> getCorePoliciesNone(
 			JRibbonBand ribbonBand) {
-		List<RibbonBandResizePolicy> result = new Vector<RibbonBandResizePolicy>();
+		List<RibbonBandResizePolicy> result = new ArrayList<RibbonBandResizePolicy>();
 		result.add(new CoreRibbonResizePolicies.Mirror(ribbonBand
 				.getControlPanel()));
 		result
@@ -445,9 +445,9 @@ public class CoreRibbonResizePolicies {
 		 */
 		protected int getPreferredButtonWidth(
 				JBandControlPanel.ControlPanelGroup controlPanelGroup, int gap) {
-			Map<RibbonElementPriority, List<AbstractCommandButton>> mapped = new Hashtable<RibbonElementPriority, List<AbstractCommandButton>>();
+			Map<RibbonElementPriority, List<AbstractCommandButton>> mapped = new HashMap<RibbonElementPriority, List<AbstractCommandButton>>();
 			for (RibbonElementPriority rep : RibbonElementPriority.values()) {
-				mapped.put(rep, new Vector<AbstractCommandButton>());
+				mapped.put(rep, new ArrayList<AbstractCommandButton>());
 			}
 
 			for (RibbonElementPriority elementPriority : RibbonElementPriority
@@ -539,10 +539,10 @@ public class CoreRibbonResizePolicies {
 					}
 
 					// set the display priority for the buttons
-					Map<RibbonElementPriority, List<AbstractCommandButton>> mapped = new Hashtable<RibbonElementPriority, List<AbstractCommandButton>>();
+					Map<RibbonElementPriority, List<AbstractCommandButton>> mapped = new HashMap<RibbonElementPriority, List<AbstractCommandButton>>();
 					for (RibbonElementPriority rep : RibbonElementPriority
 							.values()) {
-						mapped.put(rep, new Vector<AbstractCommandButton>());
+						mapped.put(rep, new ArrayList<AbstractCommandButton>());
 					}
 
 					for (RibbonElementPriority elementPriority : RibbonElementPriority
@@ -950,7 +950,7 @@ public class CoreRibbonResizePolicies {
 	 */
 	public static List<RibbonBandResizePolicy> getCoreFlowPoliciesRestrictive(
 			JFlowRibbonBand ribbonBand, int stepsToRepeat) {
-		List<RibbonBandResizePolicy> result = new Vector<RibbonBandResizePolicy>();
+		List<RibbonBandResizePolicy> result = new ArrayList<RibbonBandResizePolicy>();
 		for (int i = 0; i < stepsToRepeat; i++) {
 			result.add(new FlowTwoRows(ribbonBand.getControlPanel()));
 		}

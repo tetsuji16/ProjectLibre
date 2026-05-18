@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.graphic.views;
 
 import java.awt.Dimension;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.swing.JScrollPane;
@@ -310,7 +310,7 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 		Workspace ws = (Workspace) w;
 		spreadSheet.restoreWorkspace(ws.spreadSheet, context);
 		timeSpreadSheet.restoreWorkspace(ws.timeSpreadSheet, context); 
-		timeSpreadSheet.setSelectedFieldArray((Vector) SpreadSheetFieldArray.fromIdArray(ws.selectedFieldArray));
+		timeSpreadSheet.setSelectedFieldArray((ArrayList) SpreadSheetFieldArray.fromIdArray(ws.selectedFieldArray));
 		timeScrollPane.restoreWorkspace(ws.scrollPane, context);
 		setDividerLocation(ws.dividerLocation);
 	}

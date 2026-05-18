@@ -86,7 +86,7 @@ public class EclipseMain
         Environment.setStandAlone(true);
         Environment.setNewLook(false);
         Environment.setPlugin(true);
-        java.util.Hashtable Hashtable = ApplicationStartupFactory.extractOpts(as);
+        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
         if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
         ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
         return applicationstartupfactory.instanceFromNewSession(frame, true);

@@ -26,7 +26,7 @@ package net.sf.mpxj.explorer;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +63,7 @@ import net.sf.mpxj.writer.ProjectWriter;
  */
 public class ProjectTreeController
 {
-   private static final Map<String, Class<? extends ProjectWriter>> WRITER_MAP = new Hashtable<String, Class<? extends ProjectWriter>>();
+   private static final Map<String, Class<? extends ProjectWriter>> WRITER_MAP = new HashMap<String, Class<? extends ProjectWriter>>();
    static
    {
       WRITER_MAP.put("MPX", MPXWriter.class);

@@ -55,29 +55,29 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.time;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.EventObject;
 
 /**
  *
  */
 public class FieldArrayEvent extends EventObject {
-	protected Vector fieldArray;
+	protected ArrayList fieldArray;
 	
 	/**
 	 * @param source
 	 * @param fieldArray
 	 */
-	public FieldArrayEvent(Object source, Vector fieldArray) {
+	public FieldArrayEvent(Object source, ArrayList fieldArray) {
 		super(source);
 		this.fieldArray = fieldArray;
 	}
 	
 	
-	public Vector getFieldArray() {
+	public ArrayList getFieldArray() {
 		return fieldArray;
 	}
-	public void setFieldArray(Vector fieldArray) {
+	public void setFieldArray(ArrayList fieldArray) {
 		this.fieldArray = fieldArray;
 	}
 }

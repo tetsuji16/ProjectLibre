@@ -29,9 +29,9 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -159,7 +159,7 @@ public class XlsxReader extends AbstractProjectReader
    {
       if (m_projectListeners == null)
       {
-         m_projectListeners = new Vector<ProjectListener>();
+         m_projectListeners = new ArrayList<ProjectListener>();
       }
       m_projectListeners.add(listener);
    }
@@ -229,7 +229,7 @@ public class XlsxReader extends AbstractProjectReader
       }
 
       ProjectProperties props = projectFile.getProjectProperties();
-      Map<String, String> propMap = new Hashtable<String, String>();
+      Map<String, String> propMap = new HashMap<String, String>();
 
       for (Row row : sheet)
       {
@@ -319,7 +319,7 @@ public class XlsxReader extends AbstractProjectReader
     */
    private Map<Integer, Resource> readResources(Workbook workbook, ProjectFile projectFile)
    {
-      Map<Integer, Resource> resourcesById = new Hashtable<Integer, Resource>();
+      Map<Integer, Resource> resourcesById = new HashMap<Integer, Resource>();
       Sheet sheet = workbook.getSheet(SHEET_RESOURCES);
       if (sheet == null)
       {
@@ -426,7 +426,7 @@ public class XlsxReader extends AbstractProjectReader
     */
    private Map<Integer, Task> readTasks(Workbook workbook, ProjectFile projectFile)
    {
-      Map<Integer, Task> tasksById = new Hashtable<Integer, Task>();
+      Map<Integer, Task> tasksById = new HashMap<Integer, Task>();
       Sheet sheet = workbook.getSheet(SHEET_TASKS);
       if (sheet == null)
       {
@@ -978,7 +978,7 @@ public class XlsxReader extends AbstractProjectReader
     */
    private Map<String, Integer> buildColumnIndex(Row headerRow)
    {
-      Map<String, Integer> columnIndex = new Hashtable<String, Integer>();
+      Map<String, Integer> columnIndex = new HashMap<String, Integer>();
       for (Cell cell : headerRow)
       {
          String header = getCellStringValue(cell);

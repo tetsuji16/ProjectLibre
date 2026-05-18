@@ -23,7 +23,7 @@
 
 package net.sf.mpxj.asta;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * Used to parse and represent the header data present at the
@@ -48,7 +48,7 @@ class RowHeader
     */
    private void parse(String header)
    {
-      Vector<String> list = new Vector<String>(4);
+      ArrayList<String> list = new ArrayList<String>(4);
       StringBuilder sb = new StringBuilder();
       int index = 1;
       while (index < header.length())

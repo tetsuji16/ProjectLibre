@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.undo;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.undo.AbstractUndoableEdit;
@@ -93,7 +93,7 @@ public class NodePasteEdit extends AbstractUndoableEdit{
 		this.children = children;
 		this.position = position;
 		//this.undoController=undoController;
-		roots=new Vector();
+		roots=new ArrayList();
 		HierarchyUtils.extractParents(children, roots);
 	}
 	public void redo() throws CannotRedoException {

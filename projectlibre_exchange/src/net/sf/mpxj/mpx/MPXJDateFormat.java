@@ -25,7 +25,7 @@
 package net.sf.mpxj.mpx;
 
 import java.text.SimpleDateFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,7 +62,7 @@ public final class MPXJDateFormat extends MPXJBaseFormat
     */
    public void setLocale(Locale locale)
    {
-      List<SimpleDateFormat> formats = new Vector<SimpleDateFormat>();
+      List<SimpleDateFormat> formats = new ArrayList<SimpleDateFormat>();
       for (SimpleDateFormat format : m_formats)
       {
          formats.add(new SimpleDateFormat(format.toPattern(), locale));

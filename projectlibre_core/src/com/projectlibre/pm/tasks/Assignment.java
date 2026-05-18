@@ -98,7 +98,7 @@ public class Assignment extends AbstractNode implements Schedule{
 	
 	@Override
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("Assignement #").append(hashCode()).append('\n');
 		s.append(tab).append("\t").append("resource=").append(resource==null? null : resource.hashCode()).append('\n');
 		s.append(tab).append("\t").append("task=").append(task==null? null : task.hashCode()).append('\n');

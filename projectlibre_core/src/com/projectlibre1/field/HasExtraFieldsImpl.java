@@ -55,14 +55,14 @@
  *******************************************************************************/
 package com.projectlibre1.field;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 public class HasExtraFieldsImpl implements HasExtraFields {
 	private Map extraFields = null;
 	public final Map getExtraFields() {
 		if (extraFields == null)
-			extraFields = new Hashtable();
+			extraFields = new HashMap();
 		return extraFields;
 	}
 

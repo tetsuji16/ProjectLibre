@@ -220,7 +220,7 @@ public final class XsdDuration {
 	 */
 	private int readComponent2(String duration, int index, int length) {
 		char c = 0;
-		StringBuffer number = new StringBuffer();
+		StringBuilder number = new StringBuilder();
 
 		while (index < length) {
 			c = duration.charAt(index);
@@ -338,7 +338,7 @@ public final class XsdDuration {
 	 * @return xsd:duration value
 	 */
 	public String toString() {
-		StringBuffer buffer = new StringBuffer("P");
+		StringBuilder buffer = new StringBuilder("P");
 		boolean negative = false;
 
 		if (m_years != 0 || m_months != 0 || m_days != 0) {
@@ -437,7 +437,7 @@ public final class XsdDuration {
 	   private int readComponent (String duration, int index, int length)
 	   {
 	      char c = 0;
-	      StringBuffer number = new StringBuffer ();
+	      StringBuilder number = new StringBuilder();
 
 //	System.out.println("read componenent " + duration);  
 //	 if (duration.contains("."))

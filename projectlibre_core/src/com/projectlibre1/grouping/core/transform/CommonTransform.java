@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -127,8 +127,8 @@ public abstract class CommonTransform {
             return;
         }
         if (parameters==null){
-            parameters=new Vector();
-            parametersMap=new Hashtable();
+            parameters=new ArrayList();
+            parametersMap=new HashMap();
         }
         parameters.add(parameter);
         if (parameter.getValue() != null) {

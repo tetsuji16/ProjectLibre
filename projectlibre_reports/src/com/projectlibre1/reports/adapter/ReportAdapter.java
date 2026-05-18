@@ -56,7 +56,7 @@
 package com.projectlibre1.reports.adapter;
 
 import java.awt.Color;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import net.sf.jasperreports.engine.JRElement;
@@ -253,7 +253,7 @@ public class ReportAdapter {
 		}
 	}
 	
-	private void addFields(Vector fields) throws JRException {
+	private void addFields(ArrayList fields) throws JRException {
 		Iterator iterator = fields.iterator();
 		while(iterator.hasNext()) {
 			Field field = (Field)iterator.next();
@@ -289,7 +289,7 @@ public class ReportAdapter {
  * @param group
  * @throws JRException
  */
-	private void addAggregableFields(Vector fields, JRDesignGroup group) throws JRException {
+	private void addAggregableFields(ArrayList fields, JRDesignGroup group) throws JRException {
 		Iterator iterator = fields.iterator();
 		while(iterator.hasNext()) {
 			Field field = (Field)iterator.next();
@@ -502,7 +502,7 @@ public class ReportAdapter {
 	public void generateDesign(SpreadSheetFieldArray fieldArray) throws JRException {
 		hasAggregableField = false;
 		generateBaseDesign();
-		Vector columnsList = (Vector) reportDefinition.getColumnsList();
+		ArrayList columnsList = (ArrayList) reportDefinition.getColumnsList();
 
 		ReportColumns columns;
 		if(columnsList.size() == 1) {

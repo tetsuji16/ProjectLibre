@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.calendar;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -77,7 +77,7 @@ public enum DayType {
 	}
 	public static DayType getInstance(int id){
 		if (reverseMap==null){
-			reverseMap=new Hashtable<Integer,DayType>();
+			reverseMap=new HashMap<Integer, DayType>();
 			for (DayType ct : values())
 				reverseMap.put(ct.getId(),ct);
 		}

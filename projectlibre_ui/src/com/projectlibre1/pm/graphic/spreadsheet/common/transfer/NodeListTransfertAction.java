@@ -57,7 +57,7 @@ package com.projectlibre1.pm.graphic.spreadsheet.common.transfer;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.Action;
@@ -73,7 +73,7 @@ public class NodeListTransfertAction implements CommonSpreadSheetAction {
 	protected Action action;
 	protected SpreadSheet.SpreadSheetAction spreadSheetAction;
 	protected CommonSpreadSheet spreadSheet;
-	protected Map map=new Hashtable();
+	protected Map map=new HashMap();
 	/**
 	 * 
 	 */

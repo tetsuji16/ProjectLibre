@@ -31,7 +31,7 @@ package org.pushingpixels.flamingo.internal.ui.common;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
@@ -223,7 +223,7 @@ public class CommandButtonLayoutManagerTile implements
 						: (int) fm.getStringBounds(buttonText, g).getWidth();
 				lineLayoutInfo.textRect.height = labelHeight;
 
-				result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+				result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 				result.textLayoutInfoList.add(lineLayoutInfo);
 
 				String extraText = commandButton.getExtraText();
@@ -239,7 +239,7 @@ public class CommandButtonLayoutManagerTile implements
 						: (int) fm.getStringBounds(extraText, g).getWidth();
 				extraLineLayoutInfo.textRect.height = labelHeight;
 
-				result.extraTextLayoutInfoList = new Vector<TextLayoutInfo>();
+				result.extraTextLayoutInfoList = new ArrayList<TextLayoutInfo>();
 				result.extraTextLayoutInfoList.add(extraLineLayoutInfo);
 
 				x += Math.max(lineLayoutInfo.textRect.width,
@@ -401,7 +401,7 @@ public class CommandButtonLayoutManagerTile implements
 				lineLayoutInfo.textRect.y = (height - 2 * labelHeight) / 2;
 				lineLayoutInfo.textRect.height = labelHeight;
 
-				result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+				result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 				result.textLayoutInfoList.add(lineLayoutInfo);
 
 				String extraText = commandButton.getExtraText();
@@ -418,7 +418,7 @@ public class CommandButtonLayoutManagerTile implements
 						+ labelHeight;
 				extraLineLayoutInfo.textRect.height = labelHeight;
 
-				result.extraTextLayoutInfoList = new Vector<TextLayoutInfo>();
+				result.extraTextLayoutInfoList = new ArrayList<TextLayoutInfo>();
 				result.extraTextLayoutInfoList.add(extraLineLayoutInfo);
 
 				x -= Math.max(lineLayoutInfo.textRect.width,

@@ -31,7 +31,7 @@ package org.pushingpixels.flamingo.internal.ui.ribbon.appmenu;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JSeparator;
 
@@ -172,7 +172,7 @@ public class CommandButtonLayoutManagerMenuTileLevel1 implements
 					.getText());
 			lineLayoutInfo.textRect.height = labelHeight;
 
-			result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+			result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 			result.textLayoutInfoList.add(lineLayoutInfo);
 
 			x += fm.getStringBounds(commandButton.getText(), g).getWidth();
@@ -248,7 +248,7 @@ public class CommandButtonLayoutManagerMenuTileLevel1 implements
 			lineLayoutInfo.textRect.y = (height - labelHeight) / 2;
 			lineLayoutInfo.textRect.height = labelHeight;
 
-			result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+			result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 			result.textLayoutInfoList.add(lineLayoutInfo);
 
 			if (buttonKind == JCommandButton.CommandButtonKind.ACTION_AND_POPUP_MAIN_ACTION) {

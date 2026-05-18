@@ -32,7 +32,7 @@ package org.pushingpixels.flamingo.internal.ui.common;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import javax.swing.JSeparator;
@@ -343,7 +343,7 @@ public class CommandButtonLayoutManagerBig implements
 			line2LayoutInfo.textRect.width = lastTextLineWidth;
 			line2LayoutInfo.textRect.height = labelHeight;
 
-			result.textLayoutInfoList = new Vector<TextLayoutInfo>();
+			result.textLayoutInfoList = new ArrayList<TextLayoutInfo>();
 			result.textLayoutInfoList.add(line1LayoutInfo);
 			result.textLayoutInfoList.add(line2LayoutInfo);
 		}

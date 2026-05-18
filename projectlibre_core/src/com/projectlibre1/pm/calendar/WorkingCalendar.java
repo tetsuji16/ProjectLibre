@@ -59,7 +59,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -591,8 +591,8 @@ public class WorkingCalendar implements WorkCalendar,  Serializable, Comparable 
 	public final void setFixedId(int fixedId) {
 		this.fixedId = fixedId;
 	}
-	public static Vector extractCalendars(Collection collection) {
-		Vector list = new Vector();
+	public static ArrayList extractCalendars(Collection collection) {
+		ArrayList list = new ArrayList();
 		Iterator i = collection.iterator();
 		WorkingCalendar cal;
 		while (i.hasNext()) {
@@ -604,8 +604,8 @@ public class WorkingCalendar implements WorkCalendar,  Serializable, Comparable 
 		return list;
 	}
 
-	public static Vector extractCalendars(NodeHierarchy hierarchy) {
-		final Vector list = new Vector();
+	public static ArrayList extractCalendars(NodeHierarchy hierarchy) {
+		final ArrayList list = new ArrayList();
 		hierarchy.visitAll(new Closure() {
 
 			public void execute(Object arg0) {

@@ -70,7 +70,7 @@ public class JRBshCompiler implements JRCompiler
 		Collection brokenRules = JRVerifier.verifyDesign(jasperDesign);
 		if (brokenRules != null && brokenRules.size() > 0)
 		{
-			StringBuffer sbuffer = new StringBuffer();
+			StringBuilder sbuffer = new StringBuilder();
 			sbuffer.append("Report design not valid : ");
 			int i = 1;
 			for(Iterator it = brokenRules.iterator(); it.hasNext(); i++)

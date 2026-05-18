@@ -23,13 +23,13 @@
 
 package net.sf.mpxj;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * This class represents a resource's availability table.
  */
-public final class AvailabilityTable extends Vector<Availability>
+public final class AvailabilityTable extends ArrayList<Availability>
 {
    /**
     * Retrieve the table entry valid for the supplied date.

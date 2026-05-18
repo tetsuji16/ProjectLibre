@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -104,7 +104,7 @@ public class SpreadSheetPopupMenu extends JPopupMenu {
 	    private Map menuActionMap=null;
 	    protected String getMenuAction(String action){
 	    	if (menuActionMap==null){
-	    		menuActionMap=new Hashtable();
+	    		menuActionMap=new HashMap();
 	    		if (Environment.isNewLook()) {
 		    		menuActionMap.put(MenuActionConstants.ACTION_NEW,"menu24.insertTask");
 		    		menuActionMap.put(MenuActionConstants.ACTION_DELETE,"menu24.delete");

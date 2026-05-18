@@ -23,7 +23,7 @@
 
 package net.sf.mpxj;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 
 import net.sf.mpxj.common.DateHelper;
@@ -31,7 +31,7 @@ import net.sf.mpxj.common.DateHelper;
 /**
  * This class represents a resource's cost rate table.
  */
-public class CostRateTable extends Vector<CostRateTableEntry>
+public class CostRateTable extends ArrayList<CostRateTableEntry>
 {
    /**
     * Retrieve the table entry valid for the supplied date.

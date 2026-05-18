@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.dialog;
 import java.awt.Frame;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -105,9 +105,9 @@ public abstract class FieldDialog extends AbstractDialog  implements ObjectEvent
 			}});
 	}
 
-	protected Vector maps = new Vector();
+	protected ArrayList maps = new ArrayList();
 	protected Object object;
-	protected Vector collection = new Vector();
+	protected ArrayList collection = new ArrayList();
 	private JComponent dirtyComponent;
 	protected JComponent mainComponent = null;
 	

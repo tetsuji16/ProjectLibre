@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.tasks;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.projectlibre.core.nodes.AbstractNodeContainer;
@@ -70,8 +70,8 @@ import com.projectlibre.pm.resources.ResourcePool;
  *
  */
 public class Project extends AbstractNodeContainer implements HasCalendar {
-	protected List<Task> tasks=new Vector<Task>();
-	protected List<Dependency> dependencies=new Vector<Dependency>();
+	protected List<Task> tasks=new ArrayList<Task>();
+	protected List<Dependency> dependencies=new ArrayList<Dependency>();
 	protected WorkCalendar calendar;
 	protected CalendarOptions calendarOptions=new CalendarOptions();
 	protected ResourcePool resourcePool;
@@ -133,7 +133,7 @@ public class Project extends AbstractNodeContainer implements HasCalendar {
 
 	@Override
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("Project #").append(hashCode()).append('\n');
 		s.append(super.toString("\t"));
 		

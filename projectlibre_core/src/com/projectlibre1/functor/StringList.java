@@ -67,7 +67,7 @@ import com.projectlibre1.configuration.Settings;
  *
  */
 public class StringList implements Closure {
-	private StringBuffer buffer= new StringBuffer();
+	private StringBuilder buffer= new StringBuilder();
 	private String separator = Settings.LIST_SEPARATOR;
 	private Transformer transformer = null;
 	
@@ -175,7 +175,7 @@ public class StringList implements Closure {
  * @param times
  * @return
  */	public static String repeat(String val, int times) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		for (int i=0; i<times; i++)
 			buf.append(val);
 		return buf.toString();

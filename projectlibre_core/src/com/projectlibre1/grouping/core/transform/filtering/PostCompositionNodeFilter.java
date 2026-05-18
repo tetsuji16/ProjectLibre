@@ -55,14 +55,14 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform.filtering;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
 public abstract class PostCompositionNodeFilter extends NodeFilter {
-    protected List filtred=new Vector();
+    protected List filtred=new ArrayList();
     public void addFiltred(Object o){
         filtred.add(o);
     }

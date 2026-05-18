@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.transform.sorting;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -174,7 +174,7 @@ private GenericObjectPool pool = new GenericObjectPool(new ListFactory());
 
 private class ListFactory extends BasePoolableObjectFactory {
 	public Object makeObject() { //claur
-		return new Vector();
+		return new ArrayList();
 	}
 
 	public void activateObject(Object arg0){ //claur{

@@ -77,9 +77,9 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -87,7 +87,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -153,7 +153,7 @@ public final class LocaleDialog extends AbstractDialog {
 	AbstractTableModel externalListModel;
 	String[] externalListColumns={"code", "client.properties", "menu.properties"};
 	
-	Vector<LanguageProperties> files=new Vector<LanguageProperties>();
+	ArrayList<LanguageProperties> files=new ArrayList<LanguageProperties>();
 	
 	public enum FileStatus {
 	    OK(Messages.getString("LocaleDialog.FileStatusOk")),
@@ -233,8 +233,8 @@ public final class LocaleDialog extends AbstractDialog {
 	
 	String[] slocales=Settings.LANGUAGES.split(";");
 	Set<String> allLocales=new TreeSet();
-	Map<String, String> transOri=new Hashtable<String, String>();
-	Map<String, String> oriTrans=new Hashtable<String, String>();
+	Map<String, String> transOri=new HashMap<String, String>();
+	Map<String, String> oriTrans=new HashMap<String, String>();
 
 
 	protected boolean bind(boolean get) {

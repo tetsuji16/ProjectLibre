@@ -72,7 +72,7 @@ public class TimeInterval implements HasStartAndEnd {
 	protected String text2;
 	
 	public String toString(){
-		StringBuffer buf=new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		DateFormat df = DateFormat.getDateTimeInstance();
 		
 		buf.append("TimeInterval[")

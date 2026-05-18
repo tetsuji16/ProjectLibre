@@ -29,7 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1463,7 +1463,7 @@ public abstract class GanttChartView extends GenericView
    protected Color m_progressLinesOtherProgressPointColor;
    protected int m_progressLinesOtherProgressPointShape;
    protected List<Filter> m_autoFilters = new LinkedList<Filter>();
-   protected Map<FieldType, Filter> m_autoFiltersByType = new Hashtable<FieldType, Filter>();
+   protected Map<FieldType, Filter> m_autoFiltersByType = new HashMap<FieldType, Filter>();
 
    private FilterContainer m_filters;
 

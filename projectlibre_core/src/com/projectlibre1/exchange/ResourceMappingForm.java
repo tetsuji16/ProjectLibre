@@ -55,13 +55,13 @@
  *******************************************************************************/
 package com.projectlibre1.exchange;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -72,19 +72,19 @@ import org.apache.commons.beanutils.PropertyUtils;
  */
 public abstract class ResourceMappingForm {
 		protected List importedResources;
-		protected Vector resources;
+		protected ArrayList resources;
 		protected List selectedResources;
 		protected boolean local=false,master=false;
 		protected int accessControlType;
 		protected JFrame owner;
 		
 		public static final MergeField NO_MERGE=new MergeField(null,null,"");
-		protected Vector mergeFields=new Vector<>();
+		protected ArrayList mergeFields=new ArrayList<>();
 		protected MergeField mergeField;
 		protected Object unassignedResource;
 		
 		public ResourceMappingForm(){
-			selectedResources=new Vector();
+			selectedResources=new ArrayList();
 			mergeFields.add(NO_MERGE);
 			mergeField=NO_MERGE;
 			
@@ -106,11 +106,11 @@ public abstract class ResourceMappingForm {
 			this.importedResources = importedResources;
 		}
 
-		public Vector getResources() {
+		public ArrayList getResources() {
 			return resources;
 		}
 
-		public void setResources(Vector resources) {
+		public void setResources(ArrayList resources) {
 			this.resources = resources;
 		}
 
@@ -167,7 +167,7 @@ public abstract class ResourceMappingForm {
 
 		public void setMergeField(MergeField mergeField) {
 			this.mergeField = mergeField;
-			Map mergeFieldMap=new Hashtable();
+			Map mergeFieldMap=new HashMap();
 			HashSet notMergedValues=new HashSet();
 			Object resource;
 			if (mergeField!=NO_MERGE)
@@ -205,7 +205,7 @@ public abstract class ResourceMappingForm {
 			mergeFields.add(mergeField);
 		}
 		
-		public Vector getMergeFields(){
+		public ArrayList getMergeFields(){
 			return mergeFields;
 		}
 		

@@ -7,7 +7,7 @@
 
 package net.sf.mpxj.primavera.schema;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -391,7 +391,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
    {
       if (resourceRequestCriterion == null)
       {
-         resourceRequestCriterion = new Vector<ResourceRequestType.ResourceRequestCriterion>();
+         resourceRequestCriterion = new ArrayList<ResourceRequestType.ResourceRequestCriterion>();
       }
       return this.resourceRequestCriterion;
    }

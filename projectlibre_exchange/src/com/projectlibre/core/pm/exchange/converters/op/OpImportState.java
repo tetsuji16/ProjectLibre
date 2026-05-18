@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.core.pm.exchange.converters.op;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.projectlibre.pm.calendar.CalendarId;
@@ -73,12 +73,12 @@ import com.projectlibre1.pm.task.NormalTask;
  */
 public class OpImportState {
 //	protected ProjectCalendar mpxDefaultBaseCalendar;
-	protected Map<CalendarId,WorkingCalendar> opBaseCalendarMap=new Hashtable<CalendarId,WorkingCalendar>();
-	protected Map<CalendarId,WorkCalendar> baseCalendarMap=new Hashtable<CalendarId,WorkCalendar>();
-	protected Map<Task,NormalTask> opTaskMap=new Hashtable<Task,NormalTask>();
-	protected Map<NormalTask,Node> opTaskNodeMap=new Hashtable<NormalTask,Node>();
-	protected Map<Resource,com.projectlibre1.pm.resource.Resource> opResourceMap=new Hashtable<Resource,com.projectlibre1.pm.resource.Resource>();
-	protected Map<com.projectlibre1.pm.resource.Resource,Node> opResourceNodeMap=new Hashtable<com.projectlibre1.pm.resource.Resource,Node>();
+	protected Map<CalendarId,WorkingCalendar> opBaseCalendarMap=new HashMap<CalendarId, WorkingCalendar>();
+	protected Map<CalendarId,WorkCalendar> baseCalendarMap=new HashMap<CalendarId, WorkCalendar>();
+	protected Map<Task,NormalTask> opTaskMap=new HashMap<Task, NormalTask>();
+	protected Map<NormalTask,Node> opTaskNodeMap=new HashMap<NormalTask, Node>();
+	protected Map<Resource,com.projectlibre1.pm.resource.Resource> opResourceMap=new HashMap<Resource, com.projectlibre1.pm.resource.Resource>();
+	protected Map<com.projectlibre1.pm.resource.Resource,Node> opResourceNodeMap=new HashMap<com.projectlibre1.pm.resource.Resource, Node>();
 	protected CalendarManager calendarManager;
 	public CalendarManager getCalendarManager() {
 		return calendarManager;

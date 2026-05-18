@@ -92,7 +92,7 @@ public class Dependency {
 	}
 
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("Dependency #").append(hashCode()).append('\n');
 		s.append(tab).append("\t").append("predecessor=").append(predecessor.hashCode()).append('\n');
 		s.append(tab).append("\t").append("successordecessor=").append(successor.hashCode()).append('\n');

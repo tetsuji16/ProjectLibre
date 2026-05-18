@@ -56,7 +56,7 @@
 package com.projectlibre1.grouping.core.summaries;
 
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -161,7 +161,7 @@ public class SummaryVisitorFactory implements SummaryNames {
 		TEXT_SUMMARY_MAP.put(Messages.getString("Summary.List"), Integer.valueOf(LIST));
 	}
 	
-	private static Hashtable ALL_SUMMARY_MAP = new Hashtable<>();
+	private static HashMap ALL_SUMMARY_MAP = new HashMap<>();
 	static {
 		ALL_SUMMARY_MAP.put("None", Integer.valueOf(NONE));
 		ALL_SUMMARY_MAP.put("This", Integer.valueOf(THIS));

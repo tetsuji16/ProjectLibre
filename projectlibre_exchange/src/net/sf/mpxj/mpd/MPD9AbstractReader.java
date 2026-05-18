@@ -24,7 +24,7 @@
 package net.sf.mpxj.mpd;
 
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1337,10 +1337,10 @@ abstract class MPD9AbstractReader
    private boolean m_preserveNoteFormatting;
    private boolean m_autoWBS = true;
 
-   private Map<Integer, ProjectCalendar> m_calendarMap = new Hashtable<Integer, ProjectCalendar>();
+   private Map<Integer, ProjectCalendar> m_calendarMap = new HashMap<Integer, ProjectCalendar>();
    private List<Pair<ProjectCalendar, Integer>> m_baseCalendarReferences = new LinkedList<Pair<ProjectCalendar, Integer>>();
-   private Map<Integer, ProjectCalendar> m_resourceMap = new Hashtable<Integer, ProjectCalendar>();
-   private Map<Integer, ResourceAssignment> m_assignmentMap = new Hashtable<Integer, ResourceAssignment>();
+   private Map<Integer, ProjectCalendar> m_resourceMap = new HashMap<Integer, ProjectCalendar>();
+   private Map<Integer, ResourceAssignment> m_assignmentMap = new HashMap<Integer, ResourceAssignment>();
 }
 
 /*

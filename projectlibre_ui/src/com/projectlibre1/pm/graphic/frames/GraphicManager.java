@@ -76,9 +76,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -231,8 +231,8 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 	private static final boolean BINARY_WORKSPACE = true;
 	private static GraphicManager lastGraphicManager = null; // used when displaying a popup but the frame isn't known
     private DocumentFrame currentFrame = null;
-    private List frameList=new Vector();
-    private Hashtable<Project,NamedFrame> frameMap = new Hashtable<Project,NamedFrame>();
+    private List frameList=new ArrayList();
+    private HashMap<Project,NamedFrame> frameMap = new HashMap<Project, NamedFrame>();
 //    private JFileChooser fileChooser = null;
 
 	private NamedFrame viewBarFrame;
@@ -268,7 +268,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 	private FilterToolBarManager filterToolBarManager;
 	private JMenu projectListMenu = null;
 
-	private Vector<CommandInfo> history=new Vector<CommandInfo>();
+	private ArrayList<CommandInfo> history=new ArrayList<CommandInfo>();
 
 	/** determines the parent graphic manager for a component
 	 *
@@ -726,7 +726,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		if (form==null) return false;
 		else return doNewProjectDialog2(form);
 	}
-	public boolean doNewProjectNoDialog(Hashtable opts) {
+	public boolean doNewProjectNoDialog(HashMap opts) {
 		ProjectDialog.Form form=doNewProjectNoDialog1();
 		if (form==null) return false;
 		if (opts!=null){
@@ -816,7 +816,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		doingOpenDialog = true;
 		finishAnyOperations();
 
-		final Vector descriptors=new Vector();
+		final ArrayList descriptors = new ArrayList();
 		final OpenProjectDialog dialog = OpenProjectDialog.getInstance(getFrame(),descriptors,Messages.getString("Text.openProject"),getCurrentFrame() == null && Environment.isAdministrator(),true,null); //$NON-NLS-1$
 
     	Session session=SessionFactory.getInstance().getSession(false);
@@ -876,7 +876,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 //			}
 //		}
 
-		final Vector descriptors=new Vector();
+		final ArrayList descriptors = new ArrayList();
 
     	Session session=SessionFactory.getInstance().getSession(false);
 		Job job=(Job)SessionFactory.callNoEx(session,"getLoadProjectDescriptorsJob",new Class[]{boolean.class,java.util.List.class,boolean.class},new Object[]{true,descriptors,true});
@@ -1292,7 +1292,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 			boolean teamOnly=!preferences.isShowProjectResourcesOnly();
 			//field.setValue(preferences,this,teamOnly);
 			preferences.setShowProjectResourcesOnly(teamOnly);
-			Vector buttons=getMenuManager().getToolBarFactory().getButtonsFromId("TeamFilter"); //$NON-NLS-1$
+			ArrayList buttons =getMenuManager().getToolBarFactory().getButtonsFromId("TeamFilter"); //$NON-NLS-1$
 			if (buttons!=null&&buttons.size()==1){
 				JButton b=(JButton)buttons.get(0);
 				if (Environment.isNewLook())
@@ -2639,8 +2639,8 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		
 //		String[] slocales=Settings.LANGUAGES.split(";");
 //		String[] translatedLocales=new String[slocales.length];
-//		Map<String, String> transOri=new Hashtable<>();
-//		Map<String, String> oriTrans=new Hashtable<>();
+//		Map<String, String> transOri=new HashMap<>();
+//		Map<String, String> oriTrans=new HashMap<>();
 //		for (int i=0; i<slocales.length;i++) {
 //			if ("default".equals(slocales[i]))
 //					translatedLocales[i]=Messages.getString("Spreadsheet.Project.default"); //re-use existing key
@@ -2877,10 +2877,10 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
     }
 
 
-	private Hashtable colorThemes = null;
-	public Hashtable getColorThemes() {
+	private HashMap colorThemes = null;
+	public HashMap getColorThemes() {
 		if (colorThemes == null) {
-			colorThemes = new Hashtable();
+			colorThemes = new HashMap();
 			colorThemes.put(ACTION_GANTT,"Bloody Moon"); //$NON-NLS-1$
 			colorThemes.put(ACTION_TRACKING_GANTT,"Mahogany"); //$NON-NLS-1$
 			colorThemes.put(ACTION_NETWORK,"Emerald Grass"); //$NON-NLS-1$
@@ -3053,12 +3053,12 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 
 	public static class Workspace implements WorkspaceSetting   {
 		private static final long serialVersionUID = -6606344141026658401L;
-		private Hashtable colorThemes;
+		private HashMap colorThemes;
 		WorkspaceSetting frames;
-		public Hashtable getColorThemes() {
+		public HashMap getColorThemes() {
 			return colorThemes;
 		}
-		public void setColorThemes(Hashtable colorThemes) {
+		public void setColorThemes(HashMap colorThemes) {
 			this.colorThemes = colorThemes;
 		}
 		public WorkspaceSetting getFrames() {
@@ -3269,7 +3269,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 	}
 
 	public boolean quitApplication() throws Exception{
-		for (Object frameObj : new Vector(frameList)) {
+		for (Object frameObj : new ArrayList(frameList)) {
 			if (frameObj instanceof DocumentFrame) {
 				Project project = ((DocumentFrame)frameObj).getProject();
 				persistCollaborationWorkspace(project);

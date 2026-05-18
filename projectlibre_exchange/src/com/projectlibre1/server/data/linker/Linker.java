@@ -55,9 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.server.data.linker;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -74,8 +74,8 @@ import com.projectlibre1.pm.assignment.Assignment;
  */
 public abstract class Linker {
 	//protected boolean globalIdsOnly=true;
-	protected Map transformationMap=new Hashtable();
-	protected Collection transformed=new Vector();
+	protected Map transformationMap=new HashMap();
+	protected Collection transformed=new ArrayList();
 	protected Iterator iterator=null;
 	protected Object parent;
 	protected Object transformedParent;

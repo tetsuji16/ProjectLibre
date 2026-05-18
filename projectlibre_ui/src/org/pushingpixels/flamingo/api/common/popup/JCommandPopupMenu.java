@@ -30,7 +30,7 @@
 package org.pushingpixels.flamingo.api.common.popup;
 
 import java.awt.Component;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collections;
 
 import javax.swing.*;
@@ -119,7 +119,7 @@ public class JCommandPopupMenu extends JPopupPanel {
 	 * Creates an empty popup menu with no button panel.
 	 */
 	public JCommandPopupMenu() {
-		this.menuComponents = new Vector<Component>();
+		this.menuComponents = new ArrayList<Component>();
 
 		this.maxVisibleMenuButtons = -1;
 		this.toDismissOnChildClick = true;

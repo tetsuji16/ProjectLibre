@@ -199,7 +199,7 @@ public class Messages {
 
 
 	public static String toAppletVersion(String v){
-		StringBuffer sb=new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		String vNumbers[]=v.split("\\.");
 		for (int i=0;i<4;i++){
 			int vn=(i>=vNumbers.length)?0:Integer.parseInt(vNumbers[i]);

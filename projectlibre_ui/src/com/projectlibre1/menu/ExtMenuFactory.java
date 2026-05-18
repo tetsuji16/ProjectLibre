@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.menu;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -74,7 +74,7 @@ import com.projectlibre1.pm.graphic.IconManager;
  *
  */
 public class ExtMenuFactory extends MenuFactory {
-	private Hashtable menuItems = new Hashtable<>();
+	private HashMap menuItems = new HashMap<>();
 	public final static String ICON_SUFFIX        = ".icon";
     public final static String ACTION_SUFFIX      = ".action";
     ActionMap actions;

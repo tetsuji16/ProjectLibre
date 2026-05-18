@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.assignment.functor;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import com.projectlibre1.pm.assignment.Assignment;
@@ -68,7 +68,7 @@ import com.projectlibre1.pm.time.HasStartAndEnd;
  * This functor adds buckets to a collection.  If an entire bucket is used, it is added as is, otherwise a new one is made.
  */
 public class PersonalContourMaker extends AssignmentFieldFunctor{
-	private Vector list = new Vector();
+	private ArrayList list = new ArrayList();
 	long assignmentDuration;
 	double multiplier = 1.0D;
 	

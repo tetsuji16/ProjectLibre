@@ -57,7 +57,7 @@ package com.projectlibre1.print;
 
 import java.awt.Dimension;
 import java.awt.print.PageFormat;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -119,10 +119,10 @@ public class PageSizes extends MediaSizeName{
 		super(-1);
 		String[] names=getStringTable();
 		EnumSyntax[] values=getEnumValueTable();
-		Vector<Format> s=new Vector<Format>(names.length+2);
+		ArrayList<Format> s = new ArrayList<Format>(names.length+2);
 		s.add(new Format(Messages.getString("PageSetupDialog.PaperFormat.Custom"),CUSTOM));
 		s.add(new Format(Messages.getString("PageSetupDialog.PaperSizeSettings.SinglePage"),BIG_PAGE));
-		Vector<Format> so=new Vector<Format>(names.length+2);
+		ArrayList<Format> so = new ArrayList<Format>(names.length+2);
 		so.add(new Format(Messages.getString("PageSetupDialog.PaperFormat.Custom"),CUSTOM));
 		so.add(new Format(Messages.getString("PageSetupDialog.PaperSizeSettings.SinglePage"),BIG_PAGE));
 		for (int i=0;i<names.length;i++){
@@ -192,11 +192,11 @@ public class PageSizes extends MediaSizeName{
 
 	public static class MediaSizeNameModel extends AbstractListModel implements ComboBoxModel{
 		protected Format[] sizes,sizesSystemNames;
-		protected Vector<Format> currentSizes;
+		protected ArrayList<Format> currentSizes;
 		protected MediaSizeNameModel(Format[] sizes,Format[] sizesSystemNames,PrintService printService){
 			this.sizes=sizes;
 			this.sizesSystemNames=sizesSystemNames;
-			currentSizes=new Vector<Format>(sizes.length);
+			currentSizes=new ArrayList<Format>(sizes.length);
 			update(printService);
 		}
 

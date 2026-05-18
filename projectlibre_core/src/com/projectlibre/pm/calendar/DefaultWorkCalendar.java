@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.calendar;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,8 +66,8 @@ public class DefaultWorkCalendar implements WorkCalendar{
 	protected WorkCalendar base;
 	protected CalendarId id;
 	protected String name;
-	protected List<WorkCalendarException> exceptions=new Vector<WorkCalendarException>();
-	protected List<WorkWeek> weeks=new Vector<WorkWeek>();
+	protected List<WorkCalendarException> exceptions=new ArrayList<WorkCalendarException>();
+	protected List<WorkWeek> weeks=new ArrayList<WorkWeek>();
 	
 	public DefaultWorkCalendar(){
 		
@@ -143,14 +143,14 @@ public class DefaultWorkCalendar implements WorkCalendar{
 
 	@Override
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("DefaultWorkCalendar #").append(getId()).append("-").append(getName());
 		return s.toString();
 	}
 	
 	@Override
 	public String toLongString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("DefaultWorkCalendar #").append(hashCode()).append('\n');
 		s.append(tab).append("\t").append("id=").append(id).append('\n');
 		s.append(tab).append("\t").append("name=").append(name).append('\n');

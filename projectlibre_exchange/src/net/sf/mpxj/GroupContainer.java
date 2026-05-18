@@ -23,7 +23,7 @@
 
 package net.sf.mpxj;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -52,5 +52,5 @@ public class GroupContainer extends ListWithCallbacks<Group>
       return (m_groupsByName.get(name));
    }
 
-   private final Map<String, Group> m_groupsByName = new Hashtable<String, Group>();
+   private final Map<String, Group> m_groupsByName = new HashMap<String, Group>();
 }

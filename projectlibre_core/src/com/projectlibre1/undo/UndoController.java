@@ -55,8 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.undo;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -129,17 +129,17 @@ public class UndoController extends UndoManager implements UndoableEditListener{
 	}
 
 
-	protected Map nodeMapping=new Hashtable();
+	protected Map nodeMapping=new HashMap();
 	public void store(Node node,NodeModel model){
-		Hashtable modelMap=(Hashtable)nodeMapping.get(model);
+		HashMap modelMap =(HashMap) nodeMapping.get(model);
 		if (modelMap==null){
-			modelMap=new Hashtable();
+			modelMap=new HashMap();
 			nodeMapping.put(model, modelMap);
 		}
 		modelMap.put(node.getImpl(), node);
 	}
 	public Node retrieve(Object impl,NodeModel model){
-		Hashtable modelMap=(Hashtable)nodeMapping.get(model);
+		HashMap modelMap =(HashMap) nodeMapping.get(model);
 		if (modelMap==null) return null;
 		return (Node)modelMap.get(impl);
 	}
@@ -155,7 +155,7 @@ public class UndoController extends UndoManager implements UndoableEditListener{
 		if (edits==null) return null;
 		else{
 			int nb=edits.size()>=50?50:edits.size();
-			List<String> r=new Vector<String>(nb);
+			List<String> r=new ArrayList<String>(nb);
 			for (ListIterator<UndoableEdit> i=edits.listIterator(edits.size()-nb);i.hasNext();){
 				UndoableEdit edit=i.next();
 				if (edit!=null) r.add(edit.getPresentationName());

@@ -90,7 +90,7 @@ public class Resource extends AbstractNode implements HasCalendar{
 	
 	@Override
 	public String toString(String tab){
-		StringBuffer s=new StringBuffer();
+		StringBuilder s = new StringBuilder();
 		s.append(tab).append("Resource #").append(hashCode()).append('\n');
 		s.append(tab).append('\t').append("unassigned="+isUnassigned()).append('\n');
 		s.append(super.toString(tab+"\t"));

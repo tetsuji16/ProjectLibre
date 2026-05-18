@@ -106,7 +106,8 @@ public class DateEditor extends DateFieldTableEditor {
 			
 		}
 		protected boolean processKeyBinding(KeyStroke arg0, KeyEvent arg1, int arg2, boolean arg3) {
-			if (Character.isDefined(arg0.getKeyChar())) {
+			char keyChar = arg0.getKeyChar();
+			if (Character.isDefined(keyChar) && keyChar != '\n') {
 				getTextField().dispatchEvent(arg1);
 				return true; // stop routing
 			}
@@ -117,7 +118,7 @@ public class DateEditor extends DateFieldTableEditor {
 			getTextField().requestFocus();
 		}
 
-		JTextField getTextField() { // convenience method
+		public JTextField getTextField() { // convenience method
 			return (JTextField) getFormattedTextField();
 		}
 		

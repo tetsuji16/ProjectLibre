@@ -25,8 +25,8 @@ package net.sf.mpxj.mpp;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -231,7 +231,7 @@ public final class MPPReader extends AbstractProjectReader
       List<Relation> predecessors = task.getPredecessors();
       if (!predecessors.isEmpty())
       {
-         Vector<Relation> invalid = new Vector<Relation>();
+         ArrayList<Relation> invalid = new ArrayList<Relation>();
          for (Relation relation : predecessors)
          {
             Task sourceTask = relation.getSourceTask();
@@ -391,7 +391,7 @@ public final class MPPReader extends AbstractProjectReader
    /**
     * Populate a map of file types and file processing classes.
     */
-   private static final Map<String, Class<? extends MPPVariantReader>> FILE_CLASS_MAP = new Hashtable<String, Class<? extends MPPVariantReader>>();
+   private static final Map<String, Class<? extends MPPVariantReader>> FILE_CLASS_MAP = new HashMap<String, Class<? extends MPPVariantReader>>();
    static
    {
       FILE_CLASS_MAP.put("MSProject.MPP9", MPP9Reader.class);

@@ -30,7 +30,7 @@
 package org.pushingpixels.flamingo.api.ribbon;
 
 import java.awt.Color;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * A contextual group of {@link RibbonTask}s. The contextual ribbon task groups
@@ -59,7 +59,7 @@ public class RibbonContextualTaskGroup {
 	 * @see #getTaskCount()
 	 * @see #getTask(int)
 	 */
-	private Vector<RibbonTask> tasks;
+	private ArrayList<RibbonTask> tasks;
 
 	/**
 	 * Group title.
@@ -99,7 +99,7 @@ public class RibbonContextualTaskGroup {
 			RibbonTask... tasks) {
 		this.title = title;
 		this.hueColor = hueColor;
-		this.tasks = new Vector<RibbonTask>();
+		this.tasks = new ArrayList<RibbonTask>();
 		for (RibbonTask ribbonTask : tasks) {
 			ribbonTask.setContextualGroup(this);
 			this.tasks.add(ribbonTask);

@@ -67,7 +67,7 @@ public class KeyValuePair<S, T> {
 	public KeyValuePair(S key, T value) {
 		this.key = key;
 		this.value = value;
-		this.propMap = new Hashtable<String, Object>();
+		this.propMap = new HashMap<String, Object>();
 	}
 
 	/**

@@ -55,9 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.grouping.core.model;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -206,7 +206,7 @@ public class AssignmentNodeModel extends DefaultNodeModel implements ObjectEvent
 		Iterator j;
 		Node parent;
 		Node child;
-		Map assignments=new Hashtable();
+		Map assignments=new HashMap();
 		while (i.hasNext()) { // go thru tasks or resources
 			parent = (Node)i.next();
 			if (! (parent.getImpl() instanceof HasAssignments)) {
@@ -268,9 +268,9 @@ public class AssignmentNodeModel extends DefaultNodeModel implements ObjectEvent
 
 	public void paste(Node parent,List nodes,int position,int actionType){
 		super.paste(parent, nodes, position, actionType);
-		Vector roots=new Vector();
+		ArrayList roots = new ArrayList();
 		HierarchyUtils.extractParents(nodes, roots);
-		final List freeAssignments=new Vector();
+		final List freeAssignments=new ArrayList();
 		for (Iterator i=roots.iterator();i.hasNext();)
 			hierarchy.visitLeaves((Node)i.next(), new Closure(){
 				public void execute(Object o) {

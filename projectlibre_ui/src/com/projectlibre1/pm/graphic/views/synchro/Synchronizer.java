@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.views.synchro;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.JScrollPane;
@@ -64,12 +64,12 @@ import javax.swing.JScrollPane;
  *
  */
 public class Synchronizer {
-	protected Vector scrollPaneSynchronizers;
+	protected ArrayList scrollPaneSynchronizers;
 	/**
 	 * 
 	 */
 	public Synchronizer() {
-	    scrollPaneSynchronizers=new Vector();
+	    scrollPaneSynchronizers=new ArrayList();
 	}
 
 	

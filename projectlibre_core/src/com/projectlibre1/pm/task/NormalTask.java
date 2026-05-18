@@ -1665,6 +1665,10 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 			percentWorkComplete = 0;
 		if (percentWorkComplete > 1)
 			percentWorkComplete = 1;
+		if (percentWorkComplete == 0.0D || percentWorkComplete == 1.0D) {
+			setPercentComplete(percentWorkComplete);
+			return;
+		}
 		double workValue = percentWorkComplete * calcSummedWork();
 		//		System.out.println("work value is " +
 		// DurationFormat.format((long)workValue) +" get work null is " +

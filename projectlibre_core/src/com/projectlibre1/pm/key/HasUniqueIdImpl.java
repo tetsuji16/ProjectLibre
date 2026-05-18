@@ -56,7 +56,7 @@
 package com.projectlibre1.pm.key;
 
 import java.io.Serializable;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.projectlibre1.server.data.CommonDataObject;
@@ -69,7 +69,7 @@ import com.projectlibre1.session.SessionFactory;
  */
 public class HasUniqueIdImpl implements Serializable{
 	private static final long serialVersionUID = 939382200022L;
-	private static Map uniqueIds=new Hashtable();
+	private static Map uniqueIds=new HashMap();
 	protected long uniqueId = -1L;
 	protected transient Session session;
 	protected transient boolean local;

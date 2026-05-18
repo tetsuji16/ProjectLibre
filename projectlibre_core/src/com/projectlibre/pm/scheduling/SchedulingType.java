@@ -55,7 +55,7 @@
  *******************************************************************************/
 package com.projectlibre.pm.scheduling;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -79,7 +79,7 @@ public enum SchedulingType {
 	}
 	public static SchedulingType getInstance(int id){
 		if (reverseMap==null){
-			reverseMap=new Hashtable<Integer,SchedulingType>();
+			reverseMap=new HashMap<Integer, SchedulingType>();
 			for (SchedulingType ct : values())
 				reverseMap.put(ct.getId(),ct);
 		}

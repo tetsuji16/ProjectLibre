@@ -59,8 +59,8 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -236,7 +236,7 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
         PredicatedNodeFilterIterator iterator;
         if (viewName == DataSourceProvider.REPORT_VIEW) { // special case to just use project
         	cache = null;
-			Vector list = new Vector();
+			ArrayList list = new ArrayList();
 			list.add(project);
         	iterator = GeneralFilteredIterator.instance(list.iterator());
         } else {
@@ -254,7 +254,7 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
         
         // projet name is used as report's title
         // and passed as a parameter
-        Hashtable params = new Hashtable();
+        HashMap params = new HashMap();
         params.put("projectName", project.getName()); //$NON-NLS-1$
         
 		JasperPrint jasperPrint = JasperFillManager.fillReport(report, params, dataSource);
