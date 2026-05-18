@@ -368,11 +368,9 @@ public class CollaborationSession {
 		if (workspace == null) {
 			return;
 		}
-		try {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			ObjectOutputStream objectOut = new ObjectOutputStream(out);
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream();
+				ObjectOutputStream objectOut = new ObjectOutputStream(out)) {
 			objectOut.writeObject(workspace);
-			objectOut.close();
 			String payload = Base64.getEncoder().encodeToString(out.toByteArray());
 			store.mutate(metadata -> {
 				UserWorkspaceState state = new UserWorkspaceState();
@@ -398,15 +396,10 @@ public class CollaborationSession {
 		if (state == null || state.getWorkspacePayload() == null) {
 			return null;
 		}
-		try {
-			byte[] data = Base64.getDecoder().decode(state.getWorkspacePayload());
-			ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data));
-			try {
+		byte[] data = Base64.getDecoder().decode(state.getWorkspacePayload());
+		try (ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(data))) {
 				return (WorkspaceSetting) in.readObject();
-			} finally {
-				in.close();
-			}
-		} catch (Exception e) {
+			} catch (Exception e) {
 			return null;
 		}
 	}

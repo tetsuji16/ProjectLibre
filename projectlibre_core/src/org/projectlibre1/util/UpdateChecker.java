@@ -113,8 +113,7 @@ public class UpdateChecker {
 			conn.setRequestMethod("GET");
 
 			InputStream stream = conn.getInputStream();
-			BufferedReader in = new BufferedReader(new InputStreamReader(stream));
-			try {
+			try (BufferedReader in = new BufferedReader(new InputStreamReader(stream))) {
 				String latestVersion = in.readLine();
 				if (thisVersion == null) {
 					return;
@@ -158,8 +157,6 @@ public class UpdateChecker {
 						}
 					});
 				}
-			} finally {
-				in.close();
 			}
 		} catch (Exception e) {
 			logger.log(Level.FINE, "Update check failed", e);

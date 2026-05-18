@@ -618,18 +618,17 @@ public final class LocaleDialog extends AbstractDialog {
         	return;
 		
         ClassLoader cl = getClass().getClassLoader();
-        try {
-        	InputStream in = sibling.getResourceAsStream(file+".properties");
-            if (in == null)
-                throw new FileNotFoundException();
+        	try (InputStream in = sibling.getResourceAsStream(file+".properties")) {
+            	if (in == null)
+                	throw new FileNotFoundException();
             
-            byte[] buf = new byte[in.available()];
-            in.read(buf);
-            File target = new File(generatedDir,file+".properties");
-            OutputStream out = new FileOutputStream(target);
-            out.write(buf);
-            out.close();            	   
-        } catch (IOException e) {
+            	byte[] buf = new byte[in.available()];
+            	in.read(buf);
+            	File target = new File(generatedDir,file+".properties");
+            	try (OutputStream out = new FileOutputStream(target)) {
+                	out.write(buf);
+            	}
+            } catch (IOException e) {
         }
     }
 	public void exportResourceFileUTF8(Class sibling, String file) {
@@ -845,8 +844,7 @@ public final class LocaleDialog extends AbstractDialog {
 	 }
 	
 	public File convertToPropertyFile(File file, File newFile, String type) {
-		try {
-			FileInputStream in = new FileInputStream(file);
+		try (FileInputStream in = new FileInputStream(file)) {
 			String text=null;
 			
 			if ("rtf".equals(type)) {
@@ -871,9 +869,9 @@ public final class LocaleDialog extends AbstractDialog {
 			byte[] outputData = text.getBytes();
 			
 			
-			FileOutputStream out=new FileOutputStream(newFile);
-			out.write(outputData);
-			out.close();
+			try (FileOutputStream out = new FileOutputStream(newFile)) {
+				out.write(outputData);
+			}
 			
 			return newFile;
 		} catch (FileNotFoundException e) {
