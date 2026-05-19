@@ -244,10 +244,10 @@ public class ConfigurationFile {
 //				return new PropertyResourceBundle(in);
 //			} catch (FileNotFoundException e) {
 //				// TODO Auto-generated catch block
-//				e.printStackTrace();
+//				logger.log(Level.WARNING, "Unexpected error", e);
 //			} catch (IOException e) {
 //				// TODO Auto-generated catch block
-//				e.printStackTrace();
+//				logger.log(Level.WARNING, "Unexpected error", e);
 //			}
 		
 		return null;

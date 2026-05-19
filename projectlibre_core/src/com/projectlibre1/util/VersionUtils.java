@@ -133,7 +133,7 @@ public class VersionUtils {
 			try {
 				pref.flush();
 			} catch (BackingStoreException e) {
-				e.printStackTrace();
+				logger.log(Level.WARNING, "Unexpected error", e);
 			}
 
 			if (warnIfBad && Environment.isApplet()) {
@@ -149,7 +149,7 @@ public class VersionUtils {
 			try {
 				pref.flush();
 			} catch (BackingStoreException e) {
-				e.printStackTrace();
+				logger.log(Level.WARNING, "Unexpected error", e);
 			}
 		}
 		return updated;
