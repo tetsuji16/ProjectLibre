@@ -173,9 +173,9 @@ public final class ResourceMappingDialog extends AbstractDialog {
 		if (form == null)
 			return false;
 		if (get) {
-			field1.setModel(new DefaultComboBoxModel(form.getMergeFields()));
+			field1.setModel(new DefaultComboBoxModel(form.getMergeFields().toArray()));
 			field1.setSelectedItem(form.getMergeField());
-			editorCombo.setModel(new DefaultComboBoxModel(form.getResources()));
+			editorCombo.setModel(new DefaultComboBoxModel(form.getResources().toArray()));
 			editorCombo.setSelectedIndex(0);
 
 			accessControl.setSelectedIndex(form.getAccessControlType());

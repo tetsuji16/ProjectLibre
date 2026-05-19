@@ -171,8 +171,7 @@ public class ProjectFactory {
 				}
 				DataUtil.setEnterpriseResources(resources,resourcePool);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Unexpected error", e);
 			}
 		}
 
@@ -199,7 +198,7 @@ public class ProjectFactory {
 				System.out.println("Project returned end lock");
 				return project;
 			} catch (Exception e) {//Forward exception + Alert
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Unexpected error", e);
 				return null;
 			}
 
@@ -207,7 +206,7 @@ public class ProjectFactory {
 			try {
 				return (Project)runnable.run();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.log(Level.SEVERE, "Unexpected error", e);
 				return null;
 			}
 		}
@@ -357,7 +356,7 @@ public class ProjectFactory {
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					logger.log(Level.SEVERE, "Unexpected error", e);
 					throw e;
 				} finally {
 					subprojectTask.setFetching(false);
