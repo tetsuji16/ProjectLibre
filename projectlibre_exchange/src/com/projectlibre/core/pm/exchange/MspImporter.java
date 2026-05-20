@@ -123,11 +123,7 @@ public class MspImporter {
 
 	private Project importProject_(ProgressClosure progress) throws Exception{
 		progress.updateProgress(0.2f, "File parsed");
-
-		//Identity the type of conversion. It will be used AssignmentConverter
-		if (state.isMspdi()) 
-			state.setMpxTimephasedMap(((ImprovedMSPDIReader)reader).getTimephasedMap());
-		else state.setMpxTimephasedMap(new HashMap<ResourceAssignment, List<TimephasedDataType>>());
+		initializeTimephasedState();
 
 		Project project=new Project();
 
@@ -148,32 +144,51 @@ public class MspImporter {
 		return project;
 	}
 	
+	private void initializeTimephasedState() {
+		// Identity the type of conversion. It will be used by AssignmentConverter.
+		if (state.isMspdi()) {
+			state.setMpxTimephasedMap(((ImprovedMSPDIReader)reader).getTimephasedMap());
+			return;
+		}
+		state.setMpxTimephasedMap(new HashMap<ResourceAssignment, List<TimephasedDataType>>());
+	}
+	
 	
 	public void parseProject(InputStream in, String extension) throws Exception {
 		try {
 			InputStream source = prepareProjectStream(in);
 			String effectiveExtension = normalizeExtension(extension, source);
-			if (effectiveExtension.equals("xml")
-					|| effectiveExtension.equals("pod")){
-				reader=new ImprovedMSPDIReader();
-				state.setMspdi(true);
-			} else if (effectiveExtension.equals("mpp"))
-				reader=new MPPReader();
-			else if (effectiveExtension.equals("mpx"))
-				reader=new MPXReader();
-			else if (effectiveExtension.equals("planner"))
-				reader = new PlannerReader();
-			else if (effectiveExtension.equals("xlsx"))
-				reader = new XlsxReader();
-			mpxProjectFile = reader.read(source);
+			reader = createReader(effectiveExtension);
+			mpxProjectFile = readProjectFile(source);
 			state.setMpxProjectFile(mpxProjectFile);
-		
 		} finally {
 			if (in!=null)
 				in.close();
 		}	
+	}
 
+	private AbstractProjectReader createReader(String extension) {
+		if (isMspdiExtension(extension)) {
+			state.setMspdi(true);
+			return new ImprovedMSPDIReader();
+		}
+		if (extension.equals("mpp"))
+			return new MPPReader();
+		if (extension.equals("mpx"))
+			return new MPXReader();
+		if (extension.equals("planner"))
+			return new PlannerReader();
+		if (extension.equals("xlsx"))
+			return new XlsxReader();
+		return reader;
+	}
 
+	private boolean isMspdiExtension(String extension) {
+		return extension.equals("xml") || extension.equals("pod");
+	}
+
+	private ProjectFile readProjectFile(InputStream source) throws Exception {
+		return reader.read(source);
 	}
 
 	private InputStream prepareProjectStream(InputStream in) {
@@ -277,102 +292,159 @@ public class MspImporter {
 	}
 	
 	protected void importTasks(Project project,net.sf.mpxj.Task mpxTask, Task parentTask) {
-		MpxTaskConverter converter=new MpxTaskConverter();
-		if (mpxTask.getNull() || mpxTask.getID()==null)
+		if (shouldSkipTask(mpxTask))
 			return; //TODO insert blank lines
-//		if (mpxTask.getSubProject() != null)
-//			return;
-		Task task=null;
-		if (mpxTask.getOutlineNumber()!=null &&
-				mpxTask.getOutlineLevel() == 0){ //root task, not a real task
-			if (mpxRootTask==null)
-				mpxRootTask=mpxTask;
-		} else { // normal task
-			task=new Task();
-			converter.from(mpxTask, task, state);
 
-			final Date taskStartDate = (Date) task.getPropertyValue("start");
-			if (taskStartDate != null) {
-				final long taskStart = taskStartDate.getTime();
-				if (earliestTaskStart == -1L || taskStart < earliestTaskStart)
-					earliestTaskStart = taskStart;
-			}
-
-			project.addTask(task,parentTask);			
-			
-			state.mapTask(mpxTask, task);
-			
-			MpxDurationConverter durationConverter=new MpxDurationConverter();
-			DateUTCConverter dateConverter=new DateUTCConverter();
-			SnapshotList snapshotList=task.getSnapshotList();
-			for (int snapshotId=0;snapshotId<SnapshotList.BASELINE_COUNT;snapshotId++){
-				Date start;
-				if (snapshotId==0)
-					start=mpxTask.getBaselineStart();
-				else start=mpxTask.getBaselineStart(snapshotId);
-				if(start!=null){
-					TaskSnapshot snapshot=snapshotList.getSnapshot(snapshotId, true);
-					snapshot.setStart((Date)dateConverter.from(start));
-					
-					Date finish=snapshotId==0? mpxTask.getBaselineFinish():  mpxTask.getBaselineFinish(snapshotId);
-					snapshot.setFinish((Date)dateConverter.from(finish));
-					
-					Duration duration=snapshotId==0? mpxTask.getBaselineDuration():  mpxTask.getBaselineDuration(snapshotId);
-					snapshot.setDuration((com.projectlibre.core.time.Duration)durationConverter.from(duration));
-				}
-			}			
-			
-			importAssignments(mpxTask, task);
+		Task task = null;
+		if (isRootTask(mpxTask)) {
+			registerRootTask(mpxTask);
+		} else {
+			task = importRegularTask(project, mpxTask, parentTask);
 		}
 		
 		for (net.sf.mpxj.Task mpxChildTask : mpxTask.getChildTasks()){
 			importTasks(project,mpxChildTask,task);
 		}
 	}
+
+	private boolean shouldSkipTask(net.sf.mpxj.Task mpxTask) {
+		return mpxTask.getNull() || mpxTask.getID()==null;
+	}
+
+	private boolean isRootTask(net.sf.mpxj.Task mpxTask) {
+		return mpxTask.getOutlineNumber()!=null && mpxTask.getOutlineLevel() == 0;
+	}
+
+	private void registerRootTask(net.sf.mpxj.Task mpxTask) {
+		if (mpxRootTask==null)
+			mpxRootTask=mpxTask;
+	}
+
+	private Task importRegularTask(Project project, net.sf.mpxj.Task mpxTask, Task parentTask) {
+		Task task = createTask(mpxTask);
+		updateEarliestTaskStart(task);
+		project.addTask(task,parentTask);
+		state.mapTask(mpxTask, task);
+		importTaskSnapshots(mpxTask, task);
+		importAssignments(mpxTask, task);
+		return task;
+	}
+
+	private Task createTask(net.sf.mpxj.Task mpxTask) {
+		MpxTaskConverter converter=new MpxTaskConverter();
+		Task task=new Task();
+		converter.from(mpxTask, task, state);
+		return task;
+	}
+
+	private void updateEarliestTaskStart(Task task) {
+		final Date taskStartDate = (Date) task.getPropertyValue("start");
+		if (taskStartDate == null) {
+			return;
+		}
+		final long taskStart = taskStartDate.getTime();
+		if (earliestTaskStart == -1L || taskStart < earliestTaskStart)
+			earliestTaskStart = taskStart;
+	}
+
+	private void importTaskSnapshots(net.sf.mpxj.Task mpxTask, Task task) {
+		MpxDurationConverter durationConverter=new MpxDurationConverter();
+		DateUTCConverter dateConverter=new DateUTCConverter();
+		SnapshotList snapshotList=task.getSnapshotList();
+		for (int snapshotId=0;snapshotId<SnapshotList.BASELINE_COUNT;snapshotId++){
+			Date start = getTaskBaselineStart(mpxTask, snapshotId);
+			if(start!=null){
+				TaskSnapshot snapshot=snapshotList.getSnapshot(snapshotId, true);
+				snapshot.setStart((Date)dateConverter.from(start));
+				
+				Date finish=getTaskBaselineFinish(mpxTask, snapshotId);
+				snapshot.setFinish((Date)dateConverter.from(finish));
+				
+				Duration duration=getTaskBaselineDuration(mpxTask, snapshotId);
+				snapshot.setDuration((com.projectlibre.core.time.Duration)durationConverter.from(duration));
+			}
+		}
+	}
+
+	private Date getTaskBaselineStart(net.sf.mpxj.Task mpxTask, int snapshotId) {
+		if (snapshotId==0)
+			return mpxTask.getBaselineStart();
+		return mpxTask.getBaselineStart(snapshotId);
+	}
+
+	private Date getTaskBaselineFinish(net.sf.mpxj.Task mpxTask, int snapshotId) {
+		if (snapshotId==0)
+			return mpxTask.getBaselineFinish();
+		return mpxTask.getBaselineFinish(snapshotId);
+	}
+
+	private Duration getTaskBaselineDuration(net.sf.mpxj.Task mpxTask, int snapshotId) {
+		if (snapshotId==0)
+			return mpxTask.getBaselineDuration();
+		return mpxTask.getBaselineDuration(snapshotId);
+	}
 	
 	protected void importAssignments(net.sf.mpxj.Task mpxTask, Task task) {
 		for (net.sf.mpxj.ResourceAssignment mpxAssignment:mpxTask.getResourceAssignments()){
 			MpxAssignmentConverter converter=new MpxAssignmentConverter();
-			Assignment assignment=new Assignment();
-			assignment.setTask(task);
-			converter.from(mpxAssignment, assignment, state, SnapshotList.DEFAULT_SNAPSHOT);
-			task.addAssignment(assignment);
-			MpxDurationConverter durationConverter=new MpxDurationConverter();
-			DateUTCConverter dateConverter=new DateUTCConverter();
-			PercentNumberRatioDoubleConverter percentConverter=new PercentNumberRatioDoubleConverter();
-			for (int snapshotId=0;snapshotId<SnapshotList.BASELINE_COUNT;snapshotId++){
-				Date start;
-				if (snapshotId==0)
-					start=mpxAssignment.getBaselineStart();
-				else start=mpxAssignment.getBaselineStart(snapshotId);
-//				System.out.println("importAssigment task="+task.getFieldValue("Field.name")+" snapshotId="+snapshotId+" start="+start);
-				if(start!=null){
-					Assignment a=new Assignment();
-					a.setTask(task);
-//					protected String[] fieldsToConvert=new String[]{
-//							//ProjectLibre, mpx, converter (mpx-> ProjectLibre
-//						"units", "units", "com.projectlibre.core.pm.exchange.converters.type.PercentNumberRatioDoubleConverter",
-//						"start", "start", "com.projectlibre.core.pm.exchange.converters.type.DateUTCConverter",
-//						"finish", "finish", "com.projectlibre.core.pm.exchange.converters.type.DateUTCConverter",		
-//						"work", "work", "com.projectlibre.core.pm.exchange.converters.mpx.type.MpxDurationConverter",		
-//					};
-					converter.from(mpxAssignment, a, state, snapshotId);
-					
-					a.setFieldValue("Field.start", dateConverter.from(start));
-					
-					Date finish=snapshotId==0? mpxAssignment.getBaselineFinish():  mpxAssignment.getBaselineFinish(snapshotId);
-					a.setFieldValue("Field.finish", dateConverter.from(finish));
-					
-					Duration work=snapshotId==0? mpxAssignment.getBaselineWork():  mpxAssignment.getBaselineWork(snapshotId);
-					a.setFieldValue("Field.work", durationConverter.from(work));
+			importCurrentAssignment(mpxAssignment, task, converter);
+			importAssignmentSnapshots(mpxAssignment, task, converter);
+		}
+	}
 
-					a.setFieldValue("Field.units", percentConverter.from(mpxAssignment.getUnits()));
+	private void importCurrentAssignment(net.sf.mpxj.ResourceAssignment mpxAssignment, Task task, MpxAssignmentConverter converter) {
+		Assignment assignment=new Assignment();
+		assignment.setTask(task);
+		converter.from(mpxAssignment, assignment, state, SnapshotList.DEFAULT_SNAPSHOT);
+		task.addAssignment(assignment);
+	}
 
-					
-					task.addAssignment(a, snapshotId);
-				}
+	private void importAssignmentSnapshots(net.sf.mpxj.ResourceAssignment mpxAssignment, Task task, MpxAssignmentConverter converter) {
+		MpxDurationConverter durationConverter=new MpxDurationConverter();
+		DateUTCConverter dateConverter=new DateUTCConverter();
+		PercentNumberRatioDoubleConverter percentConverter=new PercentNumberRatioDoubleConverter();
+		for (int snapshotId=0;snapshotId<SnapshotList.BASELINE_COUNT;snapshotId++){
+			Date start = getAssignmentBaselineStart(mpxAssignment, snapshotId);
+			if(start!=null){
+				Assignment assignment=createAssignmentSnapshot(mpxAssignment, task, converter, snapshotId);
+				assignment.setFieldValue("Field.start", dateConverter.from(start));
+				
+				Date finish=getAssignmentBaselineFinish(mpxAssignment, snapshotId);
+				assignment.setFieldValue("Field.finish", dateConverter.from(finish));
+				
+				Duration work=getAssignmentBaselineWork(mpxAssignment, snapshotId);
+				assignment.setFieldValue("Field.work", durationConverter.from(work));
+
+				assignment.setFieldValue("Field.units", percentConverter.from(mpxAssignment.getUnits()));
+				task.addAssignment(assignment, snapshotId);
 			}
 		}
+	}
+
+	private Assignment createAssignmentSnapshot(net.sf.mpxj.ResourceAssignment mpxAssignment, Task task,
+			MpxAssignmentConverter converter, int snapshotId) {
+		Assignment assignment=new Assignment();
+		assignment.setTask(task);
+		converter.from(mpxAssignment, assignment, state, snapshotId);
+		return assignment;
+	}
+
+	private Date getAssignmentBaselineStart(net.sf.mpxj.ResourceAssignment mpxAssignment, int snapshotId) {
+		if (snapshotId==0)
+			return mpxAssignment.getBaselineStart();
+		return mpxAssignment.getBaselineStart(snapshotId);
+	}
+
+	private Date getAssignmentBaselineFinish(net.sf.mpxj.ResourceAssignment mpxAssignment, int snapshotId) {
+		if (snapshotId==0)
+			return mpxAssignment.getBaselineFinish();
+		return mpxAssignment.getBaselineFinish(snapshotId);
+	}
+
+	private Duration getAssignmentBaselineWork(net.sf.mpxj.ResourceAssignment mpxAssignment, int snapshotId) {
+		if (snapshotId==0)
+			return mpxAssignment.getBaselineWork();
+		return mpxAssignment.getBaselineWork(snapshotId);
 	}
 	
 	protected void importDependencies(Project project) {
