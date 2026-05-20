@@ -228,6 +228,7 @@ import com.projectlibre1.workspace.WorkspaceSetting;
  *
  */
 public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowStateListener,  SelectionNodeListener, ObjectEvent.Listener, ActionMap, MenuActionConstants, SavableToWorkspace {
+	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GraphicManager.class.getName());
 	private static final boolean BINARY_WORKSPACE = true;
 	private static GraphicManager lastGraphicManager = null; // used when displaying a popup but the frame isn't known
     private DocumentFrame currentFrame = null;
@@ -586,14 +587,21 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		if (session == null) {
 			return;
 		}
-		session.setExternalReloadHandler(new CollaborationSession.ExternalProjectReloadHandler() {
-			public void reload(Project changedProject) {
-				refreshProjectFromExternalFile(changedProject);
-			}
-		});
-		project.setCollaborationSession(session);
-		project.setCollaborationWorkspace(session.loadWorkspace());
-		session.start();
+		try {
+			session.setExternalReloadHandler(new CollaborationSession.ExternalProjectReloadHandler() {
+				public void reload(Project changedProject) {
+					refreshProjectFromExternalFile(changedProject);
+				}
+			});
+			project.setCollaborationSession(session);
+			project.setCollaborationWorkspace(session.loadWorkspace());
+			session.start();
+		} catch (RuntimeException e) {
+			logger.log(java.util.logging.Level.WARNING, "Collaboration could not be initialized for " + fileName, e);
+			project.setCollaborationSession(null);
+			project.setCollaborationWorkspace(null);
+			return;
+		}
 		DocumentFrame frame = getFrameForProject(project);
 		if (frame != null && project.getCollaborationWorkspace() != null) {
 			frame.restoreWorkspace(project.getCollaborationWorkspace(), SavableToWorkspace.VIEW);

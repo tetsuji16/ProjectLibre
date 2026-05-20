@@ -140,6 +140,10 @@ public class LocalSession extends AbstractSession{
 	        job.addRunnable(new JobRunnable("LocalAccess: loadProject.end",1.0f){
 	    		public Object run() throws Exception{
 	    	    	Project project=importer.getProject();
+	    	    	if (project == null) {
+	    	    		setProgress(1.0f);
+	    	    		return null;
+	    	    	}
 	    	    	project.setFileName(opt.getFileName()); //overrides project name
 	    			if (MICROSOFT_PROJECT_IMPORTER.equals(opt.getImporter()))
 	    				project.getResourcePool().setName(project.getName());

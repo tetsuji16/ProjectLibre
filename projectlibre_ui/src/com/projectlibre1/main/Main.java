@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.main;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,6 +92,14 @@ public class Main {
 			}
 			if (nonEmptyArgs.size()>0){
 				ArrayList<String> formatedList = new ArrayList<String>();
+				String joinedFileName = joinExistingFileName(nonEmptyArgs);
+				if (joinedFileName != null) {
+					formatedList.add("--fileNames");
+					formatedList.add(joinedFileName);
+					formatedArgs=formatedList.toArray(new String[]{});
+					com.projectlibre1.pm.graphic.gantt.Main.main(formatedArgs);
+					return;
+				}
 				String s1,s2;
 				for (Iterator<String> i=nonEmptyArgs.iterator();i.hasNext();){
 					s1=i.next();
@@ -108,6 +117,25 @@ public class Main {
 		} else formatedArgs=args;
 
 		com.projectlibre1.pm.graphic.gantt.Main.main(formatedArgs);
+	}
+
+	private static String joinExistingFileName(ArrayList<String> args) {
+		if (args == null || args.size() == 0) {
+			return null;
+		}
+		String first = args.get(0);
+		if (first == null || first.startsWith("--")) {
+			return null;
+		}
+		StringBuilder joined = new StringBuilder();
+		for (Iterator<String> i = args.iterator(); i.hasNext();) {
+			if (joined.length() > 0) {
+				joined.append(' ');
+			}
+			joined.append(i.next());
+		}
+		String fileName = joined.toString();
+		return new File(fileName).exists() ? fileName : null;
 	}
 	public static int getRunNumber() {
 		return Preferences.userNodeForPackage(Main.class).getInt("projectlibreRunNumber",0);

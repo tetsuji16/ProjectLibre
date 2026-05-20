@@ -59,6 +59,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import com.projectlibre1.configuration.Settings;
 import com.projectlibre1.document.Document;
@@ -85,7 +86,8 @@ import com.projectlibre1.undo.DataFactoryUndoController;
 public class ResourcePool implements Document, NodeModelDataFactory {
 	private String name = "";
 	private ArrayList resourceList = new ArrayList();
-	private ArrayList projects = new ArrayList();
+	// Keep the legacy collection type so older compiled callers can still link.
+	private Vector projects = new Vector();
 	private ObjectEventManager objectEventManager = new ObjectEventManager();
 	private int resourceIdCounter = 0;
 	private WorkingCalendar defaultCalendar;
@@ -257,7 +259,7 @@ public class ResourcePool implements Document, NodeModelDataFactory {
 	/**
 	 * @return Returns the projects.
 	 */
-	public ArrayList getProjects() {
+	public Vector getProjects() {
 		return projects;
 	}
 	/**

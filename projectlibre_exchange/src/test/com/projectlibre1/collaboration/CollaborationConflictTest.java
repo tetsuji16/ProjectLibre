@@ -22,6 +22,7 @@ import com.projectlibre1.collaboration.CollaborationMetadataStore;
 import com.projectlibre1.collaboration.CollaborationSession;
 import com.projectlibre1.collaboration.ProjectMergeService;
 import com.projectlibre1.collaboration.TaskLockManager;
+import com.projectlibre1.exchange.LocalFileImporter;
 import com.projectlibre1.pm.task.Project;
 
 public class CollaborationConflictTest extends TestCase {
@@ -187,8 +188,16 @@ public class CollaborationConflictTest extends TestCase {
 	}
 
 	public void testXlsxConflictDetectionOnlyFlagsChangedLockedTasks() throws Exception {
-		File original = createWorkbook("Baseline Task", "Unchanged Task");
-		File changed = createWorkbook("Renamed Task", "Unchanged Task");
+		assertConflictDetectionOnlyFlagsChangedLockedTasks("xlsx");
+	}
+
+	public void testPodConflictDetectionOnlyFlagsChangedLockedTasks() throws Exception {
+		assertConflictDetectionOnlyFlagsChangedLockedTasks("pod");
+	}
+
+	private void assertConflictDetectionOnlyFlagsChangedLockedTasks(String extension) throws Exception {
+		File original = createProjectFile(extension, "Baseline Task", "Unchanged Task");
+		File changed = createProjectFile(extension, "Renamed Task", "Unchanged Task");
 
 		ProjectMergeService mergeService = new ProjectMergeService();
 		com.projectlibre1.pm.task.Project baselineProject = mergeService.loadExternalProject(original.getAbsolutePath());
@@ -213,8 +222,16 @@ public class CollaborationConflictTest extends TestCase {
 	}
 
 	public void testXlsxBackgroundRefreshUpdatesOnlyUnlockedExistingTasks() throws Exception {
-		File original = createWorkbook("Baseline Task", "Unchanged Task");
-		File changed = createWorkbook("Renamed Task", "Externally Changed Task");
+		assertBackgroundRefreshUpdatesOnlyUnlockedExistingTasks("xlsx");
+	}
+
+	public void testPodBackgroundRefreshUpdatesOnlyUnlockedExistingTasks() throws Exception {
+		assertBackgroundRefreshUpdatesOnlyUnlockedExistingTasks("pod");
+	}
+
+	private void assertBackgroundRefreshUpdatesOnlyUnlockedExistingTasks(String extension) throws Exception {
+		File original = createProjectFile(extension, "Baseline Task", "Unchanged Task");
+		File changed = createProjectFile(extension, "Renamed Task", "Externally Changed Task");
 
 		ProjectMergeService mergeService = new ProjectMergeService();
 		com.projectlibre1.pm.task.Project target = mergeService.loadExternalProject(original.getAbsolutePath());
@@ -231,6 +248,28 @@ public class CollaborationConflictTest extends TestCase {
 		assertEquals("Externally Changed Task", second.getName());
 		assertEquals(1, result.getUpdatedTaskCount());
 		assertTrue(result.getSkippedLockedTaskIds().contains(Long.valueOf(first.getUniqueId())));
+	}
+
+	private static File createProjectFile(String extension, String firstTaskName, String secondTaskName) throws Exception {
+		if ("pod".equals(extension)) {
+			return createPodFile(firstTaskName, secondTaskName);
+		}
+		return createWorkbook(firstTaskName, secondTaskName);
+	}
+
+	private static File createPodFile(String firstTaskName, String secondTaskName) throws Exception {
+		File seed = createWorkbook(firstTaskName, secondTaskName);
+		ProjectMergeService mergeService = new ProjectMergeService();
+		com.projectlibre1.pm.task.Project project = mergeService.loadExternalProject(seed.getAbsolutePath());
+		assertNotNull(project);
+
+		File file = File.createTempFile("projectlibre-conflict", ".pod");
+		file.deleteOnExit();
+		LocalFileImporter exporter = new LocalFileImporter();
+		exporter.setFileName(file.getAbsolutePath());
+		exporter.setProject(project);
+		exporter.exportFile();
+		return file;
 	}
 
 	private static File createWorkbook(String firstTaskName, String secondTaskName) throws Exception {

@@ -80,7 +80,17 @@ public class CollaborationSession {
 		if (project == null || fileName == null || !CollaborationMetadataStore.isCollaborationCandidate(fileName)) {
 			return null;
 		}
-		return new CollaborationSession(project, fileName, userKey);
+		File sidecarFile = CollaborationMetadataStore.buildSidecarFile(new File(fileName));
+		File sidecarParent = sidecarFile.getParentFile();
+		if (sidecarParent != null && (!sidecarParent.exists() || !sidecarParent.canWrite())) {
+			return null;
+		}
+		try {
+			return new CollaborationSession(project, fileName, userKey);
+		} catch (RuntimeException e) {
+			logger.log(Level.FINE, "Collaboration metadata is unavailable for " + fileName, e);
+			return null;
+		}
 	}
 
 	public void start() {
