@@ -1,7 +1,11 @@
 package com.projectlibre1.collaboration;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -27,6 +31,8 @@ import com.projectlibre1.undo.DataFactoryUndoController;
 import com.projectlibre1.util.Environment;
 
 public class ProjectMergeService {
+	private static final String PROJECT_LIBRE_FILE_SEPARATOR = "@@@@@@@@@@ProjectLibreSeparator_MSXML@@@@@@@@@@";
+
 	public static class TaskState {
 		private final long taskId;
 		private final long id;
@@ -128,26 +134,82 @@ public class ProjectMergeService {
 		}
 		try {
 			if (fileName.toLowerCase().endsWith(".pod")) {
-				com.projectlibre1.exchange.LocalFileImporter importer = new com.projectlibre1.exchange.LocalFileImporter();
-				importer.setFileName(fileName);
-				importer.setProjectFactory(ProjectFactory.getInstance());
-				importer.importFile();
-				return importer.getProject();
+				return loadPodProject(fileName);
 			}
 			try (InputStream in = new FileInputStream(fileName)) {
-				FileImporter importer = LocalSession.getImporter(LocalSession.MICROSOFT_PROJECT_IMPORTER);
-				DataFactoryUndoController undoController = new DataFactoryUndoController();
-				ResourcePool resourcePool = ResourcePoolFactory.getInstance().createResourcePool("", undoController);
-				resourcePool.setLocal(true);
-				Project project = Project.createProject(resourcePool, undoController);
-				importer.setFileName(fileName);
-				importer.setProject(project);
-				importer.setProjectFactory(ProjectFactory.getInstance());
-				return importer.loadProject(in);
+				return loadMicrosoftProject(fileName, in);
 			}
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	private Project loadPodProject(String fileName) throws Exception {
+		InputStream embeddedXml = openEmbeddedPodXml(fileName);
+		if (embeddedXml != null) {
+			try {
+				Project project = loadMicrosoftProject(fileName, embeddedXml);
+				if (project != null) {
+					return project;
+				}
+			} catch (Exception e) {
+				// Fall through to the serialized POD reader for files without usable XML.
+			}
+		}
+		return loadSerializedPodProject(fileName);
+	}
+
+	private Project loadSerializedPodProject(String fileName) throws Exception {
+		com.projectlibre1.exchange.LocalFileImporter importer = new com.projectlibre1.exchange.LocalFileImporter();
+		importer.setFileName(fileName);
+		importer.setProjectFactory(ProjectFactory.getInstance());
+		importer.importFile();
+		return importer.getProject();
+	}
+
+	private Project loadMicrosoftProject(String fileName, InputStream in) throws Exception {
+		FileImporter importer = LocalSession.getImporter(LocalSession.MICROSOFT_PROJECT_IMPORTER);
+		DataFactoryUndoController undoController = new DataFactoryUndoController();
+		ResourcePool resourcePool = ResourcePoolFactory.getInstance().createResourcePool("", undoController);
+		resourcePool.setLocal(true);
+		Project project = Project.createProject(resourcePool, undoController);
+		importer.setFileName(fileName);
+		importer.setProject(project);
+		importer.setProjectFactory(ProjectFactory.getInstance());
+		return importer.loadProject(in);
+	}
+
+	private InputStream openEmbeddedPodXml(String fileName) throws Exception {
+		byte[] bytes = Files.readAllBytes(new File(fileName).toPath());
+		byte[] separator = PROJECT_LIBRE_FILE_SEPARATOR.getBytes(StandardCharsets.UTF_8);
+		int start = indexOf(bytes, separator);
+		if (start < 0) {
+			return null;
+		}
+		start += separator.length;
+		if (start < 0 || start >= bytes.length) {
+			return null;
+		}
+		return new ByteArrayInputStream(bytes, start, bytes.length - start);
+	}
+
+	private int indexOf(byte[] bytes, byte[] pattern) {
+		if (pattern.length == 0 || bytes.length < pattern.length) {
+			return -1;
+		}
+		for (int i = 0; i <= bytes.length - pattern.length; i++) {
+			boolean found = true;
+			for (int j = 0; j < pattern.length; j++) {
+				if (bytes[i + j] != pattern[j]) {
+					found = false;
+					break;
+				}
+			}
+			if (found) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	public Map<Long, TaskState> captureTaskStates(Iterable<Task> tasks) {

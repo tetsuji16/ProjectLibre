@@ -19,6 +19,34 @@ import com.projectlibre1.collaboration.CollaborationMetadataStore;
 import com.projectlibre1.session.FileHelper;
 
 public class XlsxSupportTest extends TestCase {
+	public void testFileHelperAcceptsMppForReadOnlyImport() {
+		assertTrue(FileHelper.isFileNameAllowed("plan.mpp", false));
+		assertFalse(FileHelper.isFileNameAllowed("plan.mpp", true));
+		assertEquals(FileHelper.MSP_FILE_TYPE, FileHelper.getFileType("plan.mpp"));
+	}
+
+	public void testCollaborationDoesNotRecognizeMpp() {
+		assertFalse(CollaborationMetadataStore.isCollaborationCandidate("plan.mpp"));
+	}
+
+	public void testMspImporterCanReadMpp() throws Exception {
+		File sample = new File("projectlibre_exchange/testdata/New Product.mpp");
+		if (!sample.exists()) {
+			sample = new File("testdata/New Product.mpp");
+		}
+		assertTrue(sample.exists());
+
+		MspImporter importer = new MspImporter();
+		com.projectlibre.pm.tasks.Project imported = importer.importProject(sample.getAbsolutePath(), new MspImporter.ProgressClosure() {
+			@Override
+			public void updateProgress(float progress, String label) {
+			}
+		});
+
+		assertNotNull(imported);
+		assertTrue(imported.getTasks().size() > 0);
+	}
+
 	public void testFileHelperAcceptsXlsx() {
 		assertTrue(FileHelper.isFileNameAllowed("plan.xlsx", true));
 		assertTrue(FileHelper.isFileNameAllowed("plan.xlsx", false));
