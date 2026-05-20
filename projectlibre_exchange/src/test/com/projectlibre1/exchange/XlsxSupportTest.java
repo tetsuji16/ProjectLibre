@@ -1,5 +1,7 @@
 package test.com.projectlibre1.exchange;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -89,5 +91,43 @@ public class XlsxSupportTest extends TestCase {
 				in.close();
 			}
 		}
+	}
+
+	public void testPrepareProjectStreamWrapsOnlyWhenNeeded() throws Exception {
+		MspImporter importer = new MspImporter();
+		Method prepare = MspImporter.class.getDeclaredMethod("prepareProjectStream", InputStream.class);
+		prepare.setAccessible(true);
+
+		BufferedInputStream buffered = new BufferedInputStream(new ByteArrayInputStream(new byte[] { 1, 2, 3 }));
+		InputStream preparedBuffered = (InputStream) prepare.invoke(importer, buffered);
+		assertSame(buffered, preparedBuffered);
+
+		ByteArrayInputStream plain = new ByteArrayInputStream(new byte[] { 4, 5, 6 });
+		InputStream preparedPlain = (InputStream) prepare.invoke(importer, plain);
+		assertTrue(preparedPlain instanceof BufferedInputStream);
+		assertNotSame(plain, preparedPlain);
+	}
+
+	public void testMspImporterSkipsRootSummaryTaskFromXml() throws Exception {
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n"
+			+ "<Project xmlns=\"http://schemas.microsoft.com/project\">"
+			+ "<Name>Hierarchy</Name>"
+			+ "<Tasks>"
+			+ "<Task><UID>0</UID><ID>0</ID><Name>Project Summary</Name><OutlineLevel>0</OutlineLevel><OutlineNumber>0</OutlineNumber><Summary>1</Summary></Task>"
+			+ "<Task><UID>1</UID><ID>1</ID><Name>Child Task</Name><OutlineLevel>1</OutlineLevel><OutlineNumber>1</OutlineNumber></Task>"
+			+ "</Tasks>"
+			+ "</Project>";
+
+		MspImporter importer = new MspImporter();
+		InputStream in = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
+		com.projectlibre.pm.tasks.Project imported = importer.importProject(in, "xlsx", new MspImporter.ProgressClosure() {
+			@Override
+			public void updateProgress(float progress, String label) {
+			}
+		});
+
+		assertNotNull(imported);
+		assertEquals(1, imported.getTasks().size());
+		assertEquals("Child Task", imported.getTasks().get(0).getPropertyValue("name"));
 	}
 }
