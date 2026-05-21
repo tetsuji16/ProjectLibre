@@ -13,18 +13,17 @@ This repository is an unofficial development fork of ProjectLibre. It keeps the 
 
 ## Baseline And Update Ratio
 
-The comparison baseline in this fork is the initial commit:
+The comparison baseline in this fork is the ProjectLibre 1.9.8 modernization commit:
 
-- Commit: `d2fa3c20a28902fd21046085a1f5b0c9e02e14dc`
-- Date: `2012-08-22`
-- Subject: `Initial commit`
+- Commit: `0530be227f4a10c5545cce8d3db20ac5a4d76a66`
+- Subject: `ProjectLibre 1.9.8 Java and Libraries updates Code using deprecated apis updated Performance fixes Toolbar fixes New builds using jpackage supporting Java 21 and ARM architecture.`
 
-The figures below describe cumulative change volume since that initial snapshot. Because the repository has grown substantially through added files, rewrites, and renames, these ratios can exceed `100%`.
+The figures below describe cumulative change volume since that baseline commit.
 
-- Changed tracked file paths since the initial commit: `8049 / 4561` (`176.5%` of the initial tracked file count)
-- Changed tracked text lines since the initial commit: `1370893 / 570682` (`240.2%` of the initial tracked text-line count)
+- Changed tracked file paths since `0530be22`: `2289 / 2386` (`95.9%` of the baseline tracked file count)
+- Changed tracked text lines since `0530be22`: `673624`
 
-## What Has Been Added Or Improved
+## What Has Been Added Or Improved Since `0530be22`
 
 - XLSX import/export support and related collaboration refresh behavior
 - Local collaboration support for shared project files
