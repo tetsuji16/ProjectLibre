@@ -58,8 +58,6 @@ package com.projectlibre1.pm.graphic.frames;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 
-import com.projectlibre1.util.Environment;
-
 /**
  * @author Laurent Chretienneau
  *
@@ -70,7 +68,7 @@ public class MainFrameFactory {
 		return mainFrame;
 	}
 	public static Frame creareMainFrame(String name, String projectUrl, String server) throws HeadlessException {
-			mainFrame=Environment.isRibbonUI()? new MainRibbonFrame(name, projectUrl, server): new MainFrame(name, projectUrl, server);
+			mainFrame=new MainFrame(name, projectUrl, server);
 			return mainFrame;
 	}
 }

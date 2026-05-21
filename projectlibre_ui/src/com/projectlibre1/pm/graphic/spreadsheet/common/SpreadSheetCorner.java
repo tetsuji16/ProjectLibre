@@ -61,7 +61,8 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -92,8 +93,10 @@ public class SpreadSheetCorner extends GradientCorner implements ListSelectionLi
 
 //
 //		setBackground(LafUtils.getUnselectedBackgroundColor());
-		if (!Environment.isNewLaf())
-			setBorder(new LineBorder(Color.LIGHT_GRAY));
+		Border border = UIManager.getBorder("TableHeader.cellBorder");
+		if (border != null) {
+			setBorder(border);
+		}
 		addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				CommonSpreadSheet spreadSheet=SpreadSheetCorner.this.spreadSheet;

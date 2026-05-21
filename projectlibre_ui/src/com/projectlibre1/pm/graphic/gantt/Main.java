@@ -63,6 +63,7 @@ import javax.swing.JOptionPane;
 
 import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
 import com.projectlibre1.pm.graphic.frames.MainFrameFactory;
+import com.projectlibre1.pm.graphic.laf.FlatLafSupport;
 import com.projectlibre1.preference.ConfigurationFile;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Environment;
@@ -72,6 +73,7 @@ import com.projectlibre1.util.Environment;
  */
 public class Main {
 	public static void main(String[] args) {
+		FlatLafSupport.install();
 		System.setProperty("apple.awt.application.name","ProjectLibre");
 		System.setProperty("apple.laf.useScreenMenuBar","true");
 		Locale.setDefault(ConfigurationFile.getLocale());
@@ -96,19 +98,6 @@ public class Main {
 //				System.exit(64);
 //			}
 		}
-
-
-		boolean newLook = false;
-//		HashMap opts = ApplicationStartupFactory.extractOpts(args); // allow setting menu look on command line - primarily for testing or webstart args
-//		newLook = opts.get("menu") == null;
-
-		Environment.setNewLook(newLook);
-//		if (!Environment.isNewLaf()) {
-//			try {
-//				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//			} catch (Exception e) {
-//			}
-//		}
 		ApplicationStartupFactory startupFactory=new ApplicationStartupFactory(opts); //put before to initialize standalone flag
 		Frame frame = MainFrameFactory.creareMainFrame(Messages.getContextString("Text.ApplicationTitle"), null, null);
 		boolean doWelcome = true; // to do see if project param exists in args
