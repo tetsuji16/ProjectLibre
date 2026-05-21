@@ -99,7 +99,7 @@ public class LafManagerImpl implements LafManager {
 	/* (non-Javadoc)
 	 * @see com.projectlibre1.pm.graphic.laf.LafManager1#clean()
 	 */
-	public void clean(){
+    public void clean(){
 		if (plaf!=null){
 			plaf.uninitialize();
 			plaf = null;
@@ -126,16 +126,8 @@ public class LafManagerImpl implements LafManager {
     public LookAndFeel getPlaf() {
     	if (plaf == null) {
 			try {
-						int os=Environment.getOs();
-						if (os==Environment.LINUX/*||os==Environment.MAC*/) //$NON-NLS-1$ //$NON-NLS-2$
-								UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); //$NON-NLS-1$
-								//UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-						else {
-							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-							plaf = UIManager.getLookAndFeel();
-							return plaf;
-						}
-		    			plaf = UIManager.getLookAndFeel();
+				FlatLafSupport.install();
+				plaf = UIManager.getLookAndFeel();
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -148,11 +140,14 @@ public class LafManagerImpl implements LafManager {
     /* (non-Javadoc)
 	 * @see com.projectlibre1.pm.graphic.laf.LafManager1#initLookAndFeel()
 	 */
-    public void initLookAndFeel() {
+	public void initLookAndFeel() {
 		if (plaf == null)
 			getPlaf();
+		if (graphicManager != null) {
+			SwingUtilities.updateComponentTreeUI(graphicManager.getContainer());
+		}
 		installDialogButtonArrowTraversal();
-    }
+	}
 
 	private static void installDialogButtonArrowTraversal() {
 		if (dialogButtonArrowTraversalInstalled)
@@ -278,11 +273,13 @@ public class LafManagerImpl implements LafManager {
 	 * @see com.projectlibre1.pm.graphic.laf.LafManager1#paintComponent(java.awt.Graphics, java.awt.Component, boolean)
 	 */
 	public void paintComponent(Graphics g,Component component,boolean selected){
-		if (Environment.isMac()){
-			g.setColor(GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor());
-			Rectangle bounds = component.getBounds();
-			g.fillRect(0, 0,bounds.width,bounds.height);
+		Color fill = selected ? getSelectedBackgroundColor() : getUnselectedBackgroundColor();
+		if (fill == null) {
+			return;
 		}
+		g.setColor(fill);
+		Rectangle bounds = component.getBounds();
+		g.fillRect(0, 0,bounds.width,bounds.height);
 	}
 
 	/* (non-Javadoc)
@@ -307,14 +304,22 @@ public class LafManagerImpl implements LafManager {
 
 
 	public Color getSelectedBackgroundColor() {
-		return Environment.isMac()?Colors.NOT_TOO_DARK_GRAY:Color.DARK_GRAY;
+		Color color = UIManager.getColor("Table.selectionBackground");
+		if (color != null) {
+			return color;
+		}
+		return Environment.isMac() ? Colors.NOT_TOO_DARK_GRAY : Color.DARK_GRAY;
 	}
 	public Color getUnselectedBackgroundColor() {
-		LookAndFeel laf = UIManager.getLookAndFeel();
-		if (Environment.isMac())
-			return Environment.isMac()?Colors.VERY_LIGHT_GRAY:laf.getDefaults().getColor("TableHeader.background");//table.getTableHeader ().getBackground()
-		else
-			return laf.getDefaults().getColor("TableHeader.focusCellForeground");
+		Color color = UIManager.getColor("TableHeader.background");
+		if (color != null) {
+			return color;
+		}
+		color = UIManager.getColor("Panel.background");
+		if (color != null) {
+			return color;
+		}
+		return Environment.isMac() ? Colors.VERY_LIGHT_GRAY : Color.LIGHT_GRAY;
 	}
 
 	public void dumpUIValues() {
@@ -371,7 +376,7 @@ public class LafManagerImpl implements LafManager {
 		return "com.sun.java.swing.plaf.windows.WindowsLookAndFeel".equals(UIManager.getLookAndFeel().getClass().getName());
 	}
 	public boolean isToolbarOpaque() {
-		return Environment.isNewLaf() || isWindowsLAF();
+		return isWindowsLAF();
 	}
 
 }

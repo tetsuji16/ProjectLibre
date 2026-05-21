@@ -61,6 +61,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
@@ -91,25 +92,21 @@ public class SpreadSheetRowHeaderRenderer extends DefaultTableCellRenderer  impl
 			component=(JLabel)super.getTableCellRendererComponent(table, value, isSelected,hasFocus, row, column);
 
 			component.setForeground (table.getTableHeader().getForeground());
-			if (Environment.isNewLaf()||Environment.isMac())
-				component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor());
-			else
-				component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : table.getTableHeader().getBackground());
+			component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor());
 
 			component.setFont (table.getTableHeader ().getFont());
 		}
 		component.setHorizontalAlignment (CENTER);
 		component.setText (value == null ? "" : value.toString ());
-		if (!Environment.isNewLaf())
-			component.setBorder (UIManager.getBorder ("TableHeader.cellBorder"));
-//			component.setBorder ((isSelected)?BorderFactory.createLoweredBevelBorder():UIManager.getBorder ("TableHeader.cellBorder"));
-		component.setBorder(null);
+		Border border = UIManager.getBorder("TableHeader.cellBorder");
+		if (border != null) {
+			component.setBorder(border);
+		}
 		return component;
 	}
 
 	public Component getComponent(Object value, GraphicNode node,Field field,SpreadSheetParams params){
 		JComponent component=(JComponent)getTableCellRendererComponent(null, value, false, false, -1, -1);
-		component.setBorder(null);
 		return component;
 	}
 
