@@ -282,8 +282,6 @@ public abstract class StartupFactory {
 				LoginForm form = LoginDialog.doLogin(graphicManager.getFrame(),loginUrl); // it's actually a singleton
 				if (form.isCancelled())
 					System.exit(-1);
-				if (form.isUseMenus())
-					Environment.setNewLook(false);
 
 				login=form.getLogin();
 				password=form.getPassword();
