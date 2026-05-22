@@ -63,21 +63,19 @@ import javax.swing.event.ListSelectionListener;
 
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
-import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetListSelectionModel;
-import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetSelectionModel;
 import com.projectlibre1.grouping.core.Node;
 
 /**
  *
  */
 public class SpreadSheetNodeSelectionListener implements ListSelectionListener {
-	public SpreadSheetNodeSelectionListener(){
+	private final CommonSpreadSheet spreadSheet;
+
+	public SpreadSheetNodeSelectionListener(CommonSpreadSheet spreadSheet){
+		this.spreadSheet = spreadSheet;
 	}
 	public void valueChanged(ListSelectionEvent lse){
 		if (lse.getValueIsAdjusting()) return; //it's not a final event
-		SpreadSheetListSelectionModel listSelectionModel = (SpreadSheetListSelectionModel)lse.getSource();
-		SpreadSheetSelectionModel selectionModel=listSelectionModel.getSelectionModel();
-		CommonSpreadSheet spreadSheet=(CommonSpreadSheet)selectionModel.getTable();
 		CommonSpreadSheetModel model=(CommonSpreadSheetModel)spreadSheet.getModel();
 		
 		int[] rows=spreadSheet.getSelectedRows();

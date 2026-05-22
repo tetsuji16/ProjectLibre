@@ -71,6 +71,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -93,6 +95,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.collections.Closure;
+import org.jdesktop.swingx.table.TableColumnExt;
 
 import com.projectlibre1.dialog.ResourceAdditionDialog;
 import com.projectlibre1.help.HelpUtil;
@@ -104,13 +107,13 @@ import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetAction;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
+import com.projectlibre1.pm.graphic.spreadsheet.common.CommonTableHeader;
 import com.projectlibre1.pm.graphic.spreadsheet.common.transfer.NodeListTransferHandler;
 import com.projectlibre1.pm.graphic.spreadsheet.common.transfer.NodeListTransferable;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SimpleComboBoxEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.NameCellComponent;
-import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetListSelectionModel;
-import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetSelectionModel;
-import com.projectlibre1.pm.graphic.spreadsheet.selection.event.HeaderMouseListener;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetCommandDispatcher;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetHeaderMouseListener;
 import com.projectlibre1.datatype.Hyperlink;
 import com.projectlibre1.field.Field;
 import com.projectlibre1.graphic.configuration.ActionList;
@@ -147,10 +150,12 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	private Object defaultShiftTabActionKey;
 	protected SpreadSheetPopupMenu popup=null;
 	private boolean hierarchyActionInProgress;
+	private final SpreadsheetCommandDispatcher commandDispatcher;
 
 
 	public SpreadSheet() {
 		super();
+		commandDispatcher = new SpreadsheetCommandDispatcher(this);
 		NodeListTransferHandler.registerWith(this);
 		installClipboardPasteBindings();
 
@@ -166,17 +171,20 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			private static final long serialVersionUID = 1L;
 
 			public void actionPerformed(ActionEvent e) {
-				pasteClipboardAsValues();
+				commandDispatcher.pasteValues();
 			}
 		});
 		actionMap.put(CLIPBOARD_INSERT_ACTION, new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
 			public void actionPerformed(ActionEvent e) {
-				prepareAction(MenuActionConstants.ACTION_PASTE_INSERT).actionPerformed(
-					new ActionEvent(SpreadSheet.this, ActionEvent.ACTION_PERFORMED, MenuActionConstants.ACTION_PASTE_INSERT));
+				commandDispatcher.insertClipboard();
 			}
 		});
+	}
+
+	public SpreadsheetCommandDispatcher getCommandDispatcher() {
+		return commandDispatcher;
 	}
 
 	public void pasteClipboardAsValues() {
@@ -220,13 +228,30 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor))
 				return (String)transferable.getTransferData(DataFlavor.stringFlavor);
 			if (transferable.isDataFlavorSupported(DataFlavor.getTextPlainUnicodeFlavor()))
-				return transferable.getTransferData(DataFlavor.getTextPlainUnicodeFlavor()).toString();
+				return readClipboardText(transferable.getTransferData(DataFlavor.getTextPlainUnicodeFlavor()));
 		} catch (UnsupportedFlavorException e) {
 			return null;
 		} catch (IOException e) {
 			return null;
 		}
 		return null;
+	}
+
+	private String readClipboardText(Object clipboardData) throws IOException {
+		if (clipboardData == null)
+			return null;
+		if (clipboardData instanceof String)
+			return (String)clipboardData;
+		if (clipboardData instanceof Reader) {
+			Reader reader = (Reader)clipboardData;
+			StringWriter writer = new StringWriter();
+			char[] buffer = new char[1024];
+			int read;
+			while ((read = reader.read(buffer)) != -1)
+				writer.write(buffer, 0, read);
+			return writer.toString();
+		}
+		return clipboardData.toString();
 	}
 
 	protected void finalize() {
@@ -515,7 +540,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			// Create new columns from the data model info
 			int colCount=fieldArray.size();
 			for (int i = 0; i < colCount; i++) {
-				TableColumn newColumn = new TableColumn(i);
+				TableColumn newColumn = new TableColumnExt(i);
 				addColumn(newColumn);
 			}
 			
@@ -536,7 +561,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	}
 
 	private void makeCustomTableHeader(TableColumnModel columnModel) {
-		JTableHeader h =new JTableHeader(columnModel) {
+		JTableHeader h =new CommonTableHeader(columnModel) {
 
 			public String getToolTipText(MouseEvent e) {
 				if (isHasColumnHeaderPopup()) {
@@ -569,14 +594,9 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		if (spreadSheetColumnModel!=null){
 			//System.out.println("creating new ColModel");
 			setColumnModel(spreadSheetColumnModel);
-	
-			selection = new SpreadSheetSelectionModel(this);
-			selection.setRowSelection(new SpreadSheetListSelectionModel(selection, true));
-			selection.setColumnSelection(new SpreadSheetListSelectionModel(selection, false));
-			setSelectionModel(selection.getRowSelection());
 			createDefaultColumnsFromModel(spreadSheetModel.getFieldArray()); //Consume memory
-			getColumnModel().setSelectionModel(selection.getColumnSelection());
 		}
+		installStandardSelectionBridge();
 		
 		registerEditors(); //Consume memory
 		installNameColumnHierarchyNavigationActions();
@@ -590,7 +610,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		setTableHeader(createDefaultTableHeader());
 		JTableHeader header = getTableHeader();
 		header.setPreferredSize(new Dimension((int) header.getPreferredSize().getWidth(), config.getColumnHeaderHeight()));
-		header.addMouseListener(new HeaderMouseListener(this));
+		header.addMouseListener(new SpreadsheetHeaderMouseListener(this));
 
 		
 
@@ -638,7 +658,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 						if (isOnIcon(e)) {
 							if (model.getCellProperties(node).isCompositeIcon()) {
 								finishCurrentOperations();
-								selection.getRowSelection().clearSelection();
+								getSelectionModel().clearSelection();
 								boolean change = true;
 								if (!node.isFetched()) // for subprojects
 									change = node.fetch();
@@ -1137,6 +1157,8 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 				List selectedNodes = getSelectedNodes();
 				if (!CollaborationHelper.tryLockNodes(null, selectedNodes, SpreadSheet.this, "paste"))
 					return;
+				int originalRow = spreadSheet.getCurrentRow();
+				int originalColumn = spreadSheet.getSelectedColumn();
 				Node parent = null;
 				int position = 0;
 				if (selectedNodes.size() > 0) {
@@ -1148,13 +1170,29 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 				executeFirst();
 				spreadSheet.clearSelection();
 				getCache().pasteNodes(parent, nodes, position);
-//				if (nodes.size() > 0) {
-//					int row = ((SpreadSheetModel) spreadSheet.getModel()).findGraphicNodeRow(spreadSheet.getCache().getGraphicNode(nodes.get(0)));
-//					changeSelection(row, 0, false, false);
-//					if (nodes.size() > 1)
-//						changeSelection(row + nodes.size() - 1, getColumnCount(), false, true);
-//				}
+				restoreSelectionAfterInsert(nodes, originalRow, originalColumn);
 			}
+		}
+
+		private void restoreSelectionAfterInsert(List nodes, int originalRow, int originalColumn) {
+			if (nodes == null || nodes.isEmpty())
+				return;
+			int targetColumn = Math.max(0, originalColumn);
+			int targetRow = -1;
+			Object firstNode = nodes.get(0);
+			if (firstNode instanceof Node)
+				targetRow = ((SpreadSheetModel)spreadSheet.getModel()).findGraphicNodeRow(spreadSheet.getCache().getGraphicNode((Node)firstNode));
+			if (targetRow < 0)
+				targetRow = Math.max(0, originalRow);
+			if (targetRow >= spreadSheet.getRowCount())
+				targetRow = spreadSheet.getRowCount() - 1;
+			if (targetRow < 0 || targetColumn >= spreadSheet.getColumnCount())
+				return;
+			if (originalRow >= 0 && originalColumn >= 0)
+				spreadSheet.rememberPendingUndoSelection(originalRow, originalColumn, targetRow, targetColumn);
+			spreadSheet.requestFocusInWindow();
+			spreadSheet.changeSelection(targetRow, targetColumn, false, false);
+			spreadSheet.scrollRectToVisible(spreadSheet.getCellRect(targetRow, targetColumn, true));
 		}
 	};
 	protected SpreadSheetAction clipboardPasteAction = new SpreadSheetAction("Spreadsheet.Action.paste",this) {

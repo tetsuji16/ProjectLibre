@@ -77,6 +77,7 @@ import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.RateEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.RateRenderer;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.TreeTableSpreadsheetView;
 import com.projectlibre1.configuration.Dictionary;
 import com.projectlibre1.datatype.Rate;
 import com.projectlibre1.field.Field;
@@ -115,7 +116,7 @@ public class AssignmentEntryPane extends JScrollPane implements HierarchyListene
 	private static final int REQUEST_DEMAND_TYPE_COLUMN = 0; // hidden now
 	private static final int UNITS_COLUMN = REQUEST_DEMAND_TYPE_COLUMN+1;
 	
-	class AssignmentSpreadSheet extends SpreadSheet {
+	class AssignmentSpreadSheet extends TreeTableSpreadsheetView {
 		private static final long serialVersionUID = 1L;
 		ResourceAssigner resourceAssigner;
 		/**

@@ -77,6 +77,7 @@ import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetUtils;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.FlatSpreadsheetView;
 import com.projectlibre1.pm.graphic.views.UsageDetailView;
 import com.projectlibre1.association.AssociationList;
 import com.projectlibre1.configuration.Configuration;
@@ -252,7 +253,7 @@ public class TaskInformationDialog extends InformationDialog {
 		return pred;	
 	}
 	
-	private class DependencySpreadSheet extends SpreadSheet {
+	private class DependencySpreadSheet extends FlatSpreadsheetView {
     	InformationDialog dlg;
 		Field clickField;
 		boolean predecessor;

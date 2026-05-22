@@ -83,6 +83,7 @@ import javax.swing.UIManager;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.EventListenerList;
+import javax.swing.ListSelectionModel;
 import javax.swing.plaf.UIResource;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
@@ -105,9 +106,15 @@ import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetSearchContext;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetUtils;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.KeyboardFocusable;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.NameCellComponent;
-import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetSelectionModel;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SpreadSheetNodeSelectionListener;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeEvent;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeListener;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetCornerComponent;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetKeyController;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetRowHeaderColumnModel;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetRowHeaderView;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetSelectionState;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetSelectionState.PendingUndoSelection;
 import com.projectlibre1.pm.graphic.timescale.ScaledScrollPane;
 import com.projectlibre1.pm.graphic.views.SearchContext;
 import com.projectlibre1.pm.graphic.views.Searchable;
@@ -137,14 +144,15 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	private static final String START_EDIT_ACTION = "spreadsheet.startEdit";
 	private static final String COMMIT_AND_MOVE_DOWN_ACTION = "spreadsheet.commitAndMoveDown";
 
-	protected SpreadSheetSelectionModel selection;
 	protected String spreadSheetCategory = null;
-	protected SpreadSheetRowHeader rowHeader;
-	protected SpreadSheetCorner corner;
+	protected SpreadsheetRowHeaderView rowHeader;
+	protected SpreadsheetCornerComponent corner;
 	protected int lastEditingRow = -1;
 	protected boolean canModifyColumns = true;
 	protected boolean canSelectFieldArray = true;
-	private PendingUndoSelection pendingUndoSelection;
+	private final SpreadsheetSelectionState spreadsheetSelectionState = new SpreadsheetSelectionState();
+	private final SpreadsheetKeyController spreadsheetKeyController = new SpreadsheetKeyController(spreadsheetSelectionState);
+	private transient SpreadSheetNodeSelectionListener selectionBridgeListener;
 
 	public CommonSpreadSheet() {
 		super();
@@ -153,7 +161,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		//setSurrendersFocusOnKeystroke(true); //has the side effect of selecting the first character of cell after ENTER keystroke
 		setAutoCreateColumnsFromModel(false);
-		rowHeader=new SpreadSheetRowHeader(this);
+		rowHeader=new SpreadsheetRowHeaderView(this);
 		rowHeader.setRowHeight(getRowHeight());
 
 		setFocusCycleRoot(true);
@@ -163,29 +171,6 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	public void cleanUp() {
 		getCache().removeNodeModelListener((CacheListener) getModel());
 	}
-
-//	public void setModel(CommonSpreadSheetModel spreadSheetModel, DefaultTableColumnModel spreadSheetColumnModel) {
-//
-//		setModel(spreadSheetModel);
-//	    setColumnModel(spreadSheetColumnModel);
-//
-//	    selection = new SpreadSheetSelectionModel(this);
-//		selection.setRowSelection(new SpreadSheetListSelectionModel(selection,
-//				true));
-//		selection.setColumnSelection(new SpreadSheetListSelectionModel(
-//				selection, false));
-//		setSelectionModel(selection.getRowSelection());
-//		createDefaultColumnsFromModel();
-//		getColumnModel().setSelectionModel(selection.getColumnSelection());
-//
-//		registerEditors();
-//		initRowHeader(spreadSheetModel);
-//		initModel();
-//		initListeners();
-//
-//
-//
-//	}
 
 	//helper
 	public void setCache(NodeModelCache cache){
@@ -233,7 +218,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		if (rowHeader!=null) rowHeader.setRowHeight(rowHeight);
 	}
 	protected void initRowHeader(CommonSpreadSheetModel spreadSheetModel){
-		rowHeader.setModel(spreadSheetModel,new SpreadSheetRowHeaderColumnModel());
+		rowHeader.setModel(spreadSheetModel,new SpreadsheetRowHeaderColumnModel());
 		rowHeader.createDefaultColumnsFromModel();
 	}
 
@@ -251,14 +236,27 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	protected void initListeners(){
 	}
 
-	/**
-	 * @return Returns the selection.
-	 */
-	public SpreadSheetSelectionModel getSelection() {
-		return selection;
+	protected void installStandardSelectionBridge() {
+		ListSelectionModel rowSelectionModel = getSelectionModel();
+		if (selectionBridgeListener != null && rowSelectionModel != null)
+			rowSelectionModel.removeListSelectionListener(selectionBridgeListener);
+		if (rowSelectionModel != null) {
+			selectionBridgeListener = new SpreadSheetNodeSelectionListener(this);
+			rowSelectionModel.addListSelectionListener(selectionBridgeListener);
+		}
 	}
 	public boolean isCellEditing(int row, int col) {
 		return (!(isEditing() && getEditingRow() == row && getEditingColumn() == col));
+	}
+
+	public void executeAction(String actionId) {
+		CommonSpreadSheetAction action = prepareAction(actionId);
+		if (action != null)
+			action.execute();
+	}
+
+	public CommonSpreadSheetAction prepareAction(String actionId) {
+		return null;
 	}
 
 	private void installExcelEditingActions() {
@@ -318,6 +316,10 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	@Override
 	protected void processKeyEvent(KeyEvent e) {
 		if (e != null && !isEditing()) {
+			if (spreadsheetKeyController.handleBeforeKeyEvent(this, e)) {
+				e.consume();
+				return;
+			}
 			if (e.getID() == KeyEvent.KEY_TYPED && shouldStartTypingEdit(e)) {
 				startEditingFromTypedKey(e);
 				e.consume();
@@ -330,6 +332,8 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			}
 		}
 		super.processKeyEvent(e);
+		if (e != null && !isEditing())
+			spreadsheetKeyController.handleAfterKeyEvent(this, e);
 	}
 
 	private boolean shouldStartTypingEdit(KeyEvent e) {
@@ -453,59 +457,17 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	}
 
 	private void rememberPendingUndoSelection(int row, int column) {
-		Node node = null;
-		Object impl = null;
-		if (getModel() instanceof SpreadSheetModel && row >= 0 && row < getRowCount()) {
-			node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
-			impl = (node == null) ? null : node.getImpl();
-		}
 		int followRow = Math.min(Math.max(row + 1, 0), Math.max(getRowCount() - 1, 0));
 		int followColumn = Math.min(Math.max(column, 0), Math.max(getColumnCount() - 1, 0));
-		pendingUndoSelection = new PendingUndoSelection(node, impl, row, column, followRow, followColumn);
+		rememberPendingUndoSelection(row, column, followRow, followColumn);
+	}
+
+	public void rememberPendingUndoSelection(int row, int column, int followRow, int followColumn) {
+		spreadsheetSelectionState.rememberPendingUndoSelection(this, row, column, followRow, followColumn);
 	}
 
 	public PendingUndoSelection consumePendingUndoSelection(int currentRow, int currentColumn) {
-		PendingUndoSelection selection = pendingUndoSelection;
-		pendingUndoSelection = null;
-		if (selection == null)
-			return null;
-		if (selection.followRow != currentRow || selection.followColumn != currentColumn)
-			return null;
-		return selection;
-	}
-
-	public static final class PendingUndoSelection {
-		private final Node node;
-		private final Object impl;
-		private final int row;
-		private final int column;
-		private final int followRow;
-		private final int followColumn;
-
-		private PendingUndoSelection(Node node, Object impl, int row, int column, int followRow, int followColumn) {
-			this.node = node;
-			this.impl = impl;
-			this.row = row;
-			this.column = column;
-			this.followRow = followRow;
-			this.followColumn = followColumn;
-		}
-
-		public Node getNode() {
-			return node;
-		}
-
-		public Object getImpl() {
-			return impl;
-		}
-
-		public int getRow() {
-			return row;
-		}
-
-		public int getColumn() {
-			return column;
-		}
+		return spreadsheetSelectionState.consumePendingUndoSelection(currentRow, currentColumn);
 	}
 
 	private static final class StartEditEvent extends EventObject {
@@ -639,6 +601,11 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
         SpreadSheetModel model=(SpreadSheetModel)getModel();
         int row = getCurrentRow();
         return model.getNodeInRow(row);
+    }
+    public Node getNodeInRow(int row) {
+        if (!(getModel() instanceof SpreadSheetModel) || row < 0 || row >= getRowCount())
+            return null;
+        return ((SpreadSheetModel)getModel()).getNodeInRow(row);
     }
     public int getCurrentRow() {
         int row = getSelectedRow();
@@ -840,6 +807,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     public void changeSelection(int rowIndex, int columnIndex, boolean toggle,
 			boolean extend,boolean forwards) {
     	super.changeSelection(rowIndex,columnIndex,toggle,extend);
+    	spreadsheetSelectionState.selectionChanged(this, rowIndex, columnIndex, toggle, extend);
 		if (forwards){
 			rowHeader.clearSelection();
 			//rowHeader.changeSelection(rowIndex, columnIndex, toggle, extend,false);
@@ -849,6 +817,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 
 
  	public void clearSelection() {
+		spreadsheetSelectionState.clearSelectionState();
  		if (rowHeader!=null) rowHeader.clearSelection();
 		super.clearSelection();
 	}
@@ -879,7 +848,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
         vp.setView(rowHeader);
         vp.setPreferredSize(rowHeader.getPreferredSize());
         scrollPane.setRowHeader(vp);
-        corner=new SpreadSheetCorner(this);
+        corner=new SpreadsheetCornerComponent(this);
         scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER,corner);
         //scrollPane.setCorner(JScrollPane.LOWER_LEFT_CORNER,new GradientCorner());
 	}
@@ -961,12 +930,12 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 
 
 
-	public SpreadSheetRowHeader getRowHeader() {
+	public JTable getRowHeader() {
 		return rowHeader;
 	}
 
 
-	public SpreadSheetCorner getCorner() {
+	public JComponent getCorner() {
 		return corner;
 	}
 
