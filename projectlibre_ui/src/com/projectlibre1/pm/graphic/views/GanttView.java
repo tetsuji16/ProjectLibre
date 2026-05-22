@@ -77,6 +77,7 @@ import com.projectlibre1.pm.graphic.model.cache.ReferenceNodeModelCache;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetUtils;
+import com.projectlibre1.pm.graphic.spreadsheet.swingx.TreeTableSpreadsheetView;
 import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
 import com.projectlibre1.pm.graphic.timescale.ScaledScrollPane;
 import com.projectlibre1.pm.graphic.views.synchro.Synchronizer;
@@ -224,7 +225,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	}
 
     protected JScrollPane createLeftScrollPane() {
-        spreadSheet = new SpreadSheet();
+        spreadSheet = new TreeTableSpreadsheetView();
         spreadSheet.setName(project.getName());
 		spreadSheet.setSpreadSheetCategory(spreadsheetCategory); // for columns.  Must do first
 		SpreadSheetFieldArray fields=getFields();

@@ -65,6 +65,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
+import org.jdesktop.swingx.JXTable;
+
 import com.projectlibre1.pm.graphic.spreadsheet.editor.DateEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SimpleEditor;
 import com.projectlibre1.pm.graphic.spreadsheet.editor.SpreadSheetCellEditorAdapter;
@@ -80,13 +82,14 @@ import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 /**
  *
  */
-public class CommonTable extends javax.swing.JTable {
+public class CommonTable extends JXTable {
 
     /**
      * 
      */
     public CommonTable() {
         super();
+        configureSwingXTable();
     }
 
     /**
@@ -95,6 +98,7 @@ public class CommonTable extends javax.swing.JTable {
      */
     public CommonTable(int numRows, int numColumns) {
         super(numRows, numColumns);
+        configureSwingXTable();
     }
 
     /**
@@ -102,6 +106,7 @@ public class CommonTable extends javax.swing.JTable {
      */
     public CommonTable(TableModel dm) {
         super(dm);
+        configureSwingXTable();
     }
 
     /**
@@ -110,6 +115,7 @@ public class CommonTable extends javax.swing.JTable {
      */
     public CommonTable(Object[][] rowData, Object[] columnNames) {
         super(rowData, columnNames);
+        configureSwingXTable();
     }
 
     /**
@@ -118,6 +124,7 @@ public class CommonTable extends javax.swing.JTable {
      */
     public CommonTable(Vector rowData, Vector columnNames) {
         super(rowData, columnNames);
+        configureSwingXTable();
     }
 
     /**
@@ -126,6 +133,7 @@ public class CommonTable extends javax.swing.JTable {
      */
     public CommonTable(TableModel dm, TableColumnModel cm) {
         super(dm, cm);
+        configureSwingXTable();
     }
 
     /**
@@ -135,6 +143,13 @@ public class CommonTable extends javax.swing.JTable {
      */
     public CommonTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm) {
         super(dm, cm, sm);
+        configureSwingXTable();
+    }
+
+    private void configureSwingXTable() {
+        setSortable(false);
+        setColumnControlVisible(false);
+        setHorizontalScrollEnabled(true);
     }
     public boolean editorsRegistered;
 	protected void registerEditors(){
