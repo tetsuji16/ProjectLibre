@@ -62,7 +62,6 @@ import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.ui.RectangleEdge;
@@ -78,10 +77,7 @@ public class AxisPanel extends JPanel {
 	private ChartInfo chartInfo;
 	AxisPanel(ChartInfo chartInfo) {
 		this.chartInfo = chartInfo;
-		Border border = UIManager.getBorder("TableHeader.cellBorder");
-		if (border != null) {
-			setBorder(border);
-		}
+		setBorder (UIManager.getBorder ("TableHeader.cellBorder"));
 	}
 	/**
 	 * @param axis The axis to set.

@@ -77,8 +77,6 @@ import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeEvent;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeListener;
-import com.projectlibre1.pm.graphic.spreadsheet.swingx.TimeGridSpreadsheetView;
-import com.projectlibre1.pm.graphic.spreadsheet.swingx.TreeTableSpreadsheetView;
 import com.projectlibre1.pm.graphic.spreadsheet.time.FieldArrayEvent;
 import com.projectlibre1.pm.graphic.spreadsheet.time.FieldArrayListener;
 import com.projectlibre1.pm.graphic.spreadsheet.time.TimeSpreadSheet;
@@ -171,7 +169,7 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 	}
 
 	protected JScrollPane createLeftScrollPane() {
-		spreadSheet = new TreeTableSpreadsheetView() {
+		spreadSheet = new SpreadSheet() {
 			private static final long serialVersionUID = 1996911145637609217L;
 
 			public boolean isNodeDeletable(Node node) {
@@ -190,14 +188,14 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 	}
 
 	protected JScrollPane createRightScrollPane() {
-		timeSpreadSheet = new TimeGridSpreadsheetView(project);
+		timeSpreadSheet = new TimeSpreadSheet(project);
 		timeSpreadSheet.setSpreadSheetCategory(timeSpreadsheetCategory);
 		SpreadSheetFieldArray fields = getDistributionFields();
 		timeSpreadSheet.setCache(cache, fields, fields.getCellStyle(),fields.getActionList());
 		((TimeSpreadSheetModel) timeSpreadSheet.getModel()).addFieldArrayListener(this);
 
 		timeScrollPane = new ScaledScrollPane(timeSpreadSheet, coord, documentFrame,timeSpreadSheet.getRowHeight());
-		timeSpreadSheet.refreshTimeColumns();
+		timeSpreadSheet.createDefaultColumnsFromModel();
 //		timeSpreadSheet.revalidate();
 //		timeSpreadSheet.repaint();
 		if (project.isReadOnly())

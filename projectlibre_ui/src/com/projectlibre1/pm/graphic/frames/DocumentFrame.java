@@ -495,8 +495,7 @@ public class DocumentFrame extends NamedFrame implements
 				return new SelectionSnapshot(null, null, null, -1, -1);
 			int row = spreadSheet.getCurrentRow();
 			int column = spreadSheet.isEditing() ? spreadSheet.getEditingColumn() : spreadSheet.getSelectedColumn();
-			com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetSelectionState.PendingUndoSelection pendingUndoSelection =
-				spreadSheet.consumePendingUndoSelection(row, column);
+			CommonSpreadSheet.PendingUndoSelection pendingUndoSelection = spreadSheet.consumePendingUndoSelection(row, column);
 			if (pendingUndoSelection != null) {
 				return new SelectionSnapshot(spreadSheet, pendingUndoSelection.getNode(), pendingUndoSelection.getImpl(),
 						pendingUndoSelection.getRow(), pendingUndoSelection.getColumn());
@@ -569,7 +568,7 @@ public class DocumentFrame extends NamedFrame implements
 	}
 
 	public void doOutdent() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
+		SpreadSheet ss = getActiveSpreadSheet();
 		if (ss !=null) {
 			if (!CollaborationHelper.tryLockNodes(getProject(), getSelectedNodes(false), this, "outdent"))
 				return;
@@ -577,18 +576,18 @@ public class DocumentFrame extends NamedFrame implements
 		}
 	}
 	public void doExpand() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
+		SpreadSheet ss = getActiveSpreadSheet();
 		if (ss !=null)
 			ss.executeAction(MenuActionConstants.ACTION_EXPAND);
 	}
 	public void doCollapse() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
+		SpreadSheet ss = getActiveSpreadSheet();
 		if (ss !=null)
 			ss.executeAction(MenuActionConstants.ACTION_COLLAPSE);
 	}
 
 	public void doIndent() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
+		SpreadSheet ss = getActiveSpreadSheet();
 		if (ss !=null) {
 			if (!CollaborationHelper.tryLockNodes(getProject(), getSelectedNodes(false), this, "indent"))
 				return;
@@ -596,35 +595,35 @@ public class DocumentFrame extends NamedFrame implements
 		}
 	}
 	public void doDelete() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
+		SpreadSheet ss = getActiveSpreadSheet();
 		if (ss !=null)
 			ss.executeAction(MenuActionConstants.ACTION_DELETE);
 	}
 
 	public void doCut() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
-		if (ss !=null && ss.prepareAction(MenuActionConstants.ACTION_CUT) != null)
+		SpreadSheet ss = getActiveSpreadSheet();
+		if (ss !=null)
 			ss.prepareAction(MenuActionConstants.ACTION_CUT).actionPerformed(new ActionEvent(ss,0,null));
 			//NodeListTransferHandler.getCutAction(ss).actionPerformed(new ActionEvent(this,0,null));
 			//ss.executeAction(SpreadSheet.CUT);
 	}
 	public void doCopy() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
-		if (ss !=null && ss.prepareAction(MenuActionConstants.ACTION_COPY) != null)
+		SpreadSheet ss = getActiveSpreadSheet();
+		if (ss !=null)
 			ss.prepareAction(MenuActionConstants.ACTION_COPY).actionPerformed(new ActionEvent(ss,0,null));
 			//NodeListTransferHandler.getCopyAction(ss).actionPerformed(new ActionEvent(this,0,null));
 			//ss.executeAction(SpreadSheet.COPY);
 	}
 	public void doPaste() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
-		if (ss !=null && ss.prepareAction(MenuActionConstants.ACTION_PASTE) != null)
+		SpreadSheet ss = getActiveSpreadSheet();
+		if (ss !=null)
 			ss.prepareAction(MenuActionConstants.ACTION_PASTE).actionPerformed(new ActionEvent(ss,0,null));
 			//NodeListTransferHandler.getPasteAction(ss).actionPerformed(new ActionEvent(this,0,null));
 			//ss.executeAction(SpreadSheet.PASTE);
 	}
 	public void doPasteInsert() {
-		CommonSpreadSheet ss = getActiveSpreadSheet();
-		if (ss !=null && ss.prepareAction(MenuActionConstants.ACTION_PASTE_INSERT) != null)
+		SpreadSheet ss = getActiveSpreadSheet();
+		if (ss !=null)
 			ss.prepareAction(MenuActionConstants.ACTION_PASTE_INSERT).actionPerformed(new ActionEvent(ss,0,null));
 	}
 
@@ -1048,12 +1047,12 @@ public class DocumentFrame extends NamedFrame implements
 		return addNodeForImpl(impl,NodeModel.NORMAL);
 	}
 	public Node addNodeForImpl(Object impl,int eventType) {
-		CommonSpreadSheet spreadSheet = getTopSpreadSheet();
+		SpreadSheet spreadSheet = (SpreadSheet) getTopSpreadSheet();
 		if (impl == null) {
 			spreadSheet.executeAction(MenuActionConstants.ACTION_NEW);
 			return null;
 		} else {
-			return ((SpreadSheet)spreadSheet).addNodeForImpl(impl,eventType);
+			return spreadSheet.addNodeForImpl(impl,eventType);
 		}
 	}
 

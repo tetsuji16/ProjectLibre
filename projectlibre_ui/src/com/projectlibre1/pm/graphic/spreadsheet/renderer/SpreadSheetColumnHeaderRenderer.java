@@ -62,8 +62,7 @@ import java.awt.Font;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
@@ -99,20 +98,26 @@ public class SpreadSheetColumnHeaderRenderer extends DefaultTableCellRenderer im
 			component=this;
 		} else component =(JLabel)super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
 
-		Color selectedBackground = GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor();
-		Color unselectedBackground = GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor();
-		component.setOpaque(true);
-		if (table != null) {
-			component.setForeground(table.getTableHeader().getForeground());
-			component.setBackground(isSelected ? selectedBackground : unselectedBackground);
-		} else {
-			component.setForeground(Color.BLACK);
-			component.setBackground(unselectedBackground);
+
+		if (table!=null){
+			//CommonSpreadSheet sp=(CommonSpreadSheet)table;
+			//isSelected|=sp.getSelection().getColumnSelection().isSelectedIndex(column)&&table.getSelectedRowCount()==table.getRowCount();
+			component.setOpaque(Environment.isMac());
+			if (Environment.isNewLaf()) {
+				component.setForeground (/*table.getTableHeader().getForeground()*/Color.BLACK);
+				component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor());
+			} if (Environment.isMac()){
+				component.setForeground (isSelected ? Color.BLACK : table.getTableHeader().getForeground());
+				component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor());
+			} else {
+				component.setForeground (isSelected ? Color.BLACK : table.getTableHeader().getForeground());
+				component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : table.getTableHeader ().getBackground());
+			}
 		}
+
 		component.setHorizontalAlignment (CENTER);
-		Border border = UIManager.getBorder("TableHeader.cellBorder");
-		if (border != null) {
-			component.setBorder(border);
+		if (!Environment.isNewLaf()) {
+			component.setBorder(new LineBorder(Color.LIGHT_GRAY));
 		}
 		if (override == null) {
 			if (table!=null) component.setFont (table.getTableHeader ().getFont().deriveFont(Font.BOLD ));
@@ -124,6 +129,7 @@ public class SpreadSheetColumnHeaderRenderer extends DefaultTableCellRenderer im
 
 	public Component getComponent(Object value, GraphicNode node,Field field,SpreadSheetParams params){
 		JComponent component=(JComponent)getTableCellRendererComponent(null, value, false, false, -1, -1);
+		component.setBorder(null);
 		return component;
 	}
 

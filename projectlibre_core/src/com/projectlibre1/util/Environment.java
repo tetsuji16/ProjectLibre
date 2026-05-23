@@ -59,8 +59,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import javax.swing.UIManager;
-
 import com.projectlibre1.company.ApplicationUser;
 import com.projectlibre1.contrib.ClassLoaderUtils;
 import com.projectlibre1.session.SessionFactory;
@@ -158,7 +156,8 @@ public class Environment {
 //		&& !Environment.isChinese());
 	}
 	public static boolean isNewLaf() {
-		return newLaf || isFlatLafActive();
+	return false;
+	//	return newLaf;
 	}
 	public static void setNewLaf(boolean newLaf) {
 		Environment.newLaf = newLaf;
@@ -268,11 +267,6 @@ public class Environment {
 	}
 	public static void setRibbonUI(boolean ribbonUI) {
 		Environment.ribbonUI = ribbonUI;
-	}
-
-	private static boolean isFlatLafActive() {
-		return UIManager.getLookAndFeel() != null
-			&& UIManager.getLookAndFeel().getClass().getName().startsWith("com.formdev.flatlaf");
 	}
 
 

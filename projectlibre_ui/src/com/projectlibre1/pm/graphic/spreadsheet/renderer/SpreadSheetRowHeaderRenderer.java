@@ -53,42 +53,65 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
+package com.projectlibre1.pm.graphic.spreadsheet.renderer;
 
-package com.projectlibre1.main;
+import java.awt.Component;
 
-import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableCellRenderer;
+
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
+import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetParams;
+import com.projectlibre1.field.Field;
 import com.projectlibre1.util.Environment;
-import java.awt.Frame;
 
-import org.apache.commons.collections.Closure;
+/**
+ *
+ */
+public class SpreadSheetRowHeaderRenderer extends DefaultTableCellRenderer  implements OfflineRenderer{
 
-public class EclipseMain
-{
+	/**
+	 *
+	 */
+	public SpreadSheetRowHeaderRenderer() {
+		super();
+	}
+	Component last=null;
+	public Component getTableCellRendererComponent (JTable table, Object value,boolean isSelected, boolean hasFocus, int row, int column){
+		JLabel component;
+		if (table==null){
+			setValue(null);
+			component=this;
+		}
+		else{
+			component=(JLabel)super.getTableCellRendererComponent(table, value, isSelected,hasFocus, row, column);
 
-    public EclipseMain()
-    {
-    }
+			component.setForeground (table.getTableHeader().getForeground());
+			if (Environment.isNewLaf()||Environment.isMac())
+				component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor());
+			else
+				component.setBackground(isSelected ? GraphicManager.getInstance().getLafManager().getSelectedBackgroundColor() : table.getTableHeader().getBackground());
 
-    public static void main(String args[])
-    {
-        Frame frame = new Frame();
-        createGraphicManager(frame,null);
-    }
+			component.setFont (table.getTableHeader ().getFont());
+		}
+		component.setHorizontalAlignment (CENTER);
+		component.setText (value == null ? "" : value.toString ());
+		if (!Environment.isNewLaf())
+			component.setBorder (UIManager.getBorder ("TableHeader.cellBorder"));
+//			component.setBorder ((isSelected)?BorderFactory.createLoweredBevelBorder():UIManager.getBorder ("TableHeader.cellBorder"));
+		component.setBorder(null);
+		return component;
+	}
 
-    public static GraphicManager createGraphicManager(Frame frame,Closure updateViewClosure)
-    {
-        return createGraphicManager(frame, new String[0],updateViewClosure);
-    }
+	public Component getComponent(Object value, GraphicNode node,Field field,SpreadSheetParams params){
+		JComponent component=(JComponent)getTableCellRendererComponent(null, value, false, false, -1, -1);
+		component.setBorder(null);
+		return component;
+	}
 
-    public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
-    {
-        Environment.setStandAlone(true);
-        Environment.setNewLook(false);
-        Environment.setPlugin(true);
-        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
-        return applicationstartupfactory.instanceFromNewSession(frame, true);
-    }
+
 }

@@ -85,7 +85,6 @@ import com.projectlibre1.options.EditOption;
 import com.projectlibre1.pm.resource.ResourcePool;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.Task;
-import com.projectlibre1.undo.UndoController;
 
 
 
@@ -267,21 +266,10 @@ public class NodeListTransferable implements Transferable {
 	public static void pasteString(String s,SpreadSheet spreadsheet){
 		int[] rows=spreadsheet.getSelectedRows();
 		int[] cols=spreadsheet.getSelectedColumns();
-		if (rows.length==0||cols.length==0)
+		if (rows.length>0&&cols.length>0&&pasteStringIntoSelection(s,spreadsheet,rows,cols))
 			return;
-		int anchorRow=rows[0];
-		int anchorColumn=cols[0];
-		UndoController undoController=getUndoController(spreadsheet);
-		if (undoController!=null)
-			undoController.beginUpdate();
-		try{
-			if (!pasteStringIntoSelection(s,spreadsheet,rows,cols))
-				pasteString(s,spreadsheet,anchorRow,anchorColumn);
-		} finally {
-			if (undoController!=null)
-				undoController.endUpdate();
-		}
-		restoreSelectionAfterPaste(spreadsheet,anchorRow,anchorColumn);
+		if (rows.length>0&&cols.length>0)
+			pasteString(s,spreadsheet,rows[0],cols[0]);
 	}
 
 	private static boolean pasteStringIntoSelection(String s,SpreadSheet spreadsheet,int[] rows,int[] cols){
@@ -347,50 +335,29 @@ public class NodeListTransferable implements Transferable {
 			logger.log(Level.FINE, "Failed to paste cell value at row {0}, col {1}", new Object[]{row, column});
 		}
 	}
-
-	private static UndoController getUndoController(SpreadSheet spreadsheet){
-		if (spreadsheet==null)
-			return null;
-		if (!(spreadsheet.getModel() instanceof CommonSpreadSheetModel))
-			return null;
-		CommonSpreadSheetModel model=(CommonSpreadSheetModel)spreadsheet.getModel();
-		if (model.getCache()==null||model.getCache().getModel()==null)
-			return null;
-		return model.getCache().getModel().getUndoController();
-	}
-
-	private static void restoreSelectionAfterPaste(SpreadSheet spreadsheet,int row,int column){
-		if (spreadsheet==null||row<0||column<0)
-			return;
-		int targetRow=Math.min(row,spreadsheet.getRowCount()-1);
-		int targetColumn=Math.min(column,spreadsheet.getColumnCount()-1);
-		if (targetRow<0||targetColumn<0)
-			return;
-		spreadsheet.rememberPendingUndoSelection(row,column,targetRow,targetColumn);
-		spreadsheet.requestFocusInWindow();
-		spreadsheet.changeSelection(targetRow,targetColumn,false,false);
-		spreadsheet.scrollRectToVisible(spreadsheet.getCellRect(targetRow,targetColumn,true));
-	}
 	public static void pasteString(String s,SpreadSheet spreadsheet,int row0, int col0){
-		String[][] values=parseClipboardTable(s);
-		for (int row=0;row<values.length;row++)
-			pasteStringLine(values[row],spreadsheet,row0+row,col0);
+		StringTokenizer st=new StringTokenizer(s,"\n");
+		int row=row0;//,maxRow=spreadsheet.getRowCount()-1;
+		while(st.hasMoreTokens()/*&&row<=maxRow*/) //maxRow useless, maxRow increased automatically 
+			pasteStringLine(st.nextToken(),spreadsheet,row++,col0);
 	}
 	public static void pasteStringLine(String s,SpreadSheet spreadsheet,int row0, int col0){
-		pasteStringLine(s==null?new String[0]:s.split("\t",-1),spreadsheet,row0,col0);
-	}
-
-	private static void pasteStringLine(String[] values,SpreadSheet spreadsheet,int row0, int col0){
+		String valueS;
 		CommonSpreadSheetModel model=(CommonSpreadSheetModel)spreadsheet.getModel();
-		int maxCol=spreadsheet.getColumnCount()-1;
+		String delim="\t";
+		StringTokenizer st=new StringTokenizer(s,delim,true);
+		int col=col0,maxCol=spreadsheet.getColumnCount()-1;
 		FieldContext fieldContext=model.getFieldContext();
 		boolean round=fieldContext.isRound();
 		fieldContext.setRound(true);
-		for (int index=0;index<values.length&&col0+index<=maxCol;index++){
+		while(st.hasMoreTokens()&&col<=maxCol){
+			valueS=st.nextToken();
+			if (delim.equals(valueS)) valueS="";
+			else if (st.hasMoreTokens()) st.nextToken();
 			try{
-				model.setValueAt(values[index],row0,col0+index+1);
+				model.setValueAt(valueS,row0,++col);
 			}catch(Exception e){
-				logger.log(Level.FINE, "Failed to set cell value at row {0}, col {1}", new Object[]{row0, Integer.valueOf(col0+index)});
+				logger.log(Level.FINE, "Failed to set cell value at row {0}, col {1}", new Object[]{row0, col});
 			}
 		}
 		fieldContext.setRound(round);

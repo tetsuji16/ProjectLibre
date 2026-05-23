@@ -177,7 +177,6 @@ import com.projectlibre1.options.CalendarOption;
 import com.projectlibre1.pm.assignment.Assignment;
 import com.projectlibre1.pm.graphic.IconManager;
 import com.projectlibre1.pm.graphic.TabbedNavigation;
-import com.projectlibre1.pm.graphic.menu.ModernMenuShell;
 import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
 import com.projectlibre1.pm.graphic.frames.workspace.DefaultFrameManager;
 import com.projectlibre1.pm.graphic.frames.workspace.FrameHolder;
@@ -258,7 +257,6 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 	protected Container container;
 	protected Frame frame;
 	TabbedNavigation topTabs = null;
-	private ModernMenuShell modernMenuShell = null;
 
 	private static Object lastWorkspace = null; // static required - used for copying current workspace to new instance
 	static LinkedList graphicManagers = new LinkedList();
@@ -485,8 +483,6 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 			setTitle(false);
 			if (currentFrame != null)
 				currentFrame.refreshViewButtons(true);
-			if (modernMenuShell != null)
-				modernMenuShell.refresh(currentFrame);
 
 			getFrameManager().activateFrame(currentFrame); // need to force activation in case being activated by closing another
 			if(!Environment.isPlugin()){
@@ -671,12 +667,10 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 				if (mi != null && projectListMenu != null)
 					projectListMenu.remove(mi);
 
-				if (frameList.size()<=1) {
+			    if (frameList.size()<=1) {
 			    	frame.refreshViewButtons(false); // disable old buttons
 			    	currentFrame=null;//TODO open a new one instead
 			    	setTitle(false);
-			    	if (modernMenuShell != null)
-			    		modernMenuShell.refresh(null);
 			        setEnabledDocumentMenuActions(false);
 			    } else{
 			        DocumentFrame current;
@@ -1900,8 +1894,6 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 			setColorTheme(viewName);
 			getCurrentFrame().activateView(viewName);
 			setButtonState(null,currentFrame.getProject()); // disable buttons because no selection when first activated
-			if (modernMenuShell != null)
-				modernMenuShell.refresh(currentFrame);
 
 		}
 		public final String getViewName() {
@@ -2728,22 +2720,44 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
     
     public void setToolBarAndMenus(final Container contentPane) {
     	JToolBar toolBar;
-    	if (Environment.isRibbonUI()) {
+    	if (Environment.isRibbonUI()){
 			if (Environment.isNeedToRestart()) {
-				contentPane.add(new JLabel(Messages.getString("Error.restart")), BorderLayout.CENTER);
+				contentPane.add(new JLabel(Messages.getString("Error.restart")),BorderLayout.CENTER);
 				return;
 			}
-			if (!isApplet())
-				getMenuManager().setActionVisible(ACTION_FULL_SCREEN, false);
-			if (Environment.isExternal())
-				getMenuManager().setActionVisible(ACTION_TEAM_FILTER, false);
-			Color panelBackground = UIManager.getColor("Panel.background");
-			if (panelBackground != null) {
-				contentPane.setBackground(panelBackground);
-			}
-			return;
-		}
-    	if (Environment.isNewLook()) {
+
+
+			setRibbon((JRibbonFrame)container,getMenuManager());
+
+			
+			
+			
+//			JToolBar viewToolBar = getMenuManager().getToolBar(MenuManager.VIEW_TOOL_BAR_WITH_NO_SUB_VIEW_OPTION);
+//			topTabs = new TabbedNavigation();
+//			JComponent tabs = topTabs.createContentPanel(getMenuManager(),viewToolBar,0,JTabbedPane.TOP,true);
+//			tabs.setAlignmentX(0.0f); // so it is left justified
+//
+//
+//		    Box top = new Box(BoxLayout.Y_AXIS);
+//		    JComponent bottom;
+//			top.add(tabs);
+//			bottom = new TabbedNavigation().createContentPanel(getMenuManager(),viewToolBar,1,JTabbedPane.BOTTOM,false);
+//			contentPane.add(top, BorderLayout.BEFORE_FIRST_LINE);
+//			contentPane.add(bottom,BorderLayout.AFTER_LAST_LINE);
+//			if (Environment.isNewLaf())
+//				contentPane.setBackground(Color.WHITE);
+
+//			if (Environment.isMac()){
+//				//System.setProperty("apple.laf.useScreenMenuBar","true");
+//				//System.setProperty("com.apple.mrj.application.apple.menu.about.name", Messages.getMetaString("Text.ShortTitle"));
+//				JMenuBar menu = getMenuManager().getMenu(Environment.getStandAlone()?MenuManager.MAC_STANDARD_MENU:MenuManager.SERVER_STANDARD_MENU);
+//				//((JComponent)menu).setBorder(BorderFactory.createEmptyBorder());
+//
+//				((JFrame)container).setJMenuBar(menu);
+//				projectListMenu = (JMenu) menu.getComponent(5);
+//			}
+
+    	} else if (Environment.isNewLook()) {
 			if (Environment.isNeedToRestart()) {
 				contentPane.add(new JLabel(Messages.getString("Error.restart")),BorderLayout.CENTER);
 				return;
@@ -2762,10 +2776,8 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			toolBar.add(new Box.Filler(new Dimension(0,0),new Dimension(0,0),new Dimension(Integer.MAX_VALUE,Integer.MAX_VALUE)));
 			toolBar.add(((DefaultFrameManager)getFrameManager()).getProjectComboPanel());
 			toolBar.add(Box.createRigidArea(new Dimension(20,20)));
-			Color toolBarBackground = UIManager.getColor("ToolBar.background");
-			if (toolBarBackground != null) {
-				toolBar.setBackground(toolBarBackground);
-			}
+			if (Environment.isNewLaf())
+				toolBar.setBackground(Color.WHITE);
 			toolBar.setFloatable(false);
 			toolBar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		    Box top;
@@ -2776,9 +2788,6 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			top.add(toolBar);
 
 			JToolBar viewToolBar = getMenuManager().getToolBar(MenuManager.VIEW_TOOL_BAR_WITH_NO_SUB_VIEW_OPTION);
-			if (toolBarBackground != null) {
-				viewToolBar.setBackground(toolBarBackground);
-			}
 			topTabs = new TabbedNavigation();
 			JComponent tabs = topTabs.createContentPanel(getMenuManager(),viewToolBar,0,JTabbedPane.TOP,true);
 			tabs.setAlignmentX(0.0f); // so it is left justified
@@ -2788,10 +2797,8 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			bottom = new TabbedNavigation().createContentPanel(getMenuManager(),viewToolBar,1,JTabbedPane.BOTTOM,false);
 			contentPane.add(top, BorderLayout.BEFORE_FIRST_LINE);
 			contentPane.add(bottom,BorderLayout.AFTER_LAST_LINE);
-			Color panelBackground = UIManager.getColor("Panel.background");
-			if (panelBackground != null) {
-				contentPane.setBackground(panelBackground);
-			}
+			if (Environment.isNewLaf())
+				contentPane.setBackground(Color.WHITE);
 
 			if (Environment.isMac()){
 				//System.setProperty("apple.laf.useScreenMenuBar","true");
@@ -2923,9 +2930,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent arg0) {
 			setMeAsLastGraphicManager();
-			getLafManager().initLookAndFeel();
-			container.validate();
-			container.repaint();
+
 		}
 	}
 
@@ -3100,20 +3105,10 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		if (container!=null && container instanceof RootPaneContainer){
 			c=((RootPaneContainer)container).getContentPane();
 		}
-        c.setLayout(new BorderLayout());
-        JPanel panel;
-        if (Environment.isRibbonUI()) {
-        	modernMenuShell = new ModernMenuShell(this, getMenuManager());
-        	c.add(modernMenuShell, BorderLayout.CENTER);
-        	panel = (JPanel) modernMenuShell.getWorkspaceHost();
-        	panel.add(modernMenuShell.getEmptyStatePanel(), BorderLayout.CENTER);
-        	setFrameManager(new DefaultFrameManager(panel, modernMenuShell.getEmptyStatePanel(), this));
-        	modernMenuShell.bindProjectSwitcher(((DefaultFrameManager)getFrameManager()).getProjectComboPanel());
-        } else {
-        	panel = new JPanel();
-        	c.add(panel, "Center"); //$NON-NLS-1$
-        	setFrameManager(new DefaultFrameManager(container, panel,this));
-        }
+        if (!Environment.isRibbonUI()) c.setLayout(new BorderLayout());
+        JPanel panel = new JPanel();
+        c.add(panel, "Center"); //$NON-NLS-1$
+        setFrameManager(new DefaultFrameManager(container, panel,this));
 
 		initLayout();
 

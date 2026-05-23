@@ -66,7 +66,7 @@ import javax.swing.table.TableColumnModel;
 
 import com.projectlibre1.pm.graphic.gantt.GanttParamsImpl;
 import com.projectlibre1.pm.graphic.graph.GraphParams;
-import com.projectlibre1.pm.graphic.spreadsheet.swingx.SpreadsheetRowHeaderColumnModel;
+import com.projectlibre1.pm.graphic.spreadsheet.common.SpreadSheetRowHeaderColumnModel;
 import com.projectlibre1.configuration.Dictionary;
 import com.projectlibre1.field.FieldContext;
 import com.projectlibre1.graphic.configuration.SpreadSheetCategories;
@@ -79,17 +79,18 @@ public class SpreadSheetParamsImpl extends GanttParamsImpl implements SpreadShee
 	protected List<Integer> colWidth;
 	protected FieldContext fieldContext;
 	protected SpreadSheetColumnModel columnModel;
-	protected TableColumnModel headerColumnModel;
+	protected SpreadSheetRowHeaderColumnModel headerColumnModel;
 	protected int spreadSheetWidth=-1,idColMargin=2,colMargin=2;
 	//protected boolean printGantt;
 //	public SpreadSheetParamsImpl(){
 //		super();
+//		headerColumnModel=new SpreadSheetRowHeaderColumnModel();
 //		spreadsheetCategory=SpreadSheetCategories.taskSpreadsheetCategory;
 //		setFieldArray((SpreadSheetFieldArray) Dictionary.get(spreadsheetCategory,Messages.getString("Spreadsheet.Task.entry")));
 //	}
 	public SpreadSheetParamsImpl(SpreadSheetFieldArray fieldArray,List<Integer> colWidth,boolean printGantt){
 		super();
-		headerColumnModel=new SpreadsheetRowHeaderColumnModel();
+		headerColumnModel=new SpreadSheetRowHeaderColumnModel();
 		spreadsheetCategory=SpreadSheetCategories.taskSpreadsheetCategory;
 		setFieldArray(fieldArray==null?((SpreadSheetFieldArray) Dictionary.get(spreadsheetCategory,Messages.getString("Spreadsheet.Task.entry"))):fieldArray,fieldArray==null?null:(colWidth==null?fieldArray.getWidths():colWidth));
 		setRightPartVisible(printGantt);
@@ -156,7 +157,7 @@ public class SpreadSheetParamsImpl extends GanttParamsImpl implements SpreadShee
 	public SpreadSheetColumnModel getColumnModel() {
 		return columnModel;
 	}
-	public TableColumnModel getHeaderColumnModel() {
+	public SpreadSheetRowHeaderColumnModel getHeaderColumnModel() {
 		return headerColumnModel;
 	}
 	public Iterator getColumnIterator(){

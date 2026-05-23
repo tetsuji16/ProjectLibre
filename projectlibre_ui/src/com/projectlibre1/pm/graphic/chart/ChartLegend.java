@@ -84,6 +84,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.plaf.basic.BasicListUI;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeSelectionModel;
 import javax.swing.tree.TreePath;
@@ -184,6 +185,8 @@ public class ChartLegend  implements SelectionNodeListener, Serializable , Savab
 					super.updateUI();
 			}
 		};
+		if (Environment.isNewLook()) // The PLAF can override the custom renderer. This avoids that
+			list.setUI(new BasicListUI());
 		list.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		list.setCellRenderer( new ListRenderer());
 		setListFields(list,cost);

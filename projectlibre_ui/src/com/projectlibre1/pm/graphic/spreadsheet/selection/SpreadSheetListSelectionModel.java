@@ -53,42 +53,45 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
+package com.projectlibre1.pm.graphic.spreadsheet.selection;
 
-package com.projectlibre1.main;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.ListSelectionModel;
 
-import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
-import com.projectlibre1.util.Environment;
-import java.awt.Frame;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SpreadSheetNodeSelectionListener;
 
-import org.apache.commons.collections.Closure;
+/**
+ *
+ */
+public class SpreadSheetListSelectionModel extends DefaultListSelectionModel {
+	private static final long serialVersionUID = -2476392997297902195L;
+	protected SpreadSheetSelectionModel selectionModel;
+	protected boolean row;
+	/**
+	 * 
+	 */
+	public SpreadSheetListSelectionModel(SpreadSheetSelectionModel selectionModel,boolean row) {
+		super();
+		this.selectionModel=selectionModel;
+		this.row=row;
+		if (row) addListSelectionListener(new SpreadSheetNodeSelectionListener());
+	}
 
-public class EclipseMain
-{
+	public SpreadSheetSelectionModel getSelectionModel() {
+		return selectionModel;
+	}
+	
+	public ListSelectionModel getOtherListSelectionModel() {
+		return selectionModel.getSelection(!row);
+	}
+	
+	public boolean isRow() {
+		return row;
+	}
+	
 
-    public EclipseMain()
-    {
-    }
+	
 
-    public static void main(String args[])
-    {
-        Frame frame = new Frame();
-        createGraphicManager(frame,null);
-    }
+	
 
-    public static GraphicManager createGraphicManager(Frame frame,Closure updateViewClosure)
-    {
-        return createGraphicManager(frame, new String[0],updateViewClosure);
-    }
-
-    public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
-    {
-        Environment.setStandAlone(true);
-        Environment.setNewLook(false);
-        Environment.setPlugin(true);
-        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
-        return applicationstartupfactory.instanceFromNewSession(frame, true);
-    }
 }

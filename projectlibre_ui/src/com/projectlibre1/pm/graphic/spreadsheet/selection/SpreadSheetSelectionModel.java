@@ -53,42 +53,76 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
+package com.projectlibre1.pm.graphic.spreadsheet.selection;
 
-package com.projectlibre1.main;
+import java.io.Serializable;
 
-import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
-import com.projectlibre1.util.Environment;
-import java.awt.Frame;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+/**
+ *
+ */
+public class SpreadSheetSelectionModel implements Serializable {
+	private static final long serialVersionUID = -5993338419885335434L;
+	protected ListSelectionModel rowSelection;
+	protected ListSelectionModel columnSelection;
+	protected transient JTable table;
 
-import org.apache.commons.collections.Closure;
+	public SpreadSheetSelectionModel(JTable table){
+		this.table=table;
+	}
+	//private void writeObject(ObjectOutputStream s) throws IOException {
 
-public class EclipseMain
-{
+	/**
+	 * @param rowSelection
+	 * @param columsSelection
+	 */
+	public SpreadSheetSelectionModel(JTable table,ListSelectionModel rowSelection,ListSelectionModel columnSelection) {
+		this.table=table;
+		this.rowSelection = rowSelection;
+		this.columnSelection = columnSelection;
+	}
+	/**
+	 * @return Returns the columsSelection.
+	 */
+	public ListSelectionModel getColumnSelection() {
+		return columnSelection;
+	}
 
-    public EclipseMain()
-    {
-    }
+	/**
+	 * @return Returns the rowSelection.
+	 */
+	public ListSelectionModel getRowSelection() {
+		return rowSelection;
+	}
 
-    public static void main(String args[])
-    {
-        Frame frame = new Frame();
-        createGraphicManager(frame,null);
-    }
+	/**
+	 * @return Returns the rowSelection.
+	 */
+	public ListSelectionModel getSelection(boolean row) {
+		return (row)?rowSelection:columnSelection;
+	}
 
-    public static GraphicManager createGraphicManager(Frame frame,Closure updateViewClosure)
-    {
-        return createGraphicManager(frame, new String[0],updateViewClosure);
-    }
+	
+	/**
+	 * @param columsSelection The columsSelection to set.
+	 */
+	public void setColumnSelection(ListSelectionModel columnSelection) {
+		this.columnSelection = columnSelection;
+	}
 
-    public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
-    {
-        Environment.setStandAlone(true);
-        Environment.setNewLook(false);
-        Environment.setPlugin(true);
-        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
-        return applicationstartupfactory.instanceFromNewSession(frame, true);
-    }
+	/**
+	 * @param rowSelection The rowSelection to set.
+	 */
+	public void setRowSelection(ListSelectionModel rowSelection) {
+		this.rowSelection = rowSelection;
+	}
+
+	/**
+	 * @return Returns the table.
+	 */
+	public JTable getTable() {
+		return table;
+	}
+
 }
