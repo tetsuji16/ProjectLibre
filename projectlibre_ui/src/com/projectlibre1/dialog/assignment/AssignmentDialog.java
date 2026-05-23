@@ -76,7 +76,7 @@ import com.projectlibre1.pm.graphic.IconManager;
 import com.projectlibre1.pm.graphic.frames.DocumentFrame;
 import com.projectlibre1.pm.graphic.frames.DocumentSelectedEvent;
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
-import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeEvent;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeListener;
 import com.projectlibre1.pm.graphic.views.GanttView;
@@ -169,7 +169,7 @@ public final class AssignmentDialog extends AbstractDialog implements DocumentSe
         cancelEditorButton = new JButton(new AbstractAction(null,IconManager.getIcon("dialog.cancel")){ //$NON-NLS-1$
     		private static final long serialVersionUID = 1L;
  			public void actionPerformed(ActionEvent e) {
-   			    CommonSpreadSheet sp=spreadSheetPane.getSpreadSheet();
+   			    SpreadSheet sp=spreadSheetPane.getSpreadSheet();
    			    if (sp.getCellEditor() != null)
    			    	sp.getCellEditor().cancelCellEditing();
     			sp.clearSelection();
@@ -189,7 +189,7 @@ public final class AssignmentDialog extends AbstractDialog implements DocumentSe
 	
 	
 	void assign() {
-	    CommonSpreadSheet sp=spreadSheetPane.getSpreadSheet();
+	    SpreadSheet sp=spreadSheetPane.getSpreadSheet();
 		if (sp.isEditing()) sp.getCellEditor().stopCellEditing();
 		assign(getSelectedResources(),1.0D);
 		spreadSheetPane.updateTable();

@@ -69,9 +69,10 @@ import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
 import com.projectlibre1.pm.graphic.model.event.CompositeCacheEvent;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetListSelectionModel;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetSelectionModel;
 import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
 import com.projectlibre1.pm.graphic.timescale.ScaledComponent;
-import com.projectlibre1.pm.graphic.spreadsheet.swingx.TimeSpreadsheetRowHeaderColumnModel;
 import com.projectlibre1.field.Field;
 import com.projectlibre1.graphic.configuration.ActionList;
 import com.projectlibre1.graphic.configuration.CellStyle;
@@ -123,7 +124,15 @@ public class TimeSpreadSheet extends CommonSpreadSheet implements ScaledComponen
 		TableModel oldModel=getModel();
 	    setModel(spreadSheetModel);
 	    setColumnModel(spreadSheetColumnModel);
-	    installStandardSelectionBridge();
+	    
+	    selection = new SpreadSheetSelectionModel(this);
+		selection.setRowSelection(new SpreadSheetListSelectionModel(selection,
+				true));
+		selection.setColumnSelection(new SpreadSheetListSelectionModel(
+				selection, false));
+		setSelectionModel(selection.getRowSelection());
+		//createDefaultColumnsFromModel(); done outside
+		getColumnModel().setSelectionModel(selection.getColumnSelection());
 		
 		registerEditors(true);
 		initRowHeader(spreadSheetModel);
@@ -140,7 +149,7 @@ public class TimeSpreadSheet extends CommonSpreadSheet implements ScaledComponen
 	}
 
 	protected void initRowHeader(CommonSpreadSheetModel spreadSheetModel){
-		rowHeader.setModel(spreadSheetModel,new TimeSpreadsheetRowHeaderColumnModel());
+		rowHeader.setModel(spreadSheetModel,new TimeSpreadSheetRowHeaderColumnModel());
 		rowHeader.createDefaultColumnsFromModel();
 
 		GraphicConfiguration config=GraphicConfiguration.getInstance();
@@ -174,7 +183,7 @@ public class TimeSpreadSheet extends CommonSpreadSheet implements ScaledComponen
     
      
 
-     public void refreshTimeColumns() {
+     public void createDefaultColumnsFromModel() {
      	TableColumnModel columnModel=getColumnModel();
         if (columnModel!=null&&columnModel instanceof TimeSpreadSheetColumnModel){
         	((TimeSpreadSheetColumnModel)columnModel).updateColumns();

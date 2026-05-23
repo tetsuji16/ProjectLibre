@@ -57,14 +57,11 @@ package com.projectlibre1.menu;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -119,40 +116,10 @@ public class MenuManager {
 	ActionMap rootActionMap;
 
 	LinkedList tabbedNavigations = new LinkedList();
-	private Map managedActionButtons = new HashMap();
 
 	public void add(TabbedNavigation t) {
 		tabbedNavigations.add(t);
 	}
-
-	public void registerManagedActionComponent(String id, AbstractButton button) {
-		if (id == null || button == null)
-			return;
-		List buttons = (List) managedActionButtons.get(id);
-		if (buttons == null) {
-			buttons = new ArrayList();
-			managedActionButtons.put(id, buttons);
-		}
-		if (!buttons.contains(button))
-			buttons.add(button);
-	}
-
-	private void applyToManagedActionButtons(String id, ButtonUpdater updater) {
-		List buttons = (List) managedActionButtons.get(id);
-		if (buttons == null)
-			return;
-		Iterator i = buttons.iterator();
-		while (i.hasNext()) {
-			AbstractButton button = (AbstractButton) i.next();
-			if (button != null)
-				updater.update(button);
-		}
-	}
-
-	private static interface ButtonUpdater {
-		void update(AbstractButton button);
-	}
-
 	private MenuManager(ActionMap rootActionMap) {
 		this.rootActionMap = rootActionMap;
 		ResourceBundle internalBundle=null,bundle=null;
@@ -265,11 +232,6 @@ public class MenuManager {
 					button.setEnabled(enable);
 			}
 		}
-		applyToManagedActionButtons(id, new ButtonUpdater() {
-			public void update(AbstractButton button) {
-				button.setEnabled(enable);
-			}
-		});
 		JMenuItem menuItem = menuFactory.getMenuItemFromId(id);
 		if (menuItem != null)
 			menuItem.setEnabled(enable);
@@ -284,11 +246,6 @@ public class MenuManager {
 					button.setVisible(enable);
 			}
 		}
-		applyToManagedActionButtons(id, new ButtonUpdater() {
-			public void update(AbstractButton button) {
-				button.setVisible(enable);
-			}
-		});
 		JMenuItem menuItem = menuFactory.getMenuItemFromId(id);
 		if (menuItem != null)
 			menuItem.setVisible(enable);
@@ -307,11 +264,6 @@ public class MenuManager {
 				}
 			}
 		}
-		applyToManagedActionButtons(id, new ButtonUpdater() {
-			public void update(AbstractButton button) {
-				button.setSelected(enable);
-			}
-		});
 		JMenuItem menuItem = menuFactory.getMenuItemFromId(id);
 		if (menuItem != null)
 			menuItem.setSelected(enable);
@@ -330,11 +282,6 @@ public class MenuManager {
 					button.setToolTipText(text);
 			}
 		}
-		applyToManagedActionButtons(id, new ButtonUpdater() {
-			public void update(AbstractButton button) {
-				button.setToolTipText(text);
-			}
-		});
 		JMenuItem menuItem = menuFactory.getMenuItemFromId(id);
 		if (menuItem != null)
 			menuItem.setText(text);

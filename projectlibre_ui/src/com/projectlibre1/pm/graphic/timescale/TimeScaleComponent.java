@@ -68,7 +68,6 @@ import java.awt.geom.Line2D;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.pm.graphic.gantt.GanttParams;
@@ -108,12 +107,12 @@ public class TimeScaleComponent extends JPanel {
 
 
 		setPreferredSize(new Dimension(0,h));
-		setOpaque(true);
-		setBackground(GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor());
-		Border border = UIManager.getBorder("TableHeader.cellBorder");
-		if (border != null) {
-			setBorder(border);
+
+
+		if (Environment.isMac()){
+			setBackground(GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor()); //Using ColorUIResource directly doesn't work
 		}
+		else setBorder(UIManager.getBorder ("TableHeader.cellBorder"));
 	}
 
 

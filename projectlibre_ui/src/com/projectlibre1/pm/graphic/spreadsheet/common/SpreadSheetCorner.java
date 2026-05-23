@@ -53,42 +53,91 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
+package com.projectlibre1.pm.graphic.spreadsheet.common;
 
-package com.projectlibre1.main;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetColumnsPopupMenu;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetSelectionModel;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.TimeSpreadSheetColumnsPopupMenu;
+import com.projectlibre1.pm.graphic.spreadsheet.time.TimeSpreadSheet;
+import com.projectlibre1.configuration.Dictionary;
+import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Environment;
-import java.awt.Frame;
 
-import org.apache.commons.collections.Closure;
+/**
+ *
+ */
+public class SpreadSheetCorner extends GradientCorner implements ListSelectionListener {
+	protected CommonSpreadSheet spreadSheet;
+	/**
+	 *
+	 */
+	public SpreadSheetCorner(CommonSpreadSheet spreadSheet) {
+		super();
+//		this.setOpaque(true);
+		if (spreadSheet.isCanSelectFieldArray())
+			setToolTipText("dummy"); // needed so getToolTipText will be called
+		this.spreadSheet=spreadSheet;
+		if (spreadSheet instanceof SpreadSheet) spreadSheet.getRowHeader().getSelectionModel().addListSelectionListener(this);
 
-public class EclipseMain
-{
+//
+//		setBackground(LafUtils.getUnselectedBackgroundColor());
+		if (!Environment.isNewLaf())
+			setBorder(new LineBorder(Color.LIGHT_GRAY));
+		addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				CommonSpreadSheet spreadSheet=SpreadSheetCorner.this.spreadSheet;
 
-    public EclipseMain()
-    {
-    }
+				if  (SwingUtilities.isRightMouseButton(e)) {
+					if (spreadSheet instanceof CommonSpreadSheet && spreadSheet.getSpreadSheetCategory() != null){
+						CommonSpreadSheet sp=(CommonSpreadSheet)spreadSheet;
+						if (sp.isCanSelectFieldArray()) {
+							//need to build menu each time because it can change
+							if (spreadSheet instanceof TimeSpreadSheet){
+								TimeSpreadSheetColumnsPopupMenu columnsPopup = new TimeSpreadSheetColumnsPopupMenu((TimeSpreadSheet)sp,sp.getSpreadSheetCategory());
+								columnsPopup.show(sp,e.getX(),e.getY());
+							}else{
+								SpreadSheetColumnsPopupMenu columnsPopup = new SpreadSheetColumnsPopupMenu(sp,sp.getSpreadSheetCategory());
+								columnsPopup.show(sp,e.getX(),e.getY());
+							}
+						}
+					}
+				}else{
+					SpreadSheetSelectionModel selection=spreadSheet.getSelection();
+					selection.getColumnSelection().setSelectionInterval(0,spreadSheet.getColumnCount()-1);
+					selection.getRowSelection().setSelectionInterval(0,spreadSheet.getRowCount()-1);
+					spreadSheet.getRowHeader().getSelectionModel().setSelectionInterval(0,spreadSheet.getRowCount()-1);
+					if (Environment.isMac()) setSelected(true);
+				}
+			}
+		});
+	}
 
-    public static void main(String args[])
-    {
-        Frame frame = new Frame();
-        createGraphicManager(frame,null);
-    }
 
-    public static GraphicManager createGraphicManager(Frame frame,Closure updateViewClosure)
-    {
-        return createGraphicManager(frame, new String[0],updateViewClosure);
-    }
+	public String getToolTipText(MouseEvent e) {
+		return "<html>" + Dictionary.getCategoryText(spreadSheet.getSpreadSheetCategory()) + ": " + spreadSheet.getFieldArray() +
+		"<br>" + Messages.getString("Text.rightClickSelectToSpreadsheet") + "<html>";
+	}
 
-    public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
-    {
-        Environment.setStandAlone(true);
-        Environment.setNewLook(false);
-        Environment.setPlugin(true);
-        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
-        return applicationstartupfactory.instanceFromNewSession(frame, true);
-    }
+
+	public void valueChanged(ListSelectionEvent e) {
+		ListSelectionModel model=(ListSelectionModel)e.getSource();
+		//if (!e.getValueIsAdjusting())
+		//setSelected(model.getMinSelectionIndex()>=0);
+		if (Environment.isMac()){
+			if (selected) setSelected(false);
+		}else setSelected(model.getMinSelectionIndex()>=0);
+	}
+
+
 }

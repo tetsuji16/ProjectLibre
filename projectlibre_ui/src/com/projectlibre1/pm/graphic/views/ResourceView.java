@@ -72,7 +72,6 @@ import com.projectlibre1.pm.graphic.model.cache.NodeModelCacheFactory;
 import com.projectlibre1.pm.graphic.model.cache.ReferenceNodeModelCache;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
-import com.projectlibre1.pm.graphic.spreadsheet.swingx.TreeTableSpreadsheetView;
 import com.projectlibre1.configuration.Dictionary;
 import com.projectlibre1.document.Document;
 import com.projectlibre1.field.FieldContext;
@@ -151,7 +150,7 @@ public class ResourceView extends JScrollPane implements BaseView {
 		cellStyle = null;
 	}
 	public void createSpreadsheet(){
-        spreadSheet = new TreeTableSpreadsheetView() {
+        spreadSheet = new SpreadSheet() {
 
     		private Object getEntryInRow(int row) {
     			Node node = ((SpreadSheetModel)getModel()).getNode(row).getNode();

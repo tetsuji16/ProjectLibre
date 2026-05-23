@@ -53,42 +53,55 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
+package com.projectlibre1.pm.graphic.spreadsheet.selection.event;
 
-package com.projectlibre1.main;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
-import com.projectlibre1.util.Environment;
-import java.awt.Frame;
+import javax.swing.SwingUtilities;
 
-import org.apache.commons.collections.Closure;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetColumnMenu;
+import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
+import com.projectlibre1.pm.graphic.spreadsheet.selection.SpreadSheetSelectionModel;
+/**
+ *
+ */
+public class HeaderMouseListener extends MouseAdapter {
+	protected SpreadSheet table;
+	public HeaderMouseListener(SpreadSheet table) {
+		super();
+		this.table=table;
+	}
+	public void mouseClicked(MouseEvent e){
+		int col = table.columnAtPoint(e.getPoint());
+		if  (SwingUtilities.isLeftMouseButton(e)) {
+			if (isColumnFullySelected(col)) {
+				table.clearSelection();
+				e.consume();
+				return;
+			}
+			SpreadSheetSelectionModel selection=table.getSelection();
+			table.getRowHeader().clearSelection();
+			selection.getColumnSelection().setSelectionInterval(col,col);
+			selection.getRowSelection().setSelectionInterval(0,table.getRowCount()-1);
+		} else if (SwingUtilities.isRightMouseButton(e)) {
+			if (table instanceof CommonSpreadSheet && ((CommonSpreadSheet)table).getSpreadSheetCategory() != null){
+				CommonSpreadSheet sp=(CommonSpreadSheet)table;
+				if (sp.isHasColumnHeaderPopup()) {
+					SpreadSheetColumnMenu columnsPopup = new SpreadSheetColumnMenu(sp,col+1);
+					columnsPopup.show(sp,e.getX(),e.getY());
+				}
+			}
+		}
 
-public class EclipseMain
-{
+	}
 
-    public EclipseMain()
-    {
-    }
-
-    public static void main(String args[])
-    {
-        Frame frame = new Frame();
-        createGraphicManager(frame,null);
-    }
-
-    public static GraphicManager createGraphicManager(Frame frame,Closure updateViewClosure)
-    {
-        return createGraphicManager(frame, new String[0],updateViewClosure);
-    }
-
-    public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
-    {
-        Environment.setStandAlone(true);
-        Environment.setNewLook(false);
-        Environment.setPlugin(true);
-        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
-        return applicationstartupfactory.instanceFromNewSession(frame, true);
-    }
+	private boolean isColumnFullySelected(int col) {
+		if (col < 0)
+			return false;
+		if (!table.getSelection().getColumnSelection().isSelectedIndex(col))
+			return false;
+		return table.getSelectedColumnCount() == 1 && table.getSelectedRowCount() == table.getRowCount();
+	}
 }

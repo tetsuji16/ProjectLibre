@@ -53,42 +53,40 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
+package com.projectlibre1.pm.graphic.spreadsheet.renderer;
 
-package com.projectlibre1.main;
+import java.awt.Component;
 
-import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
-import com.projectlibre1.util.Environment;
-import java.awt.Frame;
+import javax.swing.JLabel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 
-import org.apache.commons.collections.Closure;
+import com.projectlibre1.graphic.configuration.shape.Colors;
 
-public class EclipseMain
-{
+/**
+ *
+ */
+public class TimeSpreadSheetRowHeaderRenderer extends DefaultTableCellRenderer {
 
-    public EclipseMain()
-    {
-    }
-
-    public static void main(String args[])
-    {
-        Frame frame = new Frame();
-        createGraphicManager(frame,null);
-    }
-
-    public static GraphicManager createGraphicManager(Frame frame,Closure updateViewClosure)
-    {
-        return createGraphicManager(frame, new String[0],updateViewClosure);
-    }
-
-    public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
-    {
-        Environment.setStandAlone(true);
-        Environment.setNewLook(false);
-        Environment.setPlugin(true);
-        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
-        return applicationstartupfactory.instanceFromNewSession(frame, true);
-    }
+	/**
+	 * 
+	 */
+	public TimeSpreadSheetRowHeaderRenderer() {
+		super();
+	}
+	Component last=null;
+	public Component getTableCellRendererComponent (JTable table, Object value,boolean isSelected, boolean hasFocus, int row, int column){
+		JLabel component=(JLabel)super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
+		component.setForeground (table.getTableHeader().getForeground());
+		
+		component.setBackground(Colors.findColor("NORMAL_YELLOW")/*table.getTableHeader ().getBackground()*/);
+		
+		component.setFont (table.getTableHeader ().getFont());
+		component.setHorizontalAlignment (CENTER);
+		component.setText (value == null ? "" : value.toString ());
+		//component.setBorder (UIManager.getBorder ("TableHeader.cellBorder"));
+		//component.setBorder (BorderFactory.createEtchedBorder());
+		return component;
+	}
+	
 }

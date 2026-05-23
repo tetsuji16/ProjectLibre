@@ -56,11 +56,10 @@
 package com.projectlibre1.pm.graphic.spreadsheet.common;
 
 import javax.swing.plaf.basic.BasicTableHeaderUI;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
-import org.jdesktop.swingx.JXTableHeader;
-
-public class CommonTableHeader extends JXTableHeader {
+public class CommonTableHeader extends JTableHeader {
 
 	public CommonTableHeader() {
 		// TODO Auto-generated constructor stub

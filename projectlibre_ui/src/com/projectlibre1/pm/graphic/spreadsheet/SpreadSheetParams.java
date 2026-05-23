@@ -61,7 +61,7 @@ import java.util.List;
 
 import com.projectlibre1.pm.graphic.gantt.GanttParams;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetParamsImpl.PageInfo;
-import javax.swing.table.TableColumnModel;
+import com.projectlibre1.pm.graphic.spreadsheet.common.SpreadSheetRowHeaderColumnModel;
 import com.projectlibre1.field.FieldContext;
 import com.projectlibre1.graphic.configuration.SpreadSheetFieldArray;
 
@@ -72,7 +72,7 @@ public interface SpreadSheetParams extends GanttParams {
 	public FieldContext getFieldContext();
 	public Rectangle getSpreadSheetBounds();
 	public SpreadSheetColumnModel getColumnModel();
-	public TableColumnModel getHeaderColumnModel();
+	public SpreadSheetRowHeaderColumnModel getHeaderColumnModel();
 	public Iterator getColumnIterator();
 
 	public PageInfo getRowPageInfo(int row);

@@ -71,7 +71,6 @@ import com.projectlibre1.pm.graphic.model.cache.NodeModelCacheFactory;
 import com.projectlibre1.pm.graphic.model.cache.ReferenceNodeModelCache;
 import com.projectlibre1.pm.graphic.model.transform.NodeCacheTransformer;
 import com.projectlibre1.pm.graphic.views.UsageDetailView;
-import com.projectlibre1.pm.graphic.spreadsheet.swingx.TreeTableSpreadsheetView;
 import com.projectlibre1.configuration.Dictionary;
 import com.projectlibre1.configuration.FieldDictionary;
 import com.projectlibre1.field.Field;
@@ -173,7 +172,7 @@ public class SpreadSheetUtils {
 			,boolean leftAssociation
 			//,int nbVoidNodes
 			,String[] actionList) {
-		SpreadSheet ss = new TreeTableSpreadsheetView();
+		SpreadSheet ss = new SpreadSheet();
 		ss.setSpreadSheetCategory(leftAssociation?UsageDetailView.taskAssignmentSpreadsheetCategory:UsageDetailView.resourceAssignmentSpreadsheetCategory);
 		//cache.getModel().getHierarchy().setNbEndVoidNodes(nbVoidNodes);
 		setFieldsAndContext(ss,cache,spreadSheetCategory,spreadSheetId,leftAssociation);

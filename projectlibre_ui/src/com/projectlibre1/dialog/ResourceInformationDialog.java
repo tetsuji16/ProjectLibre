@@ -78,7 +78,6 @@ import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetModel;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetUtils;
-import com.projectlibre1.pm.graphic.spreadsheet.swingx.FlatSpreadsheetView;
 import com.projectlibre1.pm.graphic.views.UsageDetailView;
 import com.projectlibre1.association.AssociationList;
 import com.projectlibre1.configuration.Settings;
@@ -236,7 +235,7 @@ public class ResourceInformationDialog extends InformationDialog {
 	JScrollPane availabilityPane;
 	
 	protected JScrollPane createAvailabilitySpreadsheet() {
-		availabilitySpreadsheet = new FlatSpreadsheetView() {
+		availabilitySpreadsheet = new SpreadSheet() {
 	   		protected void doPostExceptionTreatment() { // this is a bit of a hack.
 	   			updateAvailabilitySpreadsheet(); 
 	   			requestFocus();
@@ -288,7 +287,7 @@ public class ResourceInformationDialog extends InformationDialog {
 	private SpreadSheet costTableSpreadsheets[] = new SpreadSheet[Settings.NUM_COST_RATES];
 	
 	protected SpreadSheet createCostTableSpreadsheet(CostRateTable costRateTable) {
-	   	SpreadSheet ss = new FlatSpreadsheetView() {
+	   	SpreadSheet ss = new SpreadSheet() {
 	   		protected void doPostExceptionTreatment() {
 	   			updateCostTableSpreadsheets();
 	   			requestFocus();

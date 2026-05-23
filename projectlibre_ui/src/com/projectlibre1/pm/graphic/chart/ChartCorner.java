@@ -55,7 +55,6 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.chart;
 
-import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -77,12 +76,8 @@ public class ChartCorner extends GradientCorner {
 	public ChartCorner(TimeChartPanel chart) {
 		super();
 		this.chart=chart;
-		Color background = UIManager.getColor("TableHeader.background");
-		if (background != null) {
-			setBackground(background);
-		}
-		setOpaque(true);
-		setBorder(UIManager.getBorder("TableHeader.cellBorder"));
+		setBackground(UIManager.getColor("TableHeader.cellBackground"));
+		setBorder (UIManager.getBorder ("TableHeader.cellBorder"));
 		addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				TimeChartPanel chart=ChartCorner.this.chart;

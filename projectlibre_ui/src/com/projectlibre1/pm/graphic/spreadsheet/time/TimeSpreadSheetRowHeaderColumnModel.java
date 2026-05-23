@@ -53,42 +53,32 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
+package com.projectlibre1.pm.graphic.spreadsheet.time;
 
-package com.projectlibre1.main;
 
-import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
-import com.projectlibre1.util.Environment;
-import java.awt.Frame;
 
-import org.apache.commons.collections.Closure;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
 
-public class EclipseMain
-{
-
-    public EclipseMain()
-    {
-    }
-
-    public static void main(String args[])
-    {
-        Frame frame = new Frame();
-        createGraphicManager(frame,null);
-    }
-
-    public static GraphicManager createGraphicManager(Frame frame,Closure updateViewClosure)
-    {
-        return createGraphicManager(frame, new String[0],updateViewClosure);
-    }
-
-    public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
-    {
-        Environment.setStandAlone(true);
-        Environment.setNewLook(false);
-        Environment.setPlugin(true);
-        java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
-        if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);
-        ApplicationStartupFactory applicationstartupfactory = new ApplicationStartupFactory(Hashtable);
-        return applicationstartupfactory.instanceFromNewSession(frame, true);
-    }
+import com.projectlibre1.pm.graphic.spreadsheet.renderer.TimeSpreadSheetRowHeaderRenderer;
+/**
+ *
+ */
+public class TimeSpreadSheetRowHeaderColumnModel extends DefaultTableColumnModel {
+	int columnIndex=0;
+	public TimeSpreadSheetRowHeaderColumnModel() {
+		super();
+	}
+	
+	public void addColumn(TableColumn tc){
+		if (columnIndex==0){
+			tc.setMinWidth(40);
+			tc.setMaxWidth(40);
+			tc.setResizable(false);
+			tc.setCellRenderer(new TimeSpreadSheetRowHeaderRenderer());
+			tc.setCellEditor(null);
+			super.addColumn(tc);
+		}
+		columnIndex++;
+	}
 }
