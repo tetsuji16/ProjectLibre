@@ -93,6 +93,10 @@ public final class FlatUiSupport {
 		return color("Component.borderColor", labelForeground().darker());
 	}
 
+	public static Color tableGridColor() {
+		return color("Table.gridColor", borderColor());
+	}
+
 	public static Color accentColor() {
 		Color color = UIManager.getColor("Component.focusColor");
 		if (color == null)
@@ -136,6 +140,17 @@ public final class FlatUiSupport {
 	}
 
 	public static Border focusBorder() {
+		Border border = UIManager.getBorder("TextField.border");
+		if (border == null)
+			border = BorderFactory.createLineBorder(borderColor());
+		return border;
+	}
+
+	public static Border tableCellBorder() {
+		return BorderFactory.createEmptyBorder(2, 4, 2, 4);
+	}
+
+	public static Border tableEditorBorder() {
 		Border border = UIManager.getBorder("TextField.border");
 		if (border == null)
 			border = BorderFactory.createLineBorder(borderColor());

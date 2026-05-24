@@ -59,6 +59,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -106,7 +107,9 @@ public class SpreadSheetColumnHeaderRenderer extends DefaultTableCellRenderer im
 		}
 
 		component.setHorizontalAlignment (CENTER);
-		component.setBorder(FlatUiSupport.tableHeaderBorder());
+		component.setBorder(BorderFactory.createCompoundBorder(
+				FlatUiSupport.tableHeaderBorder(),
+				BorderFactory.createEmptyBorder(2, 4, 2, 4)));
 		if (override == null) {
 			if (table!=null) component.setFont (FlatUiSupport.headerFont());
 			component.setText (value == null ? "" : value.toString ());

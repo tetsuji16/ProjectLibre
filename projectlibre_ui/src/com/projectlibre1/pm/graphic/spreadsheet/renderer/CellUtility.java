@@ -59,8 +59,6 @@ import java.awt.Color;
 
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
-
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
 import com.projectlibre1.graphic.configuration.CellFormat;
@@ -92,7 +90,7 @@ public class CellUtility {
 			component.setForeground((foreground==null)?FlatUiSupport.tableSelectionForeground():foreground);
 			component.setBackground((background==null)?FlatUiSupport.tableSelectionBackground():background);
 		} else {
-			component.setBorder(new EmptyBorder(1, 1, 1, 1));
+			component.setBorder(FlatUiSupport.tableCellBorder());
 //			if (!model.isRowEditable(row))
 //				component.setForeground(Color.GRAY);
 			if (!model.isCellEditable(row,column+1)){
@@ -106,7 +104,7 @@ public class CellUtility {
 		component.setForeground(foreground == null ? FlatUiSupport.tableForeground() : foreground);
 		Color background=format.getBackgroundObject();
 		component.setBackground(background == null ? FlatUiSupport.tableBackground() : background);
-			component.setBorder(new EmptyBorder(1, 1, 1, 1));
+			component.setBorder(FlatUiSupport.tableCellBorder());
 //			if (!model.isRowEditable(row))
 //				component.setForeground(Color.GRAY);
 

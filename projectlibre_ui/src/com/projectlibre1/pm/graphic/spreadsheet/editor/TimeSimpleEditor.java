@@ -113,6 +113,8 @@ public class TimeSimpleEditor extends DefaultCellEditor {
 		else stringValue=FieldConverter.toString(value);
 		component.setText(stringValue);
 		//component.resetChange();
+		component.setBorder(FlatUiSupport.tableEditorBorder());
+		component.setBackground(FlatUiSupport.tableBackground());
 		component.setSelectedTextColor(FlatUiSupport.tableSelectionForeground());
 		component.setSelectionColor(FlatUiSupport.tableSelectionBackground());
 		component.setHorizontalAlignment(JTextField.RIGHT);

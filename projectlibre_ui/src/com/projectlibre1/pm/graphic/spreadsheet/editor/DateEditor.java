@@ -63,7 +63,6 @@ import java.awt.event.MouseEvent;
 import java.text.DateFormat;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -148,12 +147,14 @@ public class DateEditor extends DateFieldTableEditor {
 		else
 			format = EditOption.getInstance().getDateFormat();
 
-    	dateField = new ExtDateField(format);
-        dateField.setBorder(BorderFactory.createLineBorder(FlatUiSupport.borderColor()));
+        dateField = new ExtDateField(format);
+        dateField.setBorder(FlatUiSupport.tableEditorBorder());
+        dateField.setBackground(FlatUiSupport.tableBackground());
+        dateField.getTextField().setBackground(FlatUiSupport.tableBackground());
         if (value == null) {
         	long date = DateTime.midnightToday();
     		if (field.isStartValue())
-    			date = CalendarOption.getInstance().makeValidStart(date, true);
+				date = CalendarOption.getInstance().makeValidStart(date, true);
     		else if (field.isEndValue())
 				date = CalendarOption.getInstance().makeValidEnd(date, true);
     		value = new Date(date);

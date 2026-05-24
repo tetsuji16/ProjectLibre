@@ -55,7 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.common;
 
-import javax.swing.plaf.basic.BasicTableHeaderUI;
+import com.projectlibre1.util.FlatUiSupport;
+
+import javax.swing.BorderFactory;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 
@@ -70,7 +72,13 @@ public class CommonTableHeader extends JTableHeader {
 		// TODO Auto-generated constructor stub
 	}
     public void updateUI(){
-    	setUI(BasicTableHeaderUI.createUI(this));
+    	super.updateUI();
+    	setFont(FlatUiSupport.headerFont());
+    	setForeground(FlatUiSupport.headerForeground());
+    	setBackground(FlatUiSupport.headerBackground());
+    	setBorder(BorderFactory.createCompoundBorder(
+    			FlatUiSupport.tableHeaderBorder(),
+    			BorderFactory.createEmptyBorder(2, 4, 2, 4)));
     	resizeAndRepaint();
     	invalidate();//PENDING
         }

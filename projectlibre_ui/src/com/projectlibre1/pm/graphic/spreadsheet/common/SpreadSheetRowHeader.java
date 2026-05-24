@@ -66,13 +66,13 @@ import javax.swing.JTable;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.plaf.basic.BasicTableUI;
 import javax.swing.table.DefaultTableColumnModel;
 
 import com.projectlibre1.menu.MenuActionConstants;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetPopupMenu;
-import com.projectlibre1.graphic.configuration.shape.Colors;
+import java.awt.Dimension;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -82,7 +82,7 @@ public class SpreadSheetRowHeader extends JTable {
 	//protected SpreadSheetPopupMenu popup=null;
 	public SpreadSheetRowHeader(CommonSpreadSheet table) {
 		super();
-		setGridColor(Colors.GRAY);
+		setGridColor(FlatUiSupport.tableGridColor());
 		this.table=table;
 		if (table instanceof SpreadSheet){
 			final SpreadSheet spreadSheet=(SpreadSheet)table;
@@ -114,7 +114,11 @@ public class SpreadSheetRowHeader extends JTable {
 			inputMap.put(KeyStroke.getKeyStroke("shift ctrl V"), "insertClipboard");
 			
 		}
-		this.setUI(new BasicTableUI());
+		setFont(FlatUiSupport.headerFont());
+		setForeground(FlatUiSupport.headerForeground());
+		setBackground(FlatUiSupport.headerBackground());
+		setBorder(FlatUiSupport.tableHeaderBorder());
+		setRowMargin(0);
 		
 	}
 	
@@ -203,7 +207,14 @@ public class SpreadSheetRowHeader extends JTable {
 		return table;
 	}
 	public void updateUI() {
-		this.setUI(new BasicTableUI());
-		
+		super.updateUI();
+		setFont(FlatUiSupport.headerFont());
+		setForeground(FlatUiSupport.headerForeground());
+		setBackground(FlatUiSupport.headerBackground());
+		setGridColor(FlatUiSupport.tableGridColor());
+		setBorder(FlatUiSupport.tableHeaderBorder());
+		setIntercellSpacing(new Dimension(0, 0));
+		setRowMargin(0);
+		setShowGrid(false);
 	}
 }

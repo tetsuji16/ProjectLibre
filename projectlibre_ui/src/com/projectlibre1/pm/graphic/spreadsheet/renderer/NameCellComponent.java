@@ -113,8 +113,11 @@ public class NameCellComponent extends JPanel {
 		textComponent.setFont(getFont());
 	}
 	public void init() {
+		setOpaque(true);
 		setBackground(FlatUiSupport.tableBackground());
-		textComponent.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 0));
+		setForeground(FlatUiSupport.tableForeground());
+		setBorder(FlatUiSupport.tableCellBorder());
+		textComponent.setBorder(BorderFactory.createEmptyBorder(0, 1, 0, 0));
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		if (getComponentCount() != 0)
 			removeAll();
@@ -128,11 +131,12 @@ public class NameCellComponent extends JPanel {
 		fetchedLazyCollapsedIcon = IconManager.getIcon("spreadsheet.fetchedLazyCollapsed.icon");
 
 		filler = (Box.Filler) Box
-				.createHorizontalStrut(leafIcon.getIconWidth());
+				.createHorizontalStrut(Math.max(leafIcon.getIconWidth() - 2, 2));
 		add(filler);
 		iconLabel = new JLabel(leafIcon);
 		iconLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		iconLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 1, 0, 1));
 		add(iconLabel);
 		add(textComponent);
 	}
