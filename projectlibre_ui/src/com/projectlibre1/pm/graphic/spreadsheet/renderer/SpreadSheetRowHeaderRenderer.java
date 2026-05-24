@@ -57,6 +57,7 @@ package com.projectlibre1.pm.graphic.spreadsheet.renderer;
 
 import java.awt.Component;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -94,7 +95,9 @@ public class SpreadSheetRowHeaderRenderer extends DefaultTableCellRenderer  impl
 		}
 		component.setHorizontalAlignment (CENTER);
 		component.setText (value == null ? "" : value.toString ());
-		component.setBorder(FlatUiSupport.tableHeaderBorder());
+		component.setBorder(BorderFactory.createCompoundBorder(
+				FlatUiSupport.tableHeaderBorder(),
+				BorderFactory.createEmptyBorder(2, 4, 2, 4)));
 		return component;
 	}
 

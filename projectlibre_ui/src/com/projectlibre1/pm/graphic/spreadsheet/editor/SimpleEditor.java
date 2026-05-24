@@ -119,6 +119,8 @@ public class SimpleEditor extends DefaultCellEditor   {
 		
 		component.setText(stringValue);
 		//component.resetChange();
+		component.setBorder(FlatUiSupport.tableEditorBorder());
+		component.setBackground(FlatUiSupport.tableBackground());
 		component.setSelectedTextColor(FlatUiSupport.tableSelectionForeground());
 		component.setSelectionColor(FlatUiSupport.tableSelectionBackground());
 		

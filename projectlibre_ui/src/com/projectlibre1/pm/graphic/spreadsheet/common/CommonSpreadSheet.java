@@ -116,7 +116,6 @@ import com.projectlibre1.field.Field;
 import com.projectlibre1.field.FieldParseException;
 import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 import com.projectlibre1.graphic.configuration.SpreadSheetFieldArray;
-import com.projectlibre1.graphic.configuration.shape.Colors;
 import com.projectlibre1.grouping.core.Node;
 import com.projectlibre1.grouping.core.NodeFactory;
 import com.projectlibre1.grouping.core.model.NodeModel;
@@ -124,6 +123,7 @@ import com.projectlibre1.server.access.ErrorLogger;
 import com.projectlibre1.util.Alert;
 import com.projectlibre1.workspace.SavableToWorkspace;
 import com.projectlibre1.workspace.WorkspaceSetting;
+import com.projectlibre1.util.FlatUiSupport;
 /**
  *
  */
@@ -148,7 +148,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 
 	public CommonSpreadSheet() {
 		super();
-		setGridColor(Colors.GRAY);
+		setGridColor(FlatUiSupport.tableGridColor());
 		putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
 		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		//setSurrendersFocusOnKeystroke(true); //has the side effect of selecting the first character of cell after ENTER keystroke
