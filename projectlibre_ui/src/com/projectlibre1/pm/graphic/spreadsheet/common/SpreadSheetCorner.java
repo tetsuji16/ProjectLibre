@@ -73,6 +73,7 @@ import com.projectlibre1.pm.graphic.spreadsheet.time.TimeSpreadSheet;
 import com.projectlibre1.configuration.Dictionary;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -92,8 +93,7 @@ public class SpreadSheetCorner extends GradientCorner implements ListSelectionLi
 
 //
 //		setBackground(LafUtils.getUnselectedBackgroundColor());
-		if (!Environment.isNewLaf())
-			setBorder(new LineBorder(Color.LIGHT_GRAY));
+		setBorder(FlatUiSupport.tableHeaderBorder());
 		addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				CommonSpreadSheet spreadSheet=SpreadSheetCorner.this.spreadSheet;

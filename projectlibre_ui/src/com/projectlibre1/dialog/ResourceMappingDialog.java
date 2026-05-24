@@ -85,6 +85,7 @@ import com.projectlibre1.help.HelpUtil;
 import com.projectlibre1.configuration.Settings;
 import com.projectlibre1.exchange.ResourceMappingForm;
 import com.projectlibre1.strings.Messages;
+import com.projectlibre1.util.FlatUiSupport;
 
 public final class ResourceMappingDialog extends AbstractDialog {
 	private static final long serialVersionUID = 1L;
@@ -325,14 +326,14 @@ public final class ResourceMappingDialog extends AbstractDialog {
 	    	if (table != null) {
 	            JTableHeader header = table.getTableHeader();
 	            if (header != null) {
-	                setForeground(header.getForeground());
-	                setBackground(header.getBackground());
-	                setFont(header.getFont());
+	                setForeground(FlatUiSupport.headerForeground());
+	                setBackground(FlatUiSupport.headerBackground());
+	                setFont(FlatUiSupport.headerFont());
 	            }
                 }
 
                 setText((value == null) ? "" : value.toString()); //$NON-NLS-1$
-		setBorder(UIManager.getBorder("TableHeader.cellBorder")); //$NON-NLS-1$
+		setBorder(FlatUiSupport.tableHeaderBorder()); //$NON-NLS-1$
 	        return this;
             }
     }

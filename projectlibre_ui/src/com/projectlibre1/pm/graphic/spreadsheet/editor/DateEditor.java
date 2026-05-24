@@ -82,6 +82,7 @@ import com.projectlibre1.options.EditOption;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Alert;
 import com.projectlibre1.util.DateTime;
+import com.projectlibre1.util.FlatUiSupport;
 
 public class DateEditor extends DateFieldTableEditor {
 	protected ExtDateField dateField;
@@ -148,7 +149,7 @@ public class DateEditor extends DateFieldTableEditor {
 			format = EditOption.getInstance().getDateFormat();
 
     	dateField = new ExtDateField(format);
-        dateField.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        dateField.setBorder(BorderFactory.createLineBorder(FlatUiSupport.borderColor()));
         if (value == null) {
         	long date = DateTime.midnightToday();
     		if (field.isStartValue())
@@ -158,8 +159,8 @@ public class DateEditor extends DateFieldTableEditor {
     		value = new Date(date);
         }
         dateField.setValue(value);
-        dateField.getTextField().setSelectedTextColor(Color.WHITE);
-        dateField.getTextField().setSelectionColor(Color.BLACK);
+        dateField.getTextField().setSelectedTextColor(FlatUiSupport.tableSelectionForeground());
+        dateField.getTextField().setSelectionColor(FlatUiSupport.tableSelectionBackground());
 //        Date d = DateTime.gmtDate(new Date(DateTime.midnightToday()));
 //        initialValue = (value == null) ? d : (Date) value;
         initialValue = (Date)value;

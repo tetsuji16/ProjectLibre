@@ -74,6 +74,7 @@ import com.projectlibre1.datatype.DurationFormat;
 import com.projectlibre1.field.Field;
 import com.projectlibre1.field.FieldConverter;
 import com.projectlibre1.field.FieldParseException;
+import com.projectlibre1.util.FlatUiSupport;
 /**
  *
  */
@@ -118,8 +119,8 @@ public class SimpleEditor extends DefaultCellEditor   {
 		
 		component.setText(stringValue);
 		//component.resetChange();
-		component.setSelectedTextColor(Color.WHITE);
-		component.setSelectionColor(Color.BLACK);
+		component.setSelectedTextColor(FlatUiSupport.tableSelectionForeground());
+		component.setSelectionColor(FlatUiSupport.tableSelectionBackground());
 		
 		if (table.getModel() instanceof SpreadSheetModel) {
 			SpreadSheetModel model  = (SpreadSheetModel) table.getModel();

@@ -94,7 +94,7 @@ import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.ProjectFactory;
 import com.projectlibre1.server.data.ProjectData;
 import com.projectlibre1.strings.Messages;
-import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 
 public final class OpenProjectDialog extends AbstractDialog {
 	private static final long serialVersionUID = 1L;
@@ -314,7 +314,7 @@ public final class OpenProjectDialog extends AbstractDialog {
 						OpenProjectDialog.this.onOk();
 				}
 			});
-			if (Environment.isMac()) setGridColor(Color.LIGHT_GRAY);
+			setGridColor(FlatUiSupport.borderColor());
 
 	    }
 
@@ -364,7 +364,7 @@ public final class OpenProjectDialog extends AbstractDialog {
                 }
 
                 setText((value == null) ? "" : value.toString()); //$NON-NLS-1$
-		setBorder(UIManager.getBorder("TableHeader.cellBorder")); //$NON-NLS-1$
+		setBorder(FlatUiSupport.tableHeaderBorder()); //$NON-NLS-1$
 	        return this;
             }
     }
@@ -454,7 +454,7 @@ public final class OpenProjectDialog extends AbstractDialog {
 					ProjectData project=(ProjectData)projects.get(row);
 					setEnabled(table == null || table.isEnabled());
 					//if (defaultColor==null) defaultColor=getForeground();
-					setForeground((canBeUsed(project))?Color.BLACK:Color.GRAY);
+					setForeground((canBeUsed(project))?FlatUiSupport.tableForeground():FlatUiSupport.disabledForeground());
 					super.getTableCellRendererComponent(table, value, selected, focused, row, column);
 					return this;
 				}

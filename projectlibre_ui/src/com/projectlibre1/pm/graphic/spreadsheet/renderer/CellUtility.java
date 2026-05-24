@@ -59,16 +59,12 @@ import java.awt.Color;
 
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
-import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
 import com.projectlibre1.graphic.configuration.CellFormat;
-import com.projectlibre1.graphic.configuration.shape.Colors;
-import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 
 
 /**
@@ -82,32 +78,34 @@ public class CellUtility {
 		boolean editingThisCell = table.isEditing() && table.getEditingRow() == row && table.getEditingColumn() == column;
 		Color foreground=cellFormat.getForegroundObject();
 		Color background=cellFormat.getBackgroundObject();
-		Color resolvedForeground=(foreground==null)?table.getForeground():foreground;
-		Color resolvedBackground=(background==null)?table.getBackground():background;
+		Color resolvedForeground=(foreground==null)?FlatUiSupport.tableForeground():foreground;
+		Color resolvedBackground=(background==null)?FlatUiSupport.tableBackground():background;
 		component.setForeground(resolvedForeground);
 		component.setBackground(resolvedBackground);
 		//component.setFont(table.getFont());
 		if (editingThisCell && table.isCellEditable(row, column)) {
-			component.setBorder(new LineBorder(Color.BLACK));
-			component.setForeground((foreground==null)?UIManager.getColor("Table.focusCellForeground"):foreground);
-			component.setBackground((background==null)?(Environment.isMac()?Colors.NOT_TOO_DARK_GRAY:UIManager.getColor("Table.focusCellBackground")):background);
+			component.setBorder(FlatUiSupport.focusBorder());
+			component.setForeground((foreground==null)?FlatUiSupport.tableSelectionForeground():foreground);
+			component.setBackground((background==null)?FlatUiSupport.tableSelectionBackground():background);
 		} else if (hasFocus || isSelected) {
-			component.setBorder(new LineBorder(Color.BLACK));
+			component.setBorder(FlatUiSupport.focusBorder());
+			component.setForeground((foreground==null)?FlatUiSupport.tableSelectionForeground():foreground);
+			component.setBackground((background==null)?FlatUiSupport.tableSelectionBackground():background);
 		} else {
 			component.setBorder(new EmptyBorder(1, 1, 1, 1));
 //			if (!model.isRowEditable(row))
 //				component.setForeground(Color.GRAY);
 			if (!model.isCellEditable(row,column+1)){
-				component.setForeground(Color.GRAY);
+				component.setForeground(FlatUiSupport.disabledForeground());
 			}
 		}
 	}
 
 	public static void setAppearance(CellFormat format, JComponent component){
 		Color foreground=format.getForegroundObject();
-		component.setForeground(foreground);
+		component.setForeground(foreground == null ? FlatUiSupport.tableForeground() : foreground);
 		Color background=format.getBackgroundObject();
-		component.setBackground(background);
+		component.setBackground(background == null ? FlatUiSupport.tableBackground() : background);
 			component.setBorder(new EmptyBorder(1, 1, 1, 1));
 //			if (!model.isRowEditable(row))
 //				component.setForeground(Color.GRAY);

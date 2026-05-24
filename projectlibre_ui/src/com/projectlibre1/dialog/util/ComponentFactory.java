@@ -98,6 +98,7 @@ import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Alert;
 import com.projectlibre1.util.ClassUtils;
 import com.projectlibre1.util.DateTime;
+import com.projectlibre1.util.FlatUiSupport;
 import com.projectlibre1.util.MathUtils;
 
 /**
@@ -144,8 +145,8 @@ public class ComponentFactory {
 	}
 	
 	static void  markComponentAsUnmodified(JComponent component) {
-		component.setForeground(Color.BLACK);
-		verifiedComponent(component).setForeground(Color.BLACK);
+		component.setForeground(FlatUiSupport.infoForeground());
+		verifiedComponent(component).setForeground(FlatUiSupport.infoForeground());
 	}
 
 	public static void setValueOfComponent(JComponent component, Object value, boolean readOnly) {
@@ -277,7 +278,7 @@ public class ComponentFactory {
 						else 
 							same = spin == ((Number)v.getValue()).doubleValue();
 					}
-					t.setForeground(same ? Color.BLACK : Color.BLUE);
+					t.setForeground(same ? FlatUiSupport.infoForeground() : FlatUiSupport.accentColor());
 				}});
 		} else {
 			if (field.isMemo()) {
@@ -302,7 +303,7 @@ public class ComponentFactory {
 
 			public void keyTyped(KeyEvent arg0) {
 				JTextComponent textComponent = (JTextComponent)arg0.getComponent();
-				textComponent.setForeground(Color.BLUE);
+				textComponent.setForeground(FlatUiSupport.accentColor());
 				FieldDialog parentFieldDialog = getParentFieldDialog(textComponent);
 				if (parentFieldDialog != null)
 					parentFieldDialog.setDirtyComponent(textComponent);

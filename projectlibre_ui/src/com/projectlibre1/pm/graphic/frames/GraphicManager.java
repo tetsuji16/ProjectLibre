@@ -2777,8 +2777,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			toolBar.add(new Box.Filler(new Dimension(0,0),new Dimension(0,0),new Dimension(Integer.MAX_VALUE,Integer.MAX_VALUE)));
 			toolBar.add(((DefaultFrameManager)getFrameManager()).getProjectComboPanel());
 			toolBar.add(Box.createRigidArea(new Dimension(20,20)));
-			if (Environment.isNewLaf())
-				toolBar.setBackground(FlatUiSupport.panelBackground());
+			toolBar.setBackground(FlatUiSupport.panelBackground());
 			toolBar.setFloatable(false);
 			toolBar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		    Box top;
@@ -2798,8 +2797,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			bottom = new TabbedNavigation().createContentPanel(getMenuManager(),viewToolBar,1,JTabbedPane.BOTTOM,false);
 			contentPane.add(top, BorderLayout.BEFORE_FIRST_LINE);
 			contentPane.add(bottom,BorderLayout.AFTER_LAST_LINE);
-			if (Environment.isNewLaf())
-				contentPane.setBackground(FlatUiSupport.panelBackground());
+			contentPane.setBackground(FlatUiSupport.panelBackground());
 
 			if (Environment.isMac()){
 				//System.setProperty("apple.laf.useScreenMenuBar","true");
