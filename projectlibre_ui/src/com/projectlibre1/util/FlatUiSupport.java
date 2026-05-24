@@ -11,6 +11,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.border.Border;
 
 /**
  * Small FlatLaf-friendly UI helpers for shared Swing styling.
@@ -41,6 +42,47 @@ public final class FlatUiSupport {
 
 	public static Color panelBackground() {
 		return color("Panel.background", Color.WHITE);
+	}
+
+	public static Color tableBackground() {
+		return color("Table.background", panelBackground());
+	}
+
+	public static Color tableForeground() {
+		return color("Table.foreground", labelForeground());
+	}
+
+	public static Color tableSelectionBackground() {
+		return color("Table.selectionBackground", accentColor());
+	}
+
+	public static Color tableSelectionForeground() {
+		return color("Table.selectionForeground", Color.WHITE);
+	}
+
+	public static Color headerBackground() {
+		return color("TableHeader.background", panelBackground());
+	}
+
+	public static Color headerForeground() {
+		return color("TableHeader.foreground", tableForeground());
+	}
+
+	public static Color disabledForeground() {
+		return color("Label.disabledForeground", labelForeground().darker());
+	}
+
+	public static Color infoForeground() {
+		return color("TextField.foreground", labelForeground());
+	}
+
+	public static Color errorForeground() {
+		Color color = UIManager.getColor("Actions.Red");
+		if (color == null)
+			color = UIManager.getColor("Component.errorFocusColor");
+		if (color == null)
+			color = new Color(0xC62828);
+		return color;
 	}
 
 	public static Color labelForeground() {
@@ -91,6 +133,20 @@ public final class FlatUiSupport {
 		button.setFocusPainted(false);
 		button.setRolloverEnabled(true);
 		button.setMargin(new Insets(3, 5, 3, 5));
+	}
+
+	public static Border focusBorder() {
+		Border border = UIManager.getBorder("TextField.border");
+		if (border == null)
+			border = BorderFactory.createLineBorder(borderColor());
+		return border;
+	}
+
+	public static Border tableHeaderBorder() {
+		Border border = UIManager.getBorder("TableHeader.cellBorder");
+		if (border == null)
+			border = BorderFactory.createMatteBorder(0, 0, 1, 0, borderColor());
+		return border;
 	}
 
 	public static FontUIResource asFontUIResource(Font font) {

@@ -67,6 +67,7 @@ import javax.swing.JTextField;
 import com.projectlibre1.pm.graphic.ChangeAwareTextField;
 import com.projectlibre1.datatype.Money;
 import com.projectlibre1.field.FieldConverter;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -112,8 +113,8 @@ public class TimeSimpleEditor extends DefaultCellEditor {
 		else stringValue=FieldConverter.toString(value);
 		component.setText(stringValue);
 		//component.resetChange();
-		component.setSelectedTextColor(Color.WHITE);
-		component.setSelectionColor(Color.BLACK);
+		component.setSelectedTextColor(FlatUiSupport.tableSelectionForeground());
+		component.setSelectionColor(FlatUiSupport.tableSelectionBackground());
 		component.setHorizontalAlignment(JTextField.RIGHT);
 		return component;
 	}
