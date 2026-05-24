@@ -62,6 +62,8 @@
 	<path id="compile.class.path">
 		<fileset dir="lib">
 			<include name="**/*.jar" />
+			<exclude name="flamingo-6.2.jar" />
+			<exclude name="trident-6.2.jar" />
 		</fileset>
 	</path>
 
@@ -102,7 +104,7 @@
 		</jar>
 	</target>
 	<target name="build-script" depends="init">
-		<jar jarfile="${tmp}/projectlibre-script-tmp.jar">
+		<jar jarfile="${tmp}/projectlibre-script-radiance-tmp.jar">
 			<metainf dir="../projectlibre_build/license">
 				<include name="**" />
 			</metainf>
@@ -154,7 +156,10 @@
 				<zipgroupfileset file="lib/jcommon.jar" /> 
 				<zipgroupfileset file="lib/jdnc-0_7-all.jar" /> 
 				<zipgroupfileset file="lib/itext.jar" /> 
-				<zipgroupfileset file="lib/trident-6.2.jar" /> 
+				<zipgroupfileset file="lib/radiance-flamingo-1.0.2.jar" />
+				<zipgroupfileset file="lib/radiance-neon-1.0.2.jar" />
+				<zipgroupfileset file="lib/radiance-trident-1.0.2.jar" />
+				<zipgroupfileset file="lib/radiance-substance-1.0.2.jar" />
 				<zipgroupfileset file="lib/exchange/jakarta-poi.jar" /> 
 				<zipgroupfileset file="lib/exchange/poi-ooxml-3.17.jar" /> 
 				<zipgroupfileset file="lib/exchange/poi-ooxml-schemas-3.17.jar" /> 
@@ -185,8 +190,8 @@
 		 	<proguard configuration="projectlibre_script.conf"/>
 		</then>
 			<else>
-				<jar jarfile="projectlibre-script.jar">
-					<zipgroupfileset file="tmp/projectlibre-script-tmp.jar" /> 
+				<jar jarfile="projectlibre-script-radiance.jar">
+					<zipgroupfileset file="tmp/projectlibre-script-radiance-tmp.jar" /> 
 					<zipgroupfileset file="lib/groovy/groovy-2.4.21.jar" />
 					<zipgroupfileset file="lib/groovy/ant-antlr-1.9.15.jar" />
 					<!--zipgroupfileset file="lib/groovy/asm-attrs.jar" /-->
@@ -232,7 +237,7 @@
 		<delete dir="${build}"/>
 		<delete dir="${tmp}"/>
 		<delete>
-			<fileset dir="." includes="projectlibre-contrib.jar,projectlibre-script.jar,projectlibre-reports.jar,shrink.log,out.map"/>
+			<fileset dir="." includes="projectlibre-contrib.jar,projectlibre-script-radiance.jar,projectlibre-reports.jar,shrink.log,out.map"/>
 		</delete>
 	</target>
 

@@ -129,8 +129,6 @@ import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
 import org.pushingpixels.flamingo.api.ribbon.RibbonApplicationMenu;
 import org.pushingpixels.flamingo.api.ribbon.RibbonTask;
 
-import com.projectlibre.ui.ribbon.CustomRibbonBandGenerator;
-import com.projectlibre.ui.ribbon.ProjectLibreRibbonUI;
 import com.projectlibre1.configuration.Configuration;
 import com.projectlibre1.configuration.FieldDictionary;
 import com.projectlibre1.configuration.Settings;
@@ -2564,25 +2562,8 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		//return container instanceof Applet;
     }
     
-    public void setRibbon(JRibbonFrame frame, MenuManager menuManger){
-    	
-    	
-		final JPanel filtersPanel=new JPanel(new GridLayout(3, 1));
-		filterToolBarManager = FilterToolBarManager.create(getMenuManager());
-		filterToolBarManager.addButtonsInRibbonBand(filtersPanel);
-		
-    	CustomRibbonBandGenerator customBandsGenerator=new CustomRibbonBandGenerator() {
-			
-			@Override
-			public JComponent createRibbonComponent(String ribbonBandName) {
-				if ("FiltersRibbonBand".equals(ribbonBandName)){
-					return filtersPanel;
-				}
-				else return null;
-			}
-		};
-    	
-		Collection<RibbonTask> ribbonTasks= menuManger.getRibbon(MenuManager.STANDARD_RIBBON, customBandsGenerator);
+	public void setRibbon(JRibbonFrame frame, MenuManager menuManger){
+		Collection<RibbonTask> ribbonTasks = menuManger.getRibbon(MenuManager.STANDARD_RIBBON, null);
 		JRibbon ribbon=frame.getRibbon();
 
 		for (RibbonTask ribbonTask : ribbonTasks){
@@ -2590,103 +2571,16 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		}
 		
 		
-		RibbonApplicationMenu applicationMenu=new RibbonApplicationMenu();
-		
-		
-		ribbon.setApplicationMenu(applicationMenu);
-		
 		Collection<AbstractCommandButton> taskBars=menuManger.getTaskBar(MenuManager.STANDARD_RIBBON);
 		for (AbstractCommandButton button : taskBars)
 			ribbon.addTaskbarComponent(button);
 		
-		ribbon.configureHelp(IconManager.getRibbonIcon("ribbon.help",26,26), new ActionListener() {
-			
+		ribbon.configureHelp(IconManager.getRibbonIcon("logo.ProjectLibre",120,20), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showHelpDialog();
-				
 			}
 		});
-		
-//		JLabel projectlibreLogo=ribbon.getProjectLibreLogo();
-//		projectlibreLogo.setIcon(IconManager.getIcon("logo.ProjectLibre"));
-//		projectlibreLogo.addMouseListener(new MouseAdapter(){
-//            public void mousePressed(MouseEvent me){
-//            	BrowserControl.displayURL("http://www.projectlibre.com/");
-//            }
-//         });
-		
-		JPanel projectViews=ribbon.getProjectViews();
-		projectViews.setBorder(new EmptyBorder(0,0,0,0));		
-		getMenuManager().initComponent(MenuManager.RIBBON_VIEW_BAR,projectViews);
-		
-		JPanel fileSelector=ribbon.getFileSelector();
-		fileSelector.setLayout(new BorderLayout());
-		fileSelector.setBackground(ProjectLibreRibbonUI.RIBBON_MENU_COLOR);
-		JComponent filesComponent=((DefaultFrameManager)getFrameManager()).getProjectComboPanel();
-		filesComponent.setBackground(ProjectLibreRibbonUI.RIBBON_MENU_COLOR);
-		fileSelector.add(filesComponent,BorderLayout.EAST);
-
-		
-		JPanel languageSelector=ribbon.getLanguageSelector();
-		languageSelector.setLayout(new BorderLayout());
-		languageSelector.setBackground(ProjectLibreRibbonUI.RIBBON_MENU_COLOR);
-		
-		JButton localeButton=new JButton(IconManager.getIcon("menu16.locale"));
-		localeButton.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				LocaleDialog localeDialog = LocaleDialog.getInstance(getGraphicManager());
-				localeDialog.doModal();
-			}
-		});
-		localeButton.setBorderPainted(false);
-		localeButton.setFocusPainted(false);
-		localeButton.setContentAreaFilled(false);
-		languageSelector.add(localeButton,BorderLayout.EAST);
-		
-//		String[] slocales=Settings.LANGUAGES.split(";");
-//		String[] translatedLocales=new String[slocales.length];
-//		Map<String, String> transOri=new HashMap<>();
-//		Map<String, String> oriTrans=new HashMap<>();
-//		for (int i=0; i<slocales.length;i++) {
-//			if ("default".equals(slocales[i]))
-//					translatedLocales[i]=Messages.getString("Spreadsheet.Project.default"); //re-use existing key
-//			else if ("custom".equals(slocales[i]))
-//				translatedLocales[i]=Messages.getString("PageSetupDialog.PaperFormat.Custom"); //re-use existing key
-//			else translatedLocales[i]=slocales[i];
-//			oriTrans.put(slocales[i], translatedLocales[i]);
-//			transOri.put(translatedLocales[i], slocales[i]);
-//		}
-//		String[] currentTranslatedLocale=new String[] {oriTrans.get(Preferences.userNodeForPackage(ConfigurationFile.class).get("locale","default"))};
-//        JComboBox languageCombo=new JComboBox(translatedLocales);
-//        languageCombo.setSelectedItem(currentTranslatedLocale[0]);
-//        languageCombo.addActionListener(new ActionListener() {
-//			
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				JComboBox cb = (JComboBox)e.getSource();
-//		        String language = (String)cb.getSelectedItem();
-//		         if (JOptionPane.YES_OPTION == Alert.confirmYesNo(Messages.getString("Message.languageChange"))){
-//		        	 currentTranslatedLocale[0]=language;
-//		        	 Preferences.userNodeForPackage(ConfigurationFile.class).put("locale",transOri.get(language));	        	 
-//		         }else {
-//		        	 languageCombo.setSelectedItem(currentTranslatedLocale[0]);
-//		         }
-//				
-//			}
-//		});
-//
-//
-//        languageCombo.setBackground(ProjectLibreRibbonUI.RIBBON_MENU_COLOR);
-//		languageSelector.add(languageCombo,BorderLayout.EAST);
-		
-		projectViews.setBorder(new EmptyBorder(0,0,0,0));	
-
-		
-
-    	
     }
     
     

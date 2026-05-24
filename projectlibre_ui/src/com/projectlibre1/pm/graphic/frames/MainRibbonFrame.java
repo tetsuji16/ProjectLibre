@@ -66,7 +66,6 @@ import javax.swing.WindowConstants;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
 import org.pushingpixels.flamingo.api.ribbon.JRibbonFrame;
 
-import com.projectlibre.ui.ribbon.ProjectLibreRibbonUI;
 import com.projectlibre1.pm.graphic.IconManager;
 import com.projectlibre1.pm.graphic.frames.workspace.FrameHolder;
 import com.projectlibre1.pm.graphic.frames.workspace.FrameManager;
@@ -80,7 +79,7 @@ public class MainRibbonFrame extends JRibbonFrame implements FrameHolder{
 	public MainRibbonFrame(String name, String projectUrl, String server) throws HeadlessException {
 		super(name);
 		setIconImage(IconManager.getImage("application.icon"));
-		appMenuIcon=IconManager.getRibbonIcon("logo.ProjectLibre",144,31);
+		appMenuIcon=IconManager.getRibbonIcon("menu.save",26,26);
 		setApplicationIcon(IconManager.getRibbonIcon("application.icon",128,128));
 		init();
 	}

@@ -62,18 +62,22 @@
 	<path id="compile.class.path">
 		<fileset dir="../projectlibre_contrib">
 			<include name="projectlibre-contrib.jar" />
-			<include name="projectlibre-script.jar" />
+			<include name="projectlibre-script-radiance.jar" />
 			<!--include name="projectlibre-exchange.jar" /-->
 			<include name="projectlibre-reports.jar" />
 		</fileset>
 		<fileset dir="../projectlibre_contrib/lib">
 			<include name="**/*.jar" />
+			<exclude name="flamingo-6.2.jar" />
+			<exclude name="trident-6.2.jar" />
 		</fileset>
 	</path>
 	
 	<path id="compile-no_contrib_built.class.path">
 		<fileset dir="../projectlibre_contrib/lib">
 			<include name="**/*.jar" />
+			<exclude name="flamingo-6.2.jar" />
+			<exclude name="trident-6.2.jar" />
 		</fileset>
 	</path>
 	
@@ -113,6 +117,7 @@
 					<include name="**/*.java" />
 					<!--exclude name="**/version.properties" / -->
 					<exclude name="test/**" />
+					<exclude name="org/pushingpixels/flamingo/**" />
 			</javac>
 		</then>
   		<else>
@@ -131,6 +136,7 @@
 					<include name="**/*.java" />
 					<!--exclude name="**/version.properties" / -->
 					<exclude name="test/**" />
+					<exclude name="org/pushingpixels/flamingo/**" />
 			</javac>
 		</else>
   		</if>
@@ -178,7 +184,7 @@
 
  					<manifest>
  						<attribute name="Main-Class" value="com.projectlibre1.main.Main"/>
- 						<attribute name="Class-Path" value="lib/projectlibre-contrib.jar lib/projectlibre-script.jar lib/projectlibre-reports.jar"/>
+ 						<attribute name="Class-Path" value="lib/projectlibre-contrib.jar lib/projectlibre-script-radiance.jar lib/projectlibre-reports.jar"/>
  					</manifest>
 
  					<metainf dir="license">

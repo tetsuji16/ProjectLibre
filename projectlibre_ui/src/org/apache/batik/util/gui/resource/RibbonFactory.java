@@ -167,7 +167,9 @@ public class RibbonFactory extends ResourceManager {
 		String title=getString(name+".title");
 		JRibbonBand result=new JRibbonBand(title,null);
 
-		JComponent customComponent=customBandsGenerator.createRibbonComponent(name);
+		JComponent customComponent = (customBandsGenerator == null)
+				? null
+				: customBandsGenerator.createRibbonComponent(name);
 		if (customComponent!=null){
 			JRibbonComponent ribbonComponent;
 			if (customComponent instanceof JRibbonComponent)
@@ -219,7 +221,9 @@ public class RibbonFactory extends ResourceManager {
 		String title=getString(name+".title");
 		JFlowRibbonBand result=new JFlowRibbonBand(title,null);
 
-		JComponent customComponent=customBandsGenerator.createRibbonComponent(name);
+		JComponent customComponent = (customBandsGenerator == null)
+				? null
+				: customBandsGenerator.createRibbonComponent(name);
 		if (customComponent!=null){
 			JRibbonComponent ribbonComponent;
 			if (customComponent instanceof JRibbonComponent)

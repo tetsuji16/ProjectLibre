@@ -283,7 +283,7 @@ public abstract class StartupFactory {
 				if (form.isCancelled())
 					System.exit(-1);
 				if (form.isUseMenus())
-					Environment.setNewLook(false);
+					Environment.setNewLook(true);
 
 				login=form.getLogin();
 				password=form.getPassword();
