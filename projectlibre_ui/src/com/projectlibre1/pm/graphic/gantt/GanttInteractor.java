@@ -67,9 +67,12 @@ import javax.swing.SwingUtilities;
 
 import com.projectlibre1.pm.graphic.graph.GraphInteractor;
 import com.projectlibre1.pm.graphic.graph.GraphUI;
+import com.projectlibre1.pm.graphic.graph.GraphZone;
 import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
+import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.pm.graphic.model.cache.GraphicDependency;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
+import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
 import com.projectlibre1.pm.graphic.views.synchro.ScrollPaneSynchronizer;
 import com.projectlibre1.association.InvalidAssociationException;
@@ -210,6 +213,13 @@ public class GanttInteractor extends GraphInteractor{
     		return;
     	}
     	super.mouseReleased(e);
+    }
+
+    public void mouseClicked(MouseEvent e) {
+    	if (isReadOnly() || !SwingUtilities.isLeftMouseButton(e) || e.getClickCount() != 2) {
+    		return;
+    	}
+    	openTaskInformationAt(e.getX(), e.getY());
     }
 
     protected void computeNodeSelection(double x,double y){
@@ -414,6 +424,32 @@ public class GanttInteractor extends GraphInteractor{
     	} else if (viewPosition.y > maxY) {
     		viewPosition.y = maxY;
     	}
+    }
+
+    private void openTaskInformationAt(int x, int y) {
+    	GraphZone clickedZone = ui.getObjectAt(x, y);
+    	Object clickedObject = clickedZone == null ? null : clickedZone.getObject();
+    	if (!(clickedObject instanceof GraphicNode)) {
+    		return;
+    	}
+
+    	Object impl = ((GraphicNode)clickedObject).getNode().getImpl();
+    	if (impl == null) {
+    		return;
+    	}
+
+    	GraphicManager graphicManager = GraphicManager.getInstance(getGraph());
+    	if (graphicManager == null || graphicManager.getCurrentFrame() == null) {
+    		return;
+    	}
+
+    	SpreadSheet spreadSheet = graphicManager.getCurrentFrame().getTopSpreadSheet();
+    	if (spreadSheet == null) {
+    		return;
+    	}
+
+    	spreadSheet.selectObject(impl);
+    	graphicManager.doInformationDialog(false);
     }
 
     protected void select(int x,int y){
