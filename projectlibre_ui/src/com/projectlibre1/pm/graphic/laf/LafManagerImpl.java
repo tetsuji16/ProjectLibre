@@ -84,6 +84,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.graphic.configuration.shape.Colors;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatLafSupport;
 
 public class LafManagerImpl implements LafManager {
     protected static LookAndFeel plaf = null; // for substance
@@ -126,16 +127,8 @@ public class LafManagerImpl implements LafManager {
     public LookAndFeel getPlaf() {
     	if (plaf == null) {
 			try {
-						int os=Environment.getOs();
-						if (os==Environment.LINUX/*||os==Environment.MAC*/) //$NON-NLS-1$ //$NON-NLS-2$
-								UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); //$NON-NLS-1$
-								//UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
-						else {
-							UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-							plaf = UIManager.getLookAndFeel();
-							return plaf;
-						}
-		    			plaf = UIManager.getLookAndFeel();
+				FlatLafSupport.ensureInitialized();
+				plaf = UIManager.getLookAndFeel();
 
 			} catch (Exception e) {
 				e.printStackTrace();

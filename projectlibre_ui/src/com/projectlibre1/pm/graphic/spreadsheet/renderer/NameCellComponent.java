@@ -78,6 +78,7 @@ import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetParams;
 import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheetModel;
 import com.projectlibre1.graphic.configuration.CellFormat;
+import com.projectlibre1.util.FlatUiSupport;
 /**
  *
  */
@@ -265,7 +266,7 @@ public class NameCellComponent extends JPanel {
 			if (rendererComponent==null){
 				JComponent textComponent=new JLabel();
 				rendererComponent=new NameCellComponent(textComponent);
-				savedRendererFont=UIManager.getFont("Table.font");//rendererComponent.getFont();
+				savedRendererFont=FlatUiSupport.uiFont();
 				textComponent.setBorder(null);
 				rendererComponent.init();
 			}else rendererComponent.setFont(savedRendererFont);

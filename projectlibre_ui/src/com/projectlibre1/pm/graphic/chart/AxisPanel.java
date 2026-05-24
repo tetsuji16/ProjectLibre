@@ -66,6 +66,8 @@ import javax.swing.UIManager;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.ui.RectangleEdge;
 
+import com.projectlibre1.util.FlatUiSupport;
+
 /**
  * An axis panel that shows a right justified JFreeChart axis associated with a chart
  */
@@ -78,6 +80,7 @@ public class AxisPanel extends JPanel {
 	AxisPanel(ChartInfo chartInfo) {
 		this.chartInfo = chartInfo;
 		setBorder (UIManager.getBorder ("TableHeader.cellBorder"));
+		setBackground(FlatUiSupport.panelBackground());
 	}
 	/**
 	 * @param axis The axis to set.
@@ -95,7 +98,8 @@ public class AxisPanel extends JPanel {
 		RectangleEdge edge = RectangleEdge.LEFT; // plot is on the right
 		
 		axis.setVisible(true); // this enables this axis to draw.  Later on the axis is made invisible so the chart axis won't draw
-		
+		FlatUiSupport.enableAntialiasing((Graphics2D)graphics);
+
 		Dimension d = getSize();
 		int cursor = d.width; // set cursor to full width
 		int footerOffset = (int) Math.round(chartInfo.getFooterHeight());

@@ -66,12 +66,15 @@ import com.projectlibre1.pm.graphic.frames.MainFrameFactory;
 import com.projectlibre1.preference.ConfigurationFile;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatLafSupport;
 
 /**
  *
  */
 public class Main {
 	public static void main(String[] args) {
+		FlatLafSupport.ensureInitialized();
+
 		System.setProperty("apple.awt.application.name","ProjectLibre");
 		System.setProperty("apple.laf.useScreenMenuBar","true");
 		Locale.setDefault(ConfigurationFile.getLocale());
@@ -96,9 +99,7 @@ public class Main {
 //				System.exit(64);
 //			}
 		}
-
-
-		boolean newLook = false;
+		boolean newLook = true;
 //		HashMap opts = ApplicationStartupFactory.extractOpts(args); // allow setting menu look on command line - primarily for testing or webstart args
 //		newLook = opts.get("menu") == null;
 

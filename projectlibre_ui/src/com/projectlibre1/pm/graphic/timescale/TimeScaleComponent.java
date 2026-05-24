@@ -75,6 +75,7 @@ import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 import com.projectlibre1.timescale.TimeInterval;
 import com.projectlibre1.timescale.TimeIterator;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 
 
 /**
@@ -94,8 +95,8 @@ public class TimeScaleComponent extends JPanel {
 		int h=GraphicConfiguration.getInstance().getColumnHeaderHeight();
 
 
-		if (textColor==null) textColor=Color.BLACK;
-		if (lineColor==null) lineColor=Environment.isMac()?Color.LIGHT_GRAY:Color.BLACK;
+		if (textColor==null) textColor=FlatUiSupport.labelForeground();
+		if (lineColor==null) lineColor=FlatUiSupport.borderColor();
 
 //		setBackground(UIManager.getColor("TableHeader.cellColor"));
 //		setBackground(UIManager.getColor("TableHeader.cellBackground"));
@@ -109,10 +110,8 @@ public class TimeScaleComponent extends JPanel {
 		setPreferredSize(new Dimension(0,h));
 
 
-		if (Environment.isMac()){
-			setBackground(GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor()); //Using ColorUIResource directly doesn't work
-		}
-		else setBorder(UIManager.getBorder ("TableHeader.cellBorder"));
+		setBackground(GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor()); //Using ColorUIResource directly doesn't work
+		setBorder(UIManager.getBorder ("TableHeader.cellBorder"));
 	}
 
 
@@ -122,6 +121,7 @@ public class TimeScaleComponent extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D g2=(Graphics2D)g;
+		FlatUiSupport.enableAntialiasing(g2);
         paintTimeScale(g2,coord,getFont(),new Dimension(0,getHeight()),true);
 	}
 
@@ -130,6 +130,8 @@ public class TimeScaleComponent extends JPanel {
 	}
 
 	public static void paintTimeScale(Graphics2D g2,CoordinatesConverter coord,Font font,Dimension d,boolean clipping){
+		if (font == null)
+			font = FlatUiSupport.uiFont();
 		Rectangle clipBounds = g2.getClipBounds();
 		double h=d.getHeight();
 		double x0,w;

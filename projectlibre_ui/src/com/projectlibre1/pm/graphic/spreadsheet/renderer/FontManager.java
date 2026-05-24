@@ -63,13 +63,14 @@ import java.util.Map;
 import javax.swing.UIManager;
 
 import com.projectlibre1.graphic.configuration.CellFormat;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  * Manager of fonts for cells based on conditions
  */
 public class FontManager {
-	public static final Font SVG_DEFAULT_FONT=new Font("SansSerif",Font.PLAIN,12);
-	public static final Font DEFAULT_FONT=UIManager.getFont("Table.font");
+	public static final Font SVG_DEFAULT_FONT=FlatUiSupport.uiFont();
+	public static final Font DEFAULT_FONT=FlatUiSupport.uiFont();
 
 	public static Map boldMapping=new HashMap();
 	public static Map italicMapping=new HashMap();
@@ -114,10 +115,14 @@ public class FontManager {
 	//UIManager.put("Label.font",DEFAULT_FONT) can impact other parts
 	protected static Font offlineDefaultFont;
 	public static void setOfflineDefaultFont(Font font){
-		offlineDefaultFont=font;
+		offlineDefaultFont=font == null ? FlatUiSupport.uiFont() : font;
 	}
 	public static Font getOfflineDefaultFont(){
 		return offlineDefaultFont;
+	}
+
+	public static Font getDefaultFont() {
+		return FlatUiSupport.uiFont();
 	}
 	
 }
