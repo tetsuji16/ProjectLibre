@@ -55,8 +55,10 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic;
 
+import java.awt.Graphics2D;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
@@ -64,6 +66,7 @@ import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
 import org.pushingpixels.flamingo.api.common.icon.ImageWrapperResizableIcon;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
 
@@ -90,13 +93,50 @@ public class IconManager {
 	};
 	
 	private static URL getIconResource(String iconName) {
+		URL result = getIconResourceWithExtension(iconName, ".svg");
+		if (result != null)
+			return result;
+		result = getIconResourceWithExtension(iconName, null);
+		return result;
+	}
+
+	private static URL getIconResourceWithExtension(String iconName, String extension) {
+		String candidate = iconName;
+		if (extension != null) {
+			int dot = iconName.lastIndexOf('.');
+			if (dot >= 0)
+				candidate = iconName.substring(0, dot) + extension;
+			else
+				candidate = iconName + extension;
+		}
 		URL result = null;
 		for (int i = 0; i < iconPackages.length; i++) {
-			result = classLoader.getResource(iconPackages[i] + iconName);
+			result = classLoader.getResource(iconPackages[i] + candidate);
 			if (result != null)
 				break;
 		}
 		return result;
+	}
+
+	private static ImageIcon createImageIcon(URL url) {
+		if (url == null)
+			return null;
+		if (url.getPath() != null && url.getPath().toLowerCase(Locale.ROOT).endsWith(".svg")) {
+			try {
+				FlatSVGIcon svgIcon = new FlatSVGIcon(url);
+				BufferedImage image = new BufferedImage(Math.max(1, svgIcon.getIconWidth()), Math.max(1, svgIcon.getIconHeight()), BufferedImage.TYPE_INT_ARGB);
+				Graphics2D g2 = image.createGraphics();
+				try {
+					svgIcon.paintIcon(null, g2, 0, 0);
+				} finally {
+					g2.dispose();
+				}
+				return new ImageIcon(image);
+			} catch (Throwable ex) {
+				// fall back to the raster resource if SVG rendering is unavailable
+			}
+		}
+		return new ImageIcon(url);
 	}
 
 	public static URL getURL(String key) {
@@ -114,7 +154,7 @@ public class IconManager {
 			URL url = getURL(key);
 			if (url == null)
 				return null;
-			icon = new ImageIcon(url);
+			icon = createImageIcon(url);
 			icons.put(key, icon);
 		}
 		return icon;

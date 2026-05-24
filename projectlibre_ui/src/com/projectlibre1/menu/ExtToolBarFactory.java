@@ -69,6 +69,7 @@ import org.apache.batik.util.gui.resource.ToolBarFactory;
 import org.apache.commons.collections.MultiHashMap;
 
 import com.projectlibre1.pm.graphic.IconManager;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -87,6 +88,7 @@ public class ExtToolBarFactory extends ToolBarFactory {
 	public AbstractButton createJButton(String name) throws MissingResourceException,
 	ResourceFormatException, MissingListenerException {
 		AbstractButton button = super.createJButton(name);
+		FlatUiSupport.styleToolBarButton(button);
 		try {
 		    String s = getString(name+ExtMenuFactory.ICON_SUFFIX);
 		    ImageIcon icon = IconManager.getIcon(s);

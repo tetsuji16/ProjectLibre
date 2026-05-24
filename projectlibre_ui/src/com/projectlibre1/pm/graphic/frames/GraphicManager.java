@@ -219,6 +219,7 @@ import com.projectlibre1.util.Alert;
 import com.projectlibre1.util.BrowserControl;
 import com.projectlibre1.util.ClassUtils;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 import com.projectlibre1.workspace.SavableToWorkspace;
 import com.projectlibre1.workspace.WorkspaceSetting;
 
@@ -2777,7 +2778,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			toolBar.add(((DefaultFrameManager)getFrameManager()).getProjectComboPanel());
 			toolBar.add(Box.createRigidArea(new Dimension(20,20)));
 			if (Environment.isNewLaf())
-				toolBar.setBackground(Color.WHITE);
+				toolBar.setBackground(FlatUiSupport.panelBackground());
 			toolBar.setFloatable(false);
 			toolBar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		    Box top;
@@ -2798,7 +2799,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			contentPane.add(top, BorderLayout.BEFORE_FIRST_LINE);
 			contentPane.add(bottom,BorderLayout.AFTER_LAST_LINE);
 			if (Environment.isNewLaf())
-				contentPane.setBackground(Color.WHITE);
+				contentPane.setBackground(FlatUiSupport.panelBackground());
 
 			if (Environment.isMac()){
 				//System.setProperty("apple.laf.useScreenMenuBar","true");

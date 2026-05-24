@@ -84,6 +84,7 @@ import com.projectlibre1.pm.graphic.TabbedNavigation;
 import com.projectlibre1.preference.ConfigurationFile;
 import com.projectlibre1.util.ClassLoaderUtils;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -210,7 +211,9 @@ public class MenuManager {
 		return ribbonFactory;
 	}
 	public JToolBar getToolBar(String name) {
-		return toolBarFactory.createJToolBar(name);
+		JToolBar toolBar = toolBarFactory.createJToolBar(name);
+		FlatUiSupport.styleToolBar(toolBar);
+		return toolBar;
 	}
 	public void initComponent(String name, JComponent component) {
 		toolBarFactory.initJComponent(name,component);

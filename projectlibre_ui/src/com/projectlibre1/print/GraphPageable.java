@@ -84,7 +84,7 @@ public class GraphPageable extends PrintDocument implements ViewPrintableParams{
    }
 	private GraphPageable (SVGRenderer renderer,boolean pdfOnly,boolean printOnly,boolean pdfAsDefault,boolean localSettings) {
 		   super(renderer.getProject(),pdfOnly,printOnly,pdfAsDefault,localSettings);
-		   FontManager.setOfflineDefaultFont(FontManager.DEFAULT_FONT);
+		   FontManager.setOfflineDefaultFont(FontManager.getDefaultFont());
 		   this.renderer=renderer;
 
 		   GraphParams params=renderer.getParams();

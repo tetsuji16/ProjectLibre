@@ -65,6 +65,7 @@ import java.util.prefs.Preferences;
 import com.projectlibre1.dialog.UserInfoDialog;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatLafSupport;
 
 
 /**
@@ -72,6 +73,8 @@ import com.projectlibre1.util.Environment;
  */
 public class Main {
 	public static void main(String[] args) {
+		FlatLafSupport.initialize();
+
 		int runNumber=getRunNumber()+1;
 		long firstRun=getFirstRun();
 		Preferences.userNodeForPackage(Main.class).putInt("projectlibreRunNumber",runNumber);

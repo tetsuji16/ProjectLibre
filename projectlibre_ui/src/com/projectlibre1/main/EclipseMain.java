@@ -59,6 +59,7 @@ package com.projectlibre1.main;
 import com.projectlibre1.pm.graphic.frames.ApplicationStartupFactory;
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatLafSupport;
 import java.awt.Frame;
 
 import org.apache.commons.collections.Closure;
@@ -72,6 +73,7 @@ public class EclipseMain
 
     public static void main(String args[])
     {
+        FlatLafSupport.ensureInitialized();
         Frame frame = new Frame();
         createGraphicManager(frame,null);
     }
@@ -84,7 +86,6 @@ public class EclipseMain
     public static GraphicManager createGraphicManager(Frame frame, String as[],Closure updateViewClosure)
     {
         Environment.setStandAlone(true);
-        Environment.setNewLook(false);
         Environment.setPlugin(true);
         java.util.HashMap Hashtable = ApplicationStartupFactory.extractOpts(as);
         if (updateViewClosure!=null) Hashtable.put("updateViewClosure", updateViewClosure);

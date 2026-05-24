@@ -79,6 +79,7 @@ import org.jfree.ui.RectangleInsets;
 import com.projectlibre1.graphic.configuration.shape.Colors;
 import com.projectlibre1.pm.assignment.TimeDistributedConstants;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  * A simple demonstration application showing how to create a vertical bar
@@ -212,7 +213,7 @@ public class ChartHelper implements TimeDistributedConstants {
 	public static Color getColorForField(Object field) {
 		Color result = (Color) getMap().get(field);
 		if (result == null)
-			result = Color.BLACK;
+			result = FlatUiSupport.labelForeground();
 		return result;
 
 	}

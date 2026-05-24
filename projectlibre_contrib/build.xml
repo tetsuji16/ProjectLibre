@@ -139,6 +139,8 @@
 		<else>
 			<jar jarfile="projectlibre-contrib.jar">
 				<zipgroupfileset file="tmp/projectlibre-contrib-tmp.jar" /> 
+				<zipgroupfileset file="lib/flatlaf-3.7.1.jar" />
+				<zipgroupfileset file="lib/flatlaf-extras-3.7.1.jar" />
 				<zipgroupfileset file="lib/commons-beanutils.jar" /> 
 				<zipgroupfileset file="lib/commons-digester.jar" /> 
 				<zipgroupfileset file="lib/commons-pool.jar" /> 
