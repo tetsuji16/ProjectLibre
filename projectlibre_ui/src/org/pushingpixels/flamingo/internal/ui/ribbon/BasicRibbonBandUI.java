@@ -242,7 +242,7 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 		result.setFlat(true);
 		result.putClientProperty(BasicCommandButtonUI.EMULATE_SQUARE_BUTTON,
 				Boolean.TRUE);
-		result.setBorder(new EmptyBorder(3, 2, 3, 2));
+		result.setBorder(new EmptyBorder(1, 2, 1, 2));
 		result.setActionKeyTip(this.ribbonBand.getExpandButtonKeyTip());
 		result.setActionRichTooltip(this.ribbonBand
 				.getExpandButtonRichTooltip());
@@ -876,7 +876,7 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 			// Nimbus - is that you?
 			font = new JLabel().getFont();
 		}
-		int result = font.getSize() + 5;
+		int result = font.getSize() + 3;
 		if (result % 2 == 0)
 			result++;
 		return result;

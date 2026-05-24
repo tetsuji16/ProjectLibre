@@ -73,8 +73,8 @@ public class BasicRibbonTaskToggleButtonUI extends BasicCommandToggleButtonUI {
 
 		Border border = this.commandButton.getBorder();
 		if (border == null || border instanceof UIResource) {
-			Border toInstall = new BorderUIResource.EmptyBorderUIResource(6, 12,
-					6, 12);
+			Border toInstall = new BorderUIResource.EmptyBorderUIResource(4, 10,
+					4, 10);
 			this.commandButton.setBorder(toInstall);
 		}
 
@@ -211,6 +211,8 @@ public class BasicRibbonTaskToggleButtonUI extends BasicCommandToggleButtonUI {
 		Graphics2D g2d = (Graphics2D) graphics.create();
 		g2d.translate(toFill.x, toFill.y);
 		Color background = FlatUiSupport.panelBackground();
+		Color contextualGroupHueColor = ((JRibbonTaskToggleButton) this.commandButton)
+				.getContextualGroupHueColor();
 		Color underlineColor = contextualGroupHueColor != null
 				? contextualGroupHueColor
 				: FlatUiSupport.accentColor();
