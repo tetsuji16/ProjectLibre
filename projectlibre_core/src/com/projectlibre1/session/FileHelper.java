@@ -56,17 +56,15 @@
 package com.projectlibre1.session;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Locale;
 import java.util.prefs.Preferences;
 
 import javax.swing.Icon;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileView;
-import javax.swing.UIManager;
+
+import com.formdev.flatlaf.util.SystemFileChooser;
+import com.formdev.flatlaf.util.SystemFileChooser.FileFilter;
+import com.formdev.flatlaf.util.SystemFileChooser.FileNameExtensionFilter;
 
 import com.projectlibre1.preference.ConfigurationFile;
 import com.projectlibre1.strings.Messages;
@@ -78,24 +76,21 @@ public class FileHelper {
 	public static final int MSP_FILE_TYPE=101;
 	//public static final int SERVER_FILE_TYPE=1000;
 	
-    private JFileChooser fileChooser = null;
+    private SystemFileChooser fileChooser = null;
     private String chooserConfigurationSignature = null;
     private Boolean chooserConfigurationSaveMode = null;
-    private FileView chooserFileView = null;
     private FileFilter projectlibreFilter = null;
     private FileFilter microsoftFilter = null;
     private FileFilter microsoftXMLFilter = null;
     private FileFilter microsoftXlsxFilter = null;
     private FileFilter plannerFilter = null;
     private FileFilter projectFilter = null;
-    private PropertyChangeListener saveDialogFilterListener = null;
-    private String suggestedSaveFileName = null;
-    private boolean updatingSuggestedSaveFile = false;
 
-    private JFileChooser getFileChooser() {
+    private SystemFileChooser getFileChooser() {
     	if (fileChooser == null) {
-    		fileChooser = new JFileChooser();
-    		fileChooser.putClientProperty("FileChooser.useShellFolder", Boolean.FALSE); // see http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6317789
+    		fileChooser = new SystemFileChooser();
+    		fileChooser.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+    		fileChooser.setAcceptAllFileFilterUsed(true);
     	}
     	return fileChooser;
     }
@@ -107,105 +102,34 @@ public class FileHelper {
     	return Locale.getDefault().toString() + "|" + useExternalLocales + "|" + externalLocalesDirectory;
     }
 
-    private void configureFileChooser(JFileChooser chooser, final boolean save) {
+    private void configureFileChooser(SystemFileChooser chooser, final boolean save) {
     	setUpdateUI(chooser);
 
-		if (saveDialogFilterListener != null) {
-			chooser.removePropertyChangeListener(saveDialogFilterListener);
-			saveDialogFilterListener = null;
-		}
-
-    	chooserFileView = new FileView() {
-    		public Icon getIcon(File f) {
-    			String extension = getFileExtension(f.getName());
-    			if (extension != null) {
-    				if ("pod".equals(extension)) {
-    					return FileHelper.getIcon("format.projectlibre");
-    				}
-    			}
-    			return null;
-    		}
-    	};
-    	chooser.setFileView(chooserFileView);
-
-    	projectlibreFilter = new FileFilter() {
-    	    public boolean accept(File f) {
-    	    	return f.isDirectory() || f.getName().toLowerCase().endsWith("." + DEFAULT_FILE_EXTENSION);
-    	    }
-    	    public String getDescription() {
-    	    	return Messages.getString("File.projectlibre") + " (*." + DEFAULT_FILE_EXTENSION + ")";
-    	    }
-    	};
-    	microsoftFilter = new FileFilter() {
-    	    public boolean accept(File f) {
-    	    	boolean isAllowed;
-    			String n = f.getName().toLowerCase();
-    	    	if (save) isAllowed = false;
-    	    	else isAllowed = n.endsWith(".mpp") || n.endsWith(".mpx");
-    	    	return f.isDirectory() || isAllowed;
-    	    }
-    	    public String getDescription() {
-    	    	return Messages.getString("File.microsoft") + " (*.mpp, *.mpx)";
-    	    }
-    	};
-    	microsoftXMLFilter = new FileFilter() {
-    	    public boolean accept(File f) {
-    	    	boolean isAllowed;
-    			String n = f.getName().toLowerCase();
-    	    	if (save) isAllowed = n.endsWith(".xml");
-    	    	else isAllowed = n.endsWith(".xml");
-    	    	return f.isDirectory() || isAllowed;
-    	    }
-    	    public String getDescription() {
-    	    	return Messages.getString("File.microsoftXML") + " (*.xml)";
-    	    }
-    	};
-    	microsoftXlsxFilter = new FileFilter() {
-    	    public boolean accept(File f) {
-    	    	boolean isAllowed;
-    			String n = f.getName().toLowerCase();
-    	    	if (save) isAllowed = n.endsWith(".xlsx");
-    	    	else isAllowed = n.endsWith(".xlsx");
-    	    	return f.isDirectory() || isAllowed;
-    	    }
-    	    public String getDescription() {
-    	    	return "Excel Workbook (*.xlsx)";
-    	    }
-    	};
-    	plannerFilter = new FileFilter() {
-    	    public boolean accept(File f) {
-    	    	boolean isAllowed;
-    			String n = f.getName().toLowerCase();
-    	    	if (save) isAllowed = false;
-    	    	else isAllowed = n.endsWith("*.planner");
-    	    	return f.isDirectory() || isAllowed;
-    	    }
-    	    public String getDescription() {
-    	    	return Messages.getString("File.planner") + " (*.planner)";
-    	    }
-    	};
-    	projectFilter = new FileFilter() {
-    	    public boolean accept(File f) {
-    	    	if (projectlibreFilter.accept(f)) return true;
-    	    	if (microsoftXMLFilter.accept(f)) return true;
-    	    	if (microsoftXlsxFilter.accept(f)) return true;
-    	    	if (plannerFilter.accept(f)) return true;
-    	    	if (microsoftFilter.accept(f)) return true;
-    	    	return false;
-    	    }
-    	    public String getDescription() {
-    	    	return Messages.getString("File.projects");
-    	    }
-    	};
+    	projectlibreFilter = new FileNameExtensionFilter(
+    		Messages.getString("File.projectlibre") + " (*." + DEFAULT_FILE_EXTENSION + ")",
+    		DEFAULT_FILE_EXTENSION);
+    	microsoftFilter = new FileNameExtensionFilter(
+    		Messages.getString("File.microsoft") + " (*.mpp, *.mpx)",
+    		"mpp", "mpx");
+    	microsoftXMLFilter = new FileNameExtensionFilter(
+    		Messages.getString("File.microsoftXML") + " (*.xml)",
+    		"xml");
+    	microsoftXlsxFilter = new FileNameExtensionFilter(
+    		"Excel Workbook (*.xlsx)",
+    		"xlsx");
+    	plannerFilter = new FileNameExtensionFilter(
+    		Messages.getString("File.planner") + " (*.planner)",
+    		"planner");
+    	projectFilter = new FileNameExtensionFilter(
+    		Messages.getString("File.projects"),
+    		DEFAULT_FILE_EXTENSION, "xml", "xlsx", "planner", "mpp", "mpx");
 
     	chooser.resetChoosableFileFilters();
+    	chooser.setAcceptAllFileFilterUsed(true);
     	if (save) {
     		File selectedFile = chooser.getSelectedFile();
-    		if (selectedFile != null && microsoftXlsxFilter.accept(selectedFile)) {
-    			if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
-    			chooser.addChoosableFileFilter(microsoftXMLFilter);
-    			chooser.addChoosableFileFilter(microsoftXlsxFilter);
-    		} else if (selectedFile != null && microsoftFilter.accept(selectedFile)) {
+    		String selectedExtension = selectedFile != null ? getFileExtension(selectedFile.getName()) : null;
+    		if ("xlsx".equals(selectedExtension) || "mpp".equals(selectedExtension) || "mpx".equals(selectedExtension)) {
     			if (Environment.getStandAlone()) chooser.addChoosableFileFilter(projectlibreFilter);
     			chooser.addChoosableFileFilter(microsoftXMLFilter);
     			chooser.addChoosableFileFilter(microsoftXlsxFilter);
@@ -222,19 +146,6 @@ public class FileHelper {
     		chooser.addChoosableFileFilter(plannerFilter);
     		chooser.addChoosableFileFilter(projectFilter);
     	}
-
-		if (save) {
-			saveDialogFilterListener = new PropertyChangeListener() {
-				@Override
-				public void propertyChange(PropertyChangeEvent evt) {
-					if (!JFileChooser.FILE_FILTER_CHANGED_PROPERTY.equals(evt.getPropertyName())) {
-						return;
-					}
-					applySuggestedSaveFileName(chooser);
-				}
-			};
-			chooser.addPropertyChangeListener(saveDialogFilterListener);
-		}
     }
 
     private void ensureFileChooserConfigured(final boolean save) {
@@ -253,13 +164,11 @@ public class FileHelper {
     	if (!Environment.getStandAlone()&&save&&selectedFileName!=null&&selectedFileName.endsWith("."+DEFAULT_FILE_EXTENSION)){
     		selectedFileName=changeFileExtension(selectedFileName,save?"xml":"mpp");
     	}
-	JFileChooser fileChooser = getFileChooser();
+	SystemFileChooser fileChooser = getFileChooser();
 	ensureFileChooserConfigured(save);
-	suggestedSaveFileName = save ? selectedFileName : null;
 	if (selectedFileName != null) {
 		fileChooser.setSelectedFile(new File(getSuggestedSaveFileName(selectedFileName, fileChooser.getFileFilter())));
 	}
-    	fileChooser.setDialogType(save?JFileChooser.SAVE_DIALOG:JFileChooser.OPEN_DIALOG);
     	if (selectedFileName==null){
     		try {
     			String initialDirName=Preferences.userNodeForPackage(FileHelper.class).get("lastDirectory",System.getProperty("user.home")+File.separator+"ProjectLibre");
@@ -268,7 +177,8 @@ public class FileHelper {
 			}
     	}
     	
-		if (fileChooser.showDialog(fileChooserParent, null)!=JFileChooser.APPROVE_OPTION)
+		int result = save ? fileChooser.showSaveDialog(fileChooserParent) : fileChooser.showOpenDialog(fileChooserParent);
+		if (result != SystemFileChooser.APPROVE_OPTION)
 			return null;
 		File file=fileChooser.getSelectedFile();
 		String fileName=file.toString();
@@ -286,18 +196,6 @@ public class FileHelper {
 		Preferences.userNodeForPackage(FileHelper.class).put("lastDirectory",file.getParent());
 		return fileName;
     	
-    }
-
-    private void applySuggestedSaveFileName(JFileChooser chooser) {
-		if (updatingSuggestedSaveFile || suggestedSaveFileName == null) {
-			return;
-		}
-		updatingSuggestedSaveFile = true;
-		try {
-			chooser.setSelectedFile(new File(getSuggestedSaveFileName(suggestedSaveFileName, chooser.getFileFilter())));
-		} finally {
-			updatingSuggestedSaveFile = false;
-		}
     }
 
     private String getSuggestedSaveFileName(String baseFileName, FileFilter filter) {
@@ -366,51 +264,7 @@ public class FileHelper {
     	return 0;
     }
 
-   public JFileChooser setUpdateUI(JFileChooser choose) {
-       UIManager.put("FileChooser.openButtonText", Messages.getString("T_OPEN_TXT"));
-       UIManager.put("FileChooser.cancelButtonText", Messages.getString("T_CANCEL"));
-       UIManager.put("FileChooser.lookInLabelText", Messages.getString("T_LOOK_IN"));
-       UIManager.put("FileChooser.fileNameLabelText", Messages.getString("T_FILE_NAME"));
-       UIManager.put("FileChooser.filesOfTypeLabelText", Messages.getString("T_FILES_OF_TYPE"));
-
-       UIManager.put("FileChooser.saveButtonText", Messages.getString("T_SAVE"));
-       UIManager.put("FileChooser.saveButtonToolTipText", Messages.getString("T_SAVE"));
-       UIManager.put("FileChooser.openButtonText", Messages.getString("T_OPEN_TXT"));
-       UIManager.put("FileChooser.openButtonToolTipText", Messages.getString("T_OPEN_TXT"));
-       UIManager.put("FileChooser.cancelButtonText", Messages.getString("T_CANCEL"));
-       UIManager.put("FileChooser.cancelButtonToolTipText", Messages.getString("T_CANCEL"));
-
-       UIManager.put("FileChooser.lookInLabelText", Messages.getString("T_LOOK_IN"));
-       UIManager.put("FileChooser.saveInLabelText", Messages.getString("T_SAVE_IN"));
-       UIManager.put("FileChooser.fileNameLabelText", Messages.getString("T_FILE_NAME"));
-       UIManager.put("FileChooser.filesOfTypeLabelText", Messages.getString("T_FILES_OF_TYPE"));
-
-       UIManager.put("FileChooser.upFolderToolTipText", Messages.getString("T_UP_FOLDER"));
-       UIManager.put("FileChooser.homeFolderToolTipText", Messages.getString("T_HOME"));
-       UIManager.put("FileChooser.newFolderToolTipText", Messages.getString("T_NEW_FOLDER"));
-       UIManager.put("FileChooser.listViewButtonToolTipText", Messages.getString("T_LIST_VIEW"));
-       UIManager.put("FileChooser.detailsViewButtonToolTipText", Messages.getString("T_DETAILS_VIEW"));
-       UIManager.put("FileChooser.fileNameHeaderText", Messages.getString("T_NAME"));
-       UIManager.put("FileChooser.fileSizeHeaderText", Messages.getString("T_FILE_SIZE"));
-       UIManager.put("FileChooser.fileTypeHeaderText", Messages.getString("T_FILE_TYPE"));
-       UIManager.put("FileChooser.fileDateHeaderText", Messages.getString("T_FILE_DATE"));
-       UIManager.put("FileChooser.fileAttrHeaderText", Messages.getString("T_FILE_ATTR"));
-
-       UIManager.put("FileChooser.acceptAllFileFilterText", Messages.getString("T_ALL_FILES"));
-
-       UIManager.put("FileChooser.openDialogTitleText", Messages.getString("T_OPEN_TXT"));
-       UIManager.put("FileChooser.saveDialogTitleText", Messages.getString("T_SAVE"));
-
-       UIManager.put("FileChooser.refreshActionLabelText", Messages.getString("T_REFRESH"));
-       UIManager.put("FileChooser.viewMenuLabelText", Messages.getString("T_VIEW"));
-       UIManager.put("FileChooser.listViewActionLabelText", Messages.getString("T_LIST_VIEW"));
-       UIManager.put("FileChooser.detailsViewActionLabelText", Messages.getString("T_DETAILS_VIEW"));
-       UIManager.put("FileChooser.newFolderActionLabelText", Messages.getString("T_NEW_FOLDER"));
-
-       UIManager.put("FileChooser.directoryOpenButtonText", Messages.getString("T_OPEN_TXT"));
-       UIManager.put("FileChooser.directoryOpenButtonToolTipText", Messages.getString("T_OPEN_TXT"));
-
-       choose.updateUI();
+   private SystemFileChooser setUpdateUI(SystemFileChooser choose) {
        return choose;
    }
     

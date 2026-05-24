@@ -61,8 +61,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
+import com.formdev.flatlaf.util.SystemFileChooser;
+import com.formdev.flatlaf.util.SystemFileChooser.FileNameExtensionFilter;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
@@ -113,25 +113,21 @@ public class PDFExport {
 		jobQueue.schedule(job);
 	}
 
-    private static JFileChooser chooser=null;
+    private static SystemFileChooser chooser=null;
+    private static FileNameExtensionFilter pdfFilter=null;
     private static File chooseFile(String projectName, Component parentComponent) {
     	if (chooser == null){
-    		chooser = new JFileChooser();
-    		chooser.putClientProperty("FileChooser.useShellFolder", Boolean.FALSE);
-    		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
-    		chooser.addChoosableFileFilter(new FileFilter(){
-    		    public boolean accept(File f){
-    		    	return f.isDirectory()||f.getName().toLowerCase().endsWith(".pdf");
-    		    }
-    		    public String getDescription(){
-    		    	return "PDF (*.pdf)";
-    		    }
-    		});
+    		chooser = new SystemFileChooser();
+    		chooser.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+    		chooser.setAcceptAllFileFilterUsed(true);
+    		pdfFilter = new FileNameExtensionFilter("PDF (*.pdf)", "pdf");
+    		chooser.addChoosableFileFilter(pdfFilter);
     	}
 		if (projectName.length()==0)
 			projectName="project";
 		chooser.setSelectedFile(new File(projectName+".pdf"));
-		if (chooser.showDialog(parentComponent, null) == JFileChooser.APPROVE_OPTION){
+		chooser.setFileFilter(pdfFilter);
+		if (chooser.showSaveDialog(parentComponent) == SystemFileChooser.APPROVE_OPTION){
 			File file=chooser.getSelectedFile();
 			if (!file.getName().endsWith(".pdf")) file=new File(file.getName()+".pdf"); //add pdf extension if missing
 			return file;
