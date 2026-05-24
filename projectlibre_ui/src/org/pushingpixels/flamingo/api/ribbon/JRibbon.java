@@ -39,8 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -51,10 +49,8 @@ import org.pushingpixels.flamingo.api.common.AbstractCommandButton;
 import org.pushingpixels.flamingo.api.common.CommandButtonDisplayState;
 import org.pushingpixels.flamingo.api.common.RichTooltip;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
+import org.pushingpixels.flamingo.internal.ui.ribbon.BasicRibbonUI;
 import org.pushingpixels.flamingo.internal.ui.ribbon.RibbonUI;
-
-import com.projectlibre.ui.ribbon.ProjectLibreRibbonUI;
-
 
 /**
  * The ribbon component.
@@ -235,21 +231,7 @@ public class JRibbon extends JComponent {
 	/**
 	 * The UI class ID string.
 	 */
-	//public static final String uiClassID = "RibbonUI";
-	public static final String uiClassID = "ProjectLibreRibbonUI";
-	
-	
-	
-	
-	
-	
-	
-	
-	//projectlibre
-	protected JPanel fileSelector;
-	protected JPanel languageSelector;
-	protected JPanel projectViews;
-	protected JLabel projectlibreLogo;
+	public static final String uiClassID = "RibbonUI";
 
 
 	
@@ -268,12 +250,6 @@ public class JRibbon extends JComponent {
 		this.currentlySelectedTask = null;
 		this.groupVisibilityMap = new HashMap<RibbonContextualTaskGroup, Boolean>();
 		
-		//projectlibre
-		fileSelector=new JPanel();
-		languageSelector=new JPanel();
-		projectViews=new JPanel();
-		projectlibreLogo=new JLabel();
-
 		updateUI();
 	}
 	
@@ -593,7 +569,7 @@ public class JRibbon extends JComponent {
 		if (UIManager.get(getUIClassID()) != null) {
 			setUI(UIManager.getUI(this));
 		} else {
-			setUI(new ProjectLibreRibbonUI()); //projectlibre
+			setUI(new BasicRibbonUI());
 		}
 		for (Component comp : this.taskbarComponents) {
 			SwingUtilities.updateComponentTreeUI(comp);
@@ -860,28 +836,4 @@ public class JRibbon extends JComponent {
 		super.setVisible(flag);
 	}
 
-
-	//projectlibre
-	public JPanel getFileSelector() {
-		return fileSelector;
-	}
-	
-	
-	public JPanel getLanguageSelector() {
-		return languageSelector;
-	}
-
-
-	public JPanel getProjectViews() {
-		return projectViews;
-	}
-
-
-	public JLabel getProjectLibreLogo() {
-		return projectlibreLogo;
-	}
-	
-	
-	
-	
 }

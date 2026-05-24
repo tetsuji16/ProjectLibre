@@ -496,8 +496,6 @@ public class BasicRibbonUI extends RibbonUI {
 		if (!ribbon.isMinimized()) {
 			Insets ins = c.getInsets();
 			int extraHeight = getTaskToggleButtonHeight();
-			if (!this.isUsingTitlePane())
-				extraHeight += getTaskbarHeight();
 			this.paintTaskArea(g, 0, ins.top + extraHeight, c.getWidth(), c
 					.getHeight()
 					- extraHeight - ins.top - ins.bottom);
@@ -734,8 +732,6 @@ public class BasicRibbonUI extends RibbonUI {
 			}
 
 			int extraHeight = getTaskToggleButtonHeight();
-			if (!isUsingTitlePane())
-				extraHeight += getTaskbarHeight();
 			int prefHeight = maxPrefBandHeight + extraHeight + ins.top
 					+ ins.bottom;
 			// System.out.println("Ribbon pref = " + prefHeight);
@@ -757,8 +753,6 @@ public class BasicRibbonUI extends RibbonUI {
 			int gap = getBandGap();
 
 			int extraHeight = getTaskToggleButtonHeight();
-			if (!isUsingTitlePane())
-				extraHeight += getTaskbarHeight();
 
 			if (ribbon.getTaskCount() > 0) {
 				boolean isRibbonMinimized = ribbon.isMinimized();
@@ -791,7 +785,7 @@ public class BasicRibbonUI extends RibbonUI {
 		 * @see java.awt.LayoutManager#layoutContainer(java.awt.Container)
 		 */
 		@Override
-        public void layoutContainer(Container c) {
+		public void layoutContainer(Container c) {
 			// System.out.println("Ribbon real = " + c.getHeight());
 
 			Insets ins = c.getInsets();
@@ -799,10 +793,10 @@ public class BasicRibbonUI extends RibbonUI {
 
 			boolean ltr = ribbon.getComponentOrientation().isLeftToRight();
 
-			// the top row - task bar components
+			// the single top row - task bar components, task buttons and help
 			int width = c.getWidth();
-			int taskbarHeight = getTaskbarHeight();
 			int y = ins.top;
+			int rowHeight = getTaskToggleButtonHeight();
 
 			boolean isUsingTitlePane = isUsingTitlePane();
 			// handle taskbar only if it is not marked
@@ -811,39 +805,19 @@ public class BasicRibbonUI extends RibbonUI {
 				for (Component regComp : ribbon.getTaskbarComponents()) {
 					taskBarPanel.add(regComp);
 				}
-				// taskbar takes all available width
-				taskBarPanel.setBounds(ins.left, ins.top, width - ins.left
-						- ins.right, taskbarHeight);
-				y += taskbarHeight;
+				Dimension taskBarPref = taskBarPanel.getPreferredSize();
+				taskBarPanel.setBounds(ins.left, y, taskBarPref.width,
+						rowHeight);
 			} else {
 				taskBarPanel.setBounds(0, 0, 0, 0);
 			}
 
-			int taskToggleButtonHeight = getTaskToggleButtonHeight();
-
 			int x = ltr ? ins.left : width - ins.right;
-			// the application menu button
-			int appMenuButtonSize = taskbarHeight + taskToggleButtonHeight;
 			if (!isUsingTitlePane) {
-				applicationMenuButton
-						.setVisible(ribbon.getApplicationMenu() != null);
-				if (ribbon.getApplicationMenu() != null) {
-					if (ltr) {
-						applicationMenuButton.setBounds(x, ins.top,
-								appMenuButtonSize, appMenuButtonSize);
-					} else {
-						applicationMenuButton.setBounds(x - appMenuButtonSize,
-								ins.top, appMenuButtonSize, appMenuButtonSize);
-					}
-				}
-			} else {
-				applicationMenuButton.setVisible(false);
+				x = ltr ? (taskBarPanel.getX() + taskBarPanel.getWidth()
+						+ tabButtonGap) : (taskBarPanel.getX() - tabButtonGap);
 			}
-			x = ltr ? x + 2 : x - 2;
-			if (FlamingoUtilities.getApplicationMenuButton(SwingUtilities
-					.getWindowAncestor(ribbon)) != null) {
-				x = ltr ? x + appMenuButtonSize : x - appMenuButtonSize;
-			}
+			applicationMenuButton.setVisible(false);
 
 			// the help button
 			if (helpButton != null) {
@@ -863,14 +837,14 @@ public class BasicRibbonUI extends RibbonUI {
 						.getX()
 						- tabButtonGap - x) : (c.getWidth() - ins.right - x);
 				taskToggleButtonsScrollablePanel.setBounds(x, y,
-						taskButtonsWidth, taskToggleButtonHeight);
+						taskButtonsWidth, rowHeight);
 			} else {
 				int taskButtonsWidth = (helpButton != null) ? (x - tabButtonGap
 						- helpButton.getX() - helpButton.getWidth())
 						: (x - ins.left);
 				taskToggleButtonsScrollablePanel.setBounds(
 						x - taskButtonsWidth, y, taskButtonsWidth,
-						taskToggleButtonHeight);
+						rowHeight);
 			}
 
 			TaskToggleButtonsHostPanel taskToggleButtonsHostPanel = taskToggleButtonsScrollablePanel
@@ -882,21 +856,15 @@ public class BasicRibbonUI extends RibbonUI {
 					taskToggleButtonsScrollablePanel.getBounds().height));
 			taskToggleButtonsScrollablePanel.doLayout();
 
-			y += taskToggleButtonHeight;
-
-			int extraHeight = taskToggleButtonHeight;
-			if (!isUsingTitlePane)
-				extraHeight += taskbarHeight;
-
 			if (bandScrollablePanel.getParent() == ribbon) {
 				if (!ribbon.isMinimized() && (ribbon.getTaskCount() > 0)) {
 					// y += ins.top;
 					Insets bandInsets = (ribbon.getSelectedTask()
 							.getBandCount() == 0) ? new Insets(0, 0, 0, 0)
 							: ribbon.getSelectedTask().getBand(0).getInsets();
-					bandScrollablePanel.setBounds(1 + ins.left, y
+					bandScrollablePanel.setBounds(1 + ins.left, y + rowHeight
 							+ bandInsets.top, c.getWidth() - 2 * ins.left - 2
-							* ins.right - 1, c.getHeight() - extraHeight
+							* ins.right - 1, c.getHeight() - rowHeight
 							- ins.top - ins.bottom - bandInsets.top
 							- bandInsets.bottom);
 					// System.out.println("Scrollable : "
@@ -912,6 +880,7 @@ public class BasicRibbonUI extends RibbonUI {
 					bandScrollablePanel.setBounds(0, 0, 0, 0);
 				}
 			}
+
 		}
 	}
 
@@ -1031,233 +1000,9 @@ public class BasicRibbonUI extends RibbonUI {
 		 */
 		@Override
 		protected void paintComponent(Graphics g) {
-			Shape contour = getOutline(this);
-
 			Graphics2D g2d = (Graphics2D) g.create();
-			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
-			RenderingUtils.installDesktopHints(g2d);
-
-			if (contour != null) {
-				g2d.setComposite(AlphaComposite.SrcOver.derive(0.6f));
-				g2d.setColor(FlamingoUtilities.getColor(Color.lightGray
-						.brighter(), "Panel.background"));
-				g2d.fill(contour);
-				g2d.setColor(FlamingoUtilities.getBorderColor().darker());
-				g2d.draw(contour);
-			}
-
-			boolean ltr = getComponentOrientation().isLeftToRight();
-			int maxX = 0;
-			int minX = getWidth();
-			if (this.getComponentCount() == 0) {
-				maxX = 1;
-				minX = getWidth() - 1;
-				if (applicationMenuButton.isVisible()) {
-					maxX += applicationMenuButton.getX()
-							+ applicationMenuButton.getWidth();
-					minX = applicationMenuButton.getX() - 1;
-				}
-			} else {
-				for (int i = 0; i < this.getComponentCount(); i++) {
-					Component taskBarComp = this.getComponent(i);
-					maxX = Math.max(maxX, taskBarComp.getX()
-							+ taskBarComp.getWidth());
-					minX = Math.min(minX, taskBarComp.getX());
-				}
-			}
-			int height = getHeight();
-			if (ltr) {
-				g2d.drawLine(maxX, height - 1, getWidth(), height - 1);
-			} else {
-				g2d.drawLine(0, height - 1, minX, height - 1);
-			}
-
-			int contourMaxX = (contour != null) ? (int) contour.getBounds2D()
-					.getMaxX() + 6 : 6;
-			int contourMinX = (contour != null) ? (int) contour.getBounds2D()
-					.getMinX() - 6 : 6;
-
-			// contextual task group headers
-			if (!isShowingScrollsForTaskToggleButtons()) {
-				g2d.setComposite(AlphaComposite.SrcOver);
-				// the taskbar panel is not at the zero X coordinate of the
-				// ribbon
-				g2d.translate(-this.getBounds().x, 0);
-				for (int i = 0; i < ribbon.getContextualTaskGroupCount(); i++) {
-					RibbonContextualTaskGroup taskGroup = ribbon
-							.getContextualTaskGroup(i);
-					if (!ribbon.isVisible(taskGroup))
-						continue;
-					Rectangle taskGroupBounds = getContextualTaskGroupBounds(taskGroup);
-
-					Color hueColor = taskGroup.getHueColor();
-					Paint paint = new GradientPaint(
-							0,
-							0,
-							FlamingoUtilities.getAlphaColor(hueColor, 0),
-							0,
-							height,
-							FlamingoUtilities
-									.getAlphaColor(
-											hueColor,
-											(int) (255 * RibbonContextualTaskGroup.HUE_ALPHA)));
-					// translucent gradient paint
-					g2d.setPaint(paint);
-					int startX = ltr ? taskGroupBounds.x : Math.min(
-							contourMinX, taskGroupBounds.x);
-					int width = ltr ? taskGroupBounds.x + taskGroupBounds.width
-							- startX : Math.min(taskGroupBounds.x
-							+ taskGroupBounds.width, contourMinX)
-							- startX;
-
-					if (width > 0) {
-						g2d.fillRect(startX, 0, width, height);
-						// and a solid line at the bottom
-						g2d.setColor(hueColor);
-						g2d.drawLine(startX + 1, height - 1, startX + width,
-								height - 1);
-
-						// task group title
-						g2d.setColor(FlamingoUtilities.getColor(Color.black,
-								"Button.foreground"));
-						FontMetrics fm = this.getFontMetrics(ribbon.getFont());
-						int yOffset = (height + fm.getHeight()) / 2
-								- fm.getDescent();
-						int availableTextWidth = width - 10;
-						String titleToShow = taskGroup.getTitle();
-						if (fm.stringWidth(titleToShow) > availableTextWidth) {
-							while (true) {
-								if (titleToShow.length() == 0)
-									break;
-								if (fm.stringWidth(titleToShow + "...") <= availableTextWidth)
-									break;
-								titleToShow = titleToShow.substring(0,
-										titleToShow.length() - 1);
-							}
-							titleToShow += "...";
-						}
-						if (ltr) {
-							BasicGraphicsUtils.drawString(g2d, titleToShow, -1,
-									startX + 5, yOffset);
-						} else {
-							BasicGraphicsUtils.drawString(g2d, titleToShow, -1,
-									startX + width - 5
-											- fm.stringWidth(titleToShow),
-									yOffset);
-						}
-
-						// separator lines
-						Color color = FlamingoUtilities.getBorderColor();
-						g2d.setPaint(new GradientPaint(0, 0, FlamingoUtilities
-								.getAlphaColor(color, 0), 0, height, color));
-						// left line
-						g2d.drawLine(startX, 0, startX, height);
-						// right line
-						g2d.drawLine(startX + width, 0, startX + width, height);
-					}
-				}
-			}
-
 			g2d.dispose();
 
-		}
-
-		/**
-		 * Returns the outline of this taskbar panel.
-		 * 
-		 * @param insets
-		 *            Insets.
-		 * @return The outline of this taskbar panel.
-		 */
-		protected Shape getOutline(TaskbarPanel taskbarPanel) {
-			double height = this.getHeight() - 1;
-			boolean ltr = taskbarPanel.getComponentOrientation()
-					.isLeftToRight();
-			if (this.getComponentCount() == 0) {
-				if (applicationMenuButton.isVisible()) {
-					// no taskbar components
-					if (ltr) {
-						int x = 1;
-						if (applicationMenuButton.isVisible()) {
-							x += applicationMenuButton.getX()
-									+ applicationMenuButton.getWidth();
-						}
-						return new Arc2D.Double(x - 1 - 2 * height, 0,
-								2 * height, 2 * height, 0, 90, Arc2D.OPEN);
-					} else {
-						int x = taskbarPanel.getWidth() - 1;
-						if (applicationMenuButton.isVisible()) {
-							x = applicationMenuButton.getX() - 1;
-						}
-						return new Arc2D.Double(x + 1, 0, 2 * height,
-								2 * height, 90, 90, Arc2D.OPEN);
-					}
-				} else {
-					return null;
-				}
-			} else {
-				int minX = this.getWidth();
-				int maxX = 0;
-				for (int i = 0; i < this.getComponentCount(); i++) {
-					Component taskBarComp = this.getComponent(i);
-					minX = Math.min(minX, taskBarComp.getX());
-					maxX = Math.max(maxX, taskBarComp.getX()
-							+ taskBarComp.getWidth());
-				}
-
-				float radius = (float) height / 2.0f;
-
-				GeneralPath outline = new GeneralPath();
-
-				if (ltr) {
-					// top left corner
-					if (applicationMenuButton.isVisible()) {
-						outline.moveTo(minX + 5 - 2 * radius, 0);
-					} else {
-						outline.moveTo(minX - 1, 0);
-					}
-					// top right corner
-					outline.lineTo(maxX, 0);
-					// right arc
-					outline.append(new Arc2D.Double(maxX - radius, 0, height,
-							height, 90, -180, Arc2D.OPEN), true);
-					// bottom left corner
-					outline.lineTo(minX - 1, height);
-					if (applicationMenuButton.isVisible()) {
-						// left arc
-						outline.append(new Arc2D.Double(minX - 1 - 2 * height,
-								0, 2 * height, 2 * height, 0, 90, Arc2D.OPEN),
-								true);
-					} else {
-						outline.lineTo(minX - 1, 0);
-					}
-				} else {
-					// top right corner
-					if (applicationMenuButton.isVisible()) {
-						outline.moveTo(maxX - 5 + 2 * radius, 0);
-					} else {
-						outline.moveTo(maxX - 1, 0);
-					}
-					// top left corner
-					outline.lineTo(minX, 0);
-					// left arc
-					outline.append(new Arc2D.Double(minX - radius, 0, height,
-							height, 90, 180, Arc2D.OPEN), true);
-					// bottom right corner
-					outline.lineTo(maxX - 1, height);
-					if (applicationMenuButton.isVisible()) {
-						outline.append(new Arc2D.Double(maxX - 1, 0,
-								2 * height, 2 * height, 180, -90, Arc2D.OPEN),
-								true);
-					} else {
-						outline.lineTo(maxX + 1, 0);
-					}
-
-				}
-
-				return outline;
-			}
 		}
 
 		/*
@@ -1267,9 +1012,7 @@ public class BasicRibbonUI extends RibbonUI {
 		 */
 		@Override
 		public Dimension getPreferredSize() {
-			Dimension result = super.getPreferredSize();
-			return new Dimension(result.width + result.height / 2,
-					result.height);
+			return super.getPreferredSize();
 		}
 	}
 
@@ -2038,7 +1781,7 @@ public class BasicRibbonUI extends RibbonUI {
 		ActionListener helpListener = this.ribbon.getHelpActionListener();
 		if (helpListener != null) {
 			this.helpButton = new JCommandButton("", this.ribbon.getHelpIcon());
-			this.helpButton.setDisplayState(CommandButtonDisplayState.SMALL);
+			this.helpButton.setDisplayState(CommandButtonDisplayState.FIT_TO_ICON);
 			this.helpButton.setCommandButtonKind(CommandButtonKind.ACTION_ONLY);
 			this.helpButton.getActionModel().addActionListener(helpListener);
 			this.ribbon.add(this.helpButton);

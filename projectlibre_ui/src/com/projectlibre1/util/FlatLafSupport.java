@@ -28,9 +28,7 @@ public final class FlatLafSupport {
 				JDialog.setDefaultLookAndFeelDecorated(true);
 			}
 
-			if (!(UIManager.getLookAndFeel() instanceof com.formdev.flatlaf.FlatLaf)) {
-				UIManager.setLookAndFeel(new FlatLightLaf());
-			}
+			FlatLightLaf.setup();
 
 			Font defaultFont = createDefaultFont();
 			if (defaultFont != null) {

@@ -127,7 +127,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
-import com.projectlibre.ui.ribbon.ProjectLibreRibbonUI;
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.configuration.Settings;
 import com.projectlibre1.menu.MenuManager;
