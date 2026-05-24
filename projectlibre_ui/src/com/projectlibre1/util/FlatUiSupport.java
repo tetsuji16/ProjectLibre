@@ -8,6 +8,7 @@ import java.awt.Font;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
@@ -93,6 +94,14 @@ public final class FlatUiSupport {
 		return color("Component.borderColor", labelForeground().darker());
 	}
 
+	public static Color tabSelectedForeground() {
+		return accentColor();
+	}
+
+	public static Color tabUnselectedForeground() {
+		return labelForeground();
+	}
+
 	public static Color tableGridColor() {
 		return color("Table.gridColor", borderColor());
 	}
@@ -137,6 +146,19 @@ public final class FlatUiSupport {
 		button.setFocusPainted(false);
 		button.setRolloverEnabled(true);
 		button.setMargin(new Insets(3, 5, 3, 5));
+	}
+
+	public static void styleTabbedPane(JTabbedPane tabbedPane) {
+		if (tabbedPane == null)
+			return;
+		tabbedPane.putClientProperty("JTabbedPane.tabType", "underlined");
+		tabbedPane.putClientProperty("JTabbedPane.showTabSeparators", Boolean.TRUE);
+		tabbedPane.putClientProperty("JTabbedPane.tabSeparatorsFullHeight", Boolean.TRUE);
+		tabbedPane.putClientProperty("JTabbedPane.showContentSeparator", Boolean.FALSE);
+		tabbedPane.putClientProperty("JTabbedPane.tabHeight", Integer.valueOf(36));
+		tabbedPane.setOpaque(true);
+		tabbedPane.setBackground(panelBackground());
+		tabbedPane.setForeground(tabUnselectedForeground());
 	}
 
 	public static Border focusBorder() {

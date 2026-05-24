@@ -85,6 +85,7 @@ import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.graphic.configuration.shape.Colors;
 import com.projectlibre1.util.Environment;
 import com.projectlibre1.util.FlatLafSupport;
+import com.projectlibre1.util.FlatUiSupport;
 
 public class LafManagerImpl implements LafManager {
     protected static LookAndFeel plaf = null; // for substance
@@ -282,7 +283,7 @@ public class LafManagerImpl implements LafManager {
 	 * @see com.projectlibre1.pm.graphic.laf.LafManager1#setUI(javax.swing.JTabbedPane)
 	 */
 	public void setUI(JTabbedPane component){
-
+		FlatUiSupport.styleTabbedPane(component);
 	}
 
 	/* (non-Javadoc)

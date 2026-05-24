@@ -73,6 +73,7 @@ import com.projectlibre1.pm.resource.Resource;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.Task;
 import com.projectlibre1.strings.Messages;
+import com.projectlibre1.util.FlatUiSupport;
 import com.projectlibre1.util.Environment;
 /**
  *
@@ -102,6 +103,7 @@ public class ProjectInformationDialog extends InformationDialog {
 		CellConstraints cc = new CellConstraints();
 		
 		tabbedPane= new JTabbedPane();
+		FlatUiSupport.styleTabbedPane(tabbedPane);
 		tabbedPane.addTab(Messages.getString("ProjectInformationDialog.General"),createGeneralPanel()); //$NON-NLS-1$
 		tabbedPane.addTab(Messages.getString("ProjectInformationDialog.Statistics"),createStatisticsPanel()); //$NON-NLS-1$
 		tabbedPane.addTab(Messages.getString("ProjectInformationDialog.Notes"), createNotesPanel()); //$NON-NLS-1$

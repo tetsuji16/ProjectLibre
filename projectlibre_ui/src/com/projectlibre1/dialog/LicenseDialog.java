@@ -75,6 +75,7 @@ import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Alert;
 import com.projectlibre1.util.BrowserControl;
 import com.projectlibre1.util.Environment;
+import com.projectlibre1.util.FlatUiSupport;
 
 public final class LicenseDialog extends AbstractDialog {
 	private static final long serialVersionUID = 1L;
@@ -178,6 +179,7 @@ public final class LicenseDialog extends AbstractDialog {
 			builder.append(new JScrollPane(thirdParty));
 		} else {
 			JTabbedPane tabbed= new JTabbedPane();
+			FlatUiSupport.styleTabbedPane(tabbed);
 			tabbed.addTab(Messages.getString("LicenseDialog.License"),new JScrollPane(license));
 			tabbed.addTab(Messages.getString("LicenseDialog.ThirdParty"),new JScrollPane(thirdParty));
 			builder.append(tabbed);

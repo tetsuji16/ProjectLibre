@@ -96,6 +96,7 @@ import com.projectlibre1.menu.MenuManager;
 import com.projectlibre1.pm.graphic.frames.DocumentFrame;
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.strings.Messages;
+import com.projectlibre1.util.FlatUiSupport;
 import com.projectlibre1.util.Environment;
 
 public class TabbedNavigation implements MenuActionConstants, Serializable {
@@ -109,19 +110,15 @@ public class TabbedNavigation implements MenuActionConstants, Serializable {
 	private static int eventNum = 0;
 	private JPopupMenu trackingPopup = null;
 	private int resourceTabCount = 0;
-	private static Color backgroundSelected = new Color(125,157,230);
-	//UIManager.getColor("ProgressBar.selectionBackground");
-    private Color backgroundUnselected=UIManager.getColor("TabbedPane.unselectedBackground");
-
 	private ArrayList<JButton> trackingButtons = new ArrayList<JButton>();
 
 	private class ExtTabbedPane extends JTabbedPane {
 		private static final long serialVersionUID = 7993870683783896098L;
 		ExtTabbedPane() {
 			setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			final Font normal = new Font("Verdana", 1, 11);
-			setFont(normal);
+			setFont(FlatUiSupport.uiFont());
 			setBorder(BorderFactory.createEmptyBorder());
+			FlatUiSupport.styleTabbedPane(this);
 
 			addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent e) {
@@ -133,14 +130,14 @@ public class TabbedNavigation implements MenuActionConstants, Serializable {
 							removeFilterToolBar((JToolBar)old);
 						ac = (AbstractAction)actions.get(i);
 						ac.actionPerformed(new ActionEvent(this,eventNum++,"click"));
-						tabbedPane.setForegroundAt(oldSelected, Color.BLACK);
-						tabbedPane.setBackgroundAt(oldSelected, backgroundUnselected);
+						tabbedPane.setForegroundAt(oldSelected, FlatUiSupport.tabUnselectedForeground());
+						tabbedPane.setBackgroundAt(oldSelected, FlatUiSupport.panelBackground());
 						JComponent selectedComponent = (JComponent) tabbedPane.getSelectedComponent();
 						if (selectedComponent instanceof JToolBar)
 							addFilterToolBar((JToolBar)selectedComponent);
 					}
-					tabbedPane.setForegroundAt(i, Color.WHITE);
-					tabbedPane.setBackgroundAt(i, backgroundSelected);
+					tabbedPane.setForegroundAt(i, FlatUiSupport.tabSelectedForeground());
+					tabbedPane.setBackgroundAt(i, FlatUiSupport.panelBackground());
 					oldSelected = i;
 				}
 
@@ -192,6 +189,8 @@ public class TabbedNavigation implements MenuActionConstants, Serializable {
 			if (action == menuManager.getActionFromId(ACTION_RESOURCES))
 				this.resourceTabCount = tabCount;
 			tabbedPane.setToolTipTextAt(tabCount, text); // don't use version with F1
+			tabbedPane.setForegroundAt(tabCount, FlatUiSupport.tabUnselectedForeground());
+			tabbedPane.setBackgroundAt(tabCount, FlatUiSupport.panelBackground());
 			actions.add(action);
 			tabCount++;
 		}

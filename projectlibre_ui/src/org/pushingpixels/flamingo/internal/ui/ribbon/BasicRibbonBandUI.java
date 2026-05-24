@@ -51,6 +51,7 @@ import org.pushingpixels.flamingo.internal.utils.FlamingoUtilities;
 import org.pushingpixels.flamingo.internal.utils.RenderingUtils;
 import org.pushingpixels.trident.Timeline;
 import org.pushingpixels.trident.swing.SwingRepaintCallback;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  * Basic UI for ribbon band {@link JRibbonBand}.
@@ -200,17 +201,12 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 	protected void installDefaults() {
 		Color bg = this.ribbonBand.getBackground();
 		if (bg == null || bg instanceof UIResource) {
-			this.ribbonBand.setBackground(FlamingoUtilities.getColor(
-					Color.lightGray, "RibbonBand.background",
-					"Panel.background"));
+			this.ribbonBand.setBackground(FlatUiSupport.panelBackground());
 		}
 
 		Border b = this.ribbonBand.getBorder();
 		if (b == null || b instanceof UIResource) {
-			Border toSet = UIManager.getBorder("RibbonBand.border");
-			if (toSet == null)
-				toSet = new BorderUIResource(new RoundBorder(FlamingoUtilities
-						.getBorderColor(), new Insets(2, 2, 2, 2)));
+			Border toSet = BorderFactory.createEmptyBorder();
 			this.ribbonBand.setBorder(toSet);
 		}
 	}
@@ -838,14 +834,10 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 	 */
 	protected void paintBandTitleBackground(Graphics g,
 			Rectangle titleRectangle, String title) {
-
 		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setComposite(AlphaComposite.SrcOver
-				.derive(0.7f + 0.3f * this.rolloverAmount));
-
-		FlamingoUtilities.renderSurface(g2d, this.ribbonBand, titleRectangle,
-				this.rolloverAmount > 0.0f, true, false);
-
+		g2d.setColor(FlatUiSupport.panelBackground());
+		g2d.fillRect(titleRectangle.x, titleRectangle.y, titleRectangle.width,
+				titleRectangle.height);
 		g2d.dispose();
 	}
 

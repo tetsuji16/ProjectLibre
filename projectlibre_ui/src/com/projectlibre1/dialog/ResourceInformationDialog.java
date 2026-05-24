@@ -86,6 +86,7 @@ import com.projectlibre1.pm.costing.CostRateTable;
 import com.projectlibre1.pm.resource.Resource;
 import com.projectlibre1.pm.resource.ResourceImpl;
 import com.projectlibre1.strings.Messages;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -114,6 +115,7 @@ public class ResourceInformationDialog extends InformationDialog {
 		DefaultFormBuilder builder = new DefaultFormBuilder(layout);
 		builder.setDefaultDialogBorder();
 		resourceTabbedPane= new JTabbedPane();
+		FlatUiSupport.styleTabbedPane(resourceTabbedPane);
 		JComponent generalTab=createGeneralPanel();
 		JComponent costsTab=createCostsPanel();
 		JComponent availabilityTab=createAvailabilityPanel();
@@ -356,6 +358,7 @@ public class ResourceInformationDialog extends InformationDialog {
 				.getRow(), 5));
 		
 		costTabbedPane= new JTabbedPane();
+		FlatUiSupport.styleTabbedPane(costTabbedPane);
 		CostRateTable costRateTable;
 		for (int i = 0; i < 5; i++) {
 			costRateTable = ((Resource)object).getCostRateTable(i);
