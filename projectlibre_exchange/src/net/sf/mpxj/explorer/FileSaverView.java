@@ -24,18 +24,16 @@
 package net.sf.mpxj.explorer;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import com.formdev.flatlaf.util.SystemFileChooser;
+import com.formdev.flatlaf.util.SystemFileChooser.FileNameExtensionFilter;
 
 /**
  * Implements the view component of the FileSaver MVC.
  */
 public class FileSaverView
 {
-   protected final JFileChooser m_fileChooser;
+   protected final SystemFileChooser m_fileChooser;
    private final Component m_parent;
    private final FileSaverModel m_model;
 
@@ -47,7 +45,7 @@ public class FileSaverView
     */
    public FileSaverView(Component parent, FileSaverModel model)
    {
-      m_fileChooser = new JFileChooser();
+      m_fileChooser = new SystemFileChooser();
       m_parent = parent;
       m_model = model;
 
@@ -78,7 +76,7 @@ public class FileSaverView
    {
       if (m_model.getShowDialog())
       {
-         if (m_fileChooser.showSaveDialog(m_parent) == JFileChooser.APPROVE_OPTION)
+         if (m_fileChooser.showSaveDialog(m_parent) == SystemFileChooser.APPROVE_OPTION)
          {
             FileNameExtensionFilter filter = (FileNameExtensionFilter) m_fileChooser.getFileFilter();
             String description = filter.getDescription();
@@ -97,9 +95,15 @@ public class FileSaverView
    {
       m_fileChooser.setAcceptAllFileFilterUsed(false);
       String[] extensions = m_model.getExtensions();
+      FileNameExtensionFilter currentFilter = null;
       for (int extensionIndex = 0; extensionIndex < extensions.length; extensionIndex += 2)
       {
-         m_fileChooser.setFileFilter(new FileNameExtensionFilter(extensions[extensionIndex].toUpperCase() + " File", extensions[extensionIndex + 1]));
+         currentFilter = new FileNameExtensionFilter(extensions[extensionIndex].toUpperCase() + " File", extensions[extensionIndex + 1]);
+         m_fileChooser.addChoosableFileFilter(currentFilter);
+      }
+      if (currentFilter != null)
+      {
+         m_fileChooser.setFileFilter(currentFilter);
       }
    }
 }

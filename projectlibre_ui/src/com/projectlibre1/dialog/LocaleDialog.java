@@ -97,7 +97,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -122,6 +121,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.rtf.RTFEditorKit;
 
+import com.formdev.flatlaf.util.SystemFileChooser;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -506,9 +506,9 @@ public final class LocaleDialog extends AbstractDialog {
 					if (!path.isDirectory())
 						path=FileSystemView.getFileSystemView().getHomeDirectory();
 				}
-				JFileChooser fileChooser = new JFileChooser(path);
-				fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		        if (fileChooser.showOpenDialog(LocaleDialog.this) == JFileChooser.APPROVE_OPTION) {
+				SystemFileChooser fileChooser = new SystemFileChooser(path);
+				fileChooser.setFileSelectionMode(SystemFileChooser.DIRECTORIES_ONLY);
+		        if (fileChooser.showOpenDialog(LocaleDialog.this) == SystemFileChooser.APPROVE_OPTION) {
 		        	displayChangeMessage();
 		            File selectedFile = fileChooser.getSelectedFile();
 		            directoryField.setText(selectedFile.getPath());

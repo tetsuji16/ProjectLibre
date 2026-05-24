@@ -24,11 +24,9 @@
 package net.sf.mpxj.explorer;
 
 import java.awt.Component;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import com.formdev.flatlaf.util.SystemFileChooser;
+import com.formdev.flatlaf.util.SystemFileChooser.FileNameExtensionFilter;
 
 
 /**
@@ -36,7 +34,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
  */
 public class FileChooserView
 {
-   protected final JFileChooser m_fileChooser;
+   protected final SystemFileChooser m_fileChooser;
    private final Component m_parent;
    private final FileChooserModel m_model;
 
@@ -48,8 +46,8 @@ public class FileChooserView
     */
    public FileChooserView(Component parent, FileChooserModel model)
    {
-      m_fileChooser = new JFileChooser();
-      m_fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+      m_fileChooser = new SystemFileChooser();
+      m_fileChooser.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
       m_parent = parent;
       m_model = model;
 
@@ -81,7 +79,7 @@ public class FileChooserView
    {
       if (m_model.getShowDialog())
       {
-         if (m_fileChooser.showOpenDialog(m_parent) == JFileChooser.APPROVE_OPTION)
+         if (m_fileChooser.showOpenDialog(m_parent) == SystemFileChooser.APPROVE_OPTION)
          {
             m_model.setFile(m_fileChooser.getSelectedFile());
          }
@@ -95,10 +93,12 @@ public class FileChooserView
    protected void setFileFilter()
    {
       String[] extensions = m_model.getExtensions();
+      FileNameExtensionFilter projectFiles = new FileNameExtensionFilter("Project Files", m_model.getExtensions());
       for (String extension : extensions)
       {
-         m_fileChooser.setFileFilter(new FileNameExtensionFilter(extension.toUpperCase() + " Files", extension));
+         m_fileChooser.addChoosableFileFilter(new FileNameExtensionFilter(extension.toUpperCase() + " Files", extension));
       }
-      m_fileChooser.setFileFilter(new FileNameExtensionFilter("Project Files", m_model.getExtensions()));
+      m_fileChooser.addChoosableFileFilter(projectFiles);
+      m_fileChooser.setFileFilter(projectFiles);
    }
 }

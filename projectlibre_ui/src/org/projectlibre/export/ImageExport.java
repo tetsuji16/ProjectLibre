@@ -65,8 +65,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
+import com.formdev.flatlaf.util.SystemFileChooser;
+import com.formdev.flatlaf.util.SystemFileChooser.FileNameExtensionFilter;
 
 import com.lowagie.text.Document;
 import com.lowagie.text.Rectangle;
@@ -140,30 +140,16 @@ public class ImageExport {
 		jobQueue.schedule(job);
 	}
 
-    private static JFileChooser chooser=null;
-    private static FileFilter pdfFilter=null;
-    private static FileFilter pngFilter=null;
+    private static SystemFileChooser chooser=null;
+    private static FileNameExtensionFilter pdfFilter=null;
+    private static FileNameExtensionFilter pngFilter=null;
     private static File chooseFile(String projectName, Component parentComponent) {
     	if (chooser == null){
-    		pdfFilter=new FileFilter(){
-    		    public boolean accept(File f){
-    		    	return f.isDirectory()||f.getName().toLowerCase().endsWith(".pdf");
-    		    }
-    		    public String getDescription(){
-    		    	return "PDF (*.pdf)";
-    		    }
-    		};
-    		pngFilter=new FileFilter(){
-    		    public boolean accept(File f){
-    		    	return f.isDirectory()||f.getName().toLowerCase().endsWith(".png");
-    		    }
-    		    public String getDescription(){
-    		    	return "PNG (*.png)";
-    		    }
-    		};
-    		chooser = new JFileChooser();
-    		chooser.putClientProperty("FileChooser.useShellFolder", Boolean.FALSE);
-    		chooser.setDialogType(JFileChooser.SAVE_DIALOG);
+    		chooser = new SystemFileChooser();
+    		chooser.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
+    		chooser.setAcceptAllFileFilterUsed(true);
+    		pdfFilter=new FileNameExtensionFilter("PDF (*.pdf)", "pdf");
+    		pngFilter=new FileNameExtensionFilter("PNG (*.png)", "png");
     		chooser.addChoosableFileFilter(pdfFilter);
     		//chooser.addChoosableFileFilter(pngFilter);
     	}
@@ -171,7 +157,7 @@ public class ImageExport {
 			projectName="project";
 		chooser.setSelectedFile(new File(projectName+".pdf"));
 		chooser.setFileFilter(pdfFilter);
-		if (chooser.showDialog(parentComponent, null) == JFileChooser.APPROVE_OPTION){
+		if (chooser.showSaveDialog(parentComponent) == SystemFileChooser.APPROVE_OPTION){
 			File file=chooser.getSelectedFile();
 			if (!file.getName().endsWith(".pdf")/*&&!file.getName().endsWith(".png")*/) file=new File(file.getName()+".pdf"); //add pdf extension if missing
 			return file;
