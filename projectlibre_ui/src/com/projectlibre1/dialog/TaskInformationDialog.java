@@ -91,6 +91,7 @@ import com.projectlibre1.pm.key.HasId;
 import com.projectlibre1.pm.task.NormalTask;
 import com.projectlibre1.pm.task.Task;
 import com.projectlibre1.strings.Messages;
+import com.projectlibre1.util.FlatUiSupport;
 /**
  *
  */
@@ -127,6 +128,7 @@ public class TaskInformationDialog extends InformationDialog {
 		CellConstraints cc = new CellConstraints();
 		
 		taskTabbedPane= new JTabbedPane();
+		FlatUiSupport.styleTabbedPane(taskTabbedPane);
 		taskTabbedPane.addTab(Messages.getString("TaskInformationDialog.General"),createGeneralPanel()); //$NON-NLS-1$
 		taskTabbedPane.addTab(Messages.getString("TaskInformationDialog.Predecessors"),createPredecessorsPanel()); //$NON-NLS-1$
 		taskTabbedPane.addTab(Messages.getString("TaskInformationDialog.Successors"),createSuccessorsPanel()); //$NON-NLS-1$
