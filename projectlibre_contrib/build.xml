@@ -155,7 +155,6 @@
 				<zipgroupfileset file="lib/jdnc-0_7-all.jar" /> 
 				<zipgroupfileset file="lib/itext.jar" /> 
 				<zipgroupfileset file="lib/trident-6.2.jar" /> 
-				<zipgroupfileset file="lib/swingx-all-1.6.5-1.jar" /> 
 				<zipgroupfileset file="lib/exchange/jakarta-poi.jar" /> 
 				<zipgroupfileset file="lib/exchange/poi-ooxml-3.17.jar" /> 
 				<zipgroupfileset file="lib/exchange/poi-ooxml-schemas-3.17.jar" /> 

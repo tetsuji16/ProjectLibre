@@ -63,16 +63,15 @@ import javax.swing.ActionMap;
 import javax.swing.InputMap;
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.KeyStroke;
 
-import org.jdesktop.swingx.JXTextField;
-
 /**
  * Lightweight text field with dirty tracking only.
  */
-public class ChangeAwareTextField extends JXTextField implements DocumentListener, ChangeAwareComponent {
+public class ChangeAwareTextField extends JTextField implements DocumentListener, ChangeAwareComponent {
 	private static final long serialVersionUID = -1961714277621662190L;
 	public static final String NAME_HIERARCHY_COLLAPSE_ACTION_PROPERTY = "projectlibre.nameHierarchyCollapseAction";
 	public static final String NAME_HIERARCHY_EXPAND_ACTION_PROPERTY = "projectlibre.nameHierarchyExpandAction";
