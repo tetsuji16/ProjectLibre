@@ -94,6 +94,10 @@ public final class FlatUiSupport {
 		return color("Component.borderColor", labelForeground().darker());
 	}
 
+	public static Color separatorColor() {
+		return color("Separator.foreground", borderColor());
+	}
+
 	public static Color tabSelectedForeground() {
 		return accentColor();
 	}

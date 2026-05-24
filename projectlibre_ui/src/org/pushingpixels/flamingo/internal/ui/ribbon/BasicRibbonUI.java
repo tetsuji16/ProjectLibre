@@ -73,8 +73,10 @@ import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.BorderFactory;
@@ -146,6 +148,8 @@ public class BasicRibbonUI extends RibbonUI {
 	protected JRibbonApplicationMenuButton applicationMenuButton;
 
 	protected JCommandButton helpButton;
+
+	protected JSeparator topRowSeparator;
 
 	/**
 	 * Map of toggle buttons of all tasks.
@@ -395,6 +399,8 @@ public class BasicRibbonUI extends RibbonUI {
 		this.bandScrollablePanel = new JScrollablePanel<BandHostPanel>(
 				bandHostPanel, JScrollablePanel.ScrollType.HORIZONTALLY);
 		this.bandScrollablePanel.setScrollOnRollover(false);
+		this.bandScrollablePanel.setBorder(BorderFactory.createMatteBorder(1, 0,
+				0, 0, FlatUiSupport.separatorColor()));
 		this.ribbon.add(this.bandScrollablePanel);
 
 		// task toggle buttons scrollable panel
@@ -419,6 +425,10 @@ public class BasicRibbonUI extends RibbonUI {
 					}
 				});
 		this.ribbon.add(this.taskToggleButtonsScrollablePanel);
+
+		this.topRowSeparator = new JSeparator(SwingConstants.HORIZONTAL);
+		this.topRowSeparator.setForeground(FlatUiSupport.separatorColor());
+		this.ribbon.add(this.topRowSeparator);
 
 		this.ribbon.setLayout(createLayoutManager());
 
@@ -469,6 +479,11 @@ public class BasicRibbonUI extends RibbonUI {
 		taskToggleButtonsHostPanel.removeAll();
 		taskToggleButtonsHostPanel.setLayout(null);
 		this.ribbon.remove(this.taskToggleButtonsScrollablePanel);
+
+		if (this.topRowSeparator != null) {
+			this.ribbon.remove(this.topRowSeparator);
+			this.topRowSeparator = null;
+		}
 
 		this.ribbon.remove(this.applicationMenuButton);
 		if (this.helpButton != null)
@@ -646,7 +661,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * @return The layout gap for the bands in the associated ribbon.
 	 */
 	protected int getBandGap() {
-		return 2;
+		return 1;
 	}
 
 	/**
@@ -655,7 +670,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * @return The layout gap for the tab buttons in the associated ribbon.
 	 */
 	protected int getTabButtonGap() {
-		return 4;
+		return 2;
 	}
 
 	/**
@@ -684,7 +699,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * @return The height of the taskbar area.
 	 */
 	public int getTaskbarHeight() {
-		return 24;
+		return 20;
 	}
 
 	/**
@@ -693,7 +708,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * @return The height of the task toggle button area.
 	 */
 	public int getTaskToggleButtonHeight() {
-		return 36;
+		return 30;
 	}
 
 	/**
@@ -861,6 +876,12 @@ public class BasicRibbonUI extends RibbonUI {
 						rowHeight);
 			}
 
+			if (topRowSeparator != null) {
+				topRowSeparator.setBounds(ins.left, y + rowHeight - 1,
+						c.getWidth() - ins.left - ins.right, 1);
+				topRowSeparator.setVisible(!ribbon.isMinimized());
+			}
+
 			TaskToggleButtonsHostPanel taskToggleButtonsHostPanel = taskToggleButtonsScrollablePanel
 					.getView();
 			int taskToggleButtonsHostPanelMinWidth = taskToggleButtonsHostPanel
@@ -1004,7 +1025,7 @@ public class BasicRibbonUI extends RibbonUI {
 		public TaskbarPanel() {
 			super();
 			this.setOpaque(false);
-			this.setBorder(new EmptyBorder(1, 0, 1, 0));
+			this.setBorder(new EmptyBorder(0, 0, 1, 0));
 		}
 
 		/*
@@ -1038,7 +1059,7 @@ public class BasicRibbonUI extends RibbonUI {
 				return;
 
 			Graphics2D g2d = (Graphics2D) g.create();
-			g2d.setColor(FlatUiSupport.borderColor());
+			g2d.setColor(FlatUiSupport.separatorColor());
 			RibbonTask selectedTask = ribbon.getSelectedTask();
 			if (selectedTask != null && selectedTask.getBandCount() > 1) {
 				for (int i = 0; i < selectedTask.getBandCount() - 1; i++) {
@@ -1047,6 +1068,14 @@ public class BasicRibbonUI extends RibbonUI {
 					int x = bounds.x + bounds.width + getBandGap() / 2;
 					g2d.drawLine(x, 0, x, getHeight());
 				}
+			}
+			if (selectedTask != null && selectedTask.getBandCount() > 0) {
+				AbstractRibbonBand<?> lastBand = selectedTask.getBand(
+						selectedTask.getBandCount() - 1);
+				Rectangle bounds = lastBand.getBounds();
+				int x = Math.min(getWidth() - 1, bounds.x + bounds.width
+						+ getBandGap() / 2);
+				g2d.drawLine(x, 0, x, getHeight());
 			}
 			g2d.dispose();
 		}

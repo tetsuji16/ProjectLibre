@@ -2575,7 +2575,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		for (AbstractCommandButton button : taskBars)
 			ribbon.addTaskbarComponent(button);
 		
-		ribbon.configureHelp(IconManager.getRibbonIcon("logo.ProjectLibre",120,20), new ActionListener() {
+		ribbon.configureHelp(IconManager.getRibbonIcon("logo.ProjectLibre",144,31), new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				showHelpDialog();
