@@ -61,6 +61,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Arc2D;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.RoundRectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -150,6 +151,12 @@ public class BasicRibbonUI extends RibbonUI {
 	protected JCommandButton helpButton;
 
 	protected JSeparator topRowSeparator;
+
+	private static final int RIBBON_SURFACE_SIDE_PADDING = 8;
+
+	private static final int RIBBON_SURFACE_TOP_PADDING = 4;
+
+	private static final int RIBBON_SURFACE_BOTTOM_PADDING = 6;
 
 	/**
 	 * Map of toggle buttons of all tasks.
@@ -387,33 +394,33 @@ public class BasicRibbonUI extends RibbonUI {
 		this.taskBarPanel = new TaskbarPanel();
 		this.taskBarPanel.setName("JRibbon Task Bar");
 		this.taskBarPanel.setLayout(createTaskbarLayoutManager());
-		this.taskBarPanel.setOpaque(true);
-		this.taskBarPanel.setBackground(FlatUiSupport.panelBackground());
+		this.taskBarPanel.setOpaque(false);
 		this.ribbon.add(this.taskBarPanel);
 
 		// band scrollable panel
 		BandHostPanel bandHostPanel = createBandHostPanel();
 		bandHostPanel.setLayout(createBandHostPanelLayoutManager());
-		bandHostPanel.setOpaque(true);
-		bandHostPanel.setBackground(FlatUiSupport.panelBackground());
+		bandHostPanel.setOpaque(false);
+		bandHostPanel.setBackground(FlatUiSupport.ribbonSurfaceColor());
 		this.bandScrollablePanel = new JScrollablePanel<BandHostPanel>(
 				bandHostPanel, JScrollablePanel.ScrollType.HORIZONTALLY);
 		this.bandScrollablePanel.setScrollOnRollover(false);
-		this.bandScrollablePanel.setBorder(BorderFactory.createMatteBorder(1, 0,
-				0, 0, FlatUiSupport.separatorColor()));
+		this.bandScrollablePanel.setOpaque(false);
+		this.bandScrollablePanel.setBackground(FlatUiSupport.ribbonSurfaceColor());
+		this.bandScrollablePanel.setBorder(BorderFactory.createEmptyBorder());
 		this.ribbon.add(this.bandScrollablePanel);
 
 		// task toggle buttons scrollable panel
 		TaskToggleButtonsHostPanel taskToggleButtonsHostPanel = createTaskToggleButtonsHostPanel();
 		taskToggleButtonsHostPanel
 				.setLayout(createTaskToggleButtonsHostPanelLayoutManager());
-		taskToggleButtonsHostPanel.setOpaque(true);
-		taskToggleButtonsHostPanel
-				.setBackground(FlatUiSupport.panelBackground());
+		taskToggleButtonsHostPanel.setOpaque(false);
 		this.taskToggleButtonsScrollablePanel = new JScrollablePanel<TaskToggleButtonsHostPanel>(
 				taskToggleButtonsHostPanel,
 				JScrollablePanel.ScrollType.HORIZONTALLY);
 		this.taskToggleButtonsScrollablePanel.setScrollOnRollover(false);
+		this.taskToggleButtonsScrollablePanel.setOpaque(false);
+		this.taskToggleButtonsScrollablePanel.setBackground(FlatUiSupport.ribbonChromeBackground());
 		this.taskToggleButtonsScrollablePanel
 				.addChangeListener(new ChangeListener() {
 					@Override
@@ -543,12 +550,54 @@ public class BasicRibbonUI extends RibbonUI {
 	 */
 	protected void paintBackground(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g.create();
+		FlatUiSupport.enableAntialiasing(g2d);
 
-		g2d.setColor(FlamingoUtilities.getColor(Color.lightGray,
-				"Panel.background"));
+		g2d.setColor(FlatUiSupport.appBackground());
 		g2d.fillRect(0, 0, this.ribbon.getWidth(), this.ribbon.getHeight());
 
+		if (!ribbon.isMinimized()) {
+			Rectangle surfaceBounds = getRibbonSurfaceBounds();
+			if (surfaceBounds.height > 0 && surfaceBounds.width > 0) {
+				Shape surface = new RoundRectangle2D.Float(surfaceBounds.x,
+						surfaceBounds.y, surfaceBounds.width, surfaceBounds.height,
+						14, 14);
+				g2d.setColor(FlatUiSupport.ribbonSurfaceColor());
+				g2d.fill(surface);
+				g2d.setColor(FlatUiSupport.ribbonSurfaceBorderColor());
+				g2d.draw(surface);
+			}
+		}
+
 		g2d.dispose();
+	}
+
+	private Rectangle getRibbonSurfaceBounds() {
+		Insets ins = ribbon.getInsets();
+		int tabBottom = ins.top + getTaskToggleButtonHeight() - 1;
+		int surfaceY = tabBottom + RIBBON_SURFACE_TOP_PADDING;
+		int surfaceHeight = Math.max(0, ribbon.getHeight() - surfaceY - ins.bottom
+				- RIBBON_SURFACE_BOTTOM_PADDING);
+		int surfaceX = ins.left + RIBBON_SURFACE_SIDE_PADDING;
+		int surfaceWidth = Math.max(0, ribbon.getWidth() - ins.left - ins.right
+				- (2 * RIBBON_SURFACE_SIDE_PADDING));
+
+		if ((bandScrollablePanel != null) && bandScrollablePanel.isVisible()) {
+			Rectangle bounds = bandScrollablePanel.getBounds();
+			if (bounds.width > 0 && bounds.height > 0) {
+				int paddedX = Math.max(surfaceX, bounds.x - 8);
+				int paddedY = Math.max(surfaceY, bounds.y - 6);
+				int paddedRight = Math.min(ribbon.getWidth() - ins.right - RIBBON_SURFACE_SIDE_PADDING,
+						bounds.x + bounds.width + 8);
+				int paddedBottom = Math.min(ribbon.getHeight() - ins.bottom - RIBBON_SURFACE_BOTTOM_PADDING,
+						bounds.y + bounds.height + 6);
+				surfaceX = paddedX;
+				surfaceY = paddedY;
+				surfaceWidth = Math.max(0, paddedRight - paddedX);
+				surfaceHeight = Math.max(0, paddedBottom - paddedY);
+			}
+		}
+
+		return new Rectangle(surfaceX, surfaceY, surfaceWidth, surfaceHeight);
 	}
 
 	/**
@@ -596,22 +645,10 @@ public class BasicRibbonUI extends RibbonUI {
 				(int) taskToggleButtonsViewportBounds.getMinX());
 
 		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setColor(FlatUiSupport.borderColor());
-		g2d.drawLine(x, y + height - 1, x + width, y + height - 1);
-
 		RibbonTask selected = this.ribbon.getSelectedTask();
 		RibbonContextualTaskGroup contextualGroup = selected != null
 				? selected.getContextualGroup()
 				: null;
-		Color underlineColor = FlatUiSupport.accentColor();
-		if (contextualGroup != null && contextualGroup.getHueColor() != null) {
-			underlineColor = contextualGroup.getHueColor();
-		}
-		int underlineY = converted.y + selectedTaskButtonBounds.height - 2;
-		g2d.setColor(underlineColor);
-		g2d.fillRect(startSelectedX, underlineY, Math.max(1,
-				endSelectedX - startSelectedX), 2);
-
 		if (contextualGroup != null) {
 			// subtle header tint for contextual tasks
 			int topY = y + height - 5;
@@ -699,7 +736,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * @return The height of the taskbar area.
 	 */
 	public int getTaskbarHeight() {
-		return 20;
+		return 18;
 	}
 
 	/**
@@ -708,7 +745,7 @@ public class BasicRibbonUI extends RibbonUI {
 	 * @return The height of the task toggle button area.
 	 */
 	public int getTaskToggleButtonHeight() {
-		return 30;
+		return 27;
 	}
 
 	/**
@@ -879,7 +916,7 @@ public class BasicRibbonUI extends RibbonUI {
 			if (topRowSeparator != null) {
 				topRowSeparator.setBounds(ins.left, y + rowHeight - 1,
 						c.getWidth() - ins.left - ins.right, 1);
-				topRowSeparator.setVisible(!ribbon.isMinimized());
+				topRowSeparator.setVisible(false);
 			}
 
 			TaskToggleButtonsHostPanel taskToggleButtonsHostPanel = taskToggleButtonsScrollablePanel
@@ -897,11 +934,15 @@ public class BasicRibbonUI extends RibbonUI {
 					Insets bandInsets = (ribbon.getSelectedTask()
 							.getBandCount() == 0) ? new Insets(0, 0, 0, 0)
 							: ribbon.getSelectedTask().getBand(0).getInsets();
-					bandScrollablePanel.setBounds(1 + ins.left, y + rowHeight
-							+ bandInsets.top, c.getWidth() - 2 * ins.left - 2
-							* ins.right - 1, c.getHeight() - rowHeight
-							- ins.top - ins.bottom - bandInsets.top
-							- bandInsets.bottom);
+					int surfaceX = ins.left + RIBBON_SURFACE_SIDE_PADDING;
+					int surfaceY = y + rowHeight + RIBBON_SURFACE_TOP_PADDING + 2;
+					int surfaceWidth = c.getWidth() - ins.left - ins.right
+							- (2 * RIBBON_SURFACE_SIDE_PADDING);
+					int surfaceHeight = c.getHeight() - surfaceY - ins.bottom
+							- RIBBON_SURFACE_BOTTOM_PADDING;
+					bandScrollablePanel.setBounds(surfaceX + 8, surfaceY + 6,
+							Math.max(0, surfaceWidth - 16), Math.max(0,
+									surfaceHeight - 12));
 					// System.out.println("Scrollable : "
 					// + bandScrollablePanel.getBounds());
 					BandHostPanel bandHostPanel = bandScrollablePanel.getView();
@@ -1061,12 +1102,14 @@ public class BasicRibbonUI extends RibbonUI {
 			Graphics2D g2d = (Graphics2D) g.create();
 			g2d.setColor(FlatUiSupport.separatorColor());
 			RibbonTask selectedTask = ribbon.getSelectedTask();
+			int lineTop = 6;
+			int lineBottom = Math.max(lineTop, getHeight() - 8);
 			if (selectedTask != null && selectedTask.getBandCount() > 1) {
 				for (int i = 0; i < selectedTask.getBandCount() - 1; i++) {
 					AbstractRibbonBand<?> leftBand = selectedTask.getBand(i);
 					Rectangle bounds = leftBand.getBounds();
 					int x = bounds.x + bounds.width + getBandGap() / 2;
-					g2d.drawLine(x, 0, x, getHeight());
+					g2d.drawLine(x, lineTop, x, lineBottom);
 				}
 			}
 			if (selectedTask != null && selectedTask.getBandCount() > 0) {
@@ -1075,7 +1118,7 @@ public class BasicRibbonUI extends RibbonUI {
 				Rectangle bounds = lastBand.getBounds();
 				int x = Math.min(getWidth() - 1, bounds.x + bounds.width
 						+ getBandGap() / 2);
-				g2d.drawLine(x, 0, x, getHeight());
+				g2d.drawLine(x, lineTop, x, lineBottom);
 			}
 			g2d.dispose();
 		}
@@ -1386,16 +1429,6 @@ public class BasicRibbonUI extends RibbonUI {
 						// System.out.println("Added " + task.getTitle());
 					}
 				}
-			}
-
-			for (RibbonTask taskWithTrailingSeparator : tasksWithTrailingSeparators) {
-				JRibbonTaskToggleButton taskToggleButton = taskToggleButtons
-						.get(taskWithTrailingSeparator);
-				Rectangle bounds = taskToggleButton.getBounds();
-				int x = bounds.x + bounds.width + getTabButtonGap() / 2 - 1;
-				g2d.drawLine(x, 0, x, getHeight());
-				// System.out.println(taskWithTrailingSeparator.getTitle() + ":" 
-				// + x);
 			}
 
 			g2d.dispose();

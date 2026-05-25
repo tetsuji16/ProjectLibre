@@ -824,10 +824,17 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		finishAnyOperations();
 
 		final ArrayList descriptors = new ArrayList();
-		final OpenProjectDialog dialog = OpenProjectDialog.getInstance(getFrame(),descriptors,Messages.getString("Text.openProject"),getCurrentFrame() == null && Environment.isAdministrator(),true,null); //$NON-NLS-1$
+		final boolean localDescriptorSession = Environment.getStandAlone() || Environment.getUser() == null;
+		final boolean allowMasterProjects = localDescriptorSession || (getCurrentFrame() == null && Environment.isAdministrator());
+		final OpenProjectDialog dialog = OpenProjectDialog.getInstance(getFrame(),descriptors,Messages.getString("Text.openProject"),allowMasterProjects,true,null); //$NON-NLS-1$
 
-    	Session session=SessionFactory.getInstance().getSession(false);
-		Job job=(Job)SessionFactory.callNoEx(session,"getLoadProjectDescriptorsJob",new Class[]{boolean.class,java.util.List.class,boolean.class},new Object[]{true,descriptors,!Environment.isAdministrator()});
+    	Session session=SessionFactory.getInstance().getSession(localDescriptorSession);
+		Job job=(Job)SessionFactory.callNoEx(session,"getLoadProjectDescriptorsJob",new Class[]{boolean.class,java.util.List.class,boolean.class},new Object[]{true,descriptors,Environment.getUser() != null && !Environment.isAdministrator()});
+		if (job == null) {
+			dialog.refreshProjects();
+			doingOpenDialog = false;
+			return;
+		}
     	job.addSwingRunnable(new JobRunnable("Local: loadDocument"){ //$NON-NLS-1$
     		public Object run() throws Exception{
 			   		dialog.refreshProjects();
@@ -846,7 +853,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		    	if (r!=null){
 		    		DocumentData data=(DocumentData)r[0];
 		    		boolean openAs=(Boolean)r[1];
-		    		loadDocument(data.getUniqueId(),false,openAs);
+		    		loadDocument(data.getUniqueId(),false,openAs,data.isLocal());
 		    	}
 
 		    }
@@ -884,9 +891,13 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 //		}
 
 		final ArrayList descriptors = new ArrayList();
-
-    	Session session=SessionFactory.getInstance().getSession(false);
+		final boolean localDescriptorSession = Environment.getStandAlone() || Environment.getUser() == null;
+    	Session session=SessionFactory.getInstance().getSession(localDescriptorSession);
 		Job job=(Job)SessionFactory.callNoEx(session,"getLoadProjectDescriptorsJob",new Class[]{boolean.class,java.util.List.class,boolean.class},new Object[]{true,descriptors,true});
+		if (job == null) {
+			doingOpenDialog = false;
+			return;
+		}
     	job.addSwingRunnable(new JobRunnable("Local: add"){ //$NON-NLS-1$
     		public Object run() throws Exception{
 	    	    Closure setter=new Closure(){
@@ -1989,9 +2000,15 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 //		//showWaitCursor(false);
 //	}
 	public Document loadDocument(long id,boolean sync,boolean openAs){
-		return loadDocument(id, sync, openAs, null);
+		return loadDocument(id, sync, openAs, false, null);
+	}
+	protected Document loadDocument(long id,boolean sync,boolean openAs,boolean local){
+		return loadDocument(id, sync, openAs, local, null);
 	}
 	protected Document loadDocument(long id,boolean sync,boolean openAs,Closure endSwingClosure){
+		return loadDocument(id, sync, openAs, false, endSwingClosure);
+	}
+	protected Document loadDocument(long id,boolean sync,boolean openAs,boolean local,Closure endSwingClosure){
 		addHistory("loadDocument", new Object[]{id,sync,openAs,endSwingClosure==null});
 		//showWaitCursor(true);
 		if (id==-1L)
@@ -2000,6 +2017,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		factory.setServer(server);
 		LoadOptions opt=new LoadOptions();
 		opt.setId(id);
+		opt.setLocal(local);
 		opt.setSync(sync);
 		opt.setOpenAs(openAs);
 		opt.setEndSwingClosure(endSwingClosure);
@@ -2051,7 +2069,8 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			});
 
 			if (fileName.endsWith(".pod")){ //$NON-NLS-1$
-				opt.setImporter(Environment.getStandAlone()?LocalSession.LOCAL_PROJECT_IMPORTER:LocalSession.SERVER_LOCAL_PROJECT_IMPORTER);
+				boolean localOnlySession = Environment.getStandAlone() || Environment.getUser() == null;
+				opt.setImporter(localOnlySession ? LocalSession.LOCAL_PROJECT_IMPORTER : LocalSession.SERVER_LOCAL_PROJECT_IMPORTER);
 			}else opt.setImporter(LocalSession.MICROSOFT_PROJECT_IMPORTER);
 			project=projectFactory.openProject(opt);
 

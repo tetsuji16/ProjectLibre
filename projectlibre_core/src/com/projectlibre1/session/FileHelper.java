@@ -145,6 +145,7 @@ public class FileHelper {
     		chooser.addChoosableFileFilter(microsoftXlsxFilter);
     		chooser.addChoosableFileFilter(plannerFilter);
     		chooser.addChoosableFileFilter(projectFilter);
+    		chooser.setFileFilter(chooser.getAcceptAllFileFilter());
     	}
     }
 

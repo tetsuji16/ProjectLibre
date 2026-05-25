@@ -18,6 +18,9 @@ import javax.swing.border.Border;
  * Small FlatLaf-friendly UI helpers for shared Swing styling.
  */
 public final class FlatUiSupport {
+	private static final String RIBBON_CHROME_BACKGROUND_KEY = "ProjectLibre.ribbonChromeBackground";
+	private static final String RIBBON_SURFACE_BACKGROUND_KEY = "ProjectLibre.ribbonSurfaceBackground";
+
 	private FlatUiSupport() {
 	}
 
@@ -41,40 +44,48 @@ public final class FlatUiSupport {
 		return value != null ? value : fallback;
 	}
 
+	public static Color appBackground() {
+		return color("Panel.background", FlatUiTheme.APP_BACKGROUND);
+	}
+
 	public static Color panelBackground() {
-		return color("Panel.background", Color.WHITE);
+		return appBackground();
+	}
+
+	public static Color ribbonChromeBackground() {
+		return color(RIBBON_CHROME_BACKGROUND_KEY, FlatUiTheme.RIBBON_CHROME_BACKGROUND);
 	}
 
 	public static Color tableBackground() {
-		return color("Table.background", panelBackground());
+		return color("Table.background", FlatUiTheme.TABLE_BACKGROUND);
 	}
 
 	public static Color tableForeground() {
-		return color("Table.foreground", labelForeground());
+		return color("Table.foreground", FlatUiTheme.TABLE_FOREGROUND);
 	}
 
 	public static Color tableSelectionBackground() {
-		return color("Table.selectionBackground", accentColor());
+		return color("Table.selectionBackground", FlatUiTheme.TABLE_SELECTION_BACKGROUND);
 	}
 
 	public static Color tableSelectionForeground() {
-		return color("Table.selectionForeground", Color.WHITE);
+		return color("Table.selectionForeground", FlatUiTheme.TABLE_SELECTION_FOREGROUND);
 	}
 
 	public static Color headerBackground() {
-		return color("TableHeader.background", panelBackground());
+		return color("TableHeader.background", FlatUiTheme.HEADER_BACKGROUND);
 	}
 
 	public static Color headerForeground() {
-		return color("TableHeader.foreground", tableForeground());
+		return color("TableHeader.foreground", FlatUiTheme.HEADER_FOREGROUND);
 	}
 
 	public static Color disabledForeground() {
-		return color("Label.disabledForeground", labelForeground().darker());
+		return color("Label.disabledForeground", FlatUiTheme.DISABLED_FOREGROUND);
 	}
 
 	public static Color infoForeground() {
-		return color("TextField.foreground", labelForeground());
+		return color("TextField.foreground", FlatUiTheme.INFO_FOREGROUND);
 	}
 
 	public static Color errorForeground() {
@@ -82,20 +93,40 @@ public final class FlatUiSupport {
 		if (color == null)
 			color = UIManager.getColor("Component.errorFocusColor");
 		if (color == null)
-			color = new Color(0xC62828);
+			color = FlatUiTheme.ERROR;
 		return color;
 	}
 
 	public static Color labelForeground() {
-		return color("Label.foreground", Color.BLACK);
+		return color("Label.foreground", FlatUiTheme.LABEL_FOREGROUND);
 	}
 
 	public static Color borderColor() {
-		return color("Component.borderColor", labelForeground().darker());
+		return color("Component.borderColor", FlatUiTheme.BORDER);
 	}
 
 	public static Color separatorColor() {
-		return color("Separator.foreground", borderColor());
+		return color("Separator.foreground", FlatUiTheme.SEPARATOR);
+	}
+
+	public static Color ribbonTopLineColor() {
+		return blend(separatorColor(), ribbonChromeBackground(), 0.35f);
+	}
+
+	public static Color ribbonSurfaceColor() {
+		return color(RIBBON_SURFACE_BACKGROUND_KEY, FlatUiTheme.RIBBON_SURFACE);
+	}
+
+	public static Color ribbonSurfaceBorderColor() {
+		return blend(borderColor(), panelBackground(), 0.82f);
+	}
+
+	public static Color ribbonSelectedTabColor() {
+		return Color.WHITE;
+	}
+
+	public static Color ribbonTabHoverColor() {
+		return blend(accentColor(), Color.WHITE, 0.90f);
 	}
 
 	public static Color tabSelectedForeground() {
@@ -107,7 +138,7 @@ public final class FlatUiSupport {
 	}
 
 	public static Color tableGridColor() {
-		return color("Table.gridColor", borderColor());
+		return color("Table.gridColor", FlatUiTheme.TABLE_GRID);
 	}
 
 	public static Color accentColor() {
@@ -117,8 +148,17 @@ public final class FlatUiSupport {
 		if (color == null)
 			color = UIManager.getColor("Actions.Blue");
 		if (color == null)
-			color = new Color(0x4A90E2);
+			color = FlatUiTheme.ACCENT;
 		return color;
+	}
+
+	public static Color blend(Color first, Color second, float firstWeight) {
+		float weight = Math.max(0f, Math.min(1f, firstWeight));
+		float secondWeight = 1f - weight;
+		int red = Math.round(first.getRed() * weight + second.getRed() * secondWeight);
+		int green = Math.round(first.getGreen() * weight + second.getGreen() * secondWeight);
+		int blue = Math.round(first.getBlue() * weight + second.getBlue() * secondWeight);
+		return new Color(red, green, blue);
 	}
 
 	public static void enableAntialiasing(Graphics2D g2) {
@@ -136,7 +176,7 @@ public final class FlatUiSupport {
 		toolBar.setOpaque(false);
 		toolBar.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
 		toolBar.setMargin(new Insets(2, 6, 2, 6));
-		toolBar.setBackground(panelBackground());
+		toolBar.setBackground(appBackground());
 		toolBar.putClientProperty("JToolBar.isRollover", Boolean.TRUE);
 	}
 
@@ -161,7 +201,7 @@ public final class FlatUiSupport {
 		tabbedPane.putClientProperty("JTabbedPane.showContentSeparator", Boolean.FALSE);
 		tabbedPane.putClientProperty("JTabbedPane.tabHeight", Integer.valueOf(36));
 		tabbedPane.setOpaque(true);
-		tabbedPane.setBackground(panelBackground());
+		tabbedPane.setBackground(appBackground());
 		tabbedPane.setForeground(tabUnselectedForeground());
 	}
 

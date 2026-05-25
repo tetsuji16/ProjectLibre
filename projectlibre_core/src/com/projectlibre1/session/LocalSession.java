@@ -55,8 +55,19 @@
  *******************************************************************************/
 package com.projectlibre1.session;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.prefs.Preferences;
 
 import org.apache.commons.collections.Closure;
 
@@ -68,6 +79,7 @@ import com.projectlibre1.pm.resource.ResourcePool;
 import com.projectlibre1.pm.resource.ResourcePoolFactory;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.ProjectFactory;
+import com.projectlibre1.server.data.ProjectData;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.undo.DataFactoryUndoController;
 import com.projectlibre1.util.Alert;
@@ -78,6 +90,9 @@ public class LocalSession extends AbstractSession{
 	public static final String LOCAL_PROJECT_IMPORTER = "com.projectlibre1.exchange.LocalFileImporter";
 	public static final String SERVER_LOCAL_PROJECT_IMPORTER = "com.projectlibre1.exchange.ServerLocalFileImporter";
 	public static final String MICROSOFT_PROJECT_IMPORTER = "com.projectlibre1.exchange.MicrosoftImporter";
+	private static final String DESCRIPTOR_FILE_NAME = "projectlibre.fileName";
+	private static final int DESCRIPTOR_SCAN_DEPTH = 2;
+	private final Map<Long, String> descriptorFiles = Collections.synchronizedMap(new HashMap<Long, String>());
 	
 	
 	protected long localSeed;
@@ -101,10 +116,182 @@ public class LocalSession extends AbstractSession{
     	return job;
     }
 
+    public Job getLoadProjectDescriptorsJob(final boolean includeProjects, final List descriptors, final boolean allowOpenAs) {
+    	final Job job = new Job(jobQueue, "loadProjectDescriptors", "Loading...", false);
+    	job.addRunnable(new JobRunnable("LocalAccess: loadProjectDescriptors", 1.0f) {
+    		public Object run() throws Exception {
+    			List<ProjectData> loadedDescriptors = loadLocalProjectDescriptors();
+    			descriptors.clear();
+    			descriptors.addAll(loadedDescriptors);
+    			setProgress(1.0f);
+    			return loadedDescriptors;
+    		}
+    	});
+    	return job;
+    }
+
+    public String getProjectFile(long id) {
+    	synchronized (descriptorFiles) {
+    		return descriptorFiles.get(Long.valueOf(id));
+    	}
+    }
+
+    private List<ProjectData> loadLocalProjectDescriptors() {
+    	LinkedHashSet<String> seenPaths = new LinkedHashSet<String>();
+    	List<ProjectData> descriptors = new ArrayList<ProjectData>();
+    	for (File root : getDescriptorRoots()) {
+    		collectProjectFiles(root, seenPaths, descriptors, 0);
+    	}
+    	Collections.sort(descriptors, new Comparator<ProjectData>() {
+    		public int compare(ProjectData left, ProjectData right) {
+    			Date leftDate = left.getLastModificationDate();
+    			Date rightDate = right.getLastModificationDate();
+    			if (leftDate != null && rightDate != null) {
+    				int byDate = rightDate.compareTo(leftDate);
+    				if (byDate != 0) {
+    					return byDate;
+    				}
+    			}
+    			String leftName = left.getName();
+    			String rightName = right.getName();
+    			if (leftName == null) {
+    				return rightName == null ? 0 : 1;
+    			}
+    			if (rightName == null) {
+    				return -1;
+    			}
+    			return leftName.compareToIgnoreCase(rightName);
+    		}
+    	});
+    	return descriptors;
+    }
+
+    private List<File> getDescriptorRoots() {
+    	LinkedHashSet<File> roots = new LinkedHashSet<File>();
+    	addDescriptorRoot(roots, Preferences.userNodeForPackage(FileHelper.class).get("lastDirectory", null));
+    	addDescriptorRoot(roots, System.getProperty("user.dir"));
+    	File userHome = new File(System.getProperty("user.home"));
+    	addDescriptorRoot(roots, new File(userHome, "ProjectLibre").getAbsolutePath());
+    	addDescriptorRoot(roots, new File(userHome, "Documents").getAbsolutePath());
+    	addDescriptorRoot(roots, new File(System.getProperty("user.dir"), "sample data").getAbsolutePath());
+    	addDescriptorRoot(roots, new File(System.getProperty("user.dir"), "projectlibre_build/resources/samples").getAbsolutePath());
+    	return new ArrayList<File>(roots);
+    }
+
+    private void addDescriptorRoot(Collection<File> roots, String path) {
+    	if (path == null || path.length() == 0) {
+    		return;
+    	}
+    	File root = new File(path);
+    	if (root.exists() && root.isDirectory()) {
+    		roots.add(root);
+    	}
+    }
+
+    private void collectProjectFiles(File root, LinkedHashSet<String> seenPaths, List<ProjectData> descriptors, int depth) {
+    	if (root == null || !root.exists()) {
+    		return;
+    	}
+    	if (root.isFile()) {
+    		addDescriptor(root, seenPaths, descriptors);
+    		return;
+    	}
+    	if (depth > DESCRIPTOR_SCAN_DEPTH) {
+    		return;
+    	}
+    	File[] children = root.listFiles();
+    	if (children == null) {
+    		return;
+    	}
+    	for (File child : children) {
+    		if (child.isDirectory()) {
+    			collectProjectFiles(child, seenPaths, descriptors, depth + 1);
+    		} else if (child.getName().toLowerCase().endsWith(".pod")) {
+    			addDescriptor(child, seenPaths, descriptors);
+    		}
+    	}
+    }
+
+    private void addDescriptor(File file, LinkedHashSet<String> seenPaths, List<ProjectData> descriptors) {
+    	try {
+    		String canonicalPath = file.getCanonicalPath();
+    		if (!seenPaths.add(canonicalPath)) {
+    			return;
+    		}
+    		ProjectData descriptor = buildDescriptor(file);
+    		if (descriptor == null) {
+    			return;
+    		}
+    		rememberDescriptor(descriptor, canonicalPath);
+    		descriptors.add(descriptor);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    }
+
+    private ProjectData buildDescriptor(File file) throws Exception {
+    	ProjectData descriptor = new ProjectData();
+    	if (descriptor.getName() == null || descriptor.getName().trim().length() == 0) {
+    		String fileName = file.getName();
+    		int lastDot = fileName.lastIndexOf('.');
+    		descriptor.setName(lastDot <= 0 ? fileName : fileName.substring(0, lastDot));
+    	}
+    	if (descriptor.getUniqueId() <= 0) {
+    		descriptor.setUniqueId(Math.abs(file.getCanonicalPath().hashCode()));
+    	}
+    	descriptor.setMaster(true);
+    	descriptor.setLocal(true);
+    	BasicFileAttributes attributes = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+    	if (descriptor.getCreationDate() == null) {
+    		descriptor.setCreationDate(new Date(attributes.creationTime().toMillis()));
+    	}
+    	if (descriptor.getLastModificationDate() == null) {
+    		descriptor.setLastModificationDate(new Date(attributes.lastModifiedTime().toMillis()));
+    	}
+    	descriptor.setLockedById(0L);
+    	descriptor.setLockedByName(null);
+    	return descriptor;
+    }
+
+    private void rememberDescriptor(ProjectData descriptor, String fileName) {
+    	Map attributes = descriptor.getAttributes();
+    	if (attributes == null) {
+    		attributes = new HashMap();
+    		descriptor.setAttributes(attributes);
+    	}
+    	attributes.put(DESCRIPTOR_FILE_NAME, fileName);
+    	synchronized (descriptorFiles) {
+    		descriptorFiles.put(Long.valueOf(descriptor.getUniqueId()), fileName);
+    	}
+    }
+
     
     
     
     public Job getLoadProjectJob(final LoadOptions opt){
+    	String resolvedFileName = opt.getFileName();
+    	if (resolvedFileName == null && opt.getId() > 0) {
+    		resolvedFileName = getProjectFile(opt.getId());
+    	}
+    	if (resolvedFileName == null) {
+    		Job missingJob = new Job(jobQueue, "loadProject", "Loading...", false);
+    		missingJob.addRunnable(new JobRunnable("LocalAccess: missingProject", 1.0f) {
+    			public Object run() throws Exception {
+    				Alert.error(Messages.getString("Error.projectDoesNotExist"));
+    				setProgress(1.0f);
+    				return null;
+    			}
+    		});
+    		return missingJob;
+    	}
+    	opt.setFileName(resolvedFileName);
+    	if (opt.getImporter() == null) {
+    		if (resolvedFileName.endsWith(".pod")) {
+    			opt.setImporter(LOCAL_PROJECT_IMPORTER);
+    		} else {
+    			opt.setImporter(MICROSOFT_PROJECT_IMPORTER);
+    		}
+    	}
     	final Job job=new Job(jobQueue,"loadProject","Loading...",true);
         job.setCancelMonitorClosure(new Closure(){
 			public void execute(Object o) {
@@ -276,7 +463,9 @@ public class LocalSession extends AbstractSession{
 		}
     }
 	public boolean projectExists(long id) {
-		return true;
+		synchronized (descriptorFiles) {
+			return descriptorFiles.containsKey(Long.valueOf(id));
+		}
 	}
 
    

@@ -41,6 +41,7 @@ import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.common.JCommandButton.CommandButtonKind;
 import org.pushingpixels.flamingo.api.common.icon.EmptyResizableIcon;
 import org.pushingpixels.flamingo.internal.utils.FlamingoUtilities;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  * Basic UI for control panel of ribbon band {@link JBandControlPanel}.
@@ -128,9 +129,7 @@ abstract class AbstractBandControlPanelUI extends BandControlPanelUI {
 	protected void installDefaults() {
 		Color bg = this.controlPanel.getBackground();
 		if (bg == null || bg instanceof UIResource) {
-			this.controlPanel.setBackground(FlamingoUtilities.getColor(
-					Color.lightGray, "ControlPanel.background",
-					"Panel.background"));
+			this.controlPanel.setBackground(FlatUiSupport.ribbonSurfaceColor());
 		}
 
 		Border b = this.controlPanel.getBorder();

@@ -79,6 +79,7 @@ public interface Session {
 	
 	
     public Job getLoadProjectJob(final LoadOptions opt);
+    public Job getLoadProjectDescriptorsJob(final boolean includeProjects, final List descriptors, final boolean allowOpenAs);
     public Job getSaveProjectJob(final Project project, final SaveOptions opt);
     public Job getSaveProjectJob(final List<Project> projects, final SaveOptions opt);
     public Job getEmptyJob(String name,Object result);

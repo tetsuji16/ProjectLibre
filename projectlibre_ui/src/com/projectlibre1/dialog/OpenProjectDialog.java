@@ -471,7 +471,8 @@ public final class OpenProjectDialog extends AbstractDialog {
 	}
 
 	private boolean canBeUsed(ProjectData project){
-		return project.canBeUsed()
+		boolean available = project.isLocal() || project.canBeUsed();
+		return available
 				&& (allowMaster || !project.isMaster())
 				&& !currentProjectIds.contains(Long.valueOf(project.getUniqueId()));
 	}
