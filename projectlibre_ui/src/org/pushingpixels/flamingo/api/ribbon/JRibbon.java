@@ -49,6 +49,8 @@ import org.pushingpixels.flamingo.api.common.AbstractCommandButton;
 import org.pushingpixels.flamingo.api.common.CommandButtonDisplayState;
 import org.pushingpixels.flamingo.api.common.RichTooltip;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
+import org.pushingpixels.flamingo.internal.compat.NeonIconCompat;
+import org.pushingpixels.flamingo.internal.compat.NeonRibbonHelpIconBridge;
 import org.pushingpixels.flamingo.internal.ui.ribbon.BasicRibbonUI;
 import org.pushingpixels.flamingo.internal.ui.ribbon.RibbonUI;
 
@@ -120,7 +122,7 @@ import org.pushingpixels.flamingo.internal.ui.ribbon.RibbonUI;
  * 
  * @author Kirill Grouchnikov
  */
-public class JRibbon extends JComponent {
+public class JRibbon extends JComponent implements NeonRibbonHelpIconBridge {
 	/**
 	 * The general tasks.
 	 * 
@@ -394,6 +396,12 @@ public class JRibbon extends JComponent {
 		this.helpIcon = helpIcon;
 		this.helpActionListener = helpActionListener;
 		this.fireStateChanged();
+	}
+
+	public synchronized void configureHelp(
+			org.pushingpixels.neon.icon.ResizableIcon helpIcon,
+			ActionListener helpActionListener) {
+		this.configureHelp(NeonIconCompat.wrap(helpIcon), helpActionListener);
 	}
 
 	/**

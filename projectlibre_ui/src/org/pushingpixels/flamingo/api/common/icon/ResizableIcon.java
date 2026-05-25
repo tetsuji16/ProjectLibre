@@ -31,14 +31,12 @@ package org.pushingpixels.flamingo.api.common.icon;
 
 import java.awt.Dimension;
 
-import javax.swing.Icon;
-
 /**
  * Interface for icons that have resizability behaviour.
  * 
  * @author Kirill Grouchnikov
  */
-public interface ResizableIcon extends Icon {
+public interface ResizableIcon extends org.pushingpixels.neon.icon.ResizableIcon {
 	/**
 	 * Changes the dimension of <code>this</code> icon.
 	 * 

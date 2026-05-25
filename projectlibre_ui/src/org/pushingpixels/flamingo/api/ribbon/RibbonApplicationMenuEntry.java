@@ -34,6 +34,8 @@ import java.awt.event.ActionListener;
 import org.pushingpixels.flamingo.api.common.JCommandMenuButton;
 import org.pushingpixels.flamingo.api.common.JCommandButton.CommandButtonKind;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
+import org.pushingpixels.flamingo.internal.compat.NeonIconCompat;
+import org.pushingpixels.flamingo.internal.compat.NeonRibbonMenuEntryIconBridge;
 
 /**
  * Basic metadata for entries in the ribbon application menu.
@@ -50,7 +52,8 @@ import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
  * @see RibbonApplicationMenu
  * @see JRibbon#setApplicationMenu(RibbonApplicationMenu)
  */
-abstract class RibbonApplicationMenuEntry {
+abstract class RibbonApplicationMenuEntry implements
+		NeonRibbonMenuEntryIconBridge {
 	/**
 	 * The menu icon.
 	 */
@@ -271,5 +274,10 @@ abstract class RibbonApplicationMenuEntry {
 	 */
 	public void setDisabledIcon(ResizableIcon disabledIcon) {
 		this.disabledIcon = disabledIcon;
+	}
+
+	public void setDisabledIcon(
+			org.pushingpixels.neon.icon.ResizableIcon disabledIcon) {
+		this.setDisabledIcon(NeonIconCompat.wrap(disabledIcon));
 	}
 }

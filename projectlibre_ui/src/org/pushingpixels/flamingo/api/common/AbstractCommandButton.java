@@ -40,6 +40,8 @@ import javax.swing.event.*;
 
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
 import org.pushingpixels.flamingo.api.common.model.ActionButtonModel;
+import org.pushingpixels.flamingo.internal.compat.NeonIconCompat;
+import org.pushingpixels.flamingo.internal.compat.NeonCommandButtonIconBridge;
 import org.pushingpixels.flamingo.internal.ui.common.CommandButtonUI;
 
 /**
@@ -48,7 +50,8 @@ import org.pushingpixels.flamingo.internal.ui.common.CommandButtonUI;
  * @author Kirill Grouchnikov
  */
 public abstract class AbstractCommandButton extends
-		RichToolTipManager.JTrackableComponent {
+		RichToolTipManager.JTrackableComponent implements
+		NeonCommandButtonIconBridge {
 	/**
 	 * Associated icon.
 	 * 
@@ -288,6 +291,10 @@ public abstract class AbstractCommandButton extends
 		}
 	}
 
+	public void setIcon(org.pushingpixels.neon.icon.ResizableIcon defaultIcon) {
+		this.setIcon(NeonIconCompat.wrap(defaultIcon));
+	}
+
 	/**
 	 * Sets the disabled icon for this button.
 	 * 
@@ -298,6 +305,11 @@ public abstract class AbstractCommandButton extends
 	 */
 	public void setDisabledIcon(ResizableIcon disabledIcon) {
 		this.disabledIcon = disabledIcon;
+	}
+
+	public void setDisabledIcon(
+			org.pushingpixels.neon.icon.ResizableIcon disabledIcon) {
+		this.setDisabledIcon(NeonIconCompat.wrap(disabledIcon));
 	}
 
 	/**

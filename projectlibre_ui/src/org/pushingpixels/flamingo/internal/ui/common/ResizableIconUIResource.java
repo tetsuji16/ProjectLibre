@@ -36,9 +36,14 @@ import javax.swing.plaf.UIResource;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
 
 public class ResizableIconUIResource implements ResizableIcon, UIResource {
-    private ResizableIcon delegate;
+    private org.pushingpixels.neon.icon.ResizableIcon delegate;
 
 	public ResizableIconUIResource(ResizableIcon delegate) {
+		this.delegate = delegate;
+	}
+
+	public ResizableIconUIResource(
+			org.pushingpixels.neon.icon.ResizableIcon delegate) {
 		this.delegate = delegate;
 	}
 
