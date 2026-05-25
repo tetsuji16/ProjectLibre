@@ -41,6 +41,7 @@ import org.pushingpixels.flamingo.api.common.JCommandButton;
 import org.pushingpixels.flamingo.api.common.JScrollablePanel;
 import org.pushingpixels.flamingo.api.common.JScrollablePanel.ScrollType;
 import org.pushingpixels.flamingo.internal.utils.DoubleArrowResizableIcon;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  * Basic UI for scrollable panel {@link JScrollablePanel}.
@@ -173,6 +174,8 @@ public class BasicScrollablePanelUI extends ScrollablePanelUI {
 				}
 			}
 		});
+		this.viewport.setOpaque(true);
+		this.viewport.setBackground(scrollablePanel.getBackground());
 		JComponent view = scrollablePanel.getView();
 		if (view != null) {
 			this.viewport.add(view);

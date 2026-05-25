@@ -82,7 +82,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
-import com.projectlibre1.graphic.configuration.shape.Colors;
 import com.projectlibre1.util.Environment;
 import com.projectlibre1.util.FlatLafSupport;
 import com.projectlibre1.util.FlatUiSupport;
@@ -301,14 +300,10 @@ public class LafManagerImpl implements LafManager {
 
 
 	public Color getSelectedBackgroundColor() {
-		return Environment.isMac()?Colors.NOT_TOO_DARK_GRAY:Color.DARK_GRAY;
+		return FlatUiSupport.tableSelectionBackground();
 	}
 	public Color getUnselectedBackgroundColor() {
-		LookAndFeel laf = UIManager.getLookAndFeel();
-		if (Environment.isMac())
-			return Environment.isMac()?Colors.VERY_LIGHT_GRAY:laf.getDefaults().getColor("TableHeader.background");//table.getTableHeader ().getBackground()
-		else
-			return laf.getDefaults().getColor("TableHeader.focusCellForeground");
+		return FlatUiSupport.appBackground();
 	}
 
 	public void dumpUIValues() {

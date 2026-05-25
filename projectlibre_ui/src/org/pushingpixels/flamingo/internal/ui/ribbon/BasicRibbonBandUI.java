@@ -201,12 +201,12 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 	protected void installDefaults() {
 		Color bg = this.ribbonBand.getBackground();
 		if (bg == null || bg instanceof UIResource) {
-			this.ribbonBand.setBackground(FlatUiSupport.panelBackground());
+			this.ribbonBand.setBackground(FlatUiSupport.appBackground());
 		}
 
 		Border b = this.ribbonBand.getBorder();
 		if (b == null || b instanceof UIResource) {
-			Border toSet = BorderFactory.createEmptyBorder();
+			Border toSet = BorderFactory.createEmptyBorder(2, 4, 1, 4);
 			this.ribbonBand.setBorder(toSet);
 		}
 	}
@@ -242,7 +242,7 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 		result.setFlat(true);
 		result.putClientProperty(BasicCommandButtonUI.EMULATE_SQUARE_BUTTON,
 				Boolean.TRUE);
-		result.setBorder(new EmptyBorder(1, 2, 1, 2));
+		result.setBorder(new EmptyBorder(1, 1, 1, 1));
 		result.setActionKeyTip(this.ribbonBand.getExpandButtonKeyTip());
 		result.setActionRichTooltip(this.ribbonBand
 				.getExpandButtonRichTooltip());
@@ -835,7 +835,7 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 	protected void paintBandTitleBackground(Graphics g,
 			Rectangle titleRectangle, String title) {
 		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setColor(FlatUiSupport.panelBackground());
+		g2d.setColor(FlatUiSupport.ribbonSurfaceColor());
 		g2d.fillRect(titleRectangle.x, titleRectangle.y, titleRectangle.width,
 				titleRectangle.height);
 		g2d.dispose();
@@ -854,7 +854,7 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 	 *            Rectangle for the background.
 	 */
 	protected void paintBandBackground(Graphics graphics, Rectangle toFill) {
-		graphics.setColor(ribbonBand.getBackground());
+		graphics.setColor(FlatUiSupport.ribbonSurfaceColor());
 		graphics.fillRect(toFill.x, toFill.y, toFill.width, toFill.height);
 	}
 
@@ -877,6 +877,7 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 			font = new JLabel().getFont();
 		}
 		int result = font.getSize() + 3;
+		result = Math.max(11, font.getSize() + 1);
 		if (result % 2 == 0)
 			result++;
 		return result;

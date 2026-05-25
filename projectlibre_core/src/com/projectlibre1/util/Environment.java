@@ -124,10 +124,10 @@ public class Environment {
 		Environment.user = user;
 	}
 	public static final boolean isAdministrator() {
-		return user.isAdministrator();
+		return user != null && user.isAdministrator();
 	}
 	public static final boolean isExternal() {
-		return user.isExternal();
+		return user != null && user.isExternal();
 	}
 	public static final String getPartnerId() {
 		return partnerId;

@@ -62,7 +62,6 @@
 	<path id="compile.class.path">
 		<fileset dir="../projectlibre_contrib">
 			<include name="projectlibre-contrib.jar" />
-			<include name="projectlibre-script-radiance.jar" />
 			<!--include name="projectlibre-exchange.jar" /-->
 			<include name="projectlibre-reports.jar" />
 		</fileset>
@@ -182,7 +181,7 @@
 
  					<manifest>
  						<attribute name="Main-Class" value="com.projectlibre1.main.Main"/>
- 						<attribute name="Class-Path" value="lib/projectlibre-contrib.jar lib/projectlibre-script-radiance.jar lib/projectlibre-reports.jar"/>
+ 						<attribute name="Class-Path" value="lib/projectlibre-contrib.jar lib/projectlibre-reports.jar"/>
  					</manifest>
 
  					<metainf dir="license">
@@ -223,6 +222,7 @@
  				  <copy todir="${dist}/lib">
  				    <fileset dir="../projectlibre_contrib/">
  				    	<include name="*.jar" />
+ 				    	<exclude name="projectlibre-script-radiance.jar" />
  				  	</fileset>
  				  </copy>
 			</then>

@@ -114,6 +114,12 @@ public class SessionFactory {
     protected Session getSession(String name){
     	initSessions();
     	Session session=sessionImpls.get(name);
+    	if (session == null && !"local".equals(name)) {
+    		session = sessionImpls.get("local");
+    	}
+    	if (session == null) {
+    		throw new IllegalStateException("No session implementation configured for " + name);
+    	}
     	if (!session.isInitialized()) session.init(credentials);
     	return session;
     }

@@ -43,6 +43,7 @@ import org.pushingpixels.flamingo.api.common.AbstractCommandButton;
 import org.pushingpixels.flamingo.api.common.JCommandButtonPanel;
 import org.pushingpixels.flamingo.api.common.JCommandButtonPanel.LayoutKind;
 import org.pushingpixels.flamingo.internal.utils.FlamingoUtilities;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  * Basic UI for command button panel {@link JCommandButtonPanel}.
@@ -277,18 +278,7 @@ public class BasicCommandButtonPanelUI extends CommandButtonPanelUI {
 	 */
 	protected void paintGroupBackground(Graphics g, int groupIndex, int x,
 			int y, int width, int height) {
-		Color c = this.buttonPanel.getBackground();
-		if ((c == null) || (c instanceof UIResource)) {
-			c = UIManager.getColor("Panel.background");
-			if (c == null)
-				c = new Color(190, 190, 190);
-			if (groupIndex % 2 == 1) {
-				double coef = 0.95;
-				c = new Color((int) (c.getRed() * coef),
-						(int) (c.getGreen() * coef), (int) (c.getBlue() * coef));
-			}
-		}
-		g.setColor(c);
+		g.setColor(FlatUiSupport.ribbonSurfaceColor());
 		g.fillRect(x, y, width, height);
 	}
 
@@ -310,8 +300,8 @@ public class BasicCommandButtonPanelUI extends CommandButtonPanelUI {
 	 */
 	protected void paintGroupTitleBackground(Graphics g, int groupIndex, int x,
 			int y, int width, int height) {
-		FlamingoUtilities.renderSurface(g, this.buttonPanel, new Rectangle(x,
-				y, width, height), false, (groupIndex > 0), true);
+		g.setColor(FlatUiSupport.ribbonSurfaceColor());
+		g.fillRect(x, y, width, height);
 	}
 
 	/**

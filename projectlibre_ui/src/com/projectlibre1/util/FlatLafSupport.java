@@ -5,14 +5,10 @@ import java.util.Locale;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.UIDefaults;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
 import com.formdev.flatlaf.FlatLightLaf;
-import org.pushingpixels.substance.api.SubstanceCortex;
-import org.pushingpixels.substance.api.skin.BusinessSkin;
 
 /**
  * Centralized FlatLaf bootstrap for the desktop application.
@@ -31,13 +27,13 @@ public final class FlatLafSupport {
 			JDialog.setDefaultLookAndFeelDecorated(false);
 
 			FlatLightLaf.setup();
-			configureRadianceFlamingo();
 
 			Font defaultFont = createDefaultFont();
 			if (defaultFont != null) {
 				applyUIFontDefaults(defaultFont);
 				applyEnvironmentFonts(defaultFont);
 			}
+			FlatUiTheme.installIntoUIManager();
 			UIManager.put("Component.hideMnemonics", Boolean.FALSE);
 		} catch (Exception ex) {
 			System.err.println("Failed to initialize LaF");
@@ -50,66 +46,6 @@ public final class FlatLafSupport {
 	public static synchronized void ensureInitialized() {
 		if (!initialized) {
 			initialize();
-		}
-	}
-
-	private static void configureRadianceFlamingo() {
-		runOnEdt(new Runnable() {
-			@Override
-			public void run() {
-				SubstanceCortex.GlobalScope.setSkin(new BusinessSkin());
-				SubstanceCortex.GlobalScope.setFlatBackground(Boolean.TRUE);
-				SubstanceCortex.GlobalScope.setColorizationFactor(0.15d);
-
-				UIDefaults defaults = UIManager.getDefaults();
-				registerFlamingoUi(defaults, "BreadcrumbBarUI",
-						"org.pushingpixels.flamingo.internal.substance.bcb.ui.SubstanceBreadcrumbBarUI");
-				registerFlamingoUi(defaults, "CommandButtonPanelUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstanceCommandButtonPanelUI");
-				registerFlamingoUi(defaults, "CommandButtonUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstanceCommandButtonUI");
-				registerFlamingoUi(defaults, "CommandMenuButtonUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstanceCommandMenuButtonUI");
-				registerFlamingoUi(defaults, "CommandPopupMenuUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstanceCommandPopupMenuUI");
-				registerFlamingoUi(defaults, "CommandToggleButtonUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstanceCommandToggleButtonUI");
-				registerFlamingoUi(defaults, "CommandToggleMenuButtonUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstanceCommandToggleMenuButtonUI");
-				registerFlamingoUi(defaults, "PopupPanelUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstancePopupPanelUI");
-				registerFlamingoUi(defaults, "RichTooltipPanelUI",
-						"org.pushingpixels.flamingo.internal.substance.ribbon.ui.SubstanceRichTooltipPanelUI");
-				registerFlamingoUi(defaults, "RibbonBandUI",
-						"org.pushingpixels.flamingo.internal.substance.ribbon.ui.SubstanceRibbonBandUI");
-				registerFlamingoUi(defaults, "RibbonComponentUI",
-						"org.pushingpixels.flamingo.internal.substance.ribbon.ui.SubstanceRibbonComponentUI");
-				registerFlamingoUi(defaults, "RibbonGalleryUI",
-						"org.pushingpixels.flamingo.internal.substance.ribbon.ui.SubstanceRibbonGalleryUI");
-				registerFlamingoUi(defaults, "RibbonRootPaneUI",
-						"org.pushingpixels.flamingo.internal.substance.ribbon.ui.SubstanceRibbonRootPaneUI");
-				registerFlamingoUi(defaults, "RibbonUI",
-						"org.pushingpixels.flamingo.internal.substance.ribbon.ui.SubstanceRibbonUI");
-				registerFlamingoUi(defaults, "ScrollablePanelUI",
-						"org.pushingpixels.flamingo.internal.substance.common.ui.SubstanceScrollablePanelUI");
-			}
-		});
-	}
-
-	private static void registerFlamingoUi(UIDefaults defaults, String uiKey,
-			String uiClassName) {
-		defaults.put(uiKey, uiClassName);
-	}
-
-	private static void runOnEdt(Runnable runnable) {
-		if (SwingUtilities.isEventDispatchThread()) {
-			runnable.run();
-			return;
-		}
-		try {
-			SwingUtilities.invokeAndWait(runnable);
-		} catch (Exception ex) {
-			throw new IllegalStateException("Failed to initialize Radiance Flamingo", ex);
 		}
 	}
 

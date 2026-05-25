@@ -31,6 +31,7 @@ package org.pushingpixels.flamingo.internal.ui.ribbon;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -73,8 +74,8 @@ public class BasicRibbonTaskToggleButtonUI extends BasicCommandToggleButtonUI {
 
 		Border border = this.commandButton.getBorder();
 		if (border == null || border instanceof UIResource) {
-			Border toInstall = new BorderUIResource.EmptyBorderUIResource(4, 10,
-					4, 10);
+			Border toInstall = new BorderUIResource.EmptyBorderUIResource(2, 10,
+					3, 10);
 			this.commandButton.setBorder(toInstall);
 		}
 
@@ -148,10 +149,7 @@ public class BasicRibbonTaskToggleButtonUI extends BasicCommandToggleButtonUI {
 		String toPaint = this.commandButton.getText();
 		Color contextualGroupHueColor = ((JRibbonTaskToggleButton) this.commandButton)
 				.getContextualGroupHueColor();
-		g.setColor(this.commandButton.getActionModel().isSelected()
-				? (contextualGroupHueColor != null ? contextualGroupHueColor
-						: FlatUiSupport.tabSelectedForeground())
-				: FlatUiSupport.tabUnselectedForeground());
+		g.setColor(FlatUiSupport.tabUnselectedForeground());
 
 		// compute the insets
 		int fullInsets = this.commandButton.getInsets().left;
@@ -176,6 +174,20 @@ public class BasicRibbonTaskToggleButtonUI extends BasicCommandToggleButtonUI {
 		}
 		BasicGraphicsUtils.drawString(g, toPaint, -1, textRect.x, textRect.y
 				+ fm.getAscent());
+
+		if (this.commandButton.getActionModel().isSelected() && toPaint.length() > 0) {
+			Graphics2D g2d = (Graphics2D) g.create();
+			g2d.setColor(contextualGroupHueColor != null ? contextualGroupHueColor
+					: FlatUiSupport.accentColor());
+			int underlineWidth = fm.stringWidth(toPaint);
+			int underlineX = textRect.x + Math.max(0,
+					(textRect.width - underlineWidth) / 2);
+			int underlineY = Math.min(this.commandButton.getHeight() - 2,
+					textRect.y + textRect.height + 2);
+			g2d.fillRoundRect(underlineX, underlineY, Math.max(1, underlineWidth),
+					2, 2, 2);
+			g2d.dispose();
+		}
 	}
 
 	/**
@@ -209,23 +221,14 @@ public class BasicRibbonTaskToggleButtonUI extends BasicCommandToggleButtonUI {
 				|| this.commandButton.getActionModel().isRollover());
 		model.setPressed(false);
 		Graphics2D g2d = (Graphics2D) graphics.create();
+		FlatUiSupport.enableAntialiasing(g2d);
 		g2d.translate(toFill.x, toFill.y);
-		Color background = FlatUiSupport.panelBackground();
 		Color contextualGroupHueColor = ((JRibbonTaskToggleButton) this.commandButton)
 				.getContextualGroupHueColor();
-		Color underlineColor = contextualGroupHueColor != null
-				? contextualGroupHueColor
-				: FlatUiSupport.accentColor();
 		if (model.isRollover() && !displayAsSelected) {
-			g2d.setColor(new Color(underlineColor.getRed(),
-					underlineColor.getGreen(), underlineColor.getBlue(), 24));
-			g2d.fillRect(0, 0, toFill.width, toFill.height);
-		}
-		if (displayAsSelected) {
-			g2d.setColor(background);
-			g2d.fillRect(0, 0, toFill.width, toFill.height);
-			g2d.setColor(underlineColor);
-			g2d.fillRect(0, Math.max(0, toFill.height - 2), toFill.width, 2);
+			g2d.setColor(FlatUiSupport.ribbonTabHoverColor());
+			g2d.fill(new RoundRectangle2D.Float(1, 1, Math.max(0, toFill.width - 2),
+					Math.max(0, toFill.height - 3), 10, 10));
 		}
 		g2d.dispose();
 	}

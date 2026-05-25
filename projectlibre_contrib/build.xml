@@ -143,6 +143,9 @@
 				<zipgroupfileset file="tmp/projectlibre-contrib-tmp.jar" /> 
 				<zipgroupfileset file="lib/flatlaf-3.7.1.jar" />
 				<zipgroupfileset file="lib/flatlaf-extras-3.7.1.jar" />
+				<zipgroupfileset file="lib/commons-lang.jar" />
+				<zipgroupfileset file="lib/groovy/groovy-2.4.21.jar" />
+				<zipgroupfileset file="lib/groovy/ant-antlr-1.9.15.jar" />
 				<zipgroupfileset file="lib/commons-beanutils.jar" /> 
 				<zipgroupfileset file="lib/commons-digester.jar" /> 
 				<zipgroupfileset file="lib/commons-pool.jar" /> 
