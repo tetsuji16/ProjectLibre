@@ -36,6 +36,7 @@ import javax.swing.UIManager;
 
 import org.pushingpixels.flamingo.api.common.*;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
+import org.pushingpixels.flamingo.internal.compat.NeonRibbonComponentIconBridge;
 import org.pushingpixels.flamingo.internal.ui.ribbon.BasicRibbonComponentUI;
 import org.pushingpixels.flamingo.internal.ui.ribbon.RibbonComponentUI;
 
@@ -45,7 +46,8 @@ import org.pushingpixels.flamingo.internal.ui.ribbon.RibbonComponentUI;
  * 
  * @author Kirill Grouchnikov
  */
-public class JRibbonComponent extends RichToolTipManager.JTrackableComponent {
+public class JRibbonComponent extends RichToolTipManager.JTrackableComponent
+		implements NeonRibbonComponentIconBridge {
 	/**
 	 * Wrapper icon. Can be <code>null</code>.
 	 * 

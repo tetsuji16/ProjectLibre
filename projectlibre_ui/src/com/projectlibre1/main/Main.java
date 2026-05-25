@@ -62,6 +62,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
 
+import javax.swing.SwingUtilities;
+
 import com.projectlibre1.dialog.UserInfoDialog;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.util.Environment;
@@ -100,7 +102,7 @@ public class Main {
 					formatedList.add("--fileNames");
 					formatedList.add(joinedFileName);
 					formatedArgs=formatedList.toArray(new String[]{});
-					com.projectlibre1.pm.graphic.gantt.Main.main(formatedArgs);
+					startApplication(formatedArgs);
 					return;
 				}
 				String s1,s2;
@@ -119,7 +121,16 @@ public class Main {
 			} else formatedArgs=args;
 		} else formatedArgs=args;
 
-		com.projectlibre1.pm.graphic.gantt.Main.main(formatedArgs);
+		startApplication(formatedArgs);
+	}
+
+	private static void startApplication(final String[] args) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				com.projectlibre1.pm.graphic.gantt.Main.main(args);
+			}
+		});
 	}
 
 	private static String joinExistingFileName(ArrayList<String> args) {

@@ -38,6 +38,7 @@ import javax.swing.UIManager;
 
 import org.pushingpixels.flamingo.api.common.RichTooltip;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
+import org.pushingpixels.flamingo.internal.compat.NeonRibbonBandIconBridge;
 import org.pushingpixels.flamingo.api.ribbon.resize.CoreRibbonResizePolicies;
 import org.pushingpixels.flamingo.api.ribbon.resize.IconRibbonBandResizePolicy;
 import org.pushingpixels.flamingo.api.ribbon.resize.RibbonBandResizePolicy;
@@ -72,7 +73,7 @@ import org.pushingpixels.flamingo.internal.utils.FlamingoUtilities;
  *            implementation.
  */
 public abstract class AbstractRibbonBand<T extends AbstractBandControlPanel>
-		extends JComponent {
+		extends JComponent implements NeonRibbonBandIconBridge {
 	/**
 	 * The UI class ID string.
 	 */

@@ -43,6 +43,8 @@ import org.pushingpixels.flamingo.api.common.AsynchronousLoading;
 import org.pushingpixels.flamingo.api.common.icon.ResizableIcon;
 import org.pushingpixels.flamingo.api.common.popup.JPopupPanel;
 import org.pushingpixels.flamingo.api.common.popup.PopupPanelManager;
+import org.pushingpixels.flamingo.internal.compat.NeonIconCompat;
+import org.pushingpixels.flamingo.internal.compat.NeonRibbonFrameIconBridge;
 import org.pushingpixels.flamingo.internal.ui.ribbon.*;
 import org.pushingpixels.flamingo.internal.utils.*;
 import org.pushingpixels.flamingo.internal.utils.KeyTipManager.KeyTipEvent;
@@ -71,7 +73,7 @@ import org.pushingpixels.flamingo.internal.utils.KeyTipManager.KeyTipEvent;
  * 
  * @author Kirill Grouchnikov
  */
-public class JRibbonFrame extends JFrame {
+public class JRibbonFrame extends JFrame implements NeonRibbonFrameIconBridge {
 	/**
 	 * The ribbon component.
 	 */
@@ -579,6 +581,11 @@ public class JRibbonFrame extends JFrame {
 				setApplicationAndMenuButtonIcon(icon);
 			}
 		}.start();
+	}
+
+	public synchronized void setApplicationIcon(
+			final org.pushingpixels.neon.icon.ResizableIcon icon) {
+		this.setApplicationIcon(NeonIconCompat.wrap(icon));
 	}
 
 	private void setApplicationAndMenuButtonIcon(final ResizableIcon icon) {
