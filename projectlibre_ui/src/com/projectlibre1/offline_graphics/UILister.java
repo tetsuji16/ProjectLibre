@@ -75,6 +75,7 @@ import com.projectlibre1.util.FlatLafSupport;
 
 public class UILister {
 	public static void main(String[] args) {
+		FlatLafSupport.ensureInitialized();
 		try {
 			FlatLafSupport.initialize();
 			Set defaults = UIManager.getLookAndFeelDefaults().entrySet();

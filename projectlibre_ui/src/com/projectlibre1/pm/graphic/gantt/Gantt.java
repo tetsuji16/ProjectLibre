@@ -94,6 +94,10 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 //    protected DependencyDialog dependencyPropertiesDialog;
 
 	private static final long serialVersionUID = -1806070019043393474L;
+	private static final String ZOOM_OUT_ACTION = "gantt.zoomOut";
+	private static final String ZOOM_IN_ACTION = "gantt.zoomIn";
+	private static final int AUTO_SCROLL_START_THRESHOLD = 150;
+	private static final int AUTO_SCROLL_LEFT_PADDING = 50;
 	private boolean progressLineEnabled = false;
 	public Gantt(Project project,String viewName) {
 		this(new GanttModel(project,viewName),project);
@@ -107,12 +111,12 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 	}
 
 	public void cleanUp() {
-		CoordinatesConverter c = getCoord();
-    	if (c!= null) {
-    		c.removeTimeScaleListener(this);
-        	c.removeTimeScaleListener((GanttModel)model);
-    	}
-    	super.cleanUp();
+		var coord = getCoord();
+		if (coord != null) {
+			coord.removeTimeScaleListener(this);
+			coord.removeTimeScaleListener((GanttModel) model);
+		}
+		super.cleanUp();
 	}
 
 	public void updateUI() {
@@ -126,18 +130,21 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 
 
 
-     public CoordinatesConverter getCoord() {
-        return ((GanttModel)model).getCoord();
-    }
-     public void setCoord(CoordinatesConverter coord) {
-     	CoordinatesConverter modelCoord=getCoord();
-        if (modelCoord!=null)
-        	modelCoord.removeTimeScaleListener(this);
+	public CoordinatesConverter getCoord() {
+		return ((GanttModel) model).getCoord();
+	}
+
+	public void setCoord(CoordinatesConverter coord) {
+		var modelCoord = getCoord();
+		if (modelCoord != null) {
+			modelCoord.removeTimeScaleListener(this);
+		}
 		coord.addTimeScaleListener(this);
-		((GanttModel)model).setCoord(coord);
-     }
- 	public void timeScaleChanged(TimeScaleEvent e) {
- 		updateSize();
+		((GanttModel) model).setCoord(coord);
+	}
+
+	public void timeScaleChanged(TimeScaleEvent e) {
+		updateSize();
 // 		Component p;
 // 		if ((p=getParent()) instanceof JViewport){
 // 			//JViewport vp=(JViewport)p;
@@ -152,9 +159,7 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 
 
 	public int getRow(double y){
-		//double row=y/((double)config.getRowHeight());
-		double row=y/((double)getRowHeight());
-		return (int)row;
+		return (int) (y / (double) getRowHeight());
 	}
 
 
@@ -176,12 +181,12 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 	public void setColumnHeaderFont(Font columnHeaderFont) {
 	}
 
-   	protected LinkRouting routing=new DefaultGanttLinkRouting();//new QuadraticGanttLinkRouting();
+	protected LinkRouting routing = new DefaultGanttLinkRouting();//new QuadraticGanttLinkRouting();
 	public LinkRouting getRouting(){
 		return routing;
 	}
 	public void setRouting(LinkRouting routing) {
-		this.routing=routing;
+		this.routing = routing;
 	}
 
 	public boolean isProgressLineEnabled() {
@@ -194,26 +199,25 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 	}
 
 	private void installKeyboardActions() {
-		InputMap inputMap = getInputMap(WHEN_FOCUSED);
-		ActionMap actionMap = getActionMap();
+		var inputMap = getInputMap(WHEN_FOCUSED);
+		var actionMap = getActionMap();
 
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), "gantt.zoomOut");
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), "gantt.zoomIn");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), ZOOM_OUT_ACTION);
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK), ZOOM_IN_ACTION);
 
-		actionMap.put("gantt.zoomOut", new AbstractAction() {
+		actionMap.put(ZOOM_OUT_ACTION, createZoomAction(() -> ScrollPaneSynchronizer.zoomOut(Gantt.this)));
+		actionMap.put(ZOOM_IN_ACTION, createZoomAction(() -> ScrollPaneSynchronizer.zoomIn(Gantt.this)));
+	}
+
+	private static AbstractAction createZoomAction(Runnable zoomOperation) {
+		return new AbstractAction() {
 			private static final long serialVersionUID = 1L;
 
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				ScrollPaneSynchronizer.zoomOut(Gantt.this);
+				zoomOperation.run();
 			}
-		});
-		actionMap.put("gantt.zoomIn", new AbstractAction() {
-			private static final long serialVersionUID = 1L;
-
-			public void actionPerformed(ActionEvent e) {
-				ScrollPaneSynchronizer.zoomIn(Gantt.this);
-			}
-		});
+		};
 	}
 
 
@@ -229,17 +233,20 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 //			JViewport v=(JViewport)c;
 //			v.setViewSize(new Dimension((int)Math.ceil(getCoord().getWidth()),v.getViewSize().height));
 //		}
-		((GraphUI)ui).updateShapes();
+		((GraphUI) ui).updateShapes();
 
-		Component c;
-		if ((c=getParent()) instanceof JViewport){
-			JViewport vp=(JViewport)c;
-			vp.setViewSize(new Dimension((int)Math.ceil(getCoord().getWidth()),vp.getViewSize().height));
+		var parent = getParent();
+		if (parent instanceof JViewport viewport) {
+			viewport.setViewSize(new Dimension(getDrawingWidth(), viewport.getViewSize().height));
 		}
 
-		setPreferredSize(new Dimension((int)Math.ceil(getCoord().getWidth()),getPreferredSize().height));
+		setPreferredSize(new Dimension(getDrawingWidth(), getPreferredSize().height));
 
 		revalidate();
+	}
+
+	private int getDrawingWidth() {
+		return (int) Math.ceil(getCoord().getWidth());
 	}
 
 	public Rectangle getGanttBounds(){
@@ -264,28 +271,33 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 
 
 	public void scrollToTask(HasStartAndEnd interval,boolean automatic){
-		CoordinatesConverter coord=getCoord();
-		double start=coord.toX(interval.getStart());
-		double end=coord.toX(interval.getEnd());
-		Rectangle visible=getVisibleRect();
-		if (automatic&&(
-				(start>=visible.x&&start<=visible.x+visible.width)||
-				(end>=visible.x&&end<=visible.x+visible.width)||
-				(start<visible.x&&end>visible.x+visible.width)))
+		var coord = getCoord();
+		var start = coord.toX(interval.getStart());
+		var end = coord.toX(interval.getEnd());
+		var visible = getVisibleRect();
+		if (automatic && isAlreadyVisible(visible, start, end))
 			return; //already visible
 
-		Component c;
-		if ((c=getParent()) instanceof JViewport){
-			JViewport vp=(JViewport)c;
-			Point p=vp.getViewPosition();
-			if (start</*(visible.width/3)*/150) p.x=0;
-			else{
-				p.x=(int)Math.ceil(start)-50; //3 days 1/3
-				if (p.x<0) p.x=0;
+		var parent = getParent();
+		if (parent instanceof JViewport viewport) {
+			var position = viewport.getViewPosition();
+			if (start < AUTO_SCROLL_START_THRESHOLD) {
+				position.x = 0;
+			} else {
+				position.x = (int) Math.ceil(start) - AUTO_SCROLL_LEFT_PADDING; // 3 days 1/3
+				if (position.x < 0) {
+					position.x = 0;
+				}
 			}
-			vp.setViewPosition(p);
+			viewport.setViewPosition(position);
 		}
 		//scrollRectToVisible(visible);
+	}
+
+	private static boolean isAlreadyVisible(Rectangle visible, double start, double end) {
+		return (start >= visible.x && start <= visible.x + visible.width)
+				|| (end >= visible.x && end <= visible.x + visible.width)
+				|| (start < visible.x && end > visible.x + visible.width);
 	}
 	public boolean isLeftPartVisible() {
 		return true;

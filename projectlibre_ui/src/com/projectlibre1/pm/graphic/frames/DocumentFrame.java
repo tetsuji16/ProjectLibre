@@ -497,8 +497,8 @@ public class DocumentFrame extends NamedFrame implements
 			int column = spreadSheet.isEditing() ? spreadSheet.getEditingColumn() : spreadSheet.getSelectedColumn();
 			CommonSpreadSheet.PendingUndoSelection pendingUndoSelection = spreadSheet.consumePendingUndoSelection(row, column);
 			if (pendingUndoSelection != null) {
-				return new SelectionSnapshot(spreadSheet, pendingUndoSelection.getNode(), pendingUndoSelection.getImpl(),
-						pendingUndoSelection.getRow(), pendingUndoSelection.getColumn());
+				return new SelectionSnapshot(spreadSheet, pendingUndoSelection.node(), pendingUndoSelection.impl(),
+						pendingUndoSelection.row(), pendingUndoSelection.column());
 			}
 			Node node = spreadSheet.getCurrentRowNode();
 			Object impl = (node == null) ? null : node.getImpl();

@@ -115,57 +115,47 @@ public class CommonSpreadSheetModel extends AbstractTableModel implements CacheL
 
 	}
     public void graphicNodesCompositeEvent(CompositeCacheEvent compositeEvent){
-        for (Iterator i=compositeEvent.getNodeEvents().iterator();i.hasNext();){
-            final CacheEvent e=(CacheEvent)i.next();
-            ArrayList intervals = new ArrayList();
-            e.forIntervals(new Closure() {
-                public void execute(Object obj) {
-                    intervals.add(obj);
-                }
-            });
-            fireIntervalEvents(e.getType(), intervals);
+        for (Iterator<?> iterator = compositeEvent.getNodeEvents().iterator(); iterator.hasNext();){
+            CacheEvent event = (CacheEvent) iterator.next();
+            ArrayList<CacheInterval> intervals = new ArrayList<>();
+            event.forIntervals(obj -> intervals.add((CacheInterval) obj));
+            fireIntervalEvents(event.getType(), intervals);
         }
     }
 
-    private void fireIntervalEvents(int type, List intervals) {
-        if (intervals == null || intervals.isEmpty()) return;
-        Collections.sort(intervals, new Comparator() {
-            public int compare(Object o1, Object o2) {
-                CacheInterval i1 = (CacheInterval) o1;
-                CacheInterval i2 = (CacheInterval) o2;
-                int cmp = i1.getStart() - i2.getStart();
-                if (cmp != 0) return cmp;
-                return i1.getEnd() - i2.getEnd();
-            }
-        });
+    private void fireIntervalEvents(int type, List<CacheInterval> intervals) {
+        if (intervals == null || intervals.isEmpty()) {
+            return;
+        }
+        intervals.sort(Comparator.comparingInt(CacheInterval::getStart).thenComparingInt(CacheInterval::getEnd));
 
         int start = -1;
         int end = -1;
-        for (Iterator i = intervals.iterator(); i.hasNext();) {
-            CacheInterval interval = (CacheInterval) i.next();
+        for (CacheInterval interval : intervals) {
             if (start == -1) {
                 start = interval.getStart();
                 end = interval.getEnd();
                 continue;
             }
             if (interval.getStart() <= end + 1) {
-                if (interval.getEnd() > end) end = interval.getEnd();
-            } else {
-                fireIntervalEvent(type, start, end);
-                start = interval.getStart();
-                end = interval.getEnd();
+                end = Math.max(end, interval.getEnd());
+                continue;
             }
+            fireIntervalEvent(type, start, end);
+            start = interval.getStart();
+            end = interval.getEnd();
         }
         fireIntervalEvent(type, start, end);
     }
 
     private void fireIntervalEvent(int type, int start, int end) {
-        if (type == CacheEvent.NODES_CHANGED)
-            fireTableRowsUpdated(start, end);
-        else if (type == CacheEvent.NODES_INSERTED)
-            fireTableRowsInserted(start, end);
-        else if (type == CacheEvent.NODES_REMOVED)
-            fireTableRowsDeleted(start, end);
+        switch (type) {
+            case CacheEvent.NODES_CHANGED -> fireTableRowsUpdated(start, end);
+            case CacheEvent.NODES_INSERTED -> fireTableRowsInserted(start, end);
+            case CacheEvent.NODES_REMOVED -> fireTableRowsDeleted(start, end);
+            default -> {
+            }
+        }
     }
 	
 //	public CommonSpreadSheetModel(NodeModel model, ArrayList fieldArray,CellStyle cellStyle,String viewName) {

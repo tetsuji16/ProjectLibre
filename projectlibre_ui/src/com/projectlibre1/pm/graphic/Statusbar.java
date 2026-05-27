@@ -74,7 +74,7 @@ import com.projectlibre1.util.FlatLafSupport;
 
 public class Statusbar {
 	public static void main(String[] args) {
-		FlatLafSupport.initialize();
+		FlatLafSupport.ensureInitialized();
 		JFrame f = new JFrame();
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.getContentPane().add(getComponent(f), "South");

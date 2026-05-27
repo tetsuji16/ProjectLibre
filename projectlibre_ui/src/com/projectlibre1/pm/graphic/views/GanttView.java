@@ -109,9 +109,10 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	 *
 	 */
 	private static final long serialVersionUID = 514828655690086836L;
+	private static final String DEFAULT_GANTT_BAR_STYLE = "standard";
 	protected SpreadSheet spreadSheet;
 	protected Gantt gantt;
-    protected SortedSet baseLines=new TreeSet();
+    protected SortedSet<Integer> baseLines = new TreeSet<>();
 
     protected ScaledScrollPane ganttScrollPane;
 	protected NodeModel model;
@@ -142,8 +143,8 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		//setScaled(true);
 	}
 	public void init(ReferenceNodeModelCache cache, NodeModel model,CoordinatesConverter coord){
-		this.coord=coord;
-		this.cache=NodeModelCacheFactory.getInstance().createFilteredCache((ReferenceNodeModelCache)cache,getViewName(),null);
+		this.coord = coord;
+		this.cache = NodeModelCacheFactory.getInstance().createFilteredCache((ReferenceNodeModelCache) cache, getViewName(), null);
 
 		fieldContext = new FieldContext();
 		fieldContext.setLeftAssociation(true);
@@ -164,15 +165,18 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 
 		//sync the height of spreadsheet and gantt
 		leftScrollPane.getViewport().addChangeListener(new ChangeListener(){
-			private Dimension olddl=null;
+			private Dimension olddl = null;
+
 			public void stateChanged(ChangeEvent e){
-				Dimension dl=leftScrollPane.getViewport().getViewSize();
-				if (dl.equals(olddl)) return;
-				olddl=dl;
+				Dimension dl = leftScrollPane.getViewport().getViewSize();
+				if (dl.equals(olddl)) {
+					return;
+				}
+				olddl = dl;
 //				Dimension dr=rightScrollPane.getViewport().getViewSize();
 //				((Gantt)rightScrollPane.getViewport().getView()).setPreferredSize(new Dimension((int)dr.getWidth(),(int)dl.getHeight()));
 //				rightScrollPane.getViewport().revalidate();
-				((Gantt)rightScrollPane.getViewport().getView()).setPreferredSize(new Dimension(rightScrollPane.getViewport().getViewSize().width,dl.height));
+				((Gantt) rightScrollPane.getViewport().getView()).setPreferredSize(new Dimension(rightScrollPane.getViewport().getViewSize().width, dl.height));
 			}
 		});
 
@@ -220,36 +224,32 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	public void setBarStyles(String styleName) {
 		if (gantt == null)
 			return;
-		gantt.setBarStyles((BarStyles) Dictionary.get(BarStyles.category,styleName));
-	}
+		gantt.setBarStyles((BarStyles) Dictionary.get(BarStyles.category, styleName));
+    }
 
     protected JScrollPane createLeftScrollPane() {
         spreadSheet = new SpreadSheet();
         spreadSheet.setName(project.getName());
 		spreadSheet.setSpreadSheetCategory(spreadsheetCategory); // for columns.  Must do first
-		SpreadSheetFieldArray fields=getFields();
+		var fields = resolveFieldArray();
+		spreadSheet.setCache(cache, fields, fields.getCellStyle(), fields.getActionList());
 		if (project.getFieldArray() != null) {
-			fields = project.getFieldArray();
-		}
-		if (fields == null) {
-			fields = new SpreadSheetFieldArray();
-		}
-		spreadSheet.setCache(cache,fields,fields.getCellStyle(),fields.getActionList());
-		if (project.getFieldArray() != null)
 			spreadSheet.setFieldArrayWithWidths(fields);
-		((SpreadSheetModel)spreadSheet.getModel()).setFieldContext(fieldContext);
+		}
+		((SpreadSheetModel) spreadSheet.getModel()).setFieldContext(fieldContext);
 		project.removeScheduleListener(this); // in case was already attached and recreating (applet)
 		project.addScheduleListener(this);
-		if (project.isReadOnly())
+		if (project.isReadOnly()) {
 			spreadSheet.setReadOnly(true);
+		}
 
 		return SpreadSheetUtils.makeSpreadsheetScrollPane(spreadSheet);
    }
    protected JScrollPane createRightScrollPane() {
-		gantt=new Gantt(project,"Gantt");
+		gantt = new Gantt(project, "Gantt");
 		gantt.setCache(cache);
-		gantt.setBarStyles((BarStyles) Dictionary.get(BarStyles.category,"standard"));
-		ganttScrollPane=new ScaledScrollPane(gantt,coord,documentFrame,spreadSheet.getRowHeight());
+		gantt.setBarStyles((BarStyles) Dictionary.get(BarStyles.category, DEFAULT_GANTT_BAR_STYLE));
+		ganttScrollPane = new ScaledScrollPane(gantt, coord, documentFrame, spreadSheet.getRowHeight());
 		return ganttScrollPane;
     }
 
@@ -268,7 +268,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	 */
 	public ArrayList setColumns(String name){
 		ArrayList old = spreadSheet.getFieldArray();
-		setColumns((ArrayList) Dictionary.get(spreadsheetCategory,Messages.getString(name)));
+		setColumns((ArrayList) Dictionary.get(spreadsheetCategory, Messages.getString(name)));
 		return old;
 	}
 	public void setColumns(ArrayList fields){
@@ -284,19 +284,17 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 
 
 	public void updateHeight(Integer snapshotId, boolean add){
-		if (add)
+		if (add) {
 			baseLines.add(snapshotId);
-		else baseLines.remove(snapshotId);
-		int num=(baseLines.size()==0)?0:(((Integer)baseLines.last()).intValue()+1);
-		int rowHeight=GraphicConfiguration.getInstance().getRowHeight()
-				+num*GraphicConfiguration.getInstance().getBaselineHeight();
-		spreadSheet.setRowHeight(rowHeight);
-		gantt.setRowHeight(rowHeight);
+		} else {
+			baseLines.remove(snapshotId);
+		}
+		applyRowHeight(calculateRowHeight());
 	}
 
 	public void updateHeight(Project project){
 	    baseLines.clear();
-	    int rowHeight=project.getRowHeight(baseLines);
+	    int rowHeight = project.getRowHeight(baseLines);
 //        for (Iterator i=project.getTaskOutlineIterator();i.hasNext();){
 //            Task task=(Task)i.next();
 //            int current=Snapshottable.CURRENT.intValue();
@@ -309,18 +307,22 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 //		int num=(baseLines.size()==0)?0:(((Integer)baseLines.last()).intValue()+1);
 //		int rowHeight=GraphicConfiguration.getInstance().getRowHeight()
 //				+num*GraphicConfiguration.getInstance().getBaselineHeight();
-		spreadSheet.setRowHeight(rowHeight);
-		gantt.setRowHeight(rowHeight);
+		applyRowHeight(rowHeight);
 	}
 
 	public void scheduleChanged(ScheduleEvent evt) {
-		if (evt.getType() == ScheduleEvent.SCHEDULE) {
+		var eventType = evt.getType();
+		if (eventType == ScheduleEvent.SCHEDULE) {
 			//gantt.updateSize(); //done throught cache
-		} else if (evt.getType() == ScheduleEvent.ACTUAL) {
-		} else if (evt.getType() == ScheduleEvent.BASELINE){
-		    updateHeight(evt.getSnapshot(),evt.isSaveSnapshot());
-		    //Warning: listeners order is important.
-		    //This one must be before GanttModel one which calls updateAll after the height is setted
+			return;
+		}
+		if (eventType == ScheduleEvent.ACTUAL) {
+			return;
+		}
+		if (eventType == ScheduleEvent.BASELINE) {
+			updateHeight(evt.getSnapshot(), evt.isSaveSnapshot());
+			//Warning: listeners order is important.
+			//This one must be before GanttModel one which calls updateAll after the height is setted
 		}
 	}
 
@@ -428,11 +430,10 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		return true;
 	}
 	public void scrollToTask() {
-		List impls=spreadSheet.getSelectedNodesImpl();
-		if (impls.size()==0) return;
-		Object impl=impls.get(0);
-		if (!(impl instanceof HasStartAndEnd)) return;
-		HasStartAndEnd interval=(HasStartAndEnd)impl;
+		List impls = spreadSheet.getSelectedNodesImpl();
+		if (impls.isEmpty() || !(impls.get(0) instanceof HasStartAndEnd interval)) {
+			return;
+		}
 		gantt.scrollToTask(interval, false);
 	}
 
@@ -453,6 +454,28 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		if (gantt != null)
 			gantt.setProgressLineEnabled(tracking ? trackingProgressLineEnabled : standardProgressLineEnabled);
 		HelpUtil.addDocHelp(this,tracking ? "Tracking_Gantt_Chart":"Gantt_Chart");
+	}
+
+	private SpreadSheetFieldArray resolveFieldArray() {
+		var fields = getFields();
+		if (project.getFieldArray() != null) {
+			fields = project.getFieldArray();
+		}
+		if (fields == null) {
+			fields = new SpreadSheetFieldArray();
+		}
+		return fields;
+	}
+
+	private int calculateRowHeight() {
+		var baselineCount = baseLines.isEmpty() ? 0 : baseLines.last().intValue() + 1;
+		return GraphicConfiguration.getInstance().getRowHeight()
+				+ baselineCount * GraphicConfiguration.getInstance().getBaselineHeight();
+	}
+
+	private void applyRowHeight(int rowHeight) {
+		spreadSheet.setRowHeight(rowHeight);
+		gantt.setRowHeight(rowHeight);
 	}
 
 }

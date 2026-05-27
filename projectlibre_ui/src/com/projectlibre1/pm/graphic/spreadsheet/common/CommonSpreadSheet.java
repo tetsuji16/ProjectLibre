@@ -61,7 +61,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -192,9 +191,11 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		((CommonSpreadSheetModel)getModel()).setCache(cache);
 	}
 	public NodeModelCache getCache(){
-		TableModel model=getModel();
-		if (model==null||!(model instanceof CommonSpreadSheetModel)) return null;
-		return ((CommonSpreadSheetModel)model).getCache();
+		var model = getModel();
+		if (!(model instanceof CommonSpreadSheetModel commonModel)) {
+			return null;
+		}
+		return commonModel.getCache();
 	}
 
 	public void setFieldArray(ArrayList fieldArray){
@@ -207,14 +208,16 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	}
 
 	public final SpreadSheetFieldArray getFieldArrayWithWidths(ArrayList fieldArray) {
-		if (fieldArray == null)
-			fieldArray =   getFieldArray();
+		if (fieldArray == null) {
+			fieldArray = getFieldArray();
+		}
 		// the widths don't work now anyway, and someone had a crash due to code below
-		SpreadSheetColumnModel cols = (SpreadSheetColumnModel)getColumnModel();
-		ArrayList<Integer> colWidths = new ArrayList<Integer>(cols.getColumnCount());
+		var cols = (SpreadSheetColumnModel) getColumnModel();
+		var colWidths = new ArrayList<Integer>(cols.getColumnCount());
 		colWidths.add(-1); //id column ignored
-		for (int i=0; i < cols.getColumnCount(); i++)
+		for (int i = 0; i < cols.getColumnCount(); i++) {
 			colWidths.add(cols.getColumn(i).getWidth());
+		}
 		((SpreadSheetFieldArray)fieldArray).setWidths(colWidths);
 		return (SpreadSheetFieldArray) fieldArray;
 	}
@@ -387,33 +390,34 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	}
 
 	private JTextComponent getEditorTextComponent() {
-		if (!(editorComp instanceof Component))
-			return null;
-		Component comp = (Component) editorComp;
-		if (comp instanceof NameCellComponent) {
-			JComponent textComponent = ((NameCellComponent)comp).getTextComponent();
-			if (textComponent instanceof JTextComponent)
-				return (JTextComponent)textComponent;
+		if (!(editorComp instanceof Component component)) {
 			return null;
 		}
-		if (comp instanceof JTextComponent) {
-			return (JTextComponent) comp;
+		if (component instanceof NameCellComponent nameCellComponent) {
+			var textComponent = nameCellComponent.getTextComponent();
+			if (textComponent instanceof JTextComponent text) {
+				return text;
+			}
+			return null;
+		}
+		if (component instanceof JTextComponent textComponent) {
+			return textComponent;
 		}
 		try {
-			Method method = comp.getClass().getMethod("getTextField");
-			Object textField = method.invoke(comp);
-			if (textField instanceof JTextComponent) {
-				return (JTextComponent) textField;
+			var method = component.getClass().getMethod("getTextField");
+			var textField = method.invoke(component);
+			if (textField instanceof JTextComponent text) {
+				return text;
 			}
-		} catch (Exception ex) {
+		} catch (Exception _) {
 			// Ignore; not all editors expose a text field accessor.
 		}
 		return null;
 	}
 
 	private void resetEditorHorizontalOffset(JTextComponent text) {
-		if (text instanceof JTextField) {
-			((JTextField)text).setScrollOffset(0);
+		if (text instanceof JTextField textField) {
+			textField.setScrollOffset(0);
 		}
 	}
 
@@ -469,44 +473,12 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		pendingUndoSelection = null;
 		if (selection == null)
 			return null;
-		if (selection.followRow != currentRow || selection.followColumn != currentColumn)
+		if (selection.followRow() != currentRow || selection.followColumn() != currentColumn)
 			return null;
 		return selection;
 	}
 
-	public static final class PendingUndoSelection {
-		private final Node node;
-		private final Object impl;
-		private final int row;
-		private final int column;
-		private final int followRow;
-		private final int followColumn;
-
-		private PendingUndoSelection(Node node, Object impl, int row, int column, int followRow, int followColumn) {
-			this.node = node;
-			this.impl = impl;
-			this.row = row;
-			this.column = column;
-			this.followRow = followRow;
-			this.followColumn = followColumn;
-		}
-
-		public Node getNode() {
-			return node;
-		}
-
-		public Object getImpl() {
-			return impl;
-		}
-
-		public int getRow() {
-			return row;
-		}
-
-		public int getColumn() {
-			return column;
-		}
-	}
+	public static record PendingUndoSelection(Node node, Object impl, int row, int column, int followRow, int followColumn) {}
 
 	private static final class StartEditEvent extends EventObject {
 		private static final long serialVersionUID = 1L;
@@ -578,8 +550,8 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     public boolean isNodeCuttable(Node node) {
     	return true;
     }
-    public List getSelectedDeletableRows() {
-    	ArrayList list = getSelectedNodes();
+    public List<Node> getSelectedDeletableRows() {
+    	var list = getSelectedNodes();
     	CollectionUtils.filter(list, new Predicate() {
 			public boolean evaluate(Object arg0) {
 				return isNodeDeletable((Node)arg0);
@@ -587,7 +559,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     	return list;
 
     }
-    public List getSelectedCuttableRows(List nodes) {
+    public List<Node> getSelectedCuttableRows(List<Node> nodes) {
     	CollectionUtils.filter(nodes, new Predicate() {
 			public boolean evaluate(Object arg0) {
 				return isNodeCuttable((Node)arg0);
@@ -595,49 +567,49 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     	return nodes;
 
     }
-    public ArrayList getSelectedNodes(){
-        SpreadSheetModel model=(SpreadSheetModel)getModel();
-		int[] rows=getSelectedRows();
-		ArrayList nodes = new ArrayList(rows.length);
-		for (int i=0;i<rows.length;i++){
-		    nodes.add(model.getNode(rows[i]).getNode());
+    public ArrayList<Node> getSelectedNodes(){
+        var model = (SpreadSheetModel) getModel();
+		var rows = getSelectedRows();
+		var nodes = new ArrayList<Node>(rows.length);
+		for (int row : rows){
+		    nodes.add(model.getNode(row).getNode());
 		}
 		return nodes;
     }
-    public ArrayList getSelectedNodesImpl(){
-        SpreadSheetModel model=(SpreadSheetModel)getModel();
-		int[] rows=getSelectedRows();
-		ArrayList nodes = new ArrayList(rows.length);
-		for (int i=0;i<rows.length;i++){
-		    nodes.add(model.getNode(rows[i]).getNode().getImpl());
+    public ArrayList<Object> getSelectedNodesImpl(){
+        var model = (SpreadSheetModel) getModel();
+		var rows = getSelectedRows();
+		var nodes = new ArrayList<Object>(rows.length);
+		for (int row : rows){
+		    nodes.add(model.getNode(row).getNode().getImpl());
 		}
 		return nodes;
     }
-    public ArrayList getSelectedFields(){
+    public ArrayList<Object> getSelectedFields(){
     	if (getRowHeader().getSelectedColumns().length>0) return null;
-		int[] columns=getSelectedColumns();
-		ArrayList fields = new ArrayList(columns.length);
-		List fieldArray=getFieldArray();
-		for (int i=0;i<columns.length;i++){
-			fields.add(fieldArray.get(columns[i]+1));
+		var columns = getSelectedColumns();
+		var fields = new ArrayList<Object>(columns.length);
+		var fieldArray = getFieldArray();
+		for (int column : columns){
+			fields.add(fieldArray.get(column + 1));
 		}
 		return fields;
     }
-    public ArrayList getSelectableFields(){
-    	List fa=getFieldArray();
-    	ArrayList fields = new ArrayList(fa.size());
+    public ArrayList<Object> getSelectableFields(){
+    	var fa = getFieldArray();
+    	var fields = new ArrayList<Object>(fa.size());
     	fields.addAll(fa);
     	if (fields.size()>0) fields.remove(0); //ID not selectable
     	return fields;
     }
 
     public Object getCurrentRowImpl() {
-        SpreadSheetModel model=(SpreadSheetModel)getModel();
+        var model = (SpreadSheetModel) getModel();
         return model.getObjectInRow(getSelectedRow());
     }
     public Node getCurrentRowNode() {
-        SpreadSheetModel model=(SpreadSheetModel)getModel();
-        int row = getCurrentRow();
+        var model = (SpreadSheetModel) getModel();
+        var row = getCurrentRow();
         return model.getNodeInRow(row);
     }
     public int getCurrentRow() {
@@ -660,110 +632,117 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	}
     // edit triggered by click
 	public boolean editCellAt(int row, int column, EventObject e){
-		if (e instanceof MouseEvent) {
-			MouseEvent me = (MouseEvent)e;
-			if (me.getClickCount() < 2)
-				return false;
-		}
 		if (e == null) {
 			return false;
 		}
+		if (e instanceof MouseEvent me && me.getClickCount() < 2) {
+			return false;
+		}
 		if (column > 0) {
-			Node node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
+			var node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
 			if (node != null && !CollaborationHelper.tryLockObject(null, node, this, "edit")) {
 				return false;
     		}
     	}
-    	boolean b=super.editCellAt(row,column,e);
-    	if (b&&editorComp!=null){
+		var editingStarted = super.editCellAt(row, column, e);
+    	if (editingStarted && editorComp != null) {
 //    		System.out.println("editing cell at " + row + " " + column);
-    		Component comp;
-    		boolean nameCell=false;
-    		if (editorComp instanceof NameCellComponent){
-    			nameCell=true;
-        		NameCellComponent nameCellComp=(NameCellComponent)editorComp;
-        		comp=nameCellComp.getTextComponent();
-        		if (comp instanceof JComponent)
-        			installCommitAndMoveDownAction((JComponent)comp, row, column);
-    		}else
-        		comp=editorComp;
-    		if (editorComp instanceof JComponent) {
-    			installCommitAndMoveDownAction((JComponent)editorComp, row, column);
-    		}
-
-    		boolean selectAll = true;
-    		boolean caretAtEnd = false;
-    		Character typedChar = null;
-    		boolean clearTextOnStart = false;
-    		if (e instanceof StartEditEvent) {
-    			selectAll = false;
-    			caretAtEnd = ((StartEditEvent)e).caretAtEnd;
-    			typedChar = ((StartEditEvent)e).typedChar;
-    			clearTextOnStart = ((StartEditEvent)e).clearTextOnStart;
-    		} else if (e == null) {
-    			selectAll = false;
-    			caretAtEnd = true;
-    		}
-
-    		JTextComponent text = (comp instanceof JTextComponent) ? (JTextComponent) comp : getEditorTextComponent();
-    		if (text != null)
-    			installCommitAndMoveDownAction(text, row, column);
-    		boolean shouldUseKeyboardFocusableSelectAll = !(caretAtEnd || typedChar != null);
-    		if (comp instanceof KeyboardFocusable && shouldUseKeyboardFocusableSelectAll)
-    			((KeyboardFocusable)comp).selectAll(selectAll);
-    		if (text != null){
-    			boolean mouseEditingNameCell = nameCell && e instanceof MouseEvent;
-    			if (nameCell && !mouseEditingNameCell) {
-    				resetEditorHorizontalOffset(text);
-    			}
-    			if (clearTextOnStart) {
-    				text.setText(typedChar == null ? "" : String.valueOf(typedChar));
-    				if (nameCell) {
-    					resetEditorHorizontalOffset(text);
-    				}
-    				text.setCaretPosition(text.getDocument().getLength());
-    				selectAll = false;
-    			} else if (typedChar != null) {
-    				text.setText(String.valueOf(typedChar));
-    				if (nameCell) {
-    					resetEditorHorizontalOffset(text);
-    				}
-    				text.setCaretPosition(text.getDocument().getLength());
-    				selectAll = false;
-    			}
-    			if (caretAtEnd) {
-    				if (nameCell) {
-    					resetEditorHorizontalOffset(text);
-    				}
-    				text.setCaretPosition(text.getDocument().getLength());
-    			}
-    		if (e instanceof MouseEvent) {
-    			MouseEvent me = (MouseEvent)e;
-    			if (nameCell) {
-	        			Rectangle bounds = text.getBounds();
-	        			Rectangle cell = getCellRect(row, column, false);
-	        			bounds.setFrame(cell.getX() + bounds.getX(), cell.getY() + bounds.getY(), bounds.getWidth(), bounds.getHeight());
-	            		if(!bounds.contains(me.getPoint())) {
-	            			selectAll = true;
-	            		} else {
-	            			selectAll = false;
-	            			positionCaretAtMousePoint(text, me, bounds);
-	            		}
-    			}
-    		}
-    			if (selectAll) {
-    				text.selectAll();
-    			}
-    			if (nameCell && !mouseEditingNameCell) {
-    				resetEditorHorizontalOffset(text);
-    			}
-    			if (text instanceof ChangeAwareComponent) {
-    				((ChangeAwareComponent)text).resetChange();
-    			}
-    		}
+    		configureEditorComponentAfterStart(row, column, e);
     	}
-    	return b;
+    	return editingStarted;
     }
+
+	private void configureEditorComponentAfterStart(int row, int column, EventObject e) {
+		Component component;
+		var nameCell = false;
+		if (editorComp instanceof NameCellComponent nameCellComponent) {
+			nameCell = true;
+			component = nameCellComponent.getTextComponent();
+			if (component instanceof JComponent jComponent) {
+				installCommitAndMoveDownAction(jComponent, row, column);
+			}
+		} else {
+			component = editorComp;
+		}
+		if (editorComp instanceof JComponent jComponent) {
+			installCommitAndMoveDownAction(jComponent, row, column);
+		}
+
+		var selectAll = true;
+		var caretAtEnd = false;
+		Character typedChar = null;
+		var clearTextOnStart = false;
+		if (e instanceof StartEditEvent startEditEvent) {
+			selectAll = false;
+			caretAtEnd = startEditEvent.caretAtEnd;
+			typedChar = startEditEvent.typedChar;
+			clearTextOnStart = startEditEvent.clearTextOnStart;
+		} else if (e == null) {
+			selectAll = false;
+			caretAtEnd = true;
+		}
+
+		var text = component instanceof JTextComponent textComponent ? textComponent : getEditorTextComponent();
+		if (text != null) {
+			installCommitAndMoveDownAction(text, row, column);
+		}
+		var shouldUseKeyboardFocusableSelectAll = !(caretAtEnd || typedChar != null);
+		if (component instanceof KeyboardFocusable keyboardFocusable && shouldUseKeyboardFocusableSelectAll) {
+			keyboardFocusable.selectAll(selectAll);
+		}
+		if (text == null) {
+			return;
+		}
+
+		var mouseEditingNameCell = nameCell && e instanceof MouseEvent;
+		if (nameCell && !mouseEditingNameCell) {
+			resetEditorHorizontalOffset(text);
+		}
+		if (clearTextOnStart) {
+			text.setText(typedChar == null ? "" : String.valueOf(typedChar));
+			if (nameCell) {
+				resetEditorHorizontalOffset(text);
+			}
+			text.setCaretPosition(text.getDocument().getLength());
+			selectAll = false;
+		} else if (typedChar != null) {
+			text.setText(String.valueOf(typedChar));
+			if (nameCell) {
+				resetEditorHorizontalOffset(text);
+			}
+			text.setCaretPosition(text.getDocument().getLength());
+			selectAll = false;
+		}
+		if (caretAtEnd) {
+			if (nameCell) {
+				resetEditorHorizontalOffset(text);
+			}
+			text.setCaretPosition(text.getDocument().getLength());
+		}
+		if (e instanceof MouseEvent me && nameCell) {
+			handleNameCellMouseEdit(row, column, text, me);
+			selectAll = false;
+		}
+		if (selectAll) {
+			text.selectAll();
+		}
+		if (nameCell && !mouseEditingNameCell) {
+			resetEditorHorizontalOffset(text);
+		}
+		if (text instanceof ChangeAwareComponent changeAwareComponent) {
+			changeAwareComponent.resetChange();
+		}
+    }
+
+	private void handleNameCellMouseEdit(int row, int column, JTextComponent text, MouseEvent me) {
+		var bounds = text.getBounds();
+		var cell = getCellRect(row, column, false);
+		bounds.setFrame(cell.getX() + bounds.getX(), cell.getY() + bounds.getY(), bounds.getWidth(), bounds.getHeight());
+		if (!bounds.contains(me.getPoint())) {
+			return;
+		}
+		positionCaretAtMousePoint(text, me, bounds);
+	}
 
     private void positionCaretAtMousePoint(final JTextComponent text, final MouseEvent me, final Rectangle cellBounds) {
     	if (text == null || me == null || cellBounds == null)

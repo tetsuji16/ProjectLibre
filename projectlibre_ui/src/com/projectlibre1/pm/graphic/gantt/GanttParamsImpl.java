@@ -70,6 +70,8 @@ import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 
 public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 	private static final long serialVersionUID = 2314555242629487089L;
+	private static final String DEFAULT_BAR_STYLES = "standard";
+	private static final Font DEFAULT_COLUMN_HEADER_FONT = new Font("Default", Font.PLAIN, 10);
 	protected NodeModelCache cache;
 	protected BarStyles barStyles;
 	protected GraphicConfiguration configuration;
@@ -82,11 +84,11 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 	protected int rowHeight;
 
 	public GanttParamsImpl(){
-		configuration=GraphicConfiguration.getInstance();
-		barStyles=(BarStyles) Dictionary.get(BarStyles.category,"standard");
-		columnHeaderFont=new Font("Default",Font.PLAIN,10);
-		routing=new DefaultGanttLinkRouting();
-		rowHeight=configuration.getRowHeight();
+		configuration = GraphicConfiguration.getInstance();
+		barStyles = (BarStyles) Dictionary.get(BarStyles.category, DEFAULT_BAR_STYLES);
+		columnHeaderFont = DEFAULT_COLUMN_HEADER_FONT;
+		routing = new DefaultGanttLinkRouting();
+		rowHeight = configuration.getRowHeight();
 	}
 
 	public GraphicConfiguration getConfiguration() {
@@ -128,7 +130,7 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 		this.rowHeight=rowHeight;
 	}
 	public Rectangle getGanttBounds() {
-		return new Rectangle(0,configuration.getColumnHeaderHeight(),(int)Math.ceil(coord.getWidth()),getRowHeight()*cache.getSize());
+		return new Rectangle(0, configuration.getColumnHeaderHeight(), (int) Math.ceil(coord.getWidth()), getRowHeight() * cache.getSize());
 //		return new Rectangle(0,configuration.getColumnHeaderHeight(),(int)Math.ceil(coord.getWidth()),configuration.getRowHeight()*cache.getSize());
 	}
 	public Rectangle getDrawingBounds() {
@@ -151,15 +153,15 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 
 	public void setPrintBounds(Rectangle printBounds) {
 		this.printBounds = printBounds;
-		updateDrawingBounds(); //remove?
+		updateDrawingBounds();
 	}
 	public void updateDrawingBounds(){}
 
 	public int getPrintCols(){
-		return (int)Math.ceil(getGanttBounds().getWidth()/getPrintBounds().getWidth());
+		return (int) Math.ceil(getGanttBounds().getWidth() / getPrintBounds().getWidth());
 	}
 	public int getPrintRows(){
-		return (int)Math.ceil(getGanttBounds().getHeight()/getPrintBounds().getHeight());
+		return (int) Math.ceil(getGanttBounds().getHeight() / getPrintBounds().getHeight());
 	}
 
 	public boolean isLeftPartVisible() {
@@ -182,20 +184,22 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 		return supportLeftAndRightParts;
 	}
 	public void setSupportLeftAndRightParts(boolean supports){
-		this.supportLeftAndRightParts=supports;
+		this.supportLeftAndRightParts = supports;
 	}
 
 	public Object clone(){
 		try {
 			return super.clone();
-		} catch (CloneNotSupportedException e) {
+		} catch (CloneNotSupportedException _) {
 			throw new InternalError();
 		}
 	}
 	public GraphParams createSafePrintCopy(){
-		GanttParamsImpl c=(GanttParamsImpl)clone();
-		if (c.printBounds!=null) c.printBounds=(Rectangle)c.printBounds.clone();
-		return c;
+		var copy = (GanttParamsImpl) clone();
+		if (copy.printBounds != null) {
+			copy.printBounds = (Rectangle) copy.printBounds.clone();
+		}
+		return copy;
 	}
 
 

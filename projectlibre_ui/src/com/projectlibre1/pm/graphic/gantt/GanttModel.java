@@ -91,8 +91,8 @@ public class GanttModel extends GraphModel implements TimeScaleListener, Seriali
 	
 	
 	public AffineTransform getTransform(double w){
-		double sx=((double)(coord.getEnd()-coord.getOrigin()))/w;
-		double sy=1.0/getRowHeight();
+		var sx = ((double) (coord.getEnd() - coord.getOrigin())) / w;
+		var sy = 1.0 / getRowHeight();
 		return new AffineTransform(sx,0,0,sy,coord.getOrigin(),0);
 	}
 	
@@ -111,8 +111,9 @@ public class GanttModel extends GraphModel implements TimeScaleListener, Seriali
         return coord;
     }
     public void setCoord(CoordinatesConverter coord) {
-        if (this.coord!=null) 
+        if (this.coord != null) {
         	this.coord.removeTimeScaleListener(this);
+        }
         this.coord = coord;
 		coord.addTimeScaleListener(this);
     }

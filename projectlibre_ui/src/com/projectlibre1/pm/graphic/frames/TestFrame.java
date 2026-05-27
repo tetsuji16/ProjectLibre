@@ -104,7 +104,7 @@ public class TestFrame extends JRibbonFrame {
      *            Application arguments
      */
     public static void main(String[] args) {
-	FlatLafSupport.initialize();
+		FlatLafSupport.ensureInitialized();
 
 	SwingUtilities.invokeLater(new Runnable() {
 
