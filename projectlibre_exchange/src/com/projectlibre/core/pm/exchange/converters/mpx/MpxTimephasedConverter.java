@@ -71,8 +71,8 @@ import net.sf.mpxj.mspdi.DatatypeConverter;
  */
 public class MpxTimephasedConverter {
 	public TimephasedValue<?> from(net.sf.mpxj.mspdi.schema.TimephasedDataType mpxTimephased, MpxImportState state) {
-		TimephasedType type=TimephasedType.getInstance(mpxTimephased.getType().intValue());
-		if (!type.isWork())
+		TimephasedType type=MpxUtils.safeGetTimephasedType(mpxTimephased.getType());
+		if (type == null || !type.isWork())
 			return null;
 		CalendarUTCLongConverter dateConverter=new CalendarUTCLongConverter();
 		long start=(Long)dateConverter.from(mpxTimephased.getStart());

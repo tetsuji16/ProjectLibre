@@ -85,9 +85,13 @@ public class MpxAssignmentConverter {
 	public void from(net.sf.mpxj.ResourceAssignment mpxAssignment, Assignment assignment, MpxImportState state, int snapshotId) {
 		System.out.println("MpxAssignmentConverter.from mpx start="+mpxAssignment.getStart()+" baseline1="+mpxAssignment.getBaselineStart());
 		Resource resource;
-		if (mpxAssignment.getResourceUniqueID().intValue() == Resource.UNASSIGNED_ID) 
+		Integer resourceUniqueID = mpxAssignment.getResourceUniqueID();
+		if (resourceUniqueID == null || resourceUniqueID.intValue() == Resource.UNASSIGNED_ID) 
 			resource=state.getResourcePool().getUnassignedResource();
-		else resource = state.getResource(mpxAssignment.getResource());
+		else {
+			net.sf.mpxj.Resource mpxResource = mpxAssignment.getResource();
+			resource = mpxResource != null ? state.getResource(mpxResource) : null;
+		}
 		if (resource==null)
 			return; //TODO handle error or log
 		assignment.setResource(resource);
@@ -103,7 +107,9 @@ public class MpxAssignmentConverter {
 			assignment.setTimephased(timephasedValues);
 			MpxTimephasedConverter converter=new MpxTimephasedConverter();
 			for (TimephasedDataType mpxTimephased : mpxRawTimephasedData){
-				int s=TimephasedType.getInstance(mpxTimephased.getType().intValue()).getSnapshotId();
+				TimephasedType tt = MpxUtils.safeGetTimephasedType(mpxTimephased.getType());
+				if (tt == null) continue;
+				int s = tt.getSnapshotId();
 				if (s==snapshotId){
 					TimephasedValue<?> timephased=converter.from(mpxTimephased, state);
 					if (timephased==null)

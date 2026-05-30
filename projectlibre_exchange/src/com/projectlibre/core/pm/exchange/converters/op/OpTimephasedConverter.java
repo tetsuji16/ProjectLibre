@@ -56,6 +56,7 @@
 package com.projectlibre.core.pm.exchange.converters.op;
 
 import com.projectlibre.core.pm.exchange.converters.mpx.MpxImportState;
+import com.projectlibre.core.pm.exchange.converters.mpx.MpxUtils;
 import com.projectlibre.core.pm.exchange.converters.op.type.OpDurationConverter;
 import com.projectlibre.core.pm.exchange.converters.type.DateLongConverter;
 import com.projectlibre.core.time.DefaultTimephasedValue;
@@ -71,8 +72,8 @@ import net.sf.mpxj.mspdi.DatatypeConverter;
  */
 public class OpTimephasedConverter {
 	public TimephasedValue<?> from(net.sf.mpxj.mspdi.schema.TimephasedDataType mpxTimephased, MpxImportState state) {
-		TimephasedType type=TimephasedType.getInstance(mpxTimephased.getType().intValue());
-		if (!type.isWork())
+		TimephasedType type=MpxUtils.safeGetTimephasedType(mpxTimephased.getType());
+		if (type == null || !type.isWork())
 			return null;
 		DateLongConverter dateConverter=new DateLongConverter();
 		long start=(Long)dateConverter.from(mpxTimephased.getStart());
