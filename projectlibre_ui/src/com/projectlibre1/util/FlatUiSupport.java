@@ -45,19 +45,32 @@ public final class FlatUiSupport {
 	}
 
 	public static Color appBackground() {
-		return color("Panel.background", FlatUiTheme.APP_BACKGROUND);
+		return surfaceBackground();
 	}
 
 	public static Color panelBackground() {
-		return appBackground();
+		return surfaceBackground();
+	}
+
+	public static Color surfaceBackground() {
+		Color color = UIManager.getColor("Panel.background");
+		if (color == null)
+			color = UIManager.getColor("Table.background");
+		if (color == null)
+			color = FlatUiTheme.APP_BACKGROUND;
+		return color;
 	}
 
 	public static Color ribbonChromeBackground() {
 		return color(RIBBON_CHROME_BACKGROUND_KEY, FlatUiTheme.RIBBON_CHROME_BACKGROUND);
 	}
 
-	public static Color tableBackground() {
-		return color("Table.background", FlatUiTheme.TABLE_BACKGROUND);
+public static Color tableBackground() {
+		return surfaceBackground();
+	}
+
+	public static Color tableContentBackground() {
+		return FlatUiTheme.TABLE_CONTENT_BACKGROUND;
 	}
 
 	public static Color tableForeground() {
@@ -114,7 +127,7 @@ public final class FlatUiSupport {
 	}
 
 	public static Color ribbonSurfaceColor() {
-		return color(RIBBON_SURFACE_BACKGROUND_KEY, FlatUiTheme.RIBBON_SURFACE);
+		return color(RIBBON_SURFACE_BACKGROUND_KEY, surfaceBackground());
 	}
 
 	public static Color ribbonSurfaceBorderColor() {
