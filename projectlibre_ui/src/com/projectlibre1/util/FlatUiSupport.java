@@ -8,8 +8,11 @@ import java.awt.Font;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.border.Border;
@@ -52,6 +55,14 @@ public final class FlatUiSupport {
 		return surfaceBackground();
 	}
 
+	public static Color dataSurfaceBackground() {
+		return tableContentBackground();
+	}
+
+	public static Color viewportBackground() {
+		return dataSurfaceBackground();
+	}
+
 	public static Color surfaceBackground() {
 		Color color = UIManager.getColor("Panel.background");
 		if (color == null)
@@ -65,8 +76,8 @@ public final class FlatUiSupport {
 		return color(RIBBON_CHROME_BACKGROUND_KEY, FlatUiTheme.RIBBON_CHROME_BACKGROUND);
 	}
 
-public static Color tableBackground() {
-		return surfaceBackground();
+	public static Color tableBackground() {
+		return dataSurfaceBackground();
 	}
 
 	public static Color tableContentBackground() {
@@ -245,5 +256,39 @@ public static Color tableBackground() {
 
 	public static FontUIResource asFontUIResource(Font font) {
 		return font == null ? null : new FontUIResource(font);
+	}
+
+	public static void applyDataSurface(JComponent component) {
+		if (component == null)
+			return;
+		component.setOpaque(true);
+		component.setBackground(dataSurfaceBackground());
+	}
+
+	public static void applyViewportSurface(JViewport viewport) {
+		if (viewport == null)
+			return;
+		viewport.setOpaque(true);
+		viewport.setBackground(viewportBackground());
+	}
+
+	public static void applyTableHeaderStyle(JComponent component) {
+		if (component == null)
+			return;
+		component.setOpaque(true);
+		component.setForeground(headerForeground());
+		component.setBackground(headerBackground());
+		component.setFont(headerFont());
+		component.setBorder(tableHeaderBorder());
+	}
+
+	public static void applyTableHeaderCellStyle(JLabel component, boolean selected) {
+		if (component == null)
+			return;
+		component.setOpaque(true);
+		component.setForeground(selected ? tableSelectionForeground() : headerForeground());
+		component.setBackground(selected ? tableSelectionBackground() : headerBackground());
+		component.setFont(headerFont());
+		component.setBorder(tableHeaderBorder());
 	}
 }

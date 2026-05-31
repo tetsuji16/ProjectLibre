@@ -241,6 +241,8 @@ public class ButtonFactory extends ResourceManager {
 			b = new JCommandButton(icon);
 		else if (title!=null)
 			b = new JCommandButton(title);
+		else
+			b = new JCommandButton("");
 			
 			
 			try {

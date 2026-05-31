@@ -55,11 +55,10 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.common;
 
-import com.projectlibre1.util.FlatUiSupport;
-
-import javax.swing.BorderFactory;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
+
+import com.projectlibre1.util.FlatUiSupport;
 
 public class CommonTableHeader extends JTableHeader {
 
@@ -73,10 +72,7 @@ public class CommonTableHeader extends JTableHeader {
 	}
     public void updateUI(){
     	super.updateUI();
-    	setFont(FlatUiSupport.headerFont());
-    	setForeground(FlatUiSupport.headerForeground());
-    	setBackground(FlatUiSupport.headerBackground());
-    	setBorder(FlatUiSupport.tableHeaderBorder());
+    	FlatUiSupport.applyTableHeaderStyle(this);
     	resizeAndRepaint();
     	invalidate();//PENDING
         }

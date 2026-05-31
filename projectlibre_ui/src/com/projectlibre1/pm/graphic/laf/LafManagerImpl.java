@@ -302,7 +302,7 @@ public class LafManagerImpl implements LafManager {
 		return FlatUiSupport.tableSelectionBackground();
 	}
 	public Color getUnselectedBackgroundColor() {
-		return FlatUiSupport.appBackground();
+		return FlatUiSupport.surfaceBackground();
 	}
 
 	public void dumpUIValues() {

@@ -89,17 +89,9 @@ public class ExtRibbonFactory extends RibbonFactory {
 	public AbstractCommandButton createJButton(String name) throws MissingResourceException,
 	ResourceFormatException, MissingListenerException {
 		AbstractCommandButton button = super.createCommandButton(name);
-//		try {
-//		    String s = getString(name+ExtMenuFactory.ICON_SUFFIX);
-//		    ImageIcon icon = IconManager.getIcon(s);
-//		    if (icon != null)
-//		    	button.setIcon(icon);
-//		} catch (MissingResourceException e) {
-//		}		
-//    	String actionName = getActionStringFromId(name);
-//    	if (actionName != null)
-//    		toolButtons.put(actionName,button);
-//		button.setActionCommand(name);
+    	String actionName = getActionStringFromId(name);
+    	if (actionName != null)
+    		toolButtons.put(actionName,button);
 		return button;
 	}
 	

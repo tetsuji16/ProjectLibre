@@ -60,9 +60,11 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JViewport;
 
 import com.projectlibre1.pm.graphic.views.synchro.ScrollPaneSynchronizer;
 import com.projectlibre1.pm.graphic.views.synchro.Synchronizer;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  * 
@@ -93,6 +95,8 @@ public abstract class SplittedView extends JSplitPane {
 	public void init() {
 		leftScrollPane = createLeftScrollPane();
 		rightScrollPane = createRightScrollPane();
+		configureScrollPaneSurface(leftScrollPane);
+		configureScrollPaneSurface(rightScrollPane);
 		setLeftComponent(leftScrollPane);
 		setRightComponent(rightScrollPane);
 
@@ -116,6 +120,14 @@ public abstract class SplittedView extends JSplitPane {
 					}
 				});
 
+	}
+
+	protected void configureScrollPaneSurface(JScrollPane scrollPane) {
+		if (scrollPane == null)
+			return;
+		JViewport viewport = scrollPane.getViewport();
+		if (viewport != null)
+			FlatUiSupport.applyViewportSurface(viewport);
 	}
 	
 

@@ -55,11 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.renderer;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
-
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -67,7 +63,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetParams;
-import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.field.Field;
 import com.projectlibre1.util.FlatUiSupport;
 /**
@@ -99,17 +94,11 @@ public class SpreadSheetColumnHeaderRenderer extends DefaultTableCellRenderer im
 
 
 		if (table!=null){
-			//CommonSpreadSheet sp=(CommonSpreadSheet)table;
-			//isSelected|=sp.getSelection().getColumnSelection().isSelectedIndex(column)&&table.getSelectedRowCount()==table.getRowCount();
-			component.setOpaque(true);
-			component.setForeground(isSelected ? FlatUiSupport.tableSelectionForeground() : FlatUiSupport.headerForeground());
-			component.setBackground(isSelected ? FlatUiSupport.tableSelectionBackground() : FlatUiSupport.headerBackground());
+			FlatUiSupport.applyTableHeaderCellStyle(component, isSelected);
 		}
 
 		component.setHorizontalAlignment (CENTER);
-		component.setBorder(FlatUiSupport.tableHeaderBorder());
 		if (override == null) {
-			if (table!=null) component.setFont (FlatUiSupport.headerFont());
 			component.setText (value == null ? "" : value.toString ());
 		}
 		return component;

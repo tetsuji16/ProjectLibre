@@ -78,6 +78,7 @@ import com.projectlibre1.datatype.Duration;
 import com.projectlibre1.datatype.Money;
 import com.projectlibre1.datatype.Work;
 import com.projectlibre1.graphic.configuration.GraphicConfiguration;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -89,6 +90,7 @@ public class CommonTable extends Outline {
      */
     public CommonTable() {
         super();
+        FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }
 
@@ -99,6 +101,7 @@ public class CommonTable extends Outline {
     public CommonTable(int numRows, int numColumns) {
         super();
         setModel(new javax.swing.table.DefaultTableModel(numRows, numColumns));
+        FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }
 
@@ -108,6 +111,7 @@ public class CommonTable extends Outline {
     public CommonTable(TableModel dm) {
         super();
         setModel(dm);
+        FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }
 
@@ -118,6 +122,7 @@ public class CommonTable extends Outline {
     public CommonTable(Object[][] rowData, Object[] columnNames) {
         super();
         setModel(new javax.swing.table.DefaultTableModel(rowData, columnNames));
+        FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }
 
@@ -128,6 +133,7 @@ public class CommonTable extends Outline {
     public CommonTable(Vector rowData, Vector columnNames) {
         super();
         setModel(new javax.swing.table.DefaultTableModel(rowData, columnNames));
+        FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }
 
@@ -139,6 +145,7 @@ public class CommonTable extends Outline {
         super();
         setModel(dm);
         setColumnModel(cm);
+        FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }
 
@@ -152,6 +159,7 @@ public class CommonTable extends Outline {
         setModel(dm);
         setColumnModel(cm);
         setSelectionModel(sm);
+        FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }
     public boolean editorsRegistered;

@@ -151,10 +151,18 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 	}
 	public void cleanUp() {
 		super.cleanUp();
-		coord.removeTimeScaleListener(timeScrollPane);
-		((TimeSpreadSheetModel) timeSpreadSheet.getModel()).removeFieldArrayListener(this);
-		spreadSheet.cleanUp();
-		timeSpreadSheet.cleanUp();
+		if (coord != null && timeScrollPane != null) {
+			coord.removeTimeScaleListener(timeScrollPane);
+		}
+		if (timeSpreadSheet != null && timeSpreadSheet.getModel() instanceof TimeSpreadSheetModel timeSpreadSheetModel) {
+			timeSpreadSheetModel.removeFieldArrayListener(this);
+		}
+		if (spreadSheet != null) {
+			spreadSheet.cleanUp();
+		}
+		if (timeSpreadSheet != null) {
+			timeSpreadSheet.cleanUp();
+		}
 		spreadSheet = null;
 		timeSpreadSheet = null;
 		refCache = null;
@@ -196,6 +204,7 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 
 		timeScrollPane = new ScaledScrollPane(timeSpreadSheet, coord, documentFrame,timeSpreadSheet.getRowHeight());
 		timeSpreadSheet.createDefaultColumnsFromModel();
+		forceUpdateOfTimeSpreadSheet();
 //		timeSpreadSheet.revalidate();
 //		timeSpreadSheet.repaint();
 		if (project.isReadOnly())
@@ -228,6 +237,8 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 	}
 
 	public void forceUpdateOfTimeSpreadSheet() {
+		if (!isTimeSpreadSheetReady())
+			return;
 		// dynamic time spreadsheets don't update themselves for a stange reason fix here
 		int height=((CommonSpreadSheetModel)spreadSheet.getModel()).getRowCount()*((TimeSpreadSheetModel)timeSpreadSheet.getModel()).getRowMultiple()*GraphicConfiguration.getInstance().getRowHeight();
 		timeSpreadSheet.setPreferredSize(new Dimension((int)coord.toW(coord.getEnd() - coord.getOrigin()), height/*spreadSheet.getPreferredSize().height*/));
@@ -236,6 +247,8 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 	}
 	
 	public void fieldArrayChanged(FieldArrayEvent e) {
+		if (!isTimeSpreadSheetReady())
+			return;
 		int num = e.getFieldArray().size();
 		int rowHeight = GraphicConfiguration.getInstance().getRowHeight() * num;
 		spreadSheet.setRowHeight(rowHeight);
@@ -243,6 +256,8 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 	}
 
 	public void selectionChanged(SelectionNodeEvent e) {
+		if (!isTimeSpreadSheetReady())
+			return;
 		if (e.getSource() == spreadSheet || !(e.getSource() instanceof CommonSpreadSheet))
 			return;
 		CommonSpreadSheet sp = (CommonSpreadSheet) e.getSource();
@@ -260,6 +275,14 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 			((SelectionFilter) filter).setSelectedNodesImpl(documentFrame.getTopSpreadSheet().getSelectedNodesImpl(), taskSelection);
 			forceUpdateOfTimeSpreadSheet(); // because it doesn't update automatically
 		}
+	}
+
+	private boolean isTimeSpreadSheetReady() {
+		return spreadSheet != null
+			&& spreadSheet.getModel() instanceof CommonSpreadSheetModel
+			&& timeSpreadSheet != null
+			&& timeSpreadSheet.getModel() instanceof TimeSpreadSheetModel
+			&& timeScrollPane != null;
 	}
 
 	public UndoController getUndoController() {
@@ -308,18 +331,32 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 	}
 	public void restoreWorkspace(WorkspaceSetting w, int context) {
 		Workspace ws = (Workspace) w;
-		spreadSheet.restoreWorkspace(ws.spreadSheet, context);
-		timeSpreadSheet.restoreWorkspace(ws.timeSpreadSheet, context); 
-		timeSpreadSheet.setSelectedFieldArray((ArrayList) SpreadSheetFieldArray.fromIdArray(ws.selectedFieldArray));
-		timeScrollPane.restoreWorkspace(ws.scrollPane, context);
+		if (spreadSheet != null && ws.spreadSheet != null) {
+			spreadSheet.restoreWorkspace(ws.spreadSheet, context);
+		}
+		if (timeSpreadSheet != null && ws.timeSpreadSheet != null) {
+			timeSpreadSheet.restoreWorkspace(ws.timeSpreadSheet, context);
+		}
+		if (timeSpreadSheet != null && ws.selectedFieldArray != null) {
+			timeSpreadSheet.setSelectedFieldArray((ArrayList) SpreadSheetFieldArray.fromIdArray(ws.selectedFieldArray));
+		}
+		if (timeScrollPane != null && ws.scrollPane != null) {
+			timeScrollPane.restoreWorkspace(ws.scrollPane, context);
+		}
 		setDividerLocation(ws.dividerLocation);
 	}
 	public WorkspaceSetting createWorkspace(int context) {
 		Workspace ws = new Workspace();
-		ws.spreadSheet = spreadSheet.createWorkspace(context);
-		ws.timeSpreadSheet = timeSpreadSheet.createWorkspace(context);
-		ws.selectedFieldArray = SpreadSheetFieldArray.toIdArray(timeSpreadSheet.getSelectedFieldArray());
-		ws.scrollPane = timeScrollPane.createWorkspace(context);
+		if (spreadSheet != null) {
+			ws.spreadSheet = spreadSheet.createWorkspace(context);
+		}
+		if (timeSpreadSheet != null) {
+			ws.timeSpreadSheet = timeSpreadSheet.createWorkspace(context);
+			ws.selectedFieldArray = SpreadSheetFieldArray.toIdArray(timeSpreadSheet.getSelectedFieldArray());
+		}
+		if (timeScrollPane != null) {
+			ws.scrollPane = timeScrollPane.createWorkspace(context);
+		}
 		ws.dividerLocation = getDividerLocation();
 		return ws;
 	}

@@ -690,13 +690,17 @@ public class DocumentFrame extends NamedFrame implements
 	public BaseView getReportView() {
 		try {
 			if (reportView == null) {
-				Class clazz=Class.forName("com.projectlibre1.reports.view.ReportView");
+				try {
+					ClassUtils.forName("net.sf.jasperreports.compilers.JRBshCompiler");
+				} catch (ClassNotFoundException missingCompiler) {
+					return null;
+				}
+				Class clazz=ClassUtils.forName("com.projectlibre1.reports.view.ReportView");
 				reportView=(BaseView)clazz.getConstructor(new Class[]{DocumentFrame.class}).newInstance(new Object[]{this});
 				clazz.getMethod("init", new Class[]{CoordinatesConverter.class}).invoke(reportView, new Object[]{coord});
 				if (reportView!=null) restoreWorkspaceFor(reportView);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			reportView=null;
 		}
 		return reportView;
@@ -769,6 +773,10 @@ public class DocumentFrame extends NamedFrame implements
 
 
 	public boolean activateView(String viewName) {
+		if (viewName == null || viewName.length() == 0) {
+			activateGanttView();
+			return true;
+		}
 		BaseView topView = null;
 		BaseView bottomView = null;
 		boolean top = true;
@@ -788,8 +796,11 @@ public class DocumentFrame extends NamedFrame implements
 			topView = getWBSView();
 		else if (viewName.equals(ACTION_RBS))
 			topView = getRBSView();
-		else if (viewName.equals(ACTION_REPORT))
+		else if (viewName.equals(ACTION_REPORT)) {
 			topView = getReportView();
+			if (topView == null)
+				topView = getGanttView();
+		}
 		else if (viewName.equals(ACTION_RESOURCES))
 			topView = getResourceView();
 		else if (viewName.equals(ACTION_PROJECTS))
@@ -1261,10 +1272,23 @@ public class DocumentFrame extends NamedFrame implements
 		}
 		coord.restoreWorkspace(ws.getCoord(), context);
 
-		activateView(ws.topViewName);
+		activateView(resolveRestoredTopViewName(ws.topViewName));
 		activateView(ws.bottomViewName);
+		if (activeTopView == null) {
+			activateGanttView();
+		}
 		mainView.restoreWorkspace(ws.mainView, context);
 
+	}
+
+	private String resolveRestoredTopViewName(String viewName) {
+		if (viewName == null || viewName.length() == 0) {
+			return ACTION_GANTT;
+		}
+		if (ACTION_REPORT.equals(viewName) && getReportView() == null) {
+			return ACTION_GANTT;
+		}
+		return viewName;
 	}
 
 	private WorkspaceSetting restoreWorkspaceFor(BaseView view) {

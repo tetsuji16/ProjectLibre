@@ -55,24 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.graphic.configuration.cellstyles;
 
-import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
-import com.projectlibre1.graphic.configuration.CellFormat;
-import com.projectlibre1.pm.resource.ResourceImpl;
-
-
 public class ResourceCellStyle extends DefaultCellStyle {
 	public ResourceCellStyle(){
 		
-	}
-	public CellFormat getCellFormat(Object object) {
-		CellFormat format=super.getCellFormat(object);
-		GraphicNode node=(GraphicNode)object;
-		Object impl=node.getNode().getImpl();
-		if (impl instanceof ResourceImpl) {
-			if (((ResourceImpl)impl).getAssignments().size()>0) // make assigned resources have a special color
-				format.setBackground("PALE_GREEN");
-		}
-
-		return format;
 	}
 }

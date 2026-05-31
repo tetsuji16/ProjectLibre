@@ -148,6 +148,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 	public CommonSpreadSheet() {
 		super();
 		setGridColor(FlatUiSupport.tableGridColor());
+		FlatUiSupport.applyDataSurface(this);
 		putClientProperty("JTable.autoStartsEdit", Boolean.FALSE);
 		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		//setSurrendersFocusOnKeystroke(true); //has the side effect of selecting the first character of cell after ENTER keystroke
@@ -204,7 +205,11 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 //		((CommonSpreadSheetModel)getModel()).setFieldArray(fieldArray);
 	}
 	public ArrayList getFieldArray() {
-		return ((CommonSpreadSheetModel)getModel()).getFieldArray();
+		var model = getModel();
+		if (model instanceof CommonSpreadSheetModel commonModel) {
+			return commonModel.getFieldArray();
+		}
+		return new ArrayList();
 	}
 
 	public final SpreadSheetFieldArray getFieldArrayWithWidths(ArrayList fieldArray) {
@@ -872,6 +877,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
      			JScrollPane scrollPane = (JScrollPane)gp;
      			JViewport viewport = scrollPane.getViewport();
      			if (viewport == null || viewport.getView() != this) return;
+				FlatUiSupport.applyViewportSurface(viewport);
 
 				 //fix the mouse wheel scroll but introduces a middle useless vertical scrollbar
 //				scrollPane.setAutoscrolls(true);

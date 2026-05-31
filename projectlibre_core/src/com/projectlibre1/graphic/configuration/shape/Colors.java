@@ -204,6 +204,21 @@ public class Colors {
 	public static final Color MULTIPROJET0 = new Color(0xdcecec);
 	public static final Color VERY_LIGHT_GRAY = new Color(0xEAEAEA);
 	public static final Color NOT_TOO_DARK_GRAY=new Color(120,120,120);
+	public static final Color MONDAY_DONE = new Color(0x00C875);
+	public static final Color MONDAY_WORKING_ON_IT = new Color(0xFDAB3D);
+	public static final Color MONDAY_STUCK = new Color(0xE2445C);
+	public static final Color MONDAY_NOT_STARTED = new Color(0xC4C4C4);
+	public static final Color MONDAY_GROUP_A = new Color(0x579BFC);
+	public static final Color MONDAY_GROUP_B = new Color(0xA25DDC);
+	public static final Color MONDAY_BACKGROUND = new Color(0xF7F7F7);
+	public static final Color MONDAY_HEADER_BACKGROUND = new Color(0xF5F6F8);
+	public static final Color MONDAY_GRID_LINE = new Color(0xE1E1E1);
+	public static final Color MONDAY_DONE_BG = new Color(0x00, 0xC8, 0x75, 76);
+	public static final Color MONDAY_WORKING_ON_IT_BG = new Color(0xFD, 0xAB, 0x3D, 76);
+	public static final Color MONDAY_STUCK_BG = new Color(0xE2, 0x44, 0x5C, 76);
+	public static final Color MONDAY_NOT_STARTED_BG = new Color(0xC4, 0xC4, 0xC4, 76);
+	public static final Color MONDAY_GROUP_A_BG = new Color(0x57, 0x9B, 0xFC, 76);
+	public static final Color MONDAY_GROUP_B_BG = new Color(0xA2, 0x5D, 0xDC, 76);
 
   private static Object[][] data = {
 	  {"ALICE_BLUE",ALICE_BLUE},
@@ -341,7 +356,22 @@ public class Colors {
 	  {"NORMAL_LIGHT_YELLOW",NORMAL_LIGHT_YELLOW},
 	  {"MULTIPROJET1",MULTIPROJET1},
 	  {"MULTIPROJET0",MULTIPROJET0},
-	  {"VERY_LIGHT_GRAY",VERY_LIGHT_GRAY}
+	  {"VERY_LIGHT_GRAY",VERY_LIGHT_GRAY},
+	  {"MONDAY_DONE",MONDAY_DONE},
+	  {"MONDAY_WORKING_ON_IT",MONDAY_WORKING_ON_IT},
+	  {"MONDAY_STUCK",MONDAY_STUCK},
+	  {"MONDAY_NOT_STARTED",MONDAY_NOT_STARTED},
+	  {"MONDAY_GROUP_A",MONDAY_GROUP_A},
+	  {"MONDAY_GROUP_B",MONDAY_GROUP_B},
+	  {"MONDAY_BACKGROUND",MONDAY_BACKGROUND},
+	  {"MONDAY_HEADER_BACKGROUND",MONDAY_HEADER_BACKGROUND},
+	  {"MONDAY_GRID_LINE",MONDAY_GRID_LINE},
+	  {"MONDAY_DONE_BG",MONDAY_DONE_BG},
+	  {"MONDAY_WORKING_ON_IT_BG",MONDAY_WORKING_ON_IT_BG},
+	  {"MONDAY_STUCK_BG",MONDAY_STUCK_BG},
+	  {"MONDAY_NOT_STARTED_BG",MONDAY_NOT_STARTED_BG},
+	  {"MONDAY_GROUP_A_BG",MONDAY_GROUP_A_BG},
+	  {"MONDAY_GROUP_B_BG",MONDAY_GROUP_B_BG}
  };
 
 	private static HashMap colorMap = null;

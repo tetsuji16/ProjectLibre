@@ -106,6 +106,7 @@ import com.projectlibre1.pm.calendar.WorkingCalendar;
 import com.projectlibre1.pm.dependency.Dependency;
 import com.projectlibre1.pm.dependency.DependencyType;
 import com.projectlibre1.pm.scheduling.ScheduleInterval;
+import com.projectlibre1.pm.scheduling.Schedule;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.Task;
 import com.projectlibre1.timescale.CalendarUtil;
@@ -114,6 +115,8 @@ import com.projectlibre1.timescale.TimeIterator;
 import com.projectlibre1.util.DateTime;
 import com.projectlibre1.util.Environment;
 import com.projectlibre1.util.FlatUiSupport;
+import com.projectlibre1.util.GanttColorPalette;
+import com.projectlibre1.util.MondayComPalette;
 
 public class GanttRenderer extends GraphRenderer implements Serializable {
 	/**
@@ -128,8 +131,9 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	protected HorizontalLineRenderer horizontalLineRenderer = new HorizontalLineRenderer();
 	protected AnnotationRenderer annotationRenderer = new AnnotationRenderer();
 
-	protected GraphicConfiguration config;
-	protected JComponent container;
+    protected GraphicConfiguration config;
+    protected JComponent container;
+    protected GanttColorPalette palette = new MondayComPalette(); // Default to Monday.com palette
 
 
 	public GanttRenderer(){
@@ -143,28 +147,123 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			container=(JComponent)graphInfo;
 	}
 
-	private Color getProgressLineColor() {
-		return FlatUiSupport.accentColor();
-	}
-
-	private Color getProgressLineHaloColor() {
-		return FlatUiSupport.panelBackground();
-	}
-
-	private Color getBarColor(BarFormat format) {
-		if (format != null && format.getMiddle() != null && format.getMiddle().getColor() != null)
-			return format.getMiddle().getColor();
-		return FlatUiSupport.accentColor();
-	}
-
-	private Color getBarTextColor(BarFormat format) {
-		if (format != null && format.getMiddle() != null && format.getMiddle().getColor() != null)
-			return format.getMiddle().getColor();
-		return FlatUiSupport.labelForeground();
-	}
+    private Color getProgressLineColor() {
+        return palette.getProjectLineColor();
+    }
+    
+    private Color getProgressLineHaloColor() {
+        return palette.getChartBackground();
+    }
 
 	private void enablePaintHints(Graphics2D g2) {
 		FlatUiSupport.enableAntialiasing(g2);
+	}
+
+	private boolean isTextureEnabled() {
+		return graphInfo != null && graphInfo.useTextures();
+	}
+
+    private Schedule getSchedule(Object impl) {
+        if (impl instanceof Schedule)
+            return (Schedule)impl;
+        return null;
+    }
+
+	private Object getNodeImpl(GraphicNode node) {
+		return node == null || node.getNode() == null ? null : node.getNode().getImpl();
+	}
+    
+    /**
+     * Get the current color palette.
+     */
+    public GanttColorPalette getPalette() {
+        return palette;
+    }
+    
+    /**
+     * Set the color palette for Gantt rendering.
+     */
+    public void setPalette(GanttColorPalette palette) {
+        if (palette != null) {
+            this.palette = palette;
+        }
+    }
+
+    private Color resolveTaskFillColor(GraphicNode node, BarFormat format, Schedule schedule, long statusDate) {
+        return palette.getStatusColor(schedule, getNodeImpl(node));
+    }
+
+	private Color resolveTaskFillColor(GraphicNode node, BarFormat format) {
+		Object impl = getNodeImpl(node);
+		return resolveTaskFillColor(node, format, getSchedule(impl), getStatusDate(impl));
+	}
+
+	private long getStatusDate(Object impl) {
+		if (impl instanceof Project) {
+			long statusDate = ((Project)impl).getStatusDate();
+			return statusDate == 0L ? System.currentTimeMillis() : statusDate;
+		}
+		if (impl instanceof com.projectlibre1.pm.assignment.Assignment) {
+			Project project = ((com.projectlibre1.pm.assignment.Assignment)impl).getProject();
+			if (project != null) {
+				long statusDate = project.getStatusDate();
+				return statusDate == 0L ? System.currentTimeMillis() : statusDate;
+			}
+		}
+		if (impl instanceof Task) {
+			Project project = ((Task)impl).getProject();
+			if (project != null) {
+				long statusDate = project.getStatusDate();
+				return statusDate == 0L ? System.currentTimeMillis() : statusDate;
+			}
+		}
+		return System.currentTimeMillis();
+	}
+
+	private Color resolveAccentColor(GraphicNode node, BarFormat format, Color statusColor) {
+		return palette.getAccentColor(format, statusColor, getNodeImpl(node));
+	}
+
+	private Color resolveAccentColor(GraphicNode node, BarFormat format) {
+		Color statusColor = resolveTaskFillColor(node, format);
+		return resolveAccentColor(node, format, statusColor);
+	}
+
+	private Paint createBarPaint(Color fillColor, Rectangle2D bounds, boolean backgroundLayer) {
+		if (fillColor == null || bounds == null)
+			return fillColor;
+		return palette.createBarPaint(fillColor, bounds, backgroundLayer, isTextureEnabled());
+	}
+
+	private Shape drawConfiguredShape(TexturedShape shape, Graphics2D g2, double w, double h, double x, double y, Color fillColor, Color strokeColor, Rectangle2D bounds, boolean backgroundLayer) {
+		Paint oldPaint = shape.getPaint();
+		Color oldColor = shape.getColor();
+		try {
+			Color flatFill = (Color)palette.createBarPaint(fillColor, bounds, backgroundLayer, false);
+			Paint paint = isTextureEnabled()
+					? createBarPaint(fillColor, bounds, backgroundLayer)
+					: new com.projectlibre1.graphic.configuration.shape.PredefinedPaint(
+							com.projectlibre1.graphic.configuration.shape.PredefinedPaint.SOLID,
+							flatFill,
+							flatFill);
+			shape.setPaint(paint);
+			shape.setColor(strokeColor);
+			return shape.draw(g2, w, h, x, y, isTextureEnabled());
+		} finally {
+			shape.setPaint(oldPaint);
+			shape.setColor(oldColor);
+		}
+	}
+
+	private Color resolveAnnotationColor(Color fillColor) {
+		return palette.getTextColor(fillColor);
+	}
+
+	private void paintVerticalMarkerLine(Graphics2D g2, Rectangle bounds, int x, PredefinedPaint paint) {
+		if (x < bounds.getX() || x > bounds.getMaxX())
+			return;
+		g2.setPaint(paint);
+		g2.drawLine(x, bounds.y, x, bounds.y + bounds.height);
 	}
 
 
@@ -258,6 +357,9 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			double dw=height;
 
 			if (format.getMiddle()!=null){
+				Color statusColor = resolveTaskFillColor(node, format);
+				Color accentColor = resolveAccentColor(node, format, statusColor);
+				Rectangle2D barBounds = new Rectangle2D.Double(x, y - height / 2.0, width, height);
 
 				if (g2==null&&format.isMain()){
 					Shape shape=format.getMiddle().toGeneralPath(
@@ -269,46 +371,35 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 					Rectangle2D bounds=shape.getBounds2D();
 					node.setGanttShapeOffset(bounds.getY()-y+height/2);
 					node.setGanttShapeHeight(bounds.getHeight());
-				}else{
-					Shape shape=format.getMiddle().draw(g2,
-							width,
-							height,
-							x,
-							y,
-							useTextures());
+				}else if (g2 != null){
+					drawConfiguredShape(format.getMiddle(), g2, width, height, x, y, statusColor, accentColor, barBounds, true);
 
+					// draw middle before ends
+					if (format.isMain()&&!node.isSummary()&&node.isStarted()){
+						long completedT=node.getCompleted();
+						if (completedT>=interval.getStart()){
+							double completedW=coord.toX(completedT)-x;
+							if (completedW>width && !GanttOption.getInstance().isCompletionIsContiguous())
+								completedW=width;
+							completedW=CoordinatesConverter.adaptSmallBarEndX(x, x+completedW, node,config)-x;
+							double progressHeight = config.getGanttProgressBarHeight();
+							Rectangle2D progressBounds = new Rectangle2D.Double(x,y-progressHeight/2.0,completedW,progressHeight);
+							Paint progressPaint = createBarPaint(statusColor, progressBounds, false);
+							if (progressPaint instanceof Color)
+								g2.setColor((Color)progressPaint);
+							else
+								g2.setPaint(progressPaint);
+							g2.fill(new RoundRectangle2D.Double(x,y-progressHeight/2.0,completedW,progressHeight,progressHeight,progressHeight));
+						}
+					}
 				}
-				// draw middle before ends
 			}
 			if (g2==null) return;
 
-			if (format.getStart()!=null) format.getStart().draw(g2,
-					dw,
-					height,
-					x ,
-					y,
-					useTextures());
-			if (format.getEnd()!=null) format.getEnd().draw(g2,
-					dw,
-					height,
-					x+width,
-					y,
-					useTextures()); //TODO case when no start symbol
-
-			//TODO style and format of completion should be treated with bar prefererences instead of a special case
-			if (format.isMain()&&!node.isSummary()&&node.isStarted()){
-				long completedT=node.getCompleted();
-				if (completedT>=interval.getStart()){
-					double completedW=coord.toX(completedT)-x;
-					if (completedW>width && !GanttOption.getInstance().isCompletionIsContiguous())
-						completedW=width;
-					completedW=CoordinatesConverter.adaptSmallBarEndX(x, x+completedW, node,config)-x;
-					double progressHeight = config.getGanttProgressBarHeight();
-					Shape progressBar=new RoundRectangle2D.Double(x,y-progressHeight/2.0,completedW,progressHeight,progressHeight,progressHeight);
-					g2.setColor(getBarColor(format));
-					g2.fill(progressBar);
-				}
-			}
+			Color statusColor = resolveTaskFillColor(node, format);
+			Color accentColor = resolveAccentColor(node, format, statusColor);
+			if (format.getStart()!=null) drawConfiguredShape(format.getStart(), g2, dw, height, x , y, accentColor, accentColor, new Rectangle2D.Double(x, y - height / 2.0, dw, height), false);
+			if (format.getEnd()!=null) drawConfiguredShape(format.getEnd(), g2, dw, height, x+width, y, accentColor, accentColor, new Rectangle2D.Double(x + width, y - height / 2.0, dw, height), false); //TODO case when no start symbol
 
 
 		}
@@ -365,6 +456,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			}
 			else s=FieldConverter.toString(value,value.getClass(),null);
 			component.setText(s); //field.getClazz()?
+			Color statusColor = resolveTaskFillColor(node, format);
+			component.setForeground(resolveAnnotationColor(statusColor));
 			int y=yrow+config.getGanttBarYOffset();//+config.getGanttBarAnnotationYOffset();
 			double x0=coord.toX(node.getStart());
 			double x1=coord.toX(node.getEnd());
@@ -377,7 +470,6 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			if (container==null){
 		    	component.setDoubleBuffered(false);
 		    	component.setOpaque(false);
-		    	component.setForeground(getBarTextColor(format));
 		    	component.setSize(w,h);
 		    	g2.translate(x,y);
 		    	component.doLayout();
@@ -416,7 +508,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			Stroke oldStroke = g2.getStroke();
 			Color oldColor = g2.getColor();
 			enablePaintHints(g2);
-			g2.setColor(getBarColor(format));
+			g2.setColor(palette.getGridLine());
 			g2.drawLine(bounds.x,yrow,bounds.x+bounds.width,yrow);
 			g2.setColor(oldColor);
 			g2.setStroke(oldStroke);
@@ -473,8 +565,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 				Stroke oldStroke = g2.getStroke();
 				Dependency dep = dependency.getDependency();
 				if (dep.isDisabled()) g2.setStroke(DISABLED_LINK_STROKE);
-				if (dep.isCrossProject()) g2.setColor(EXTERNAL_LINK_COLOR);
-				else g2.setColor(getBarColor(format));
+				if (dep.isCrossProject()) g2.setColor(palette.getExternalLinkColor());
+				else g2.setColor(palette.getAccentColor(format, palette.getDependencyLinkColor(), dependency));
 				g2.draw(path);
 
 			//}
@@ -495,14 +587,19 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		}
 
 		private void drawLinkArrows(Dependency dep, AffineTransform transform, TexturedShape shape) {
-			Color oldEndColor = format.getEnd().getColor();
-			if (dep.isCrossProject())
-				shape.setPaint(EXTERNAL_LINK_COLOR);
+			Paint oldPaint = shape.getPaint();
+			Color oldEndColor = shape.getColor();
+			if (dep.isCrossProject()) {
+				shape.setPaint(palette.getExternalLinkColor());
+				shape.setColor(palette.getExternalLinkColor());
+			}
 			g2.setColor(shape.getColor());
 			LinkRouting routing=((GanttParams)graphInfo).getRouting();
 			shape.draw(g2,routing.getLastX(),routing.getLastY(),transform,useTextures());
-			if (dep.isCrossProject())
-				shape.setPaint(oldEndColor);
+			if (dep.isCrossProject()) {
+				shape.setPaint(oldPaint);
+				shape.setColor(oldEndColor);
+			}
 		}
 	}
 
@@ -571,6 +668,16 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		enablePaintHints(g2);
 		linkRenderer.initialize(g2,dependency);
 		barStyles.apply(dependency,linkRenderer,true,false,false, false);
+	}
+
+	private void paintChartBackground(Graphics2D g2, Rectangle bounds) {
+		if (g2 == null || bounds == null)
+			return;
+		Paint oldPaint = g2.getPaint();
+        g2.setColor(palette.getChartBackground());
+		g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		if (oldPaint != null)
+			g2.setPaint(oldPaint);
 	}
 
 	private void paintProgressLine(Graphics2D g2) {
@@ -772,19 +879,15 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 			//project start
 			int projectStartX=(int)Math.round(coord.toX(project.getStart()));
-			if (projectStartX>=bounds.getX()&&projectStartX<=bounds.getMaxX()){
-				g2.setPaint(new PredefinedPaint(PredefinedPaint.DASH_LINE,Color.GRAY,g2.getBackground()));
-				g2.drawLine(projectStartX,bounds.y,projectStartX,bounds.y+bounds.height);
-			}
+			paintVerticalMarkerLine(g2, bounds, projectStartX,
+					new PredefinedPaint(PredefinedPaint.DASH_LINE, palette.getProjectLineColor(), g2.getBackground()));
 
 			//project start
 			long statusDate = project.getStatusDate();
 			if (statusDate != 0) {
 				int statusDateX=(int)Math.round(coord.toX(statusDate));
-				if (statusDateX>=bounds.getX()&&statusDateX<=bounds.getMaxX()){
-					g2.setPaint(new PredefinedPaint(PredefinedPaint.DOT_LINE2,Color.GREEN,g2.getBackground()));
-					g2.drawLine(statusDateX,bounds.y,statusDateX,bounds.y+bounds.height);
-				}
+				paintVerticalMarkerLine(g2, bounds, statusDateX,
+						new PredefinedPaint(PredefinedPaint.DOT_LINE2, palette.getStatusDateLineColor(), g2.getBackground()));
 			}
 
 
@@ -824,6 +927,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			}
 		}
 
+		paintChartBackground(g2, clipBounds);
 		paintNonWorkingDays(g2,clipBounds);
 
 		//Modif for offline graphics

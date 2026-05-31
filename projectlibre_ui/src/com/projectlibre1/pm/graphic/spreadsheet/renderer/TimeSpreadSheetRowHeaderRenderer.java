@@ -61,7 +61,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import com.projectlibre1.graphic.configuration.shape.Colors;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -77,11 +77,7 @@ public class TimeSpreadSheetRowHeaderRenderer extends DefaultTableCellRenderer {
 	Component last=null;
 	public Component getTableCellRendererComponent (JTable table, Object value,boolean isSelected, boolean hasFocus, int row, int column){
 		JLabel component=(JLabel)super.getTableCellRendererComponent(table,value,isSelected,hasFocus,row,column);
-		component.setForeground (table.getTableHeader().getForeground());
-		
-		component.setBackground(Colors.findColor("NORMAL_YELLOW")/*table.getTableHeader ().getBackground()*/);
-		
-		component.setFont (table.getTableHeader ().getFont());
+		FlatUiSupport.applyTableHeaderCellStyle(component, isSelected);
 		component.setHorizontalAlignment (CENTER);
 		component.setText (value == null ? "" : value.toString ());
 		//component.setBorder (UIManager.getBorder ("TableHeader.cellBorder"));

@@ -71,6 +71,7 @@ import com.projectlibre1.pm.graphic.frames.DocumentFrame;
 import com.projectlibre1.pm.graphic.spreadsheet.common.GradientCorner;
 import com.projectlibre1.timescale.TimeScaleEvent;
 import com.projectlibre1.timescale.TimeScaleListener;
+import com.projectlibre1.util.FlatUiSupport;
 import com.projectlibre1.workspace.SavableToWorkspace;
 import com.projectlibre1.workspace.WorkspaceSetting;
 
@@ -105,6 +106,7 @@ public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, 
 
 	public void createLayout(){
 		setPreferredSize(new Dimension(300, 250));
+		FlatUiSupport.applyViewportSurface(getViewport());
 		
 	    //JViewport mainVP=new JViewport();
 		//mainVP.setView((JComponent)main);
@@ -173,11 +175,12 @@ public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, 
 		if (emptyRowHeader==null){
 			int width=40;
 			emptyRowHeader=new JPanel();
-			emptyRowHeader.setBackground(getViewport().getView().getBackground());
+			FlatUiSupport.applyDataSurface(emptyRowHeader);
 			emptyRowHeader.setPreferredSize(new Dimension(width,(int)getViewport().getViewSize().getHeight()));
 			JViewport header=new JViewport();
 			header.setView(emptyRowHeader);
 			header.setPreferredSize(emptyRowHeader.getPreferredSize());
+			FlatUiSupport.applyViewportSurface(header);
 			setRowHeader(header);
 			
 			/*emptyCorner=new JPanel();

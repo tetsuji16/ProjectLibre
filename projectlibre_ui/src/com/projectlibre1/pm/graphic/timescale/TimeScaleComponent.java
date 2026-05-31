@@ -95,8 +95,7 @@ public class TimeScaleComponent extends JPanel {
 		int h=GraphicConfiguration.getInstance().getColumnHeaderHeight();
 
 
-		if (textColor==null) textColor=FlatUiSupport.labelForeground();
-		if (lineColor==null) lineColor=FlatUiSupport.borderColor();
+		refreshThemeColors();
 
 //		setBackground(UIManager.getColor("TableHeader.cellColor"));
 //		setBackground(UIManager.getColor("TableHeader.cellBackground"));
@@ -105,12 +104,8 @@ public class TimeScaleComponent extends JPanel {
 
 		//setMinimumSize(new Dimension(0,h));
 		//setMaximumSize(new Dimension(Integer.MAX_VALUE,h));
-
-
 		setPreferredSize(new Dimension(0,h));
-
-
-		setBackground(GraphicManager.getInstance().getLafManager().getUnselectedBackgroundColor()); //Using ColorUIResource directly doesn't work
+		FlatUiSupport.applyTableHeaderStyle(this);
 		setBorder(UIManager.getBorder ("TableHeader.cellBorder"));
 	}
 
@@ -130,6 +125,7 @@ public class TimeScaleComponent extends JPanel {
 	}
 
 	public static void paintTimeScale(Graphics2D g2,CoordinatesConverter coord,Font font,Dimension d,boolean clipping){
+		refreshThemeColors();
 		if (font == null)
 			font = FlatUiSupport.uiFont();
 		Rectangle clipBounds = g2.getClipBounds();
@@ -200,5 +196,10 @@ public class TimeScaleComponent extends JPanel {
 
 		}
 
+	}
+
+	private static void refreshThemeColors() {
+		textColor = FlatUiSupport.headerForeground();
+		lineColor = FlatUiSupport.tableGridColor();
 	}
 }

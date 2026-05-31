@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -69,6 +70,7 @@ import com.projectlibre1.pm.graphic.graph.GraphParams;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.spreadsheet.renderer.OfflineRenderer;
 import com.projectlibre1.field.Field;
+import com.projectlibre1.util.FlatUiSupport;
 
 public class SpreadSheetRenderer extends Renderer{
 //	protected Stroke cellStroke=new BasicStroke(0.25f);
@@ -125,6 +127,7 @@ public class SpreadSheetRenderer extends Renderer{
 		TableColumn c;
 		int w=spreadsheetBounds.x;
 		int h=spreadsheetBounds.y-params.getConfiguration().getColumnHeaderHeight();
+		fillBackground(g2, spreadsheetBounds.x, h, spreadsheetBounds.width, params.getConfiguration().getColumnHeaderHeight(), FlatUiSupport.headerBackground());
 		int col=0;
 		for (Iterator i=params.getColumnIterator();i.hasNext()&&col<=col1;col++){
 			c=(TableColumn)i.next();
@@ -151,7 +154,7 @@ public class SpreadSheetRenderer extends Renderer{
 			w+=cwidth;
 //			g2.setStroke(spreadSheetStroke);
 //			g2.setColor(spreadSheetColor);
-			g2.draw(new Line2D.Double(w,h,w,spreadsheetBounds.getMaxY()));
+			paintGridLine(g2, new Line2D.Double(w,h,w,spreadsheetBounds.getMaxY()));
 			//g2.drawLine(w,h,w,spreadsheetBounds.y+spreadsheetBounds.height);
 		}
 	}
@@ -159,6 +162,7 @@ public class SpreadSheetRenderer extends Renderer{
 	protected void paintRow(Graphics2D g2, int row, int row0, int h,int col0,int col1,GraphicNode node,Rectangle spreadsheetBounds){
 		TableColumn c;
 		int w=spreadsheetBounds.x;
+		fillBackground(g2, spreadsheetBounds.x, h, spreadsheetBounds.width, params.getRowHeight(), FlatUiSupport.dataSurfaceBackground());
 		int col=0;
 		for (Iterator i=params.getColumnIterator();i.hasNext()&&col<=col1;col++){
 			c=(TableColumn)i.next();
@@ -188,7 +192,21 @@ public class SpreadSheetRenderer extends Renderer{
 			component.setOpaque(opaque);
 			w+=cwidth;
 		}
-		if (row!=row0) g2.draw(new Line2D.Double(0,h,w,h));
+		if (row!=row0) paintGridLine(g2, new Line2D.Double(0,h,w,h));
+	}
+
+	private void fillBackground(Graphics2D g2, int x, int y, int width, int height, Color background) {
+		Color oldColor = g2.getColor();
+		g2.setColor(background);
+		g2.fillRect(x, y, width, height);
+		g2.setColor(oldColor);
+	}
+
+	private void paintGridLine(Graphics2D g2, Line2D line) {
+		Color oldColor = g2.getColor();
+		g2.setColor(FlatUiSupport.tableGridColor());
+		g2.draw(line);
+		g2.setColor(oldColor);
 	}
 
 

@@ -76,19 +76,19 @@ public class CellUtility {
 		boolean editingThisCell = table.isEditing() && table.getEditingRow() == row && table.getEditingColumn() == column;
 		Color foreground=cellFormat.getForegroundObject();
 		Color background=cellFormat.getBackgroundObject();
-		Color resolvedForeground=(foreground==null)?FlatUiSupport.tableForeground():foreground;
-		Color resolvedBackground=(background==null)?FlatUiSupport.tableBackground():background;
+		Color resolvedForeground=resolveTableForeground(foreground);
+		Color resolvedBackground=resolveTableBackground(background);
 		component.setForeground(resolvedForeground);
 		component.setBackground(resolvedBackground);
 		//component.setFont(table.getFont());
 		if (editingThisCell && table.isCellEditable(row, column)) {
 			component.setBorder(FlatUiSupport.focusBorder());
-			component.setForeground((foreground==null)?FlatUiSupport.tableSelectionForeground():foreground);
-			component.setBackground((background==null)?FlatUiSupport.tableSelectionBackground():background);
+			component.setForeground(resolveSelectionForeground(foreground));
+			component.setBackground(resolveSelectionBackground(background));
 		} else if (hasFocus || isSelected) {
 			component.setBorder(FlatUiSupport.focusBorder());
-			component.setForeground((foreground==null)?FlatUiSupport.tableSelectionForeground():foreground);
-			component.setBackground((background==null)?FlatUiSupport.tableSelectionBackground():background);
+			component.setForeground(resolveSelectionForeground(foreground));
+			component.setBackground(resolveSelectionBackground(background));
 		} else {
 			component.setBorder(FlatUiSupport.tableCellBorder());
 //			if (!model.isRowEditable(row))
@@ -101,13 +101,29 @@ public class CellUtility {
 
 	public static void setAppearance(CellFormat format, JComponent component){
 		Color foreground=format.getForegroundObject();
-		component.setForeground(foreground == null ? FlatUiSupport.tableForeground() : foreground);
+		component.setForeground(resolveTableForeground(foreground));
 		Color background=format.getBackgroundObject();
-		component.setBackground(background == null ? FlatUiSupport.tableBackground() : background);
-			component.setBorder(FlatUiSupport.tableCellBorder());
+		component.setBackground(resolveTableBackground(background));
+		component.setBorder(FlatUiSupport.tableCellBorder());
 //			if (!model.isRowEditable(row))
 //				component.setForeground(Color.GRAY);
 
+	}
+
+	private static Color resolveTableForeground(Color foreground) {
+		return foreground == null ? FlatUiSupport.tableForeground() : foreground;
+	}
+
+	private static Color resolveTableBackground(Color background) {
+		return background == null ? FlatUiSupport.tableBackground() : background;
+	}
+
+	private static Color resolveSelectionForeground(Color foreground) {
+		return foreground == null ? FlatUiSupport.tableSelectionForeground() : foreground;
+	}
+
+	private static Color resolveSelectionBackground(Color background) {
+		return background == null ? FlatUiSupport.tableSelectionBackground() : background;
 	}
 
 

@@ -99,8 +99,7 @@ public abstract class Graph extends JComponent implements GraphListener, GraphPa
 		//TODO unregister
 		
 		
-		setBackground(FlatUiSupport.panelBackground());
-		setOpaque(true);
+		FlatUiSupport.applyDataSurface(this);
 		setDoubleBuffered(true);
 		setLayout(null);
 	}

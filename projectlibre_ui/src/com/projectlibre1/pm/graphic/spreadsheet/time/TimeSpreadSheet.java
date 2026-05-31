@@ -143,8 +143,13 @@ public class TimeSpreadSheet extends CommonSpreadSheet implements ScaledComponen
 	    spreadSheetModel.getCache().addNodeModelListener(this);
 	}
 	public void cleanUp() {
-		((TimeSpreadSheetModel)getModel()).getCache().removeNodeModelListener(this);
-     	getCoord().removeTimeScaleListener((TimeScaleListener) getColumnModel());
+		if (getModel() instanceof TimeSpreadSheetModel timeSpreadSheetModel && timeSpreadSheetModel.getCache() != null) {
+			timeSpreadSheetModel.getCache().removeNodeModelListener(this);
+		}
+		var coord = getCoord();
+		if (coord != null && getColumnModel() instanceof TimeScaleListener) {
+     		coord.removeTimeScaleListener((TimeScaleListener) getColumnModel());
+		}
 		super.cleanUp();
 	}
 
