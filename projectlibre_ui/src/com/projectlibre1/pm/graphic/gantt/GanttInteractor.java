@@ -64,11 +64,13 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+import javax.swing.undo.UndoableEditSupport;
 
 import com.projectlibre1.pm.graphic.graph.GraphInteractor;
 import com.projectlibre1.pm.graphic.graph.GraphUI;
 import com.projectlibre1.pm.graphic.graph.GraphZone;
 import com.projectlibre1.pm.graphic.collaboration.CollaborationHelper;
+import com.projectlibre1.pm.graphic.frames.DocumentFrame;
 import com.projectlibre1.pm.graphic.frames.GraphicManager;
 import com.projectlibre1.pm.graphic.model.cache.GraphicDependency;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
@@ -325,19 +327,20 @@ public class GanttInteractor extends GraphInteractor{
     	}
     	long t=(long)getCoord().toTime(x);
     	long dt=(long)getCoord().toDuration(x-x0);
+    	UndoableEditSupport undoSupport = getUndoableEditSupport();
     	switch (state) {
 		case BAR_MOVE:
-			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart()+dt,selectedInterval.getEnd()+dt,selectedInterval,ui.getGraph().getProject().getUndoController().getEditSupport());
-			return true;
+			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart()+dt,selectedInterval.getEnd()+dt,selectedInterval,undoSupport);
+			return refreshUndoState(true);
 		case BAR_MOVE_START:
-			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart()+dt,selectedInterval.getEnd(),selectedInterval,ui.getGraph().getProject().getUndoController().getEditSupport());
-			return true;
+			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart()+dt,selectedInterval.getEnd(),selectedInterval,undoSupport);
+			return refreshUndoState(true);
 		case BAR_MOVE_END:
-			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart(),selectedInterval.getEnd()+dt,selectedInterval,ui.getGraph().getProject().getUndoController().getEditSupport());
-			return true;
+			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart(),selectedInterval.getEnd()+dt,selectedInterval,undoSupport);
+			return refreshUndoState(true);
 		case PROGRESS_BAR_MOVE:
-			ScheduleService.getInstance().setCompleted(this,(Schedule)sourceNode.getNode().getImpl(),t,ui.getGraph().getProject().getUndoController().getEditSupport());
-			return true;
+			ScheduleService.getInstance().setCompleted(this,(Schedule)sourceNode.getNode().getImpl(),t,undoSupport);
+			return refreshUndoState(true);
 		case LINK_CREATION:
 			try {
 					if (sourceNode != null && !CollaborationHelper.tryLockObject(null, sourceNode.getNode(), getGraph(), "link")) {
@@ -359,10 +362,31 @@ public class GanttInteractor extends GraphInteractor{
 			showDependencyPropertiesDialog((GraphicDependency)selected);
 			return true;
 		case SPLIT:
-			ScheduleService.getInstance().split(this,(Schedule)sourceNode.getNode().getImpl(),t,t,ui.getGraph().getProject().getUndoController().getEditSupport());
-			return true;
+			ScheduleService.getInstance().split(this,(Schedule)sourceNode.getNode().getImpl(),t,t,undoSupport);
+			return refreshUndoState(true);
 		}
     	return false;
+    }
+
+    private UndoableEditSupport getUndoableEditSupport() {
+    	if (ui.getGraph().getProject().getUndoController() == null) {
+    		return null;
+    	}
+    	return ui.getGraph().getProject().getUndoController().getEditSupport();
+    }
+
+    private boolean refreshUndoState(boolean actionPerformed) {
+    	if (!actionPerformed) {
+    		return false;
+    	}
+    	GraphicManager graphicManager = GraphicManager.getInstance(getGraph());
+    	if (graphicManager != null) {
+    		DocumentFrame currentFrame = graphicManager.getCurrentFrame();
+    		if (currentFrame != null) {
+    			currentFrame.refreshUndoButtons();
+    		}
+    	}
+    	return true;
     }
 
     public void setSplitMode(){

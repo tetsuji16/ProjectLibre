@@ -2,6 +2,10 @@
 
 This repository is an unofficial development fork of ProjectLibre. It keeps the original desktop planning tool as its base and extends it with practical improvements for day-to-day scheduling, collaboration, import/export, and Gantt usability.
 
+Current release in this fork:
+
+- `v0.0.2`
+
 ![ProjectLibre Gantt view](docs/images/gantt-view.png)
 
 ## What This Fork Is For
@@ -40,7 +44,7 @@ The figures below describe cumulative change volume since that baseline commit.
 - `projectlibre_exchange`: file exchange, import/export, and format integration code
 - `projectlibre_reports`: report-related code and templates
 - `projectlibre_contrib`: shared third-party dependencies built into the app distribution
-- `projectlibre_build`: Ant build files, jpackage helpers, packaging assets, and licenses
+- `projectlibre_build`: packaging assets, release metadata, icons, installers, and licenses
 - `sample data`: sample project files for screenshots and manual verification
 
 ## Requirements
@@ -48,10 +52,16 @@ The figures below describe cumulative change volume since that baseline commit.
 - Windows with a full JDK that includes `jpackage`
 - JDK 26 recommended
 - Gradle Wrapper support files are included in this repository
-- Apache Ant 1.10+ is only needed for legacy packaging workflows that have not been migrated yet
 - WiX Toolset on `PATH` for MSI packaging
 
-If `JAVA_HOME` is not set, pass a JDK path explicitly when running the MSI packaging script.
+If `JAVA_HOME` is not set, the Gradle release tasks fall back to `C:\Program Files\Java\jdk-26.0.1`.
+
+## Build System Status
+
+- Gradle is the primary build and release entrypoint for this repository
+- `build.gradle.kts` and `gradlew.bat` are the supported day-to-day workflow
+- `projectlibre_build` still contains packaging assets, icons, licenses, and legacy metadata
+- `projectlibre_build/build.xml` remains in the repo as a historical packaging reference, but it is not the recommended build path
 
 ## Build The App
 
@@ -82,51 +92,39 @@ The runnable application layout is generated under:
 
 The per-module JARs are generated under each module's `build\libs` directory.
 
-## Legacy Ant Build
-
-The old Ant build is still present for packaging tasks that have not yet been moved to Gradle.
-
-From the repository root:
+For a quick desktop launch during development:
 
 ```powershell
-cd projectlibre_build
-ant compile
-ant dist
+.\gradlew.bat :projectlibre_ui:run
 ```
-
-This still does two important things:
-
-- Rebuilds the contrib JARs so stale or damaged local artifacts do not block packaging
-- Produces the runnable desktop layout in `projectlibre_build/dist`
-
-The legacy main runnable JAR is:
-
-- `projectlibre_build/dist/projectlibre.jar`
 
 ## Build The Windows Release
 
-Generate the MSI packaging input:
+Build both the Windows MSI and the portable ZIP, then publish them into `docs/downloads/` for GitHub Pages:
 
 ```powershell
-cd projectlibre_build
-ant jpackage-msi
+.\gradlew.bat publishReleaseToDocs
 ```
 
-Then create the MSI itself:
+The Gradle release flow uses `stageAppDist` and `:projectlibre_ui:installDist` as its application input, runs `jpackage` directly, and writes release work files under:
 
-```powershell
-cd projectlibre_build
-powershell -ExecutionPolicy Bypass -File .\packages\jpackage-msi\make.ps1 -PackageType msi -OutputDir .\packages\jpackage-msi\app -JavaHome "C:\Program Files\Java\jdk-26.0.1"
-```
+- `build/releases/v0.0.2/`
 
-The official Windows release artifact is:
+The Gradle task writes the generated release files into:
 
-- `projectlibre_build/packages/jpackage-msi/app/ProjectLibre-1.9.8.1.msi`
+- `docs/downloads/ProjectLibre-0.0.2.msi`
+- `docs/downloads/ProjectLibre-0.0.2-app-image.zip`
 
-If WiX was installed per-user rather than system-wide, make sure its `bin` directory is on `PATH` before running `make.ps1`. For example:
+Because GitHub rejects files larger than 100 MB in regular Git history, the published GitHub Pages links for `v0.0.2` should point at GitHub Release assets instead of committing those binaries into the repository.
 
-```powershell
-$env:PATH = "$env:LOCALAPPDATA\Programs\WiX Toolset v7.0\bin;$env:PATH"
+The GitHub Pages landing page for this release is:
+
+- `docs/index.html`
+
+If WiX was installed per-user rather than system-wide, keep its `bin` directory available on `PATH`. The Gradle MSI task prepends the common per-user install path automatically:
+
+```text
+%LOCALAPPDATA%\Programs\WiX Toolset v7.0\bin
 ```
 
 ## Screenshot Procedure Used In This Repository
@@ -143,9 +141,7 @@ The README screenshot is intentionally captured so that only the application UI 
 - `.\gradlew.bat projects`: multi-project Gradle layout resolves
 - `.\gradlew.bat build`: all Gradle modules compile and package successfully
 - `.\gradlew.bat stageAppDist`: runnable app layout is generated
-- `ant compile`: legacy Ant compile still succeeds
-- `ant jpackage-msi`: MSI input layout is generated for the legacy packaging flow
-- `make.ps1`: MSI installer is generated
+- `.\gradlew.bat publishReleaseToDocs`: Windows release artifacts are rebuilt and copied into `docs/downloads`
 
 ## License
 

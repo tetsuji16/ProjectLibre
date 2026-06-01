@@ -494,6 +494,8 @@ public class DocumentFrame extends NamedFrame implements
 			if (spreadSheet == null)
 				return new SelectionSnapshot(null, null, null, -1, -1);
 			int row = spreadSheet.getCurrentRow();
+			if (row < 0)
+				return new SelectionSnapshot(spreadSheet, null, null, -1, -1);
 			int column = spreadSheet.isEditing() ? spreadSheet.getEditingColumn() : spreadSheet.getSelectedColumn();
 			CommonSpreadSheet.PendingUndoSelection pendingUndoSelection = spreadSheet.consumePendingUndoSelection(row, column);
 			if (pendingUndoSelection != null) {

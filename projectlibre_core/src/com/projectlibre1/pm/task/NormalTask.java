@@ -2313,6 +2313,12 @@ public class NormalTask extends Task implements Allocation, TaskSpecificFields,
 		windowLateStart=b.windowLateStart;
 		actualStart=b.actualStart;
 		TaskSnapshotBackup.restore(snapshot, b.snapshot);
+		if (snapshot == getCurrentSnapshot()) {
+			currentSchedule = snapshot.getCurrentSchedule();
+			if (currentSchedule != null) {
+				currentSchedule.initSerialized(this,TaskSchedule.CURRENT);
+			}
+		}
 		if (!isChild) recalculate(source); //to send update event
 	}
 

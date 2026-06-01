@@ -87,7 +87,11 @@ public class TaskSnapshotBackup {
 			assignment = (Assignment)i.next();
 			detail.add(assignment.backupDetail());
 		}
-		return new TaskSnapshotBackup(snapshot.getCurrentSchedule(),detail);
+		TaskSchedule scheduleBackup = snapshot.getCurrentSchedule();
+		if (scheduleBackup != null) {
+			scheduleBackup = (TaskSchedule) scheduleBackup.clone();
+		}
+		return new TaskSnapshotBackup(scheduleBackup,detail);
 	}
 	public static void restore(TaskSnapshot snapshot,TaskSnapshotBackup backup){
 		if (backup==null||snapshot==null) return;
