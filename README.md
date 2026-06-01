@@ -100,7 +100,7 @@ For a quick desktop launch during development:
 
 ## Build The Windows Release
 
-Build both the Windows MSI and the portable ZIP, then publish them into `docs/downloads/` for GitHub Pages:
+Build the Windows self-contained EXE, split it into GitHub-safe download parts, and publish those parts into `docs/downloads/` for GitHub Pages:
 
 ```powershell
 .\gradlew.bat publishReleaseToDocs
@@ -110,12 +110,12 @@ The Gradle release flow uses `stageAppDist` and `:projectlibre_ui:installDist` a
 
 - `build/releases/v0.0.2/`
 
-The Gradle task writes the generated release files into:
+The Gradle task writes the generated self-contained release files into local output directories such as:
 
-- `docs/downloads/ProjectLibre-0.0.2.msi`
+- `build/releases/v0.0.2/exe/ProjectLibre-0.0.2.exe`
 - `docs/downloads/ProjectLibre-0.0.2-app-image.zip`
 
-Because GitHub rejects files larger than 100 MB in regular Git history, the published GitHub Pages links for `v0.0.2` should point at GitHub Release assets instead of committing those binaries into the repository.
+For public distribution, this repository's GitHub Pages page can link directly to the GitHub Releases page for `v0.0.2` instead of storing oversized binaries in Git history.
 
 The GitHub Pages landing page for this release is:
 
