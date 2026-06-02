@@ -60,8 +60,8 @@ If `JAVA_HOME` is not set, the Gradle release tasks fall back to `C:\Program Fil
 
 - Gradle is the primary build and release entrypoint for this repository
 - `build.gradle.kts` and `gradlew.bat` are the supported day-to-day workflow
-- `projectlibre_build` still contains packaging assets, icons, licenses, and legacy metadata
-- `projectlibre_build/build.xml` remains in the repo as a historical packaging reference, but it is not the recommended build path
+- `projectlibre_build` now keeps only the packaging assets still needed by the Gradle and `jpackage` flow, plus historical reference files
+- `projectlibre_build/build.xml` remains in the repo as a historical packaging reference only and should not be used for current builds
 
 ## Build The App
 
@@ -100,7 +100,7 @@ For a quick desktop launch during development:
 
 ## Build The Windows Release
 
-Build the Windows self-contained EXE, split it into GitHub-safe download parts, and publish those parts into `docs/downloads/` for GitHub Pages:
+Build the Windows release artifacts and stage them locally:
 
 ```powershell
 .\gradlew.bat publishReleaseToDocs
@@ -110,12 +110,13 @@ The Gradle release flow uses `stageAppDist` and `:projectlibre_ui:installDist` a
 
 - `build/releases/v0.0.2/`
 
-The Gradle task writes the generated self-contained release files into local output directories such as:
+The Gradle task writes local staging outputs such as:
 
-- `build/releases/v0.0.2/exe/ProjectLibre-0.0.2.exe`
+- `build/releases/v0.0.2/msi/ProjectLibre-0.0.2.msi`
 - `docs/downloads/ProjectLibre-0.0.2-app-image.zip`
+- `docs/downloads/ProjectLibre-0.0.2.msi`
 
-For public distribution, this repository's GitHub Pages page can link directly to the GitHub Releases page for `v0.0.2` instead of storing oversized binaries in Git history.
+These `docs/downloads/` files are local staging artifacts for release preparation and should not be committed back into Git history. Public downloads should be published as GitHub Release assets for `v0.0.2`, and the GitHub Pages site should link to that release page instead of serving binaries from the repository itself.
 
 The GitHub Pages landing page for this release is:
 
@@ -141,7 +142,7 @@ The README screenshot is intentionally captured so that only the application UI 
 - `.\gradlew.bat projects`: multi-project Gradle layout resolves
 - `.\gradlew.bat build`: all Gradle modules compile and package successfully
 - `.\gradlew.bat stageAppDist`: runnable app layout is generated
-- `.\gradlew.bat publishReleaseToDocs`: Windows release artifacts are rebuilt and copied into `docs/downloads`
+- `.\gradlew.bat publishReleaseToDocs`: Windows release artifacts are rebuilt and staged into local `docs/downloads`
 
 ## License
 
