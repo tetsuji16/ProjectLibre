@@ -190,6 +190,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
     }
 
     private Color resolveTaskFillColor(GraphicNode node, BarFormat format, Schedule schedule, long statusDate) {
+        if (isBaselineBarFormat(format))
+            return palette.getBaselineBarColor();
         return palette.getStatusColor(schedule, getNodeImpl(node));
     }
 
@@ -222,6 +224,13 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 	private Color resolveAccentColor(GraphicNode node, BarFormat format, Color statusColor) {
 		return palette.getAccentColor(format, statusColor, getNodeImpl(node));
+	}
+
+	private boolean isBaselineBarFormat(BarFormat format) {
+		if (format == null || format.getId() == null)
+			return false;
+		String id = format.getId();
+		return "Bar.baseline".equals(id) || id.startsWith("Bar.baseline");
 	}
 
 	private Color resolveAccentColor(GraphicNode node, BarFormat format) {
@@ -497,7 +506,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			format = (BarFormat)arg0;
 			Field field=format.getField();
 			if (field==null) return;
-			Object value=field.getValue(node.getNode(),graphInfo.getCache().getModel(),null);
+			Object value=getAnnotationValue(field);
 			if (value==null) return;
 			CoordinatesConverter coord=((GanttParams)graphInfo).getCoord();
 
@@ -515,6 +524,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 				if (i>0) s=s.substring(0, i);
 			}
 			else s=FieldConverter.toString(value,value.getClass(),null);
+			if (s==null||s.trim().length()==0) return;
 			component.setText(s); //field.getClazz()?
 			Color statusColor = resolveTaskFillColor(node, format);
 			component.setForeground(resolveAnnotationColor(statusColor));
@@ -540,6 +550,13 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 
 
+		}
+
+		private Object getAnnotationValue(Field field) {
+			Object value=field.getValue(node.getNode(),graphInfo.getCache().getModel(),null);
+			if (value!=null) return value;
+			Object impl=getNodeImpl(node);
+			return impl==null?null:field.getValue(impl,null);
 		}
 
 

@@ -89,6 +89,11 @@ public class MondayComPalette implements GanttColorPalette {
     }
 
     @Override
+    public Color getBaselineBarColor() {
+        return MondayGanttTheme.BASELINE;
+    }
+
+    @Override
     public Color getExternalLinkColor() {
         return MondayGanttTheme.externalLinkColor();
     }

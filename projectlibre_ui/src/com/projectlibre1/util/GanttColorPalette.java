@@ -107,6 +107,11 @@ public interface GanttColorPalette {
     Paint createBarPaint(Color fillColor, Rectangle2D bounds, boolean backgroundLayer, boolean textured);
 
     /**
+     * Color for baseline snapshot bars.
+     */
+    Color getBaselineBarColor();
+
+    /**
      * External dependency color for cross-project links.
      */
     Color getExternalLinkColor();

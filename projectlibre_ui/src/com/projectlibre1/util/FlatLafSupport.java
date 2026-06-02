@@ -15,6 +15,10 @@ import com.formdev.flatlaf.FlatLightLaf;
  */
 public final class FlatLafSupport {
 	private static boolean initialized;
+	private static final int MS_PROJECT_UI_FONT_SIZE = 12;
+	private static final String MS_PROJECT_FONT = "Segoe UI";
+	private static final String JAPANESE_UI_FONT = "Yu Gothic UI";
+	private static final String LEGACY_JAPANESE_UI_FONT = "Meiryo UI";
 
 	private FlatLafSupport() {
 	}
@@ -54,7 +58,7 @@ public final class FlatLafSupport {
 	private static Font createDefaultFont() {
 		String fontName;
 		if (isWindows()) {
-			fontName = firstAvailable("Yu Gothic UI", "Yu Gothic", "Meiryo", "Segoe UI", "SansSerif");
+			fontName = firstAvailable(MS_PROJECT_FONT, JAPANESE_UI_FONT, "Yu Gothic", LEGACY_JAPANESE_UI_FONT, "Meiryo", "SansSerif");
 		} else if (isMac()) {
 			fontName = firstAvailable("Hiragino Sans", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "SansSerif");
 		} else if (isLinux()) {
@@ -62,7 +66,7 @@ public final class FlatLafSupport {
 		} else {
 			fontName = firstAvailable("SansSerif");
 		}
-		return fontName == null ? null : new Font(fontName, Font.PLAIN, 12);
+		return fontName == null ? null : new Font(fontName, Font.PLAIN, MS_PROJECT_UI_FONT_SIZE);
 	}
 
 	private static void applyUIFontDefaults(Font baseFont) {

@@ -97,13 +97,16 @@ public class GanttInteractor extends GraphInteractor{
 	protected static final int BAR_MOVE_END=5;
 	protected static final int PROGRESS_BAR_MOVE=6;
 	protected static final int SPLIT=7;
+	private static final int HORIZONTAL_PAN_SPEED_MULTIPLIER = 2;
 
 	protected ScheduleInterval selectedInterval;
 	protected int selectedIntervalNumber;
 	protected double t;
 	private boolean panning;
-	private Point panStartPoint;
+	private Point panStartScreenPoint;
 	private Point panStartViewPosition;
+	private Point pendingPanScreenPoint;
+	private boolean panUpdateScheduled;
 	/**
 	 *
 	 */
@@ -214,6 +217,7 @@ public class GanttInteractor extends GraphInteractor{
     		e.consume();
     		return;
     	}
+    	getGraph().requestFocusInWindow();
     	super.mouseReleased(e);
     }
 
@@ -325,22 +329,14 @@ public class GanttInteractor extends GraphInteractor{
     			return false;
     		}
     	}
-    	long t=(long)getCoord().toTime(x);
-    	long dt=(long)getCoord().toDuration(x-x0);
     	UndoableEditSupport undoSupport = getUndoableEditSupport();
     	switch (state) {
 		case BAR_MOVE:
-			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart()+dt,selectedInterval.getEnd()+dt,selectedInterval,undoSupport);
-			return refreshUndoState(true);
 		case BAR_MOVE_START:
-			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart()+dt,selectedInterval.getEnd(),selectedInterval,undoSupport);
-			return refreshUndoState(true);
 		case BAR_MOVE_END:
-			ScheduleService.getInstance().setInterval(this,(Schedule)sourceNode.getNode().getImpl(),selectedInterval.getStart(),selectedInterval.getEnd()+dt,selectedInterval,undoSupport);
-			return refreshUndoState(true);
+			return applyIntervalDrag((long)getCoord().toDuration(x-x0),undoSupport);
 		case PROGRESS_BAR_MOVE:
-			ScheduleService.getInstance().setCompleted(this,(Schedule)sourceNode.getNode().getImpl(),t,undoSupport);
-			return refreshUndoState(true);
+			return applyProgressDrag((long)getCoord().toTime(x),undoSupport);
 		case LINK_CREATION:
 			try {
 					if (sourceNode != null && !CollaborationHelper.tryLockObject(null, sourceNode.getNode(), getGraph(), "link")) {
@@ -362,10 +358,41 @@ public class GanttInteractor extends GraphInteractor{
 			showDependencyPropertiesDialog((GraphicDependency)selected);
 			return true;
 		case SPLIT:
-			ScheduleService.getInstance().split(this,(Schedule)sourceNode.getNode().getImpl(),t,t,undoSupport);
+			long t=(long)getCoord().toTime(x);
+			ScheduleService.getInstance().split(this,getSourceSchedule(),t,t,undoSupport);
 			return refreshUndoState(true);
 		}
     	return false;
+    }
+
+    private boolean applyIntervalDrag(long dt, UndoableEditSupport undoSupport) {
+    	long start=selectedInterval.getStart();
+    	long end=selectedInterval.getEnd();
+    	switch (state) {
+		case BAR_MOVE:
+			start+=dt;
+			end+=dt;
+			break;
+		case BAR_MOVE_START:
+			start+=dt;
+			break;
+		case BAR_MOVE_END:
+			end+=dt;
+			break;
+		default:
+			return false;
+		}
+		ScheduleService.getInstance().setInterval(this,getSourceSchedule(),start,end,selectedInterval,undoSupport);
+		return refreshUndoState(true);
+    }
+
+    private boolean applyProgressDrag(long completed, UndoableEditSupport undoSupport) {
+		ScheduleService.getInstance().setCompleted(this,getSourceSchedule(),completed,undoSupport);
+		return refreshUndoState(true);
+    }
+
+    private Schedule getSourceSchedule() {
+    	return (Schedule)sourceNode.getNode().getImpl();
     }
 
     private UndoableEditSupport getUndoableEditSupport() {
@@ -396,7 +423,7 @@ public class GanttInteractor extends GraphInteractor{
 
     private void startPan(MouseEvent e) {
     	panning = true;
-    	panStartPoint = e.getPoint();
+    	panStartScreenPoint = getScreenPoint(e);
     	JViewport viewport = getViewport();
     	panStartViewPosition = viewport == null ? null : viewport.getViewPosition();
     	selection = false;
@@ -406,24 +433,46 @@ public class GanttInteractor extends GraphInteractor{
     }
 
     private void updatePan(MouseEvent e) {
+    	pendingPanScreenPoint = getScreenPoint(e);
+    	if (panUpdateScheduled) {
+    		return;
+    	}
+    	panUpdateScheduled = true;
+    	SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				applyPendingPan();
+			}
+		});
+    }
+
+    private void applyPendingPan() {
+    	panUpdateScheduled = false;
     	JViewport viewport = getViewport();
-    	if (viewport == null || panStartPoint == null || panStartViewPosition == null) {
+    	if (!panning || viewport == null || panStartScreenPoint == null || panStartViewPosition == null || pendingPanScreenPoint == null) {
     		return;
     	}
 
     	Point viewPosition = new Point(panStartViewPosition);
-    	viewPosition.x -= e.getX() - panStartPoint.x;
+    	viewPosition.x -= (pendingPanScreenPoint.x - panStartScreenPoint.x) * HORIZONTAL_PAN_SPEED_MULTIPLIER;
+    	viewPosition.y -= pendingPanScreenPoint.y - panStartScreenPoint.y;
     	clampViewPosition(viewport, viewPosition);
     	viewport.setViewPosition(viewPosition);
     }
 
     private void stopPan() {
+    	applyPendingPan();
     	panning = false;
     	selection = true;
-    	panStartPoint = null;
+    	panStartScreenPoint = null;
     	panStartViewPosition = null;
+    	pendingPanScreenPoint = null;
+    	panUpdateScheduled = false;
     	reset();
     	selectCursor();
+    }
+
+    private Point getScreenPoint(MouseEvent e) {
+    	return new Point(e.getXOnScreen(), e.getYOnScreen());
     }
 
     private JViewport getViewport() {
@@ -438,16 +487,18 @@ public class GanttInteractor extends GraphInteractor{
     	Dimension extentSize = viewport.getExtentSize();
     	int maxX = Math.max(0, viewSize.width - extentSize.width);
     	int maxY = Math.max(0, viewSize.height - extentSize.height);
-    	if (viewPosition.x < 0) {
-    		viewPosition.x = 0;
-    	} else if (viewPosition.x > maxX) {
-    		viewPosition.x = maxX;
+    	viewPosition.x = clamp(viewPosition.x, 0, maxX);
+    	viewPosition.y = clamp(viewPosition.y, 0, maxY);
+    }
+
+    private int clamp(int value, int min, int max) {
+    	if (value < min) {
+    		return min;
     	}
-    	if (viewPosition.y < 0) {
-    		viewPosition.y = 0;
-    	} else if (viewPosition.y > maxY) {
-    		viewPosition.y = maxY;
+    	if (value > max) {
+    		return max;
     	}
+    	return value;
     }
 
     private void openTaskInformationAt(int x, int y) {

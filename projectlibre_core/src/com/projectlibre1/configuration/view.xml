@@ -125,7 +125,7 @@
 				<layout columnGrid="21dlu,3dlu,p:grow" rowGrid="p,p,p,p" border="9px,7px,9px,7px" titleFont="_Default_ BOLD 10" labelFont="_Default_ BOLD 9" valueFont="_Default_ PLAIN 9"/>
 				<layout columnGrid="21dlu,3dlu,p:grow" rowGrid="p,p,p,p" border="8px,10px,8px,10px" titleFont="_Default_ BOLD 10" labelFont="_Default_ BOLD 9" valueFont="_Default_ PLAIN 9"/>
 				<layout columnGrid="21dlu,3dlu,p:grow" rowGrid="p,p,p,p" border="3px,12px,3px,12px" titleFont="_Default_ BOLD 11" labelFont="_Default_ BOLD 9" valueFont="_Default_ PLAIN 9"/>
-				<layout defaultZoom="true" columnGrid="27dlu,3dlu,p:grow" rowGrid="p,p,p,p" border="5px,16px,5px,16px" titleFont="_Default_ BOLD 12" labelFont="_Default_ BOLD 10" valueFont="TimesRoman PLAIN 10"/>
+				<layout defaultZoom="true" columnGrid="27dlu,3dlu,p:grow" rowGrid="p,p,p,p" border="5px,16px,5px,16px" titleFont="_Default_ BOLD 12" labelFont="_Default_ BOLD 10" valueFont="_Default_ PLAIN 10"/>
 				<layout  columnGrid="33dlu,3dlu,p:grow" rowGrid="p,p,p,p" border="8px,21px,8px,21px" titleFont="_Default_ BOLD 15" labelFont="_Default_ BOLD 12" valueFont="_Default_ PLAIN 12"/>
 				<layout  columnGrid="39dlu,3dlu,p:grow" rowGrid="p,p,p,p" border="12px,24px,12px,24px" titleFont="_Default_ BOLD 18" labelFont="_Default_ BOLD 15" valueFont="_Default_ PLAIN 15"/>
 				<box id="nameField" fieldId="Field.name" column="1" row="1" columnSpan="3" rowSpan="1" font="title" />
@@ -277,7 +277,7 @@
 		<format id="Annotation.normal" fieldId="Field.resourceNames">
 			<middle colorName="BLACK" paintName="SOLID" strokeName="SOLID"/>
 		</format>
-		<format id="Annotation.milestone" fieldId="Field.finish">
+		<format id="Annotation.milestone" fieldId="Field.resourceNames">
 			<middle colorName="BLACK" paintName="SOLID" strokeName="SOLID"/>
 		</format>
 
@@ -314,6 +314,9 @@
 				<style id="Styles.Bar.Row.totalSlack" formatId="Bar.totalSlack" formulaClass="com.projectlibre1.scripting.formulas.NormalTaskFormula" active="false"/>
 			<style id="Styles.showLinks" formatId="Link.link1" type="dependency" link="true"/>
 			<style id="Styles.Annotation.normal" formatId="Annotation.normal" formulaClass="com.projectlibre1.scripting.formulas.NormalTaskFormula" annotation="true" />
+			<style id="Styles.Annotation.critical" formatId="Annotation.normal" formulaClass="com.projectlibre1.scripting.formulas.CriticalTaskFormula" annotation="true" />
+			<style id="Styles.Annotation.summary" formatId="Annotation.normal" formulaClass="com.projectlibre1.scripting.formulas.SummaryTaskFormula" annotation="true" />
+			<style id="Styles.Annotation.assignment" formatId="Annotation.normal" formulaClass="com.projectlibre1.scripting.formulas.AssignmentFormula" annotation="true" />
 			<style id="Styles.Annotation.milestone" formatId="Annotation.milestone" formulaClass="com.projectlibre1.scripting.formulas.MilestoneTaskFormula" annotation="true" />
 			<style id="Styles.Calendar.nonWorking" formatId="Calendar.nonWorking" calendar="true" />
 			<style id="Styles.Gantt.showRows" formatId="Grid.showRows" horizontalGrid="true" active="false" />
