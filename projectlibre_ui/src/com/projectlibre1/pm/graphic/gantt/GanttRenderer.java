@@ -255,6 +255,63 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		}
 	}
 
+	private boolean shouldUseModernCapsuleBar(BarFormat format) {
+		if (format == null || format.getId() == null)
+			return false;
+
+		String id = format.getId();
+		return "Bar.task".equals(id) || "Bar.critical".equals(id) || "Bar.assignment".equals(id);
+	}
+
+	private Rectangle2D createCapsuleBarBounds(double x, double y, double width, double height) {
+		double safeWidth = Math.max(1.5d, width);
+		double safeHeight = Math.max(2.0d, height);
+		return new Rectangle2D.Double(x, y - safeHeight / 2.0d, safeWidth, safeHeight);
+	}
+
+	private void paintCapsuleBar(Graphics2D g2, Rectangle2D bounds, Color fillColor, Color accentColor, boolean backgroundLayer) {
+		if (g2 == null || bounds == null)
+			return;
+
+		double arc = Math.min(bounds.getHeight(), bounds.getWidth());
+		RoundRectangle2D outer = new RoundRectangle2D.Double(
+				bounds.getX(),
+				bounds.getY(),
+				bounds.getWidth(),
+				bounds.getHeight(),
+				arc,
+				arc);
+		Paint outerPaint = createBarPaint(fillColor, bounds, backgroundLayer);
+		if (outerPaint instanceof Color)
+			g2.setColor((Color)outerPaint);
+		else
+			g2.setPaint(outerPaint);
+		g2.fill(outer);
+
+		if (!backgroundLayer)
+			return;
+
+		double inset = Math.max(0.75d, bounds.getHeight() * 0.12d);
+		double innerWidth = Math.max(1.0d, bounds.getWidth() - inset * 2.0d);
+		double innerHeight = Math.max(1.0d, bounds.getHeight() - inset * 2.0d);
+		RoundRectangle2D inner = new RoundRectangle2D.Double(
+				bounds.getX() + inset,
+				bounds.getY() + inset,
+				innerWidth,
+				innerHeight,
+				Math.min(innerHeight, innerWidth),
+				Math.min(innerHeight, innerWidth));
+		Paint innerPaint = createBarPaint(fillColor, inner.getBounds2D(), false);
+		if (innerPaint instanceof Color)
+			g2.setColor((Color)innerPaint);
+		else
+			g2.setPaint(innerPaint);
+		g2.fill(inner);
+
+		g2.setColor(accentColor);
+		g2.draw(inner);
+	}
+
 	private Color resolveAnnotationColor(Color fillColor) {
 		return palette.getTextColor(fillColor);
 	}
@@ -359,20 +416,28 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			if (format.getMiddle()!=null){
 				Color statusColor = resolveTaskFillColor(node, format);
 				Color accentColor = resolveAccentColor(node, format, statusColor);
-				Rectangle2D barBounds = new Rectangle2D.Double(x, y - height / 2.0, width, height);
+				Rectangle2D barBounds = createCapsuleBarBounds(x, y, width, height);
 
 				if (g2==null&&format.isMain()){
-					Shape shape=format.getMiddle().toGeneralPath(
-							width,
-							height,
-							x,
-							y,
-							null);
-					Rectangle2D bounds=shape.getBounds2D();
-					node.setGanttShapeOffset(bounds.getY()-y+height/2);
-					node.setGanttShapeHeight(bounds.getHeight());
+					if (shouldUseModernCapsuleBar(format)) {
+						node.setGanttShapeOffset(0.0d);
+						node.setGanttShapeHeight(barBounds.getHeight());
+					} else {
+						Shape shape=format.getMiddle().toGeneralPath(
+								width,
+								height,
+								x,
+								y,
+								null);
+						Rectangle2D bounds=shape.getBounds2D();
+						node.setGanttShapeOffset(bounds.getY()-y+height/2);
+						node.setGanttShapeHeight(bounds.getHeight());
+					}
 				}else if (g2 != null){
-					drawConfiguredShape(format.getMiddle(), g2, width, height, x, y, statusColor, accentColor, barBounds, true);
+					if (shouldUseModernCapsuleBar(format))
+						paintCapsuleBar(g2, barBounds, statusColor, accentColor, true);
+					else
+						drawConfiguredShape(format.getMiddle(), g2, width, height, x, y, statusColor, accentColor, barBounds, true);
 
 					// draw middle before ends
 					if (format.isMain()&&!node.isSummary()&&node.isStarted()){
@@ -383,13 +448,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 								completedW=width;
 							completedW=CoordinatesConverter.adaptSmallBarEndX(x, x+completedW, node,config)-x;
 							double progressHeight = config.getGanttProgressBarHeight();
-							Rectangle2D progressBounds = new Rectangle2D.Double(x,y-progressHeight/2.0,completedW,progressHeight);
-							Paint progressPaint = createBarPaint(statusColor, progressBounds, false);
-							if (progressPaint instanceof Color)
-								g2.setColor((Color)progressPaint);
-							else
-								g2.setPaint(progressPaint);
-							g2.fill(new RoundRectangle2D.Double(x,y-progressHeight/2.0,completedW,progressHeight,progressHeight,progressHeight));
+							Rectangle2D progressBounds = createCapsuleBarBounds(x, y, completedW, progressHeight);
+							paintCapsuleBar(g2, progressBounds, statusColor, accentColor, false);
 						}
 					}
 				}
