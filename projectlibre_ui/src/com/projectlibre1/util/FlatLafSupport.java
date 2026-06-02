@@ -17,6 +17,7 @@ public final class FlatLafSupport {
 	private static boolean initialized;
 	private static final int MS_PROJECT_UI_FONT_SIZE = 12;
 	private static final String MS_PROJECT_FONT = "Segoe UI";
+	private static final String JAPANESE_FONT_SAMPLE = "日本語";
 	private static final String JAPANESE_UI_FONT = "Yu Gothic UI";
 	private static final String LEGACY_JAPANESE_UI_FONT = "Meiryo UI";
 
@@ -58,11 +59,11 @@ public final class FlatLafSupport {
 	private static Font createDefaultFont() {
 		String fontName;
 		if (isWindows()) {
-			fontName = firstAvailable(MS_PROJECT_FONT, JAPANESE_UI_FONT, "Yu Gothic", LEGACY_JAPANESE_UI_FONT, "Meiryo", "SansSerif");
+			fontName = firstDisplayable(JAPANESE_FONT_SAMPLE, JAPANESE_UI_FONT, "Yu Gothic", LEGACY_JAPANESE_UI_FONT, "Meiryo", MS_PROJECT_FONT, "SansSerif");
 		} else if (isMac()) {
-			fontName = firstAvailable("Hiragino Sans", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "SansSerif");
+			fontName = firstDisplayable(JAPANESE_FONT_SAMPLE, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Hiragino Kaku Gothic Pro", "SansSerif");
 		} else if (isLinux()) {
-			fontName = firstAvailable("Noto Sans JP", "Noto Sans CJK JP", "Droid Sans Fallback", "SansSerif");
+			fontName = firstDisplayable(JAPANESE_FONT_SAMPLE, "Noto Sans JP", "Noto Sans CJK JP", "Droid Sans Fallback", "SansSerif");
 		} else {
 			fontName = firstAvailable("SansSerif");
 		}
@@ -118,6 +119,19 @@ public final class FlatLafSupport {
 			}
 		}
 		return candidates.length > 0 ? candidates[candidates.length - 1] : null;
+	}
+
+	private static String firstDisplayable(String sample, String... candidates) {
+		String fallback = firstAvailable(candidates);
+		for (String candidate : candidates) {
+			String family = firstAvailable(candidate);
+			if (family == null)
+				continue;
+			Font font = new Font(family, Font.PLAIN, MS_PROJECT_UI_FONT_SIZE);
+			if (font.canDisplayUpTo(sample) < 0)
+				return family;
+		}
+		return fallback;
 	}
 
 	private static boolean isWindows() {
