@@ -67,11 +67,11 @@ import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
 import com.projectlibre1.configuration.Dictionary;
 import com.projectlibre1.graphic.configuration.BarStyles;
 import com.projectlibre1.graphic.configuration.GraphicConfiguration;
+import com.projectlibre1.util.FlatUiSupport;
 
 public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 	private static final long serialVersionUID = 2314555242629487089L;
 	private static final String DEFAULT_BAR_STYLES = "standard";
-	private static final Font DEFAULT_COLUMN_HEADER_FONT = new Font("Default", Font.PLAIN, 10);
 	protected NodeModelCache cache;
 	protected BarStyles barStyles;
 	protected GraphicConfiguration configuration;
@@ -86,7 +86,7 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 	public GanttParamsImpl(){
 		configuration = GraphicConfiguration.getInstance();
 		barStyles = (BarStyles) Dictionary.get(BarStyles.category, DEFAULT_BAR_STYLES);
-		columnHeaderFont = DEFAULT_COLUMN_HEADER_FONT;
+		columnHeaderFont = FlatUiSupport.uiFont().deriveFont(Font.PLAIN, 10f);
 		routing = new DefaultGanttLinkRouting();
 		rowHeight = configuration.getRowHeight();
 	}

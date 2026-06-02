@@ -101,6 +101,7 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 	private static final String REDO_ACTION = "gantt.redo";
 	private static final int AUTO_SCROLL_START_THRESHOLD = 150;
 	private static final int AUTO_SCROLL_LEFT_PADDING = 50;
+	private static final int BOTTOM_SCROLL_BUFFER_ROWS = 5;
 	private boolean progressLineEnabled = false;
 	public Gantt(Project project,String viewName) {
 		this(new GanttModel(project,viewName),project);
@@ -202,7 +203,7 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 	}
 
 	private void installKeyboardActions() {
-		var inputMap = getInputMap(WHEN_FOCUSED);
+		var inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
 		var actionMap = getActionMap();
 
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK), ZOOM_OUT_ACTION);
@@ -258,16 +259,33 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 
 		var parent = getParent();
 		if (parent instanceof JViewport viewport) {
-			viewport.setViewSize(new Dimension(getDrawingWidth(), viewport.getViewSize().height));
+			int height = getScrollableHeight(viewport.getExtentSize().height);
+			viewport.setViewSize(new Dimension(getDrawingWidth(), height));
+			clampViewportPosition(viewport, height);
 		}
 
-		setPreferredSize(new Dimension(getDrawingWidth(), getPreferredSize().height));
+		setPreferredSize(new Dimension(getDrawingWidth(), getScrollableHeight(getVisibleRect().height)));
 
 		revalidate();
 	}
 
 	private int getDrawingWidth() {
 		return (int) Math.ceil(getCoord().getWidth());
+	}
+
+	public int getScrollableHeight(int viewportHeight) {
+		int rowCount = getCache() == null ? 0 : getCache().getSize();
+		int bufferedRowsHeight = (rowCount + BOTTOM_SCROLL_BUFFER_ROWS) * getRowHeight();
+		return Math.max(viewportHeight, bufferedRowsHeight);
+	}
+
+	public void clampViewportPosition(JViewport viewport, int viewHeight) {
+		Point position = viewport.getViewPosition();
+		int maxY = Math.max(0, viewHeight - viewport.getExtentSize().height);
+		if (position.y > maxY) {
+			position.y = maxY;
+			viewport.setViewPosition(position);
+		}
 	}
 
 	public Rectangle getGanttBounds(){

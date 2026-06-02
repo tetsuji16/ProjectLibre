@@ -203,8 +203,9 @@ public class Environment {
 
 	private static HashMap<Integer, String> fonts=new HashMap<Integer, String>();
 	static{
-		fonts.put(GANTT_ANNOTATIONS_FONT,"TimesRoman BOLD 11");
-		fonts.put(NETWORK_FONT, "TimesRoman");
+		fonts.put(DEFAULT_FONT, "Segoe UI PLAIN 12");
+		fonts.put(GANTT_ANNOTATIONS_FONT,"Segoe UI BOLD 11");
+		fonts.put(NETWORK_FONT, "Segoe UI PLAIN 11");
 	}
 	public static String getFont(int type) {
 		String font=fonts.get(type);

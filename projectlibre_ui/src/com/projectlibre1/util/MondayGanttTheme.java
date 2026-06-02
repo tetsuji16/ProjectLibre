@@ -9,6 +9,7 @@ import java.awt.geom.Rectangle2D;
 import com.projectlibre1.graphic.configuration.BarFormat;
 import com.projectlibre1.pm.assignment.Assignment;
 import com.projectlibre1.pm.scheduling.Schedule;
+import com.projectlibre1.pm.task.TaskSnapshot;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.Task;
 
@@ -23,6 +24,8 @@ public final class MondayGanttTheme {
 	public static final Color WORKING_ON_IT = new Color(0xFDAB3D);
 	public static final Color STUCK = new Color(0xE2445C);
 	public static final Color NOT_STARTED = new Color(0xC4C4C4);
+	public static final Color BASELINE = new Color(0xA1A1A1);
+	public static final Color NO_COMPARISON = new Color(0xE5E5E5);
 	public static final Color GROUP_A = new Color(0x579BFC);
 	public static final Color GROUP_B = new Color(0xA25DDC);
 	public static final Color BACKGROUND = Color.WHITE;
@@ -60,6 +63,10 @@ public final class MondayGanttTheme {
 		if (schedule == null)
 			return GROUP_A;
 
+		Color baselineColor = baselineComparisonColor(schedule, impl);
+		if (baselineColor != null)
+			return baselineColor;
+
 		double percentComplete = clamp(schedule.getPercentComplete());
 		if (percentComplete >= 1.0d)
 			return DONE;
@@ -85,7 +92,7 @@ public final class MondayGanttTheme {
 		if ("Bar.deadline".equals(id))
 			return GROUP_A;
 		if ("Bar.baseline".equals(id) || id.startsWith("Bar.baseline"))
-			return GRID_LINE;
+			return BASELINE;
 		if ("Bar.totalSlack".equals(id))
 			return GROUP_A;
 		if ("Bar.critical".equals(id))
@@ -161,6 +168,29 @@ public final class MondayGanttTheme {
 			return true;
 		long statusDate = statusDateOf(impl);
 		return statusDate > schedule.getEnd();
+	}
+
+	private static Color baselineComparisonColor(Schedule schedule, Object impl) {
+		Task task = taskFrom(impl);
+		if (task == null)
+			return null;
+
+		TaskSnapshot baseline = task.getBaselineSnapshot();
+		if (baseline == null || baseline.getCurrentSchedule() == null)
+			return null;
+
+		long baselineFinish = baseline.getCurrentSchedule().getFinish();
+		if (baselineFinish <= 0L)
+			return NO_COMPARISON;
+		return schedule.getEnd() > baselineFinish ? STUCK : DONE;
+	}
+
+	private static Task taskFrom(Object impl) {
+		if (impl instanceof Task)
+			return (Task)impl;
+		if (impl instanceof Assignment)
+			return ((Assignment)impl).getTask();
+		return null;
 	}
 
 	private static boolean isCritical(Object impl) {

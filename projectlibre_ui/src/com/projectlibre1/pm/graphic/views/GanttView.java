@@ -176,7 +176,11 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 //				Dimension dr=rightScrollPane.getViewport().getViewSize();
 //				((Gantt)rightScrollPane.getViewport().getView()).setPreferredSize(new Dimension((int)dr.getWidth(),(int)dl.getHeight()));
 //				rightScrollPane.getViewport().revalidate();
-				((Gantt) rightScrollPane.getViewport().getView()).setPreferredSize(new Dimension(rightScrollPane.getViewport().getViewSize().width, dl.height));
+				Gantt ganttView = (Gantt) rightScrollPane.getViewport().getView();
+				int height = Math.min(dl.height, ganttView.getScrollableHeight(rightScrollPane.getViewport().getExtentSize().height));
+				ganttView.setPreferredSize(new Dimension(rightScrollPane.getViewport().getViewSize().width, height));
+				ganttView.clampViewportPosition(rightScrollPane.getViewport(), height);
+				rightScrollPane.getViewport().revalidate();
 			}
 		});
 

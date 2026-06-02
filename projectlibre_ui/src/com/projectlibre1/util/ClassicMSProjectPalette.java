@@ -109,6 +109,11 @@ public class ClassicMSProjectPalette implements GanttColorPalette {
     }
 
     @Override
+    public Color getBaselineBarColor() {
+        return new Color(0xA1A1A1);
+    }
+
+    @Override
     public Color getExternalLinkColor() {
         return Color.GRAY;
     }

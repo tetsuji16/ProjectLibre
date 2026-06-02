@@ -80,6 +80,7 @@ import com.projectlibre1.workspace.WorkspaceSetting;
  */
 public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, SavableToWorkspace {
 	private static final long serialVersionUID = -6608484720122760191L;
+	private static final int HORIZONTAL_SCROLL_SPEED_MULTIPLIER = 2;
 	protected TimeScaleComponent timeScaleComponent;
 	protected CoordinatesConverter coord;
 	protected ScaledComponent main;
@@ -100,7 +101,7 @@ public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, 
 		createLayout();
 		coord.addTimeScaleListener(this);
 		this.getVerticalScrollBar().setUnitIncrement(verticalIncrement);
-		this.getHorizontalScrollBar().setUnitIncrement(coord.getTimescaleManager().getMinWidth());
+		updateHorizontalScrollIncrement();
 		
 	}
 
@@ -146,7 +147,11 @@ public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, 
 	
 	public void timeScaleChanged(TimeScaleEvent e) {
 		timeScaleComponent.repaint();
-		this.getHorizontalScrollBar().setUnitIncrement(coord.getTimescaleManager().getMinWidth());
+		updateHorizontalScrollIncrement();
+	}
+
+	private void updateHorizontalScrollIncrement() {
+		this.getHorizontalScrollBar().setUnitIncrement(coord.getTimescaleManager().getMinWidth() * HORIZONTAL_SCROLL_SPEED_MULTIPLIER);
 	}
 	
 	private Dimension olddmain=null;
