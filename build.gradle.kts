@@ -83,6 +83,7 @@ val windowsReleaseRoot = layout.buildDirectory.dir("releases/$releaseLabel")
 val windowsJpackageInput = windowsReleaseRoot.map { it.dir("jpackage-input") }
 val windowsAppImageDir = windowsReleaseRoot.map { it.dir("app-image") }
 val windowsMsiDir = windowsReleaseRoot.map { it.dir("msi") }
+val windowsExeDir = windowsReleaseRoot.map { it.dir("exe") }
 val docsDownloadsDir = layout.projectDirectory.dir("docs/downloads")
 val jpackageJavaHomeProvider = providers.environmentVariable("JAVA_HOME")
     .orElse("C:\\Program Files\\Java\\jdk-26.0.1")
@@ -92,7 +93,7 @@ tasks.register<Sync>("prepareWindowsReleaseInput") {
     description = "Prepares jpackage input files from the Gradle installDist output."
     dependsOn(":projectlibre_ui:installDist")
 
-    val installLibDir = layout.projectDirectory.dir("projectlibre_ui/build/install/projectlibre_ui/lib")
+    val installLibDir = project(":projectlibre_ui").layout.buildDirectory.dir("install/projectlibre_ui/lib")
     val iconFile = layout.projectDirectory.file("projectlibre_build/resources/wix/msi_images/projectlibre.ico")
     val licenseFile = layout.projectDirectory.file("projectlibre_build/license/license.txt")
 
@@ -200,6 +201,39 @@ tasks.register<Exec>("packageWindowsMsi") {
     }
 }
 
+tasks.register<Exec>("packageWindowsExe") {
+    group = "distribution"
+    description = "Builds the Windows self-contained EXE for the current Gradle version."
+    dependsOn("prepareWindowsReleaseInput")
+    onlyIf { System.getProperty("os.name").startsWith("Windows", ignoreCase = true) }
+
+    doFirst {
+        delete(windowsExeDir)
+        windowsExeDir.get().asFile.mkdirs()
+        val inputDir = windowsJpackageInput.get().asFile
+        val javaHome = jpackageJavaHomeProvider.get()
+        val wixBin = File(System.getProperty("user.home"), "AppData/Local/Programs/WiX Toolset v7.0/bin")
+        environment("PATH", wixBin.absolutePath + File.pathSeparator + System.getenv("PATH"))
+        commandLine(
+            File(javaHome, "bin/jpackage.exe").absolutePath,
+            "--type", "exe",
+            "--name", "ProjectLibre",
+            "--app-version", releaseVersion,
+            "--input", inputDir.absolutePath,
+            "--main-jar", "projectlibre_ui.jar",
+            "--main-class", "com.projectlibre1.main.Main",
+            "--icon", File(inputDir, "projectlibre.ico").absolutePath,
+            "--license-file", File(inputDir, "license.txt").absolutePath,
+            "--add-modules", "java.compiler,java.datatransfer,java.desktop,java.logging,java.naming,java.prefs,java.sql,java.xml,jdk.charsets",
+            "--win-menu",
+            "--win-shortcut",
+            "--win-dir-chooser",
+            "--verbose",
+            "--dest", windowsExeDir.get().asFile.absolutePath
+        )
+    }
+}
+
 tasks.register<Zip>("packageWindowsZip") {
     group = "distribution"
     description = "Archives the Windows app-image as a downloadable ZIP."
@@ -223,8 +257,77 @@ tasks.register<Copy>("publishWindowsMsiToDocs") {
     into(docsDownloadsDir)
 }
 
+tasks.register("publishSplitExeToDocs") {
+    group = "distribution"
+    description = "Splits the self-contained Windows EXE into GitHub-safe download parts and publishes them into docs/downloads."
+    dependsOn("packageWindowsExe")
+
+    doLast {
+        val exeFile = windowsExeDir.get().file("ProjectLibre-$releaseVersion.exe").asFile
+        val downloadsDir = docsDownloadsDir.asFile
+        val partSize = 95L * 1024L * 1024L
+        val baseName = "ProjectLibre-$releaseVersion.exe"
+        val partPrefix = File(downloadsDir, baseName)
+
+        downloadsDir.mkdirs()
+        downloadsDir.listFiles()
+            ?.filter { it.name.startsWith("$baseName.part") || it.name == "rebuild-$baseName.bat" }
+            ?.forEach { it.delete() }
+
+        exeFile.inputStream().buffered().use { input ->
+            var partIndex = 1
+            while (true) {
+                val partFile = File(downloadsDir, "$baseName.part$partIndex")
+                partFile.outputStream().buffered().use { output ->
+                    var written = 0L
+                    val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                    while (written < partSize) {
+                        val maxRead = minOf(buffer.size.toLong(), partSize - written).toInt()
+                        val read = input.read(buffer, 0, maxRead)
+                        if (read <= 0) {
+                            break
+                        }
+                        output.write(buffer, 0, read)
+                        written += read
+                    }
+                    if (written == 0L) {
+                        partFile.delete()
+                        return@use
+                    }
+                }
+                if (!partFile.exists()) {
+                    break
+                }
+                partIndex++
+            }
+        }
+
+        val rebuildScript = File(downloadsDir, "rebuild-$baseName.bat")
+        rebuildScript.writeText(
+            """
+            @echo off
+            setlocal
+            set "TARGET=%~dp0$baseName"
+            if not exist "%~dp0$baseName.part1" (
+                echo Missing $baseName.part1
+                exit /b 1
+            )
+            if not exist "%~dp0$baseName.part2" (
+                echo Missing $baseName.part2
+                exit /b 1
+            )
+            copy /b "%~dp0$baseName.part1"+"%~dp0$baseName.part2" "%TARGET%" >nul
+            if errorlevel 1 exit /b 1
+            echo Created %TARGET%
+            endlocal
+            """.trimIndent().replace("\n", System.lineSeparator()),
+            Charsets.UTF_8
+        )
+    }
+}
+
 tasks.register("publishReleaseToDocs") {
     group = "distribution"
-    description = "Builds the Windows release artifacts and publishes them into docs/downloads."
-    dependsOn("packageWindowsZip", "publishWindowsMsiToDocs")
+    description = "Builds the Windows self-contained EXE and publishes split download parts into docs/downloads."
+    dependsOn("publishSplitExeToDocs")
 }
