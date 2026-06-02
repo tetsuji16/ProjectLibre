@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "com.projectlibre"
-version = "0.0.2"
+version = "0.0.3"
 
 subprojects {
     apply(plugin = "java-library")
@@ -187,6 +187,7 @@ tasks.register<Exec>("packageWindowsMsi") {
             "--icon", File(inputDir, "projectlibre.ico").absolutePath,
             "--license-file", File(inputDir, "license.txt").absolutePath,
             "--add-modules", "java.compiler,java.datatransfer,java.desktop,java.logging,java.naming,java.prefs,java.sql,java.xml,jdk.charsets",
+            "--jlink-options", "--strip-native-commands --strip-debug --no-man-pages --no-header-files --compress zip-9",
             "--dest", windowsMsiDir.get().asFile.absolutePath,
             "--file-associations", File(inputDir, "mpp.properties").absolutePath,
             "--file-associations", File(inputDir, "pod.properties").absolutePath,
