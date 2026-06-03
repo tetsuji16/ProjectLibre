@@ -59,6 +59,7 @@ import junit.framework.TestCase;
 
 import com.projectlibre1.exchange.MicrosoftImporter;
 import com.projectlibre1.job.Job;
+import com.projectlibre1.job.JobQueue;
 import com.projectlibre1.pm.task.ProjectFactory;
 import com.projectlibre1.session.SessionFactory;
 
@@ -78,6 +79,7 @@ public class MicrosoftImporterTest extends TestCase {
 	
 
 	public void testMppImport() throws Exception {
+		SessionFactory.getInstance().setJobQueue(new JobQueue("test", false));
 		MicrosoftImporter importer = new MicrosoftImporter();
 		importer.setFileName(mppFileName);
 		importer.setProject(ProjectFactory.getInstance().createProject());

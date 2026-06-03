@@ -379,7 +379,14 @@ public class LocalFileImporter extends FileImporter {
 				bout.write(PROJECT_LIBRE_FILE_SEPARATOR.getBytes());
 				bout.flush();
 				FileImporter importer=LocalSession.getImporter("com.projectlibre1.exchange.MicrosoftImporter");
-				importer.saveProject(project, bout);
+				String previousFileName = importer.getFileName();
+				try {
+					// POD stores a serialized ProjectLibre payload followed by embedded MSPDI XML.
+					importer.setFileName(name + ".xml");
+					importer.saveProject(project, bout);
+				} finally {
+					importer.setFileName(previousFileName);
+				}
 				bout.flush();
 				
 			}catch (Exception e) {

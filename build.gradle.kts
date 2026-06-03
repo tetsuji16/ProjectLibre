@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "com.projectlibre"
-version = "0.0.4"
+version = "0.0.5"
 
 subprojects {
     apply(plugin = "java-library")

@@ -3,6 +3,8 @@ package test.com.projectlibre1.collaboration;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -13,7 +15,6 @@ import javax.swing.SwingUtilities;
 
 import junit.framework.TestCase;
 import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Resource;
 import net.sf.mpxj.Task;
 import net.sf.mpxj.writer.ProjectWriter;
 import net.sf.mpxj.writer.ProjectWriterUtility;
@@ -24,6 +25,7 @@ import com.projectlibre1.collaboration.ProjectMergeService;
 import com.projectlibre1.collaboration.TaskLockManager;
 import com.projectlibre1.exchange.LocalFileImporter;
 import com.projectlibre1.pm.task.Project;
+import com.projectlibre1.workspace.WorkspaceSetting;
 
 public class CollaborationConflictTest extends TestCase {
 	public void testOwnHeartbeatDoesNotTriggerExternalWarning() throws Exception {
@@ -229,6 +231,29 @@ public class CollaborationConflictTest extends TestCase {
 		assertBackgroundRefreshUpdatesOnlyUnlockedExistingTasks("pod");
 	}
 
+	public void testPodCollaborationMetadataNeverChangesPodBytes() throws Exception {
+		File podFile = createPodFile("Baseline Task", "Unchanged Task");
+		byte[] before = Files.readAllBytes(podFile.toPath());
+		long lastModified = podFile.lastModified();
+		File sidecar = CollaborationMetadataStore.buildSidecarFile(podFile);
+		if (sidecar.exists()) {
+			assertTrue(sidecar.delete());
+		}
+
+		CollaborationSession session = new CollaborationSession(null, podFile.getAbsolutePath(), "alice");
+		invokePrivate(session, "registerUser");
+		TaskLockManager lockManager = (TaskLockManager) readField(session, "lockManager");
+		assertTrue(lockManager.acquire(1L));
+		lockManager.release(1L);
+		session.saveWorkspace(new TestWorkspaceSetting("gantt"));
+
+		byte[] after = Files.readAllBytes(podFile.toPath());
+		assertTrue("Collaboration must store metadata in the sidecar, not mutate the POD file.", Arrays.equals(before, after));
+		assertEquals(lastModified, podFile.lastModified());
+		assertTrue(sidecar.exists());
+		assertTrue(sidecar.length() > 0L);
+	}
+
 	private void assertBackgroundRefreshUpdatesOnlyUnlockedExistingTasks(String extension) throws Exception {
 		File original = createProjectFile(extension, "Baseline Task", "Unchanged Task");
 		File changed = createProjectFile(extension, "Renamed Task", "Externally Changed Task");
@@ -287,10 +312,6 @@ public class CollaborationConflictTest extends TestCase {
 		second.setName(secondTaskName);
 		second.setUniqueID(Integer.valueOf(2));
 
-		Resource resource = project.addResource();
-		resource.setName("Analyst");
-		first.addResourceAssignment(resource);
-
 		ProjectWriter writer = ProjectWriterUtility.getProjectWriter(file.getAbsolutePath());
 		writer.write(project, file);
 		return file;
@@ -318,5 +339,14 @@ public class CollaborationConflictTest extends TestCase {
 		Field field = target.getClass().getDeclaredField(fieldName);
 		field.setAccessible(true);
 		field.setLong(target, value);
+	}
+
+	private static final class TestWorkspaceSetting implements WorkspaceSetting {
+		private static final long serialVersionUID = 1L;
+		private final String viewName;
+
+		private TestWorkspaceSetting(String viewName) {
+			this.viewName = viewName;
+		}
 	}
 }
