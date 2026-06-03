@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.TestCase;
 import net.sf.mpxj.ProjectFile;
@@ -16,6 +18,7 @@ import net.sf.mpxj.writer.ProjectWriterUtility;
 
 import com.projectlibre1.collaboration.ProjectMergeService;
 import com.projectlibre1.exchange.MicrosoftImporter;
+import com.projectlibre1.pm.task.NormalTask;
 import com.projectlibre.core.pm.exchange.MspImporter;
 import com.projectlibre1.collaboration.CollaborationMetadataStore;
 import com.projectlibre1.session.FileHelper;
@@ -98,6 +101,7 @@ public class XlsxSupportTest extends TestCase {
 		assertNotNull(project);
 		int taskCount = project.getTasks().size();
 		assertTrue(taskCount > 0);
+		Map<Long, TaskSnapshot> originalTasks = snapshotsById(project);
 
 		File tempFile = File.createTempFile("commercial-construction", ".xlsx");
 		tempFile.deleteOnExit();
@@ -115,6 +119,51 @@ public class XlsxSupportTest extends TestCase {
 		com.projectlibre1.pm.task.Project reloaded = mergeService.loadExternalProject(tempFile.getAbsolutePath());
 		assertNotNull(reloaded);
 		assertEquals(taskCount, reloaded.getTasks().size());
+
+		Map<Long, TaskSnapshot> reloadedTasks = snapshotsById(reloaded);
+		assertEquals(originalTasks.size(), reloadedTasks.size());
+		boolean checkedProgress = false;
+		boolean checkedMultiDayDuration = false;
+		for (Map.Entry<Long, TaskSnapshot> entry : originalTasks.entrySet()) {
+			TaskSnapshot original = entry.getValue();
+			TaskSnapshot imported = reloadedTasks.get(entry.getKey());
+			assertNotNull(imported);
+			assertEquals(original.name, imported.name);
+			assertEquals(original.duration, imported.duration);
+			assertEquals(original.percentComplete, imported.percentComplete, 0.0001);
+			if (original.percentComplete > 0.0D) {
+				checkedProgress = true;
+			}
+			if (original.duration > 8L * 60L * 60L * 1000L) {
+				checkedMultiDayDuration = true;
+			}
+		}
+		assertTrue(checkedProgress);
+		assertTrue(checkedMultiDayDuration);
+	}
+
+	private Map<Long, TaskSnapshot> snapshotsById(com.projectlibre1.pm.task.Project project) {
+		Map<Long, TaskSnapshot> tasks = new HashMap<Long, TaskSnapshot>();
+		for (Object value : project.getTasks()) {
+			if (!(value instanceof NormalTask)) {
+				continue;
+			}
+			NormalTask task = (NormalTask) value;
+			tasks.put(Long.valueOf(task.getId()), new TaskSnapshot(task.getName(), task.getDurationMillis(), task.getPercentComplete()));
+		}
+		return tasks;
+	}
+
+	private static class TaskSnapshot {
+		private final String name;
+		private final long duration;
+		private final double percentComplete;
+
+		private TaskSnapshot(String name, long duration, double percentComplete) {
+			this.name = name;
+			this.duration = duration;
+			this.percentComplete = percentComplete;
+		}
 	}
 
 	public void testMspImporterTreatsXmlContentWithXlsxExtensionAsXml() throws Exception {

@@ -126,8 +126,6 @@ public class MPXConverter {
 	}
 
 	public static void toMPXProject(Project project,ProjectProperties projectHeader) {
-		WorkCalendar baseCalendar=project.getBaseCalendar();
-		projectHeader.setDefaultCalendarName(baseCalendar.getName()); // use unique id for name - this is a hack
 		projectHeader.setName(project.getName());
 		projectHeader.setProjectTitle(project.getName()); //TODO separate title and name
 		projectHeader.setComments(project.getNotes());

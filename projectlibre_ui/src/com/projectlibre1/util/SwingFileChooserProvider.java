@@ -106,17 +106,7 @@ public final class SwingFileChooserProvider implements UiServices.FileChooserPro
 		String fileName = file.toString();
 		FileFilter currentFilter = chooser.getFileFilter();
 		if (save) {
-			if (currentFilter == microsoftXMLFilter) {
-				if (!fileName.endsWith(".xml")) {
-					fileName += ".xml";
-				}
-			} else if (currentFilter == microsoftXlsxFilter) {
-				if (!fileName.endsWith(".xlsx")) {
-					fileName += ".xlsx";
-				}
-			} else if (!fileName.endsWith("." + DEFAULT_FILE_EXTENSION)) {
-				fileName += "." + DEFAULT_FILE_EXTENSION;
-			}
+			fileName = normalizeSelectedSaveFileName(fileName, currentFilter);
 		}
 		Preferences.userNodeForPackage(FileHelper.class).put("lastDirectory", file.getParent());
 		return fileName;
@@ -215,6 +205,31 @@ public final class SwingFileChooserProvider implements UiServices.FileChooserPro
 			return changeFileExtension(baseFileName, DEFAULT_FILE_EXTENSION);
 		}
 		return baseFileName;
+	}
+
+	private String normalizeSelectedSaveFileName(String fileName, FileFilter filter) {
+		String extension = getSaveExtension(filter);
+		if (extension == null) {
+			return FileHelper.isFileNameAllowed(fileName, true) ? fileName : changeFileExtension(fileName, DEFAULT_FILE_EXTENSION);
+		}
+		String currentExtension = FileHelper.getFileExtension(fileName);
+		if (extension.equals(currentExtension)) {
+			return fileName;
+		}
+		return changeFileExtension(fileName, extension);
+	}
+
+	private String getSaveExtension(FileFilter filter) {
+		if (filter == microsoftXlsxFilter) {
+			return "xlsx";
+		}
+		if (filter == microsoftXMLFilter) {
+			return "xml";
+		}
+		if (filter == projectlibreFilter) {
+			return DEFAULT_FILE_EXTENSION;
+		}
+		return null;
 	}
 
 	private String changeFileExtension(String fileName, String extension) {

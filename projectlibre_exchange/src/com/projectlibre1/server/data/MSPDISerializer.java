@@ -78,6 +78,7 @@ import com.projectlibre1.job.JobRunnable;
 import com.projectlibre1.options.CalendarOption;
 import com.projectlibre1.pm.assignment.Assignment;
 import com.projectlibre1.pm.calendar.CalendarService;
+import com.projectlibre1.pm.calendar.WorkCalendar;
 import com.projectlibre1.pm.calendar.WorkingCalendar;
 import com.projectlibre1.pm.dependency.Dependency;
 import com.projectlibre1.pm.key.uniqueid.UniqueIdException;
@@ -267,7 +268,7 @@ public class MSPDISerializer implements ProjectSerializer {
         
 		MPXConverter.toMPXOptions(projectHeader);
 
-        MPXConverter.toMPXProject(project,projectHeader);
+		MPXConverter.toMPXProject(project,projectHeader);
         if (job!=null) job.setProgress(0.2f);
         
         //calendars
@@ -286,6 +287,7 @@ public class MSPDISerializer implements ProjectSerializer {
 			MPXConverter.toMpxCalendar(workCalendar,cal);
 			ImportedCalendarService.getInstance().addExportedCalendar(cal,workCalendar);
 		}
+		setDefaultCalendar(project, projectHeader);
         if (job!=null) job.setProgress(0.3f);
         
         //resources
@@ -299,6 +301,17 @@ public class MSPDISerializer implements ProjectSerializer {
         return projectData;
         
     }
+
+	private void setDefaultCalendar(Project project, ProjectProperties projectHeader) {
+		WorkCalendar baseCalendar = project.getBaseCalendar();
+		if (baseCalendar == null) {
+			return;
+		}
+		ProjectCalendar exportedCalendar = ImportedCalendarService.getInstance().findExportedCalendar(baseCalendar);
+		if (exportedCalendar != null) {
+			projectHeader.setDefaultCalendarName(exportedCalendar.getName());
+		}
+	}
     
 
     

@@ -2,7 +2,9 @@ package net.sf.mpxj.projectlibre;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -13,6 +15,7 @@ import net.sf.mpxj.MPXJException;
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Resource;
 import net.sf.mpxj.Task;
+import net.sf.mpxj.mspdi.MSPDIReader;
 import net.sf.mpxj.reader.AbstractProjectReader;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -22,6 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ProjectLibreXlsxReader extends AbstractProjectReader {
 	private static final String TASKS_SHEET = "Tasks";
+	private static final String EMBEDDED_MSPDI_SHEET = "_ProjectLibre_MSPDI";
 
 	public ProjectFile read(String fileName) throws MPXJException {
 		return read(new File(fileName));
@@ -52,6 +56,11 @@ public class ProjectLibreXlsxReader extends AbstractProjectReader {
 		try {
 			XSSFWorkbook workbook = new XSSFWorkbook(in);
 			try {
+				ProjectFile embeddedProject = readEmbeddedMspdi(workbook);
+				if (embeddedProject != null) {
+					addListenersToProject(embeddedProject);
+					return embeddedProject;
+				}
 				ProjectFile project = new ProjectFile();
 				project.addDefaultBaseCalendar();
 				Map<String, Resource> resources = new LinkedHashMap<String, Resource>();
@@ -80,6 +89,27 @@ public class ProjectLibreXlsxReader extends AbstractProjectReader {
 
 	public List<ProjectFile> readAll(InputStream in) throws MPXJException {
 		return Collections.singletonList(read(in));
+	}
+
+	private ProjectFile readEmbeddedMspdi(XSSFWorkbook workbook) throws Exception {
+		Sheet sheet = workbook.getSheet(EMBEDDED_MSPDI_SHEET);
+		if (sheet == null) {
+			return null;
+		}
+		StringBuilder xml = new StringBuilder();
+		for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
+			Row row = sheet.getRow(rowIndex);
+			if (row == null) {
+				continue;
+			}
+			xml.append(stringCell(row, 0));
+		}
+		String source = xml.toString();
+		if (source.length() == 0) {
+			return null;
+		}
+		ByteArrayInputStream in = new ByteArrayInputStream(source.getBytes(StandardCharsets.UTF_8));
+		return new MSPDIReader().read(in);
 	}
 
 	private void readTask(ProjectFile project, Map<String, Resource> resources, Row row) {
