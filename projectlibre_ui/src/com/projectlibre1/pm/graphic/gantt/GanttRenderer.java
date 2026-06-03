@@ -545,9 +545,23 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			double x1=coord.toX(node.getEnd());
 			x1=CoordinatesConverter.adaptSmallBarEndX(x0,x1,node,config);
 
-			int x=(int)Math.ceil(x1)+config.getGanttBarAnnotationXOffset();
 			int w=fontMetrics.stringWidth(s);//config.getGanttBarAnnotationMaxWidth();
 			int h=config.getGanttBarHeight();
+			int annotationOffset = config.getGanttBarAnnotationXOffset();
+			int preferredRightX=(int)Math.ceil(x1)+annotationOffset;
+			int preferredLeftX=(int)Math.floor(x0)-annotationOffset-w;
+			Rectangle clipBounds = g2.getClipBounds();
+			if (clipBounds == null)
+				clipBounds = ((GanttParams)graphInfo).getGanttBounds();
+			int minX = clipBounds.x + 4;
+			int maxX = clipBounds.x + clipBounds.width - w - 4;
+			int x = preferredRightX;
+			if (x > maxX && preferredLeftX >= minX)
+				x = preferredLeftX;
+			if (maxX < minX)
+				x = minX;
+			else if (x < minX || x > maxX)
+				x = Math.max(minX, Math.min(x, maxX));
 
 			if (container==null){
 		    	component.setDoubleBuffered(false);

@@ -58,60 +58,67 @@ If `JAVA_HOME` is not set, the Gradle release tasks fall back to `C:\Program Fil
 
 ## Build System Status
 
-- `ant` is the supported build and release entrypoint for the desktop packaging flow in this repository
-- `projectlibre_build/build.xml` drives compile, dist, fatjar, and Windows `jpackage` packaging
-- `projectlibre_build` also contains the packaging assets, icons, notices, and Windows file-association metadata used for release builds
+- `Gradle` is the supported build and release entrypoint for this repository
+- `build.gradle.kts` drives module compilation, installable app layout generation, and Windows `jpackage` packaging
+- `projectlibre_build` remains the source of packaging assets, icons, notices, and Windows file-association metadata consumed by the Gradle tasks
+- `projectlibre_build/build.xml` is retained only as a legacy compatibility path and should not be used for normal day-to-day builds or releases
 - Keep `projectlibre_contrib` jars lean when updating dependencies so the packaged app size does not grow unnecessarily
 
 ## Build The App
 
-Compile every module and assemble the desktop distribution artifacts:
+Compile every module and assemble the desktop application layout:
 
 ```powershell
-ant -f projectlibre_build\build.xml compile
-ant -f projectlibre_build\build.xml dist
+.\gradlew.bat build
 ```
 
-Create the runnable single-jar package:
+Create the runnable installed app layout:
 
 ```powershell
-ant -f projectlibre_build\build.xml fatjar
+.\gradlew.bat stageAppDist
 ```
 
-Key Ant entrypoints:
+Key Gradle entrypoints:
 
-- `ant -f projectlibre_build\build.xml compile`: compile all production modules against Java 21 bytecode
-- `ant -f projectlibre_build\build.xml dist`: build `projectlibre.jar` plus the trimmed contrib jars
-- `ant -f projectlibre_build\build.xml fatjar`: create `projectlibre_build\packages\projectlibre-<version>.jar`
-- `ant -f projectlibre_build\build.xml jpackage-msi`: prepare the Windows MSI packaging input directory
-- `powershell -ExecutionPolicy Bypass -File projectlibre_build\packages\jpackage-msi\make.ps1 -PackageType msi -OutputDir app`: emit the Windows MSI
+- `.\gradlew.bat projects`: show the multi-project layout
+- `.\gradlew.bat build`: compile the production modules and assemble per-module jars
+- `.\gradlew.bat stageAppDist`: create the installed desktop app layout from `:projectlibre_ui:installDist`
+- `.\gradlew.bat packageWindowsAppImage`: build a Windows app-image with `jpackage`
+- `.\gradlew.bat packageWindowsMsi`: build the Windows MSI
+- `.\gradlew.bat packageWindowsExe`: build the Windows self-contained EXE
+- `.\gradlew.bat publishReleaseToDocs`: publish the split EXE artifacts into local `docs/downloads` scratch space when needed
 
 The runnable application layout is generated under:
 
-- `projectlibre_build\dist`
+- `projectlibre_ui\build\install\projectlibre_ui`
 
-The packaged jars are generated under:
+The root release work area is generated under:
 
-- `projectlibre_build\packages`
+- `build\releases\v<version>\`
 
 ## Build The Windows Release
 
 Build the Windows release artifacts and stage them locally:
 
 ```powershell
-ant -f projectlibre_build\build.xml dist
-ant -f projectlibre_build\build.xml fatjar
-ant -f projectlibre_build\build.xml jpackage-msi
-powershell -ExecutionPolicy Bypass -File projectlibre_build\packages\jpackage-msi\make.ps1 -PackageType msi -OutputDir app
+.\gradlew.bat packageWindowsMsi
 ```
 
-This release flow stages the Windows packaging input under:
+The Gradle Windows release flow stages the packaging input under:
 
-- `projectlibre_build\packages\jpackage-msi\source\`
+- `build\releases\v0.0.4\jpackage-input\`
 
 The local MSI output is generated under:
 
-- `projectlibre_build\packages\jpackage-msi\app\ProjectLibre-0.0.4.msi`
+- `build\releases\v0.0.4\msi\ProjectLibre-0.0.4.msi`
+
+If you need the portable app-image ZIP or split EXE staging flow, use:
+
+```powershell
+.\gradlew.bat packageWindowsAppImage
+.\gradlew.bat packageWindowsZip
+.\gradlew.bat publishReleaseToDocs
+```
 
 Files under `docs/downloads/` are treated as scratch space only and should not be committed. Public downloads should be published as GitHub Release assets for `v0.0.4`, and the GitHub Pages site should link to that release page instead of serving binaries from the repository itself.
 
@@ -119,11 +126,17 @@ The GitHub Pages landing page for this release is:
 
 - `docs/index.html`
 
-If WiX was installed per-user rather than system-wide, keep its `bin` directory available on `PATH`. The Gradle MSI task prepends the common per-user install path automatically:
+If WiX was installed per-user rather than system-wide, keep its `bin` directory available on `PATH`. The Gradle MSI task also prepends the common per-user install path automatically:
 
 ```text
 %LOCALAPPDATA%\Programs\WiX Toolset v7.0\bin
 ```
+
+## Legacy Ant Compatibility
+
+- `projectlibre_build/build.xml` still exists for compatibility with older local workflows
+- It is not the primary release path anymore
+- New build and release fixes should target the Gradle flow first
 
 ## Screenshot Procedure Used In This Repository
 
@@ -136,11 +149,10 @@ The README screenshot is intentionally captured so that only the application UI 
 
 ## Quick Verification
 
-- `ant -f projectlibre_build\build.xml compile`: all production modules compile successfully
-- `ant -f projectlibre_build\build.xml dist`: runtime jars are rebuilt successfully
-- `ant -f projectlibre_build\build.xml fatjar`: the runnable jar is generated
-- `ant -f projectlibre_build\build.xml jpackage-msi`: Windows packaging input is rebuilt
-- `powershell -ExecutionPolicy Bypass -File projectlibre_build\packages\jpackage-msi\make.ps1 -PackageType msi -OutputDir app`: the MSI is emitted successfully
+- `.\gradlew.bat projects`: the multi-project Gradle layout resolves
+- `.\gradlew.bat build`: all production modules compile successfully
+- `.\gradlew.bat stageAppDist`: the runnable desktop layout is generated
+- `.\gradlew.bat packageWindowsMsi`: the MSI is emitted successfully
 
 ## License
 
