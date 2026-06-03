@@ -14,6 +14,8 @@ import net.sf.mpxj.Task;
 import net.sf.mpxj.writer.ProjectWriter;
 import net.sf.mpxj.writer.ProjectWriterUtility;
 
+import com.projectlibre1.collaboration.ProjectMergeService;
+import com.projectlibre1.exchange.MicrosoftImporter;
 import com.projectlibre.core.pm.exchange.MspImporter;
 import com.projectlibre1.collaboration.CollaborationMetadataStore;
 import com.projectlibre1.session.FileHelper;
@@ -82,6 +84,37 @@ public class XlsxSupportTest extends TestCase {
 		});
 
 		assertNotNull(imported);
+	}
+
+	public void testCommercialConstructionPodExportsAndReloadsAsXlsx() throws Exception {
+		File sample = new File("sample data/Commercial construction project plan.pod");
+		if (!sample.exists()) {
+			sample = new File("../sample data/Commercial construction project plan.pod");
+		}
+		assertTrue(sample.exists());
+
+		ProjectMergeService mergeService = new ProjectMergeService();
+		com.projectlibre1.pm.task.Project project = mergeService.loadExternalProject(sample.getAbsolutePath());
+		assertNotNull(project);
+		int taskCount = project.getTasks().size();
+		assertTrue(taskCount > 0);
+
+		File tempFile = File.createTempFile("commercial-construction", ".xlsx");
+		tempFile.deleteOnExit();
+
+		MicrosoftImporter exporter = new MicrosoftImporter();
+		exporter.setFileName(tempFile.getAbsolutePath());
+		FileOutputStream out = new FileOutputStream(tempFile);
+		try {
+			assertTrue(exporter.saveProject(project, out));
+		} finally {
+			out.close();
+		}
+
+		assertTrue(tempFile.length() > 0);
+		com.projectlibre1.pm.task.Project reloaded = mergeService.loadExternalProject(tempFile.getAbsolutePath());
+		assertNotNull(reloaded);
+		assertEquals(taskCount, reloaded.getTasks().size());
 	}
 
 	public void testMspImporterTreatsXmlContentWithXlsxExtensionAsXml() throws Exception {

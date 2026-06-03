@@ -114,6 +114,7 @@ import com.projectlibre1.util.Environment;
 
 import net.sf.mpxj.writer.ProjectWriter;
 import net.sf.mpxj.writer.ProjectWriterUtility;
+import net.sf.mpxj.projectlibre.ProjectLibreXlsxWriter;
 /**
  * This class is based on the project mpxj http://www.tapsterrock.com/mpxj/
  * The enumerated types in projectlibre currently correspond exactly to the types in mpx, so there is no need to convert them.
@@ -431,6 +432,10 @@ public class MicrosoftImporter extends ServerFileImporter{
 
 	private boolean saveProject(Project project, OutputStream out, String targetFileName) throws Exception {
 		String extension = getFileExtension(targetFileName);
+		if ("xlsx".equals(extension)) {
+			new ProjectLibreXlsxWriter().writeProjectLibreProject(project, out);
+			return true;
+		}
 		MSPDISerializer serializer = new MSPDISerializer();
 		if ("xml".equals(extension) || extension.length() == 0) {
 			return serializer.saveProject(project, out);
