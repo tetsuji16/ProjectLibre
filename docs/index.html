@@ -3,199 +3,343 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ProjectLibre 0.0.4 Download</title>
+  <title>ProjectLibre 0.0.4</title>
   <style>
     :root {
-      --bg: #f4f1ea;
-      --paper: #fffdf8;
-      --ink: #1f2933;
-      --muted: #52606d;
-      --accent: #b8472f;
-      --accent-dark: #8f3522;
-      --line: #e6d9c8;
-      --shadow: 0 20px 40px rgba(37, 41, 46, 0.08);
+      --bg: #f3f5f8;
+      --bg-strong: #e9edf3;
+      --surface: rgba(255, 255, 255, 0.88);
+      --surface-strong: #ffffff;
+      --ink: #17212b;
+      --muted: #5c6b7a;
+      --line: rgba(23, 33, 43, 0.1);
+      --accent: #1f5eff;
+      --accent-soft: rgba(31, 94, 255, 0.1);
+      --accent-ink: #1848c6;
+      --shadow: 0 24px 70px rgba(20, 32, 54, 0.08);
+      --radius-lg: 28px;
+      --radius-md: 20px;
+      --radius-sm: 14px;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
-      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      font-family: Aptos, "Segoe UI Variable Display", "Yu Gothic UI", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at top left, rgba(184, 71, 47, 0.12), transparent 28%),
-        linear-gradient(180deg, #efe8dd 0%, var(--bg) 42%, #f8f6f1 100%);
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(243, 245, 248, 0.98)),
+        radial-gradient(circle at top left, rgba(31, 94, 255, 0.08), transparent 34%),
+        linear-gradient(180deg, #eef2f7 0%, #f7f9fc 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(23, 33, 43, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 33, 43, 0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.24), transparent 72%);
     }
 
     a {
       color: inherit;
+      text-decoration: none;
     }
 
     .page {
-      width: min(1120px, calc(100% - 32px));
+      width: min(1180px, calc(100% - 36px));
       margin: 0 auto;
-      padding: 40px 0 64px;
+      padding: 24px 0 72px;
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 16px 36px rgba(20, 32, 54, 0.06);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-badge {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1f5eff, #6aa2ff);
+      box-shadow: 0 0 0 8px rgba(31, 94, 255, 0.1);
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
     }
 
     .hero {
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
       gap: 28px;
       align-items: center;
-      margin-bottom: 32px;
-    }
-
-    .panel {
-      background: rgba(255, 253, 248, 0.88);
-      border: 1px solid rgba(230, 217, 200, 0.95);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
-    }
-
-    .hero-copy {
-      padding: 36px;
+      padding: 34px 0 28px;
     }
 
     .eyebrow {
-      display: inline-block;
-      margin-bottom: 16px;
-      padding: 6px 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
       border-radius: 999px;
-      background: rgba(184, 71, 47, 0.1);
-      color: var(--accent-dark);
+      background: var(--accent-soft);
+      color: var(--accent-ink);
       font-size: 12px;
       font-weight: 700;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    h1, h2 {
+    h1,
+    h2,
+    h3 {
       margin: 0;
-      line-height: 1.1;
+      line-height: 1.08;
     }
 
     h1 {
-      font-size: clamp(34px, 6vw, 58px);
-      letter-spacing: -0.03em;
+      margin-top: 18px;
+      font-size: clamp(38px, 7vw, 72px);
+      letter-spacing: -0.05em;
     }
 
     h2 {
-      font-size: clamp(24px, 3vw, 32px);
-      margin-bottom: 14px;
+      font-size: clamp(24px, 3vw, 34px);
+      letter-spacing: -0.03em;
+    }
+
+    h3 {
+      font-size: 18px;
+      letter-spacing: -0.02em;
     }
 
     p {
       margin: 0;
-      line-height: 1.7;
       color: var(--muted);
+      line-height: 1.75;
+      font-size: 15px;
     }
 
     .hero-copy p + p,
-    .section p + p {
+    .stack-text p + p {
       margin-top: 12px;
     }
 
-    .hero-actions {
+    .hero-copy {
+      display: grid;
+      gap: 20px;
+    }
+
+    .hero-actions,
+    .download-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 24px;
     }
 
     .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 14px 18px;
+      min-height: 48px;
+      padding: 12px 18px;
       border-radius: 14px;
       border: 1px solid transparent;
+      font-size: 14px;
       font-weight: 700;
-      text-decoration: none;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
     }
 
     .button.primary {
       background: var(--accent);
-      color: #fffaf5;
-    }
-
-    .button.primary:hover {
-      background: var(--accent-dark);
+      color: #ffffff;
+      box-shadow: 0 12px 28px rgba(31, 94, 255, 0.24);
     }
 
     .button.secondary {
+      background: rgba(255, 255, 255, 0.72);
       border-color: var(--line);
-      background: #fffaf2;
     }
 
-    .hero-image {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-      padding: 14px;
-    }
-
-    .compare-card {
-      padding: 12px;
-      border-radius: 18px;
+    .shot-card,
+    .panel {
       border: 1px solid var(--line);
-      background: #fffaf2;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
     }
 
-    .compare-label {
-      display: inline-flex;
-      margin-bottom: 10px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(184, 71, 47, 0.12);
-      color: var(--accent-dark);
-      font-size: 12px;
+    .shot-card {
+      padding: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shot-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), transparent 24%);
+      pointer-events: none;
+    }
+
+    .shot-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .shot-title {
       font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
+      color: var(--ink);
     }
 
-    .hero-image img {
+    .shot-card img {
       display: block;
       width: 100%;
       height: auto;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      box-shadow: 0 18px 36px rgba(31, 41, 51, 0.12);
+      border-radius: 18px;
+      border: 1px solid rgba(23, 33, 43, 0.08);
+      background: #ffffff;
+      box-shadow: 0 18px 40px rgba(20, 32, 54, 0.12);
     }
 
-    .grid {
+    .stats {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
     }
 
-    .section {
+    .stat {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .stat-value {
+      margin-top: 8px;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 24px;
+      margin-top: 18px;
+    }
+
+    .panel {
       padding: 28px;
     }
 
-    .downloads {
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .section-kicker {
+      font-size: 12px;
+      color: var(--accent-ink);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .download-list,
+    .feature-list {
       display: grid;
-      gap: 16px;
+      gap: 14px;
     }
 
-    .download-card {
+    .download-item,
+    .feature-item {
       padding: 18px;
-      border-radius: 18px;
       border: 1px solid var(--line);
-      background: #fffaf3;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.72);
     }
 
-    .download-card h3 {
-      margin: 0 0 8px;
-      font-size: 20px;
+    .download-item p,
+    .feature-item p {
+      margin-top: 8px;
     }
 
     .download-meta {
       margin-top: 10px;
-      font-size: 14px;
+      font-size: 13px;
       color: var(--muted);
     }
 
@@ -203,150 +347,179 @@
       margin: 0;
       padding-left: 20px;
       color: var(--muted);
-      line-height: 1.7;
+      line-height: 1.8;
     }
 
     li + li {
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
-    .footer {
-      margin-top: 24px;
-      padding: 18px 4px 0;
-      font-size: 14px;
+    .footnote {
+      margin-top: 26px;
+      padding: 20px 0 0;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
       color: var(--muted);
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 980px) {
       .hero,
-      .grid {
+      .content-grid,
+      .stats {
         grid-template-columns: 1fr;
       }
 
+      .topbar,
+      .section-head {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    @media (max-width: 720px) {
       .page {
-        width: min(100% - 24px, 1120px);
-        padding-top: 20px;
+        width: min(100% - 20px, 1180px);
+        padding-top: 16px;
+        padding-bottom: 48px;
       }
 
-      .hero-copy,
-      .section {
-        padding: 22px;
+      .panel,
+      .shot-card {
+        padding: 18px;
       }
 
-      .hero-image {
-        grid-template-columns: 1fr;
+      .hero {
+        padding-top: 22px;
+      }
+
+      .button {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
   <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge" aria-hidden="true"></div>
+        <div class="brand-copy">
+          <div class="brand-title">ProjectLibre 0.0.4</div>
+          <div class="brand-subtitle">Modernized desktop planning for Windows teams</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre">Repository</a>
+        <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases">Releases</a>
+      </div>
+    </header>
+
     <section class="hero">
-      <div class="panel hero-copy">
-        <div class="eyebrow">ProjectLibre Development Fork</div>
-        <h1>ProjectLibre 0.0.4</h1>
-        <p>
-          ProjectLibre をベースに、現代 JDK での運用、Windows 配布、Gantt 操作性、共同利用ワークフローを実用寄りに改善したデスクトップ版です。
-        </p>
-        <p>
-          元の使い勝手を保ちながら、XLSX 対応、共有ファイル向けのローカルコラボレーション、表示まわりの不具合修正と操作改善を取り込んでいます。
-        </p>
+      <div class="hero-copy">
+        <div class="eyebrow">Office Ready Desktop Planning</div>
+        <div class="stack-text">
+          <h1>静かに使えて、ちゃんと速い ProjectLibre。</h1>
+          <p>
+            Gantt、タスク表、依存関係、進捗管理を扱うデスクトップ型の計画ツールを、
+            現代 JDK と Windows 配布フローに合わせて整えた実用重視の fork です。
+          </p>
+          <p>
+            派手な演出よりも、読みやすさ、操作の安定性、配布のしやすさを優先して、
+            日常業務で使いやすい最小構成へ寄せています。
+          </p>
+        </div>
         <div class="hero-actions">
-          <a class="button primary" href="https://github.com/tetsuji16/ProjectLibre/releases/download/v0.0.4/ProjectLibre-0.0.4.msi">v0.0.4 MSI を直接ダウンロード</a>
-          <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases/tag/v0.0.4">v0.0.4 Release を開く</a>
-          <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases">GitHub からダウンロード</a>
-          <a class="button secondary" href="https://tetsuji16.github.io/ProjectLibre/docs/">Project Page</a>
+          <a class="button primary" href="https://github.com/tetsuji16/ProjectLibre/releases/download/v0.0.4/ProjectLibre-0.0.4.msi">Windows MSI をダウンロード</a>
+          <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases/tag/v0.0.4">v0.0.4 Release</a>
         </div>
       </div>
-      <div class="panel hero-image" aria-label="ProjectLibre UI comparison">
-        <div class="compare-card">
-          <div class="compare-label">旧UI</div>
-          <img src="images/gantt-view.png" alt="ProjectLibre の旧UIスクリーンショット">
+
+      <div class="shot-card" aria-label="ProjectLibre screenshot">
+        <div class="shot-meta">
+          <span class="shot-title">Latest Gantt Workspace</span>
+          <span>Single source of truth</span>
         </div>
-        <div class="compare-card">
-          <div class="compare-label">最新UI</div>
-          <img src="images/gantt-view-latest.png" alt="ProjectLibre の最新UIスクリーンショット">
-        </div>
+        <img src="images/gantt-view-latest.png" alt="ProjectLibre 0.0.4 の最新 Gantt スクリーンショット">
       </div>
     </section>
 
-    <section class="grid">
-      <div class="panel section">
-        <h2>ダウンロード</h2>
-        <div class="downloads">
-          <article class="download-card">
-            <h3>ProjectLibre v0.0.4 Release</h3>
-            <p>最新版の Windows MSI は GitHub Release asset として公開しています。GitHub Pages からは v0.0.4 の MSI 直リンクと Release ページへ案内します。</p>
-            <div class="hero-actions">
-              <a class="button primary" href="https://github.com/tetsuji16/ProjectLibre/releases/download/v0.0.4/ProjectLibre-0.0.4.msi">MSI を取得</a>
-              <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases/tag/v0.0.4">Release を開く</a>
-            </div>
-            <div class="download-meta">最新版 v0.0.4</div>
-          </article>
-          <article class="download-card">
-            <h3>Windows Self-Contained Build</h3>
-            <p>自己完結型インストーラーを利用したい場合は、GitHub Releases の <code>ProjectLibre-0.0.4.msi</code> を利用してください。大きな旧配布物は Pages から削除し、最新版への導線だけに整理しています。</p>
-            <div class="hero-actions">
-              <a class="button primary" href="https://github.com/tetsuji16/ProjectLibre/releases/download/v0.0.4/ProjectLibre-0.0.4.msi">MSI 直リンク</a>
-              <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases/tag/v0.0.4">ダウンロードページへ</a>
-            </div>
-            <div class="download-meta">最新版 v0.0.4</div>
-          </article>
-          <article class="download-card">
-            <h3>Manual Release Page</h3>
-            <p>GitHub 上で手動登録した配布ファイルを公開する前提で、GitHub Pages からは Release ページへのリンクだけを案内しています。</p>
-            <div class="hero-actions">
-              <a class="button primary" href="https://github.com/tetsuji16/ProjectLibre/releases/tag/v0.0.4">Release 一覧を見る</a>
-            </div>
-            <div class="download-meta">GitHub Releases</div>
-          </article>
-          <article class="download-card">
-            <h3>Repository Policy</h3>
-            <p>旧版バイナリや生成済みインストーラーはリポジトリに保持せず、配布物は GitHub Releases 側で管理します。比較やロールバックが必要な場合も Releases のタグ一覧から取得してください。</p>
-            <div class="hero-actions">
-              <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases">Releases 一覧へ</a>
-            </div>
-            <div class="download-meta">バイナリは Git 管理外</div>
-          </article>
+    <section class="stats" aria-label="Release facts">
+      <article class="stat">
+        <div class="stat-label">Current Release</div>
+        <div class="stat-value">v0.0.4</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Runtime Target</div>
+        <div class="stat-value">Java 21+</div>
+      </article>
+      <article class="stat">
+        <div class="stat-label">Distribution</div>
+        <div class="stat-value">MSI / JAR</div>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Download</div>
+            <h2>必要な配布物だけをまっすぐ取得</h2>
+          </div>
         </div>
-      </div>
+        <div class="download-list">
+          <section class="download-item">
+            <h3>Windows Installer</h3>
+            <p>通常利用向けの自己完結型インストーラーです。GitHub Releases 上の最新 MSI をそのまま案内しています。</p>
+            <div class="download-actions">
+              <a class="button primary" href="https://github.com/tetsuji16/ProjectLibre/releases/download/v0.0.4/ProjectLibre-0.0.4.msi">ProjectLibre-0.0.4.msi</a>
+            </div>
+            <div class="download-meta">推奨: Windows クライアント環境</div>
+          </section>
+          <section class="download-item">
+            <h3>Portable JAR</h3>
+            <p>検証や配布確認向けに fat jar も公開しています。ローカルにある Java 実行環境でそのまま起動できます。</p>
+            <div class="download-actions">
+              <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases/download/v0.0.4/projectlibre-0.0.4.jar">projectlibre-0.0.4.jar</a>
+            </div>
+            <div class="download-meta">用途: スモークテスト / 開発確認</div>
+          </section>
+          <section class="download-item">
+            <h3>Release Notes</h3>
+            <p>配布ページからは旧版ファイルを抱えず、各バージョンの情報は GitHub Releases 側で一元管理しています。</p>
+            <div class="download-actions">
+              <a class="button secondary" href="https://github.com/tetsuji16/ProjectLibre/releases/tag/v0.0.4">v0.0.4 の詳細を見る</a>
+            </div>
+            <div class="download-meta">運用方針: binary files stay out of Git history</div>
+          </section>
+        </div>
+      </article>
 
-      <div class="panel section">
-        <h2>この fork の主な改善点</h2>
-        <p style="margin-bottom: 16px;">
-          ここで挙げている改善点は、ProjectLibre 1.9.8 系の更新コミット
-          <code>0530be22</code> を基準にした差分です。
-        </p>
-        <ul>
-          <li>XLSX import / export に対応し、Excel ベースの受け渡しを扱いやすくしました。</li>
-          <li>共有プロジェクトファイルを前提にしたローカル共同編集フローを追加しました。</li>
-          <li>Gantt / Tracking Gantt の progress line 表示を修正し、進捗可視化を改善しました。</li>
-          <li>Gantt zoom の復元処理を追加し、再表示時の見え方の一貫性を上げました。</li>
-          <li>task view のマウスホイール挙動を見直し、Shift+wheel の横スクロールにも対応しました。</li>
-          <li>起動直後や初期ビュー読み込みまわりの安定性を改善しました。</li>
-          <li>新しい JDK と jpackage を使った Windows 向けパッケージングに更新しました。</li>
-        </ul>
-      </div>
+      <article class="panel">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Why This Fork</div>
+            <h2>実務のための改善を、UI と配布の両方に。</h2>
+          </div>
+        </div>
+        <div class="feature-list">
+          <section class="feature-item">
+            <h3>UI stability first</h3>
+            <p>タスク表と Gantt の同期、ズーム後の見え方、貼り付けや編集まわりの落ちやすい箇所を重点的に整理しています。</p>
+          </section>
+          <section class="feature-item">
+            <h3>Lean packaging</h3>
+            <p>不要なモジュール混入を抑え、標準機能を残したまま配布サイズの膨張を避ける構成へ寄せています。</p>
+          </section>
+          <section class="feature-item">
+            <h3>Modern Windows delivery</h3>
+            <p>JDK と jpackage ベースの Windows 配布を軸にして、継続的にリリースしやすい状態を維持しています。</p>
+          </section>
+        </div>
+        <div class="footnote">
+          基準差分は ProjectLibre 1.9.8 系の更新コミット <code>0530be22</code> をベースに追っています。
+        </div>
+      </article>
     </section>
-
-    <section class="grid" style="margin-top: 24px;">
-      <div class="panel section">
-        <h2>アプリ概要</h2>
-        <p>
-          ProjectLibre は WBS、Gantt、依存関係、進捗、リソース配分を扱えるデスクトップ型のプロジェクト計画ツールです。この fork では、元のコードベースを保ちながら、現代的な Java 環境で継続利用しやすいように更新しています。
-        </p>
-      </div>
-      <div class="panel section">
-        <h2>このページについて</h2>
-        <p>
-          このページはリポジトリの <code>docs/</code> から GitHub Pages で配信する前提です。スクリーンショットは README と同じものを使用し、ダウンロード導線は GitHub Releases へのリンクに限定しています。
-        </p>
-      </div>
-    </section>
-
-    <div class="footer">
-      Project page: <a href="https://tetsuji16.github.io/ProjectLibre/docs/">https://tetsuji16.github.io/ProjectLibre/docs/</a>
-    </div>
   </main>
 </body>
 </html>
