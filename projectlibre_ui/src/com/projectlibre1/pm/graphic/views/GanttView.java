@@ -57,12 +57,12 @@ package com.projectlibre1.pm.graphic.views;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.JScrollPane;
+import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -80,22 +80,16 @@ import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetUtils;
 import com.projectlibre1.pm.graphic.timescale.CoordinatesConverter;
 import com.projectlibre1.pm.graphic.timescale.ScaledScrollPane;
 import com.projectlibre1.pm.graphic.views.synchro.Synchronizer;
-import com.projectlibre1.configuration.Configuration;
 import com.projectlibre1.configuration.Dictionary;
-import com.projectlibre1.configuration.Settings;
 import com.projectlibre1.field.FieldContext;
 import com.projectlibre1.graphic.configuration.BarStyles;
 import com.projectlibre1.graphic.configuration.CellStyle;
 import com.projectlibre1.graphic.configuration.GraphicConfiguration;
-import com.projectlibre1.graphic.configuration.SpreadSheetCategories;
 import com.projectlibre1.graphic.configuration.SpreadSheetFieldArray;
 import com.projectlibre1.grouping.core.model.NodeModel;
 import com.projectlibre1.pm.scheduling.ScheduleEvent;
 import com.projectlibre1.pm.scheduling.ScheduleEventListener;
-import com.projectlibre1.pm.snapshot.Snapshottable;
 import com.projectlibre1.pm.task.Project;
-import com.projectlibre1.pm.task.Task;
-import com.projectlibre1.pm.task.TaskSnapshot;
 import com.projectlibre1.pm.time.HasStartAndEnd;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.undo.UndoController;
@@ -173,14 +167,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 					return;
 				}
 				olddl = dl;
-//				Dimension dr=rightScrollPane.getViewport().getViewSize();
-//				((Gantt)rightScrollPane.getViewport().getView()).setPreferredSize(new Dimension((int)dr.getWidth(),(int)dl.getHeight()));
-//				rightScrollPane.getViewport().revalidate();
-				Gantt ganttView = (Gantt) rightScrollPane.getViewport().getView();
-				int height = Math.min(dl.height, ganttView.getScrollableHeight(rightScrollPane.getViewport().getExtentSize().height));
-				ganttView.setPreferredSize(new Dimension(rightScrollPane.getViewport().getViewSize().width, height));
-				ganttView.clampViewportPosition(rightScrollPane.getViewport(), height);
-				rightScrollPane.getViewport().revalidate();
+				synchronizeGanttHeightWithSpreadsheet(dl);
 			}
 		});
 
@@ -208,10 +195,18 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	}
 	public void cleanUp() {
 		super.cleanUp();
-		coord.removeTimeScaleListener(ganttScrollPane);
-		project.removeScheduleListener(this);
-		spreadSheet.cleanUp();
-		gantt.cleanUp();
+		if (coord != null && ganttScrollPane != null) {
+			coord.removeTimeScaleListener(ganttScrollPane);
+		}
+		if (project != null) {
+			project.removeScheduleListener(this);
+		}
+		if (spreadSheet != null) {
+			spreadSheet.cleanUp();
+		}
+		if (gantt != null) {
+			gantt.cleanUp();
+		}
 		spreadSheet=null;
 		gantt=null;
 	    baseLines=null;
@@ -288,6 +283,9 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 
 
 	public void updateHeight(Integer snapshotId, boolean add){
+		if (snapshotId == null || baseLines == null) {
+			return;
+		}
 		if (add) {
 			baseLines.add(snapshotId);
 		} else {
@@ -297,6 +295,9 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	}
 
 	public void updateHeight(Project project){
+		if (project == null || baseLines == null) {
+			return;
+		}
 	    baseLines.clear();
 	    int rowHeight = project.getRowHeight(baseLines);
 //        for (Iterator i=project.getTaskOutlineIterator();i.hasNext();){
@@ -331,7 +332,9 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	}
 
 	public void updateSize(){
-		gantt.updateSize();
+		if (gantt != null) {
+			gantt.updateSize();
+		}
 	}
 	public UndoController getUndoController() {
 		return project.getUndoController();
@@ -478,8 +481,25 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	}
 
 	private void applyRowHeight(int rowHeight) {
-		spreadSheet.setRowHeight(rowHeight);
-		gantt.setRowHeight(rowHeight);
+		if (spreadSheet != null) {
+			spreadSheet.setRowHeight(rowHeight);
+		}
+		if (gantt != null) {
+			gantt.setRowHeight(rowHeight);
+			gantt.synchronizeViewportSize();
+		}
+	}
+
+	private void synchronizeGanttHeightWithSpreadsheet(Dimension spreadsheetSize) {
+		if (spreadsheetSize == null || rightScrollPane == null || rightScrollPane.getViewport() == null)
+			return;
+		JViewport viewport = rightScrollPane.getViewport();
+		if (!(viewport.getView() instanceof Gantt ganttView))
+			return;
+		int height = Math.min(spreadsheetSize.height, ganttView.getScrollableHeight(viewport.getExtentSize().height));
+		ganttView.setPreferredSize(new Dimension(viewport.getViewSize().width, height));
+		ganttView.clampViewportPosition(viewport, height);
+		viewport.revalidate();
 	}
 
 }

@@ -4,9 +4,9 @@ This repository is an unofficial development fork of ProjectLibre. It keeps the 
 
 Current release in this fork:
 
-- `v0.0.2`
+- `v0.0.4`
 
-![ProjectLibre Gantt view](docs/images/gantt-view.png)
+![ProjectLibre Gantt view](docs/images/gantt-view-latest.png)
 
 ## What This Fork Is For
 
@@ -58,65 +58,62 @@ If `JAVA_HOME` is not set, the Gradle release tasks fall back to `C:\Program Fil
 
 ## Build System Status
 
-- Gradle is the primary build and release entrypoint for this repository
-- `build.gradle.kts` and `gradlew.bat` are the supported day-to-day workflow
-- `projectlibre_build` now keeps only the packaging assets still needed by the Gradle and `jpackage` flow, plus historical reference files
-- `projectlibre_build/build.xml` remains in the repo as a historical packaging reference only and should not be used for current builds
+- `ant` is the supported build and release entrypoint for the desktop packaging flow in this repository
+- `projectlibre_build/build.xml` drives compile, dist, fatjar, and Windows `jpackage` packaging
+- `projectlibre_build` also contains the packaging assets, icons, notices, and Windows file-association metadata used for release builds
+- Keep `projectlibre_contrib` jars lean when updating dependencies so the packaged app size does not grow unnecessarily
 
 ## Build The App
-
-The default build entrypoint is now the Gradle wrapper from the repository root.
 
 Compile every module and assemble the desktop distribution artifacts:
 
 ```powershell
-.\gradlew.bat build
+ant -f projectlibre_build\build.xml compile
+ant -f projectlibre_build\build.xml dist
 ```
 
-Create the installable application layout:
+Create the runnable single-jar package:
 
 ```powershell
-.\gradlew.bat stageAppDist
+ant -f projectlibre_build\build.xml fatjar
 ```
 
-Key Gradle entrypoints:
+Key Ant entrypoints:
 
-- `.\gradlew.bat projects`: show the multi-project layout
-- `.\gradlew.bat :projectlibre_contrib:build`: rebuild contrib JARs
-- `.\gradlew.bat :projectlibre_ui:run`: launch the desktop app from source
-- `.\gradlew.bat :projectlibre_ui:installDist`: create the runnable app layout
+- `ant -f projectlibre_build\build.xml compile`: compile all production modules against Java 21 bytecode
+- `ant -f projectlibre_build\build.xml dist`: build `projectlibre.jar` plus the trimmed contrib jars
+- `ant -f projectlibre_build\build.xml fatjar`: create `projectlibre_build\packages\projectlibre-<version>.jar`
+- `ant -f projectlibre_build\build.xml jpackage-msi`: prepare the Windows MSI packaging input directory
+- `powershell -ExecutionPolicy Bypass -File projectlibre_build\packages\jpackage-msi\make.ps1 -PackageType msi -OutputDir app`: emit the Windows MSI
 
 The runnable application layout is generated under:
 
-- `projectlibre_ui\build\install\projectlibre_ui`
+- `projectlibre_build\dist`
 
-The per-module JARs are generated under each module's `build\libs` directory.
+The packaged jars are generated under:
 
-For a quick desktop launch during development:
-
-```powershell
-.\gradlew.bat :projectlibre_ui:run
-```
+- `projectlibre_build\packages`
 
 ## Build The Windows Release
 
 Build the Windows release artifacts and stage them locally:
 
 ```powershell
-.\gradlew.bat publishReleaseToDocs
+ant -f projectlibre_build\build.xml dist
+ant -f projectlibre_build\build.xml fatjar
+ant -f projectlibre_build\build.xml jpackage-msi
+powershell -ExecutionPolicy Bypass -File projectlibre_build\packages\jpackage-msi\make.ps1 -PackageType msi -OutputDir app
 ```
 
-The Gradle release flow uses `stageAppDist` and `:projectlibre_ui:installDist` as its application input, runs `jpackage` directly, and writes release work files under:
+This release flow stages the Windows packaging input under:
 
-- `build/releases/v0.0.2/`
+- `projectlibre_build\packages\jpackage-msi\source\`
 
-The Gradle task writes local staging outputs such as:
+The local MSI output is generated under:
 
-- `build/releases/v0.0.2/msi/ProjectLibre-0.0.2.msi`
-- `docs/downloads/ProjectLibre-0.0.2-app-image.zip`
-- `docs/downloads/ProjectLibre-0.0.2.msi`
+- `projectlibre_build\packages\jpackage-msi\app\ProjectLibre-0.0.4.msi`
 
-These `docs/downloads/` files are local staging artifacts for release preparation and should not be committed back into Git history. Public downloads should be published as GitHub Release assets for `v0.0.2`, and the GitHub Pages site should link to that release page instead of serving binaries from the repository itself.
+Files under `docs/downloads/` are treated as scratch space only and should not be committed. Public downloads should be published as GitHub Release assets for `v0.0.4`, and the GitHub Pages site should link to that release page instead of serving binaries from the repository itself.
 
 The GitHub Pages landing page for this release is:
 
@@ -139,10 +136,11 @@ The README screenshot is intentionally captured so that only the application UI 
 
 ## Quick Verification
 
-- `.\gradlew.bat projects`: multi-project Gradle layout resolves
-- `.\gradlew.bat build`: all Gradle modules compile and package successfully
-- `.\gradlew.bat stageAppDist`: runnable app layout is generated
-- `.\gradlew.bat publishReleaseToDocs`: Windows release artifacts are rebuilt and staged into local `docs/downloads`
+- `ant -f projectlibre_build\build.xml compile`: all production modules compile successfully
+- `ant -f projectlibre_build\build.xml dist`: runtime jars are rebuilt successfully
+- `ant -f projectlibre_build\build.xml fatjar`: the runnable jar is generated
+- `ant -f projectlibre_build\build.xml jpackage-msi`: Windows packaging input is rebuilt
+- `powershell -ExecutionPolicy Bypass -File projectlibre_build\packages\jpackage-msi\make.ps1 -PackageType msi -OutputDir app`: the MSI is emitted successfully
 
 ## License
 

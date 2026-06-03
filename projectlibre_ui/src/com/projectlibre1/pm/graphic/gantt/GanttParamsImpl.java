@@ -190,7 +190,7 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 	public Object clone(){
 		try {
 			return super.clone();
-		} catch (CloneNotSupportedException _) {
+		} catch (CloneNotSupportedException ignored) {
 			throw new InternalError();
 		}
 	}

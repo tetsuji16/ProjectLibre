@@ -221,8 +221,8 @@
  			 	<mkdir dir="${dist}/lib"/>
  				  <copy todir="${dist}/lib">
  				    <fileset dir="../projectlibre_contrib/">
- 				    	<include name="*.jar" />
- 				    	<exclude name="projectlibre-script-radiance.jar" />
+ 				    	<include name="projectlibre-contrib.jar" />
+ 				    	<include name="projectlibre-reports.jar" />
  				  	</fileset>
  				  </copy>
 			</then>
@@ -232,7 +232,7 @@
 	<target name="fatjar"  depends="dist">
 
 		<jar destfile="${packages}/projectlibre-${version}.jar">
-			<zipgroupfileset dir="${dist}" includes="**/*.jar"/>
+			<zipgroupfileset dir="${dist}" includes="projectlibre.jar,lib/projectlibre-contrib.jar,lib/projectlibre-reports.jar"/>
 			<zipfileset dir="." >
 				<include name="license/**" />
 			</zipfileset>

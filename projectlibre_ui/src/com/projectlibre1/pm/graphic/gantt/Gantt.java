@@ -256,21 +256,25 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 //			v.setViewSize(new Dimension((int)Math.ceil(getCoord().getWidth()),v.getViewSize().height));
 //		}
 		((GraphUI) ui).updateShapes();
+		synchronizeViewportSize();
+		revalidate();
+	}
 
+	public void synchronizeViewportSize() {
 		var parent = getParent();
 		if (parent instanceof JViewport viewport) {
 			int height = getScrollableHeight(viewport.getExtentSize().height);
 			viewport.setViewSize(new Dimension(getDrawingWidth(), height));
+			setPreferredSize(new Dimension(getDrawingWidth(), height));
 			clampViewportPosition(viewport, height);
+			return;
 		}
-
 		setPreferredSize(new Dimension(getDrawingWidth(), getScrollableHeight(getVisibleRect().height)));
-
-		revalidate();
 	}
 
 	private int getDrawingWidth() {
-		return (int) Math.ceil(getCoord().getWidth());
+		var coord = getCoord();
+		return coord == null ? 0 : (int) Math.ceil(coord.getWidth());
 	}
 
 	public int getScrollableHeight(int viewportHeight) {
@@ -311,6 +315,9 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 
 	public void scrollToTask(HasStartAndEnd interval,boolean automatic){
 		var coord = getCoord();
+		if (interval == null || coord == null) {
+			return;
+		}
 		var start = coord.toX(interval.getStart());
 		var end = coord.toX(interval.getEnd());
 		var visible = getVisibleRect();

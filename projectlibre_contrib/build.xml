@@ -158,6 +158,10 @@
 				<zipgroupfileset file="lib/jfreechart.jar" /> 
 				<zipgroupfileset file="lib/jcommon.jar" /> 
 				<zipgroupfileset file="lib/jdnc-0_7-all.jar" /> 
+				<zipgroupfileset file="lib/org-netbeans-swing-outline-RELEASE290.jar" />
+				<zipgroupfileset file="lib/org-openide-util-RELEASE290.jar" />
+				<zipgroupfileset file="lib/org-openide-util-lookup-RELEASE290.jar" />
+				<zipgroupfileset file="lib/org-openide-util-ui-RELEASE290.jar" />
 				<zipgroupfileset file="lib/itext.jar" /> 
 				<zipgroupfileset file="lib/radiance-flamingo-1.0.2.jar" />
 				<zipgroupfileset file="lib/radiance-neon-1.0.2.jar" />
@@ -173,14 +177,6 @@
 				<zipgroupfileset file="lib/exchange/jaxb-core.jar" /> 
 				<zipgroupfileset file="lib/exchange/jaxb-impl.jar" /> 
 			<zipgroupfileset file="lib/exchange/javax.activation-api.jar" />
-				<zipgroupfileset file="lib/commons-lang3-3.14.0.jar" />
-				<zipgroupfileset file="lib/commons-collections4-4.4.jar" />
-				<zipgroupfileset file="lib/pdfbox-3.0.1.jar" />
-				<zipgroupfileset file="lib/fontbox-3.0.1.jar" />
-				<zipgroupfileset file="lib/pdfbox-io-3.0.1.jar" />
-				<zipgroupfileset file="lib/jackson-core-2.16.1.jar" />
-				<zipgroupfileset file="lib/jackson-databind-2.16.1.jar" />
-				<zipgroupfileset file="lib/jackson-annotations-2.16.1.jar" />
 			</jar>
 		</else>
 	  </if>
@@ -232,7 +228,7 @@
 	</target>
 
 
-	<target name="dist" depends="contrib,script,reports">
+	<target name="dist" depends="contrib,reports">
 	</target>
 
 

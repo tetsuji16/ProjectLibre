@@ -179,8 +179,11 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				prepareAction(MenuActionConstants.ACTION_PASTE_INSERT).actionPerformed(
-					new ActionEvent(SpreadSheet.this, ActionEvent.ACTION_PERFORMED, MenuActionConstants.ACTION_PASTE_INSERT));
+				CommonSpreadSheetAction action = prepareAction(MenuActionConstants.ACTION_PASTE_INSERT);
+				if (action != null) {
+					action.actionPerformed(
+						new ActionEvent(SpreadSheet.this, ActionEvent.ACTION_PERFORMED, MenuActionConstants.ACTION_PASTE_INSERT));
+				}
 			}
 		});
 	}
@@ -211,14 +214,16 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			transferHandler.importData(this, transferable);
 			return;
 		}
-		NodeListTransferHandler.getPasteAction().actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+		if (NodeListTransferHandler.getPasteAction() != null) {
+			NodeListTransferHandler.getPasteAction().actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, null));
+		}
 	}
 
 	private Optional<Transferable> getClipboardContents() {
 		try {
 			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			return Optional.ofNullable((clipboard == null) ? null : clipboard.getContents(null));
-		} catch (IllegalStateException _) {
+		} catch (IllegalStateException ignored) {
 			return Optional.empty();
 		}
 	}
@@ -231,9 +236,9 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			if (transferable.isDataFlavorSupported(DataFlavor.getTextPlainUnicodeFlavor())) {
 				return Optional.of(transferable.getTransferData(DataFlavor.getTextPlainUnicodeFlavor()).toString());
 			}
-		} catch (UnsupportedFlavorException _) {
+		} catch (UnsupportedFlavorException ignored) {
 			return Optional.empty();
-		} catch (IOException _) {
+		} catch (IOException ignored) {
 			return Optional.empty();
 		}
 		return Optional.empty();
@@ -241,7 +246,10 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 
 	public void cleanUp() {
 		if (getModel() instanceof CommonSpreadSheetModel commonModel) {
-			commonModel.getCache().removeNodeModelListener(this);
+			NodeModelCache currentCache = commonModel.getCache();
+			if (currentCache != null) {
+				currentCache.removeNodeModelListener(this);
+			}
 		}
 		super.cleanUp();
 	}
@@ -300,7 +308,8 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 
 	private String lookupDisplayName(SpreadSheetModel model, Object treeObject) {
 		if (treeObject instanceof GraphicNode graphicNode) {
-			int row = model.getCache().getRowAt(graphicNode);
+			NodeModelCache currentCache = model.getCache();
+			int row = currentCache == null ? -1 : currentCache.getRowAt(graphicNode);
 			if (row >= 0) {
 				Object value = model.getValueAt(row, 0);
 				if (value != null) {
@@ -316,10 +325,12 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	}
 
 	public TableCellEditor getCellEditor(int row, int column) {
-		var model = (SpreadSheetModel) getModel();
+		if (!(getModel() instanceof SpreadSheetModel model)) {
+			return super.getCellEditor(row, column);
+		}
 		var field = model.getFieldInColumn(column + 1);
 		var node = model.getNode(row);
-		if (field != null && (field.isDynamicOptions() || field.hasFilter())) {
+		if (field != null && node != null && node.getNode() != null && (field.isDynamicOptions() || field.hasFilter())) {
 			return new SimpleComboBoxEditor(new DefaultComboBoxModel(field.getOptions(node.getNode().getImpl())));
 		} else {
 			return super.getCellEditor(row, column);
@@ -409,6 +420,8 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	public void executeNameCellCollapseExpand(boolean expand) {
 		if (hierarchyActionInProgress)
 			return;
+		if (!(getModel() instanceof SpreadSheetModel model))
+			return;
 		var column = isEditing() ? getEditingColumn() : getSelectedColumn();
 		if (!isNameFieldColumn(column))
 			return;
@@ -417,7 +430,9 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 			rowToFocus = getSelectionModel().getAnchorSelectionIndex();
 		if (rowToFocus < 0)
 			return;
-		var focusNode = ((SpreadSheetModel) getModel()).getNode(rowToFocus);
+		var focusNode = model.getNode(rowToFocus);
+		if (focusNode == null)
+			return;
 		hierarchyActionInProgress = true;
 		try {
 			finishCurrentOperations();
@@ -632,6 +647,8 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	
 	
 	public void setModel(SpreadSheetModel spreadSheetModel, SpreadSheetColumnModel spreadSheetColumnModel) {
+		if (spreadSheetModel == null)
+			return;
 		makeCustomTableHeader(spreadSheetColumnModel);
 		var oldModel = getModel();
 		setModel(spreadSheetModel);
@@ -698,14 +715,17 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 				var row = rowAtPoint(p);
 				var col = columnAtPoint(p);
 				var popup = getPopup();
+				if (row < 0 || col < 0) {
+					return;
+				}
 				if (SwingUtilities.isLeftMouseButton(e)) {
-					var columnModel = (SpreadSheetColumnModel) getColumnModel();
-					var field = ((SpreadSheetModel) getModel()).getFieldInNonTranslatedColumn(col + 1);
-					var model = (SpreadSheetModel) getModel();
-					if (field.isNameField()) {
+					if (!(getModel() instanceof SpreadSheetModel model))
+						return;
+					var field = model.getFieldInNonTranslatedColumn(col + 1);
+					if (field != null && field.isNameField()) {
 						// if (col == columnModel.getNameIndex()) {
 						var node = model.getNode(row);
-						if (isOnIcon(e)) {
+						if (node != null && isOnIcon(e)) {
 							if (model.getCellProperties(node).isCompositeIcon()) {
 								finishCurrentOperations();
 								selection.getRowSelection().clearSelection();
@@ -724,7 +744,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 								// editCellAt(row,model.findGraphicNodeRow(node));
 							}
 						}
-					} else if (field != null && field.isHyperlink()) {
+					} else if (field != null && row >= 0 && field.isHyperlink()) {
 						Hyperlink link = (Hyperlink) model.getValueAt(row, col + 1);
 						if (link != null) {
 							BrowserControl.displayURL(link.getAddress());
@@ -755,9 +775,14 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 		});
 
 		if (oldModel != spreadSheetModel && oldModel instanceof CommonSpreadSheetModel commonModel) {
-			commonModel.getCache().removeNodeModelListener(this);
+			NodeModelCache currentCache = commonModel.getCache();
+			if (currentCache != null) {
+				currentCache.removeNodeModelListener(this);
+			}
 		}
-		spreadSheetModel.getCache().addNodeModelListener(this);
+		if (spreadSheetModel.getCache() != null) {
+			spreadSheetModel.getCache().addNodeModelListener(this);
+		}
 
 //		getColumnModel().addColumnModelListener(new TableColumnModelListener(){
 //			public void columnAdded(TableColumnModelEvent e) {

@@ -161,7 +161,10 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 
 	}
 	public void cleanUp() {
-		getCache().removeNodeModelListener((CacheListener) getModel());
+		NodeModelCache currentCache = getCache();
+		if (currentCache != null && getModel() instanceof CacheListener listener) {
+			currentCache.removeNodeModelListener(listener);
+		}
 	}
 
 //	public void setModel(CommonSpreadSheetModel spreadSheetModel, DefaultTableColumnModel spreadSheetColumnModel) {
@@ -414,7 +417,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			if (textField instanceof JTextComponent text) {
 				return text;
 			}
-		} catch (Exception _) {
+		} catch (Exception ignored) {
 			// Ignore; not all editors expose a text field accessor.
 		}
 		return null;
@@ -573,20 +576,30 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 
     }
     public ArrayList<Node> getSelectedNodes(){
-        var model = (SpreadSheetModel) getModel();
+        if (!(getModel() instanceof SpreadSheetModel model)) {
+        	return new ArrayList<Node>();
+        }
 		var rows = getSelectedRows();
 		var nodes = new ArrayList<Node>(rows.length);
 		for (int row : rows){
-		    nodes.add(model.getNode(row).getNode());
+			GraphicNode graphicNode = model.getNode(row);
+			if (graphicNode != null && graphicNode.getNode() != null) {
+				nodes.add(graphicNode.getNode());
+			}
 		}
 		return nodes;
     }
     public ArrayList<Object> getSelectedNodesImpl(){
-        var model = (SpreadSheetModel) getModel();
+        if (!(getModel() instanceof SpreadSheetModel model)) {
+        	return new ArrayList<Object>();
+        }
 		var rows = getSelectedRows();
 		var nodes = new ArrayList<Object>(rows.length);
 		for (int row : rows){
-		    nodes.add(model.getNode(row).getNode().getImpl());
+			GraphicNode graphicNode = model.getNode(row);
+			if (graphicNode != null && graphicNode.getNode() != null) {
+				nodes.add(graphicNode.getNode().getImpl());
+			}
 		}
 		return nodes;
     }
@@ -609,12 +622,20 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
     }
 
     public Object getCurrentRowImpl() {
-        var model = (SpreadSheetModel) getModel();
-        return model.getObjectInRow(getSelectedRow());
+        if (!(getModel() instanceof SpreadSheetModel model)) {
+        	return null;
+        }
+        int row = getSelectedRow();
+        return row < 0 ? null : model.getObjectInRow(row);
     }
     public Node getCurrentRowNode() {
-        var model = (SpreadSheetModel) getModel();
+        if (!(getModel() instanceof SpreadSheetModel model)) {
+        	return null;
+        }
         var row = getCurrentRow();
+        if (row < 0 || row >= getRowCount()) {
+        	return null;
+        }
         return model.getNodeInRow(row);
     }
     public int getCurrentRow() {
@@ -640,11 +661,14 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		if (e == null) {
 			return false;
 		}
+		if (row < 0 || column < 0 || row >= getRowCount() || column >= getColumnCount()) {
+			return false;
+		}
 		if (e instanceof MouseEvent me && me.getClickCount() < 2) {
 			return false;
 		}
-		if (column > 0) {
-			var node = ((SpreadSheetModel)getModel()).getNodeInRow(row);
+		if (column > 0 && getModel() instanceof SpreadSheetModel model) {
+			var node = model.getNodeInRow(row);
 			if (node != null && !CollaborationHelper.tryLockObject(null, node, this, "edit")) {
 				return false;
     		}
@@ -1021,13 +1045,17 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		SpreadSheetSearchContext ctx = (SpreadSheetSearchContext)context;
 
 		int row = this.getCurrentRow();
+		NodeModelCache currentCache = getCache();
+		if (currentCache == null || currentCache.getSize() <= 0) {
+			return false;
+		}
 		// make sure in bounds
 		if (row < 0)
 			row =0;
-		if (row >= getCache().getSize())
-			row = getCache().getSize() -1;
+		if (row >= currentCache.getSize())
+			row = currentCache.getSize() -1;
 
-		ListIterator i =getCache().getIterator(row);
+		ListIterator i = currentCache.getIterator(row);
 		if (ctx.getRow() != -1) { // after the first search, need to move ahead or back
 			if (ctx.isForward())
 				if (i.hasNext())
@@ -1053,7 +1081,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			}
 		}
 		if (found) {
-			int r = getCache().getRowAt(gnode);
+			int r = currentCache.getRowAt(gnode);
 			int col = getFieldArray().indexOf(ctx.getField())-1;
 			this.changeSelection(r, col, false, false);
 			ctx.setRow(r);

@@ -282,43 +282,50 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		if (g2 == null || bounds == null)
 			return;
 
+		Paint oldPaint = g2.getPaint();
+		Color oldColor = g2.getColor();
 		double arc = Math.min(bounds.getHeight(), bounds.getWidth());
-		RoundRectangle2D outer = new RoundRectangle2D.Double(
-				bounds.getX(),
-				bounds.getY(),
-				bounds.getWidth(),
-				bounds.getHeight(),
-				arc,
-				arc);
-		Paint outerPaint = createBarPaint(fillColor, bounds, backgroundLayer);
-		if (outerPaint instanceof Color)
-			g2.setColor((Color)outerPaint);
-		else
-			g2.setPaint(outerPaint);
-		g2.fill(outer);
+		try {
+			RoundRectangle2D outer = new RoundRectangle2D.Double(
+					bounds.getX(),
+					bounds.getY(),
+					bounds.getWidth(),
+					bounds.getHeight(),
+					arc,
+					arc);
+			Paint outerPaint = createBarPaint(fillColor, bounds, backgroundLayer);
+			if (outerPaint instanceof Color)
+				g2.setColor((Color)outerPaint);
+			else
+				g2.setPaint(outerPaint);
+			g2.fill(outer);
 
-		if (!backgroundLayer)
-			return;
+			if (!backgroundLayer)
+				return;
 
-		double inset = Math.max(0.75d, bounds.getHeight() * 0.12d);
-		double innerWidth = Math.max(1.0d, bounds.getWidth() - inset * 2.0d);
-		double innerHeight = Math.max(1.0d, bounds.getHeight() - inset * 2.0d);
-		RoundRectangle2D inner = new RoundRectangle2D.Double(
-				bounds.getX() + inset,
-				bounds.getY() + inset,
-				innerWidth,
-				innerHeight,
-				Math.min(innerHeight, innerWidth),
-				Math.min(innerHeight, innerWidth));
-		Paint innerPaint = createBarPaint(fillColor, inner.getBounds2D(), false);
-		if (innerPaint instanceof Color)
-			g2.setColor((Color)innerPaint);
-		else
-			g2.setPaint(innerPaint);
-		g2.fill(inner);
+			double inset = Math.max(0.75d, bounds.getHeight() * 0.12d);
+			double innerWidth = Math.max(1.0d, bounds.getWidth() - inset * 2.0d);
+			double innerHeight = Math.max(1.0d, bounds.getHeight() - inset * 2.0d);
+			RoundRectangle2D inner = new RoundRectangle2D.Double(
+					bounds.getX() + inset,
+					bounds.getY() + inset,
+					innerWidth,
+					innerHeight,
+					Math.min(innerHeight, innerWidth),
+					Math.min(innerHeight, innerWidth));
+			Paint innerPaint = createBarPaint(fillColor, inner.getBounds2D(), false);
+			if (innerPaint instanceof Color)
+				g2.setColor((Color)innerPaint);
+			else
+				g2.setPaint(innerPaint);
+			g2.fill(inner);
 
-		g2.setColor(accentColor);
-		g2.draw(inner);
+			g2.setColor(accentColor);
+			g2.draw(inner);
+		} finally {
+			g2.setPaint(oldPaint);
+			g2.setColor(oldColor);
+		}
 	}
 
 	private Color resolveAnnotationColor(Color fillColor) {
@@ -328,8 +335,13 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	private void paintVerticalMarkerLine(Graphics2D g2, Rectangle bounds, int x, PredefinedPaint paint) {
 		if (x < bounds.getX() || x > bounds.getMaxX())
 			return;
-		g2.setPaint(paint);
-		g2.drawLine(x, bounds.y, x, bounds.y + bounds.height);
+		Paint oldPaint = g2.getPaint();
+		try {
+			g2.setPaint(paint);
+			g2.drawLine(x, bounds.y, x, bounds.y + bounds.height);
+		} finally {
+			g2.setPaint(oldPaint);
+		}
 	}
 
 
@@ -647,20 +659,21 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 				g2.draw(path);
 
 			//}
-			if (format.getStart()==null&&format.getEnd()==null) return;
-			if (format.getStart()!=null){
-				double theta=routing.getFirstAngle();
-				AffineTransform transform=(theta==0)?null:AffineTransform.getRotateInstance(theta,routing.getFirstX(),routing.getFirstY());
-				drawLinkArrows(dep,transform,format.getStart());
+			try {
+				if (format.getStart()!=null){
+					double theta=routing.getFirstAngle();
+					AffineTransform transform=(theta==0)?null:AffineTransform.getRotateInstance(theta,routing.getFirstX(),routing.getFirstY());
+					drawLinkArrows(dep,transform,format.getStart());
+				}
+				if (format.getEnd()!=null){
+					double theta=routing.getLastAngle();
+					AffineTransform transform=(theta==Math.PI||theta==-Math.PI)?null:AffineTransform.getRotateInstance(Math.PI-theta,routing.getLastX(),routing.getLastY());
+					drawLinkArrows(dep,transform,format.getEnd());
+				}
+			} finally {
+				if (oldColor!=null) g2.setColor(oldColor);
+				if (oldStroke!= null) g2.setStroke(oldStroke);
 			}
-			if (format.getEnd()!=null){
-				double theta=routing.getLastAngle();
-				AffineTransform transform=(theta==Math.PI||theta==-Math.PI)?null:AffineTransform.getRotateInstance(Math.PI-theta,routing.getLastX(),routing.getLastY());
-				drawLinkArrows(dep,transform,format.getEnd());
-			}
-
-			if (oldColor!=null) g2.setColor(oldColor);
-			if (oldStroke!= null) g2.setStroke(oldStroke);
 		}
 
 		private void drawLinkArrows(Dependency dep, AffineTransform transform, TexturedShape shape) {

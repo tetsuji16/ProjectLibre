@@ -35,6 +35,9 @@ Thumbs.db
 *.swp
 *~
 projectlibre_build/*check.png
+docs/downloads/
+*.part
+*.part*
 
 # Sisyphus session files
 .sisyphus/
