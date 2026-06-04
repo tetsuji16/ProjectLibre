@@ -59,6 +59,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 
@@ -79,6 +80,8 @@ import com.projectlibre1.strings.Messages;
  */
 public class GanttPopupMenu extends GraphPopupMenu{
 	private static final long serialVersionUID = -5006500626139949187L;
+	private static final String ANNOTATION_FIELD_RESOURCE_NAMES = "Field.resourceNames";
+	private static final String ANNOTATION_FIELD_TASK_NAME = "Field.name";
 
 
 	private class BarMenuAction extends JRadioButtonMenuItem implements ActionListener {
@@ -132,6 +135,24 @@ public class GanttPopupMenu extends GraphPopupMenu{
 			((GraphModel)interactor.getGraph().getModel()).updateAll(true);
 		}
     }
+
+    private class AnnotationTextMenuAction extends JRadioButtonMenuItem implements ActionListener {
+		private static final long serialVersionUID = -6784371291922163170L;
+		private final String fieldId;
+
+		AnnotationTextMenuAction(String messageKey, String fieldId) {
+			super(Messages.getString(messageKey));
+			this.fieldId = fieldId;
+			setSelected(fieldId.equals(getCurrentAnnotationFieldId()));
+			addActionListener(this);
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			if (!isSelected())
+				return;
+			applyAnnotationField(fieldId);
+		}
+    }
    
     private class SplitModeMenuAction extends AbstractAction {
     	/**
@@ -163,6 +184,15 @@ public class GanttPopupMenu extends GraphPopupMenu{
     	add(new ProgressLineMenuAction());
         final JMenu bars=new JMenu(Messages.getString("Gantt.Popup.barStylesMenu"));
         final JMenu annotations=new JMenu(Messages.getString("Gantt.Popup.annotationStylesMenu"));
+        final JMenu annotationText=new JMenu(Messages.getString("Gantt.Popup.annotationTextMenu"));
+        final ButtonGroup annotationTextGroup = new ButtonGroup();
+        JRadioButtonMenuItem resourceNamesItem = new AnnotationTextMenuAction("Gantt.Popup.annotationResourceNames", ANNOTATION_FIELD_RESOURCE_NAMES);
+        JRadioButtonMenuItem taskNamesItem = new AnnotationTextMenuAction("Gantt.Popup.annotationTaskNames", ANNOTATION_FIELD_TASK_NAME);
+        annotationTextGroup.add(resourceNamesItem);
+        annotationTextGroup.add(taskNamesItem);
+        annotationText.add(resourceNamesItem);
+        annotationText.add(taskNamesItem);
+        annotations.add(annotationText);
 		CollectionUtils.forAllDo(interactor.getGraph().getBarStyles().getRows(), new Closure() {
 			public void execute(Object arg0) {
 				BarStyle barStyle = (BarStyle)arg0;
@@ -184,5 +214,28 @@ public class GanttPopupMenu extends GraphPopupMenu{
         add(annotations);
     	
     }
+
+	private String getCurrentAnnotationFieldId() {
+		Object firstAnnotationField = CollectionUtils.find(interactor.getGraph().getBarStyles().getRows(), new org.apache.commons.collections.Predicate() {
+			public boolean evaluate(Object object) {
+				return object instanceof BarStyle && ((BarStyle)object).isAnnotation();
+			}
+		});
+		if (!(firstAnnotationField instanceof BarStyle))
+			return ANNOTATION_FIELD_RESOURCE_NAMES;
+		String fieldId = ((BarStyle)firstAnnotationField).getBarFormat().getFieldId();
+		return fieldId == null ? ANNOTATION_FIELD_RESOURCE_NAMES : fieldId;
+	}
+
+	private void applyAnnotationField(final String fieldId) {
+		CollectionUtils.forAllDo(interactor.getGraph().getBarStyles().getRows(), new Closure() {
+			public void execute(Object object) {
+				BarStyle style = (BarStyle)object;
+				if (style.isAnnotation())
+					style.getBarFormat().setFieldId(fieldId);
+			}
+		});
+		((GraphModel)interactor.getGraph().getModel()).updateAll(true);
+	}
 
 }
