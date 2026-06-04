@@ -59,7 +59,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.AbstractAction;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 
@@ -116,7 +115,7 @@ public class GanttPopupMenu extends GraphPopupMenu{
         }
     }
 
-    private class ProgressLineMenuAction extends JCheckBoxMenuItem implements ActionListener {
+    private class ProgressLineMenuAction extends JRadioButtonMenuItem implements ActionListener {
 		private static final long serialVersionUID = -7938597987478064286L;
 
 		ProgressLineMenuAction() {
