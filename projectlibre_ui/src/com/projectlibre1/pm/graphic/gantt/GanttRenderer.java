@@ -552,12 +552,26 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			Rectangle clipBounds = g2.getClipBounds();
 			if (clipBounds == null)
 				clipBounds = ((GanttParams)graphInfo).getGanttBounds();
+			int clipLeft = clipBounds.x;
+			int clipRight = clipBounds.x + clipBounds.width;
+			boolean barVisible = x1 >= clipLeft && x0 <= clipRight;
+			boolean rightLabelVisible = preferredRightX + w >= clipLeft && preferredRightX <= clipRight;
+			boolean leftLabelVisible = preferredLeftX + w >= clipLeft && preferredLeftX <= clipRight;
+			if (!barVisible && !rightLabelVisible && !leftLabelVisible)
+				return;
 			int minX = clipBounds.x + 4;
 			int maxX = clipBounds.x + clipBounds.width - w - 4;
 			int x = preferredRightX;
 			if (x > maxX && preferredLeftX >= minX)
 				x = preferredLeftX;
-			if (maxX < minX)
+			if (!barVisible) {
+				if (rightLabelVisible)
+					x = Math.max(minX, Math.min(preferredRightX, maxX));
+				else if (leftLabelVisible)
+					x = Math.max(minX, Math.min(preferredLeftX, maxX));
+				else
+					return;
+			} else if (maxX < minX)
 				x = minX;
 			else if (x < minX || x > maxX)
 				x = Math.max(minX, Math.min(x, maxX));
