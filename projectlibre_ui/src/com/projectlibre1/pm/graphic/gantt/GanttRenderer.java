@@ -100,6 +100,8 @@ import com.projectlibre1.graphic.configuration.BarStyles;
 import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 import com.projectlibre1.graphic.configuration.TexturedShape;
 import com.projectlibre1.graphic.configuration.shape.PredefinedPaint;
+import com.projectlibre1.grouping.core.transform.TransformList;
+import com.projectlibre1.grouping.core.transform.filtering.BaseFilter;
 import com.projectlibre1.options.GanttOption;
 import com.projectlibre1.pm.calendar.CalendarService;
 import com.projectlibre1.pm.calendar.WorkingCalendar;
@@ -107,6 +109,7 @@ import com.projectlibre1.pm.dependency.Dependency;
 import com.projectlibre1.pm.dependency.DependencyType;
 import com.projectlibre1.pm.scheduling.ScheduleInterval;
 import com.projectlibre1.pm.scheduling.Schedule;
+import com.projectlibre1.pm.task.NormalTask;
 import com.projectlibre1.pm.task.Project;
 import com.projectlibre1.pm.task.Task;
 import com.projectlibre1.timescale.CalendarUtil;
@@ -272,6 +275,30 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		return "Bar.task".equals(id) || "Bar.critical".equals(id) || "Bar.assignment".equals(id);
 	}
 
+	private boolean isAssignmentRowsVisible() {
+		BaseFilter filter = (BaseFilter)TransformList.getInstance("hidden_filters").getTransform("Filter.Gantt");
+		return filter != null && filter.isShowAssignments();
+	}
+
+	private boolean shouldSuppressTaskBarForAssignments(GraphicNode node, BarFormat format) {
+		if (!isAssignmentRowsVisible() || node == null || format == null)
+			return false;
+		Object impl = getNodeImpl(node);
+		if (!(impl instanceof NormalTask) || node.isSummary())
+			return false;
+		String formatId = format.getId();
+		if (!"Bar.task".equals(formatId) && !"Bar.critical".equals(formatId))
+			return false;
+		return ((NormalTask)impl).hasRealAssignments();
+	}
+
+	private boolean shouldSuppressTaskAnnotationForAssignments(GraphicNode node) {
+		if (!isAssignmentRowsVisible() || node == null)
+			return false;
+		Object impl = getNodeImpl(node);
+		return impl instanceof NormalTask && !node.isSummary() && ((NormalTask)impl).hasRealAssignments();
+	}
+
 	private Rectangle2D createCapsuleBarBounds(double x, double y, double width, double height) {
 		double safeWidth = Math.max(1.5d, width);
 		double safeHeight = Math.max(2.0d, height);
@@ -390,6 +417,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		public void execute(Object arg0) {
 			format = (BarFormat)arg0;
 			if (format.getLayer()>maxLayer||format.getLayer()<minLayer) return;
+			if (shouldSuppressTaskBarForAssignments(node, format)) return;
 
 
 
@@ -516,6 +544,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 		public void execute(Object arg0) {
 			format = (BarFormat)arg0;
+			if (shouldSuppressTaskAnnotationForAssignments(node))
+				return;
 			Field field=format.getField();
 			if (field==null) return;
 			Object value=getAnnotationValue(field);
