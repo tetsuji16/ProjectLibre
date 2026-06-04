@@ -17,6 +17,12 @@ application {
     mainClass.set("com.projectlibre1.main.Main")
 }
 
+tasks.processResources {
+    from(rootProject.layout.projectDirectory.dir("projectlibre_build/license")) {
+        into("license")
+    }
+}
+
 sourceSets {
     named("test") {
         java.setSrcDirs(listOf("src/test/java"))
