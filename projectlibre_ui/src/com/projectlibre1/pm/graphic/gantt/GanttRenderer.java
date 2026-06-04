@@ -328,8 +328,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		}
 	}
 
-	private Color resolveAnnotationColor(Color fillColor) {
-		return palette.getTextColor(fillColor);
+	private Color resolveAnnotationColor(BarFormat format) {
+		return palette.getAnnotationColor(format);
 	}
 
 	private void paintVerticalMarkerLine(Graphics2D g2, Rectangle bounds, int x, PredefinedPaint paint) {
@@ -538,8 +538,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			else s=FieldConverter.toString(value,value.getClass(),null);
 			if (s==null||s.trim().length()==0) return;
 			component.setText(s); //field.getClazz()?
-			Color statusColor = resolveTaskFillColor(node, format);
-			component.setForeground(resolveAnnotationColor(statusColor));
+			component.setForeground(resolveAnnotationColor(format));
 			int y=yrow+config.getGanttBarYOffset();//+config.getGanttBarAnnotationYOffset();
 			double x0=coord.toX(node.getStart());
 			double x1=coord.toX(node.getEnd());
