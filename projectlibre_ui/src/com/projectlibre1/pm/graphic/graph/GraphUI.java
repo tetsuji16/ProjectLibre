@@ -97,6 +97,10 @@ public class GraphUI extends ComponentUI implements Serializable {
 		return graph;
 	}
 
+	public GraphInteractor getInteractor() {
+		return interactor;
+	}
+
 
 
 

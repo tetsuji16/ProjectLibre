@@ -145,6 +145,10 @@ public abstract class GraphInteractor implements MouseListener, MouseMotionListe
     	return ui.getGraph();
     }
 
+	public Object getSelectedObject() {
+		return selected;
+	}
+
 
 	public void showDependencyPropertiesDialog(GraphicDependency dependency) {
     	if (dependencyPropertiesDialog == null) {

@@ -283,10 +283,13 @@ public class DocumentFrame extends NamedFrame implements
 
 	List getSelectedNodes(boolean excludeReadOnly) {
 		CommonSpreadSheet spreadSheet = getTopSpreadSheet();
-		if (spreadSheet == null)
-			return null;
-		List nodes = spreadSheet.getSelectedNodes();
-		if (nodes.size() == 0)
+		List nodes = null;
+		if (spreadSheet != null) {
+			nodes = spreadSheet.getSelectedNodes();
+		} else if (activeTopView instanceof TreeView) {
+			nodes = ((TreeView) activeTopView).getSelectedNodes();
+		}
+		if (nodes == null || nodes.size() == 0)
 			return null;
 		if (excludeReadOnly) {
 			Iterator i = nodes.iterator();
@@ -303,9 +306,11 @@ public class DocumentFrame extends NamedFrame implements
 
 	Object getSelectedImpl() {
 		CommonSpreadSheet spreadSheet = getTopSpreadSheet();
-		if (spreadSheet == null)
-			return null;
-		return spreadSheet.getCurrentRowImpl();
+		if (spreadSheet != null)
+			return spreadSheet.getCurrentRowImpl();
+		if (activeTopView instanceof TreeView)
+			return ((TreeView) activeTopView).getSelectedImpl();
+		return null;
 	}
 
 	boolean doBaselineDialog(boolean save) {

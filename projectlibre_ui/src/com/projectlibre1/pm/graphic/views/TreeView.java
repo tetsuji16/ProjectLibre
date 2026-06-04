@@ -55,6 +55,9 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
@@ -64,8 +67,10 @@ import com.projectlibre1.help.HelpUtil;
 import com.projectlibre1.menu.MenuActionConstants;
 import com.projectlibre1.menu.MenuManager;
 import com.projectlibre1.pm.graphic.frames.DocumentFrame;
+import com.projectlibre1.pm.graphic.graph.GraphInteractor;
 import com.projectlibre1.pm.graphic.model.cache.NodeModelCache;
 import com.projectlibre1.pm.graphic.model.cache.NodeModelCacheFactory;
+import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.model.cache.ReferenceNodeModelCache;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheet;
 import com.projectlibre1.pm.graphic.xbs.Xbs;
@@ -197,6 +202,33 @@ public class TreeView extends JScrollPane implements BaseView {
 	
 	public NodeModelCache getCache(){
 		return cache;
+	}
+
+	private GraphicNode getSelectedGraphicNode() {
+		if (tree == null || tree.getUI() == null) {
+			return null;
+		}
+		GraphInteractor interactor = tree.getUI().getInteractor();
+		if (interactor == null) {
+			return null;
+		}
+		Object selected = interactor.getSelectedObject();
+		return (selected instanceof GraphicNode) ? (GraphicNode) selected : null;
+	}
+
+	public List getSelectedNodes() {
+		GraphicNode selectedNode = getSelectedGraphicNode();
+		if (selectedNode == null || selectedNode.getNode() == null) {
+			return null;
+		}
+		ArrayList nodes = new ArrayList(1);
+		nodes.add(selectedNode.getNode());
+		return nodes;
+	}
+
+	public Object getSelectedImpl() {
+		GraphicNode selectedNode = getSelectedGraphicNode();
+		return (selectedNode == null || selectedNode.getNode() == null) ? null : selectedNode.getNode().getImpl();
 	}
 	
 
