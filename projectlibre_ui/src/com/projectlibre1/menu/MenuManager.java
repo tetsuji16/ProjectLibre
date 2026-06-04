@@ -77,6 +77,7 @@ import javax.swing.JToolBar;
 import org.apache.batik.util.gui.resource.ActionMap;
 import org.apache.batik.util.gui.resource.ButtonFactory;
 import org.pushingpixels.flamingo.api.common.AbstractCommandButton;
+import org.pushingpixels.flamingo.api.common.JCommandToggleButton;
 import org.pushingpixels.flamingo.api.ribbon.RibbonTask;
 
 import com.projectlibre.ui.ribbon.CustomRibbonBandGenerator;
@@ -230,9 +231,11 @@ public class MenuManager {
 		if (buttons != null) {
 			Iterator i = buttons.iterator();
 			while (i.hasNext()) {
-				AbstractButton button = (AbstractButton)i.next();
-				if (button != null)
-					button.setEnabled(enable);
+				Object button = i.next();
+				if (button instanceof AbstractButton)
+					((AbstractButton)button).setEnabled(enable);
+				else if (button instanceof AbstractCommandButton)
+					((AbstractCommandButton)button).setEnabled(enable);
 			}
 		}
 		JMenuItem menuItem = menuFactory.getMenuItemFromId(id);
@@ -244,9 +247,11 @@ public class MenuManager {
 		if (buttons != null) {
 			Iterator i = buttons.iterator();
 			while (i.hasNext()) {
-				AbstractButton button = (AbstractButton)i.next();
-				if (button != null)
-					button.setVisible(enable);
+				Object button = i.next();
+				if (button instanceof AbstractButton)
+					((AbstractButton)button).setVisible(enable);
+				else if (button instanceof AbstractCommandButton)
+					((AbstractCommandButton)button).setVisible(enable);
 			}
 		}
 		JMenuItem menuItem = menuFactory.getMenuItemFromId(id);
@@ -258,12 +263,14 @@ public class MenuManager {
 		if (buttons != null) {
 			Iterator i = buttons.iterator();
 			while (i.hasNext()) {
-				AbstractButton button = (AbstractButton)i.next();
-				if (button != null) {
-					button.setSelected(enable);
+				Object button = i.next();
+				if (button instanceof AbstractButton) {
+					((AbstractButton)button).setSelected(enable);
 					if (button instanceof JToggleButton) {
 					//	button.setBackground(enable ? Color.GRAY : ExtButtonFactory.BACKGROUND_COLOR);
 					}
+				} else if (button instanceof JCommandToggleButton) {
+					((JCommandToggleButton)button).getActionModel().setSelected(enable);
 				}
 			}
 		}
@@ -280,9 +287,11 @@ public class MenuManager {
 		if (buttons != null) {
 			Iterator i = buttons.iterator();
 			while (i.hasNext()) {
-				AbstractButton button = (AbstractButton)i.next();
-				if (button != null)
-					button.setToolTipText(text);
+				Object button = i.next();
+				if (button instanceof AbstractButton)
+					((AbstractButton)button).setToolTipText(text);
+				else if (button instanceof AbstractCommandButton)
+					((AbstractCommandButton)button).setToolTipText(text);
 			}
 		}
 		JMenuItem menuItem = menuFactory.getMenuItemFromId(id);

@@ -19,6 +19,8 @@ import org.pushingpixels.flamingo.api.common.AbstractCommandButton;
 import org.pushingpixels.flamingo.api.ribbon.AbstractRibbonBand;
 import org.pushingpixels.flamingo.api.ribbon.RibbonTask;
 
+import com.projectlibre1.menu.MenuManager;
+
 class RibbonAndToolbarButtonTest {
 	@Test
 	void standardRibbonButtonsCanBeConstructedInDefaultLocale() throws Exception {
@@ -86,5 +88,19 @@ class RibbonAndToolbarButtonTest {
 				com.projectlibre1.menu.testsupport.MenuDefinitionSupport.hasLocalizedLabel(japaneseBundle, id),
 				() -> id + " is missing Japanese text and tooltip");
 		}
+	}
+
+	@Test
+	void ribbonButtonsCanHaveSelectionStateUpdatedWithoutClassCast() throws Exception {
+		SwingUtilities.invokeAndWait(() -> {
+			MenuManager manager = MenuManager.getInstance(stubActionMap());
+			manager.getRibbon(MenuManager.STANDARD_RIBBON, null);
+			org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> {
+				manager.setActionSelected("Projects", true);
+				manager.setActionSelected("Report", true);
+				manager.setActionEnabled("Projects", true);
+				manager.setActionVisible("Report", true);
+			});
+		});
 	}
 }
