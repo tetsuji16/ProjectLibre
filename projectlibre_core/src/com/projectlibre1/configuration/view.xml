@@ -341,8 +341,8 @@
 		</styles>
 
 		<styles id="Styles.RBS.standard" zoomX="1.25;1.25;*;1.25;1.25" zoomY="1.7;1.25;*;1.25;1.25">
-			<style id="Styles.RBS.Row.resource" formatId="RBS.resource" type="resource" formulaText="true"/>
-			<!--style id="Styles.RBS.Row.summary" formatId="RBS.summary" type="resource" formulaText="resource.summary"/-->
+			<style id="Styles.RBS.Row.resource" formatId="RBS.resource" formulaClass="com.projectlibre1.scripting.formulas.ResourceNodeFormula"/>
+			<style id="Styles.RBS.Row.summary" formatId="RBS.summary" formulaClass="com.projectlibre1.scripting.formulas.SummaryNodeFormula"/>
 			<style id="Styles.showLinks" formatId="Link.link1" type="dependency" link="true"/>
 		</styles>
 
