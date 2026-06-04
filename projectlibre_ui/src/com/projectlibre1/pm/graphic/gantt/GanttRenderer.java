@@ -329,7 +329,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	}
 
 	private Color resolveAnnotationColor(BarFormat format) {
-		return palette.getAnnotationColor(format);
+		return FlatUiSupport.tableForeground();
 	}
 
 	private void paintVerticalMarkerLine(Graphics2D g2, Rectangle bounds, int x, PredefinedPaint paint) {
