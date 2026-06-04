@@ -59,6 +59,7 @@ import java.awt.Graphics2D;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
@@ -122,9 +123,26 @@ public class IconManager {
 		if (url == null)
 			return null;
 		if (url.getPath() != null && url.getPath().toLowerCase(Locale.ROOT).endsWith(".svg")) {
-			try {
-				FlatSVGIcon svgIcon = new FlatSVGIcon(url);
-				BufferedImage image = new BufferedImage(Math.max(1, svgIcon.getIconWidth()), Math.max(1, svgIcon.getIconHeight()), BufferedImage.TYPE_INT_ARGB);
+			try (InputStream in = url.openStream()) {
+				FlatSVGIcon svgIcon = new FlatSVGIcon(in);
+				if (!svgIcon.hasFound())
+					return null;
+				int width = svgIcon.getWidth();
+				int height = svgIcon.getHeight();
+				if (width <= 0)
+					width = svgIcon.getIconWidth();
+				if (height <= 0)
+					height = svgIcon.getIconHeight();
+				if (width <= 0)
+					width = 16;
+				if (height <= 0)
+					height = 16;
+				if (url.getPath() != null && url.getPath().contains("/images/")) {
+					width = 16;
+					height = 16;
+					svgIcon = svgIcon.derive(width, height);
+				}
+				BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g2 = image.createGraphics();
 				try {
 					svgIcon.paintIcon(null, g2, 0, 0);
@@ -139,22 +157,30 @@ public class IconManager {
 		return new ImageIcon(url);
 	}
 
-	public static URL getURL(String key) {
+	private static String getIconName(String key) {
 		ResourceBundle bundle = ResourceBundle
 				.getBundle("com/projectlibre1/pm/graphic/images",Locale.getDefault(),classLoader);
-		String iconName = bundle.getString(key);
-		if (iconName == null)
-			return null;
-		return getIconResource(iconName);
+		return bundle.getString(key);
+	}
+
+	public static URL getURL(String key) {
+		String iconName = getIconName(key);
+		return iconName == null ? null : getIconResource(iconName);
 	}
 	
 	public static ImageIcon getIcon(String key) {
 		ImageIcon icon = (ImageIcon) icons.get(key);
 		if (icon == null) {
-			URL url = getURL(key);
+			String iconName = getIconName(key);
+			URL url = iconName == null ? null : getIconResource(iconName);
 			if (url == null)
 				return null;
 			icon = createImageIcon(url);
+			if (icon == null || icon.getIconWidth() <= 0 || icon.getIconHeight() <= 0) {
+				URL fallbackUrl = getIconResourceWithExtension(iconName, null);
+				if (fallbackUrl != null && !fallbackUrl.equals(url))
+					icon = createImageIcon(fallbackUrl);
+			}
 			icons.put(key, icon);
 		}
 		return icon;
