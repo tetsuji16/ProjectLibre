@@ -56,8 +56,8 @@
 package com.projectlibre1.pm.graphic.spreadsheet.renderer;
 
 import java.awt.Component;
+import java.awt.FlowLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -91,7 +91,7 @@ public class IndicatorsRenderer extends DefaultTableCellRenderer implements Offl
 			//label=(JComponent)super.getTableCellRendererComponent(table,"",isSelected,hasFocus,row,column);
 			//indicatorsComponent.setLook(label,isSelected,hasFocus);
 			if (table!=null) label.setBackground(table.getBackground());
-			label.setLayout(new BoxLayout(label, BoxLayout.X_AXIS));
+			label.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 			StringBuilder text = new StringBuilder();
 			
 			// I would like to also show a gif next to the text as MS does.  unfortunately, this is not doable
@@ -119,8 +119,10 @@ public class IndicatorsRenderer extends DefaultTableCellRenderer implements Offl
 	}
 	
 	public static JLabel getCellHeader() {
-		if (cellHeader == null)
+		if (cellHeader == null) {
 			cellHeader = new JLabel(IconManager.getIcon("infomation.icon"));
+			cellHeader.setHorizontalAlignment(JLabel.CENTER);
+		}
 		return cellHeader;
 			
 	}
