@@ -96,13 +96,13 @@ public final class MondayGanttTheme {
 		if ("Bar.totalSlack".equals(id))
 			return GROUP_A;
 		if ("Bar.critical".equals(id))
-			return STUCK;
+			return statusColor == null ? STUCK : shade(statusColor, 0.18f);
 		if ("Link.link1".equals(id))
 			return GROUP_A;
 		if ("Bar.milestone".equals(id))
 			return GROUP_A;
 		if ("Bar.task".equals(id))
-			return statusColor == STUCK ? STUCK : GROUP_A;
+			return statusColor == null ? GROUP_A : shade(statusColor, 0.18f);
 		return GROUP_A;
 	}
 
