@@ -82,6 +82,9 @@ import com.projectlibre1.session.SessionFactory;
 public class ImageExport {
 	public static void export(final GraphPageable pageable,Component parentComponent) throws IOException{
 		final File file=chooseFile(pageable.getRenderer().getProject().getName(),parentComponent);
+		if (file == null) {
+			return;
+		}
 		final JobQueue jobQueue=SessionFactory.getInstance().getJobQueue();
 		Job job=new Job(jobQueue,"Image Export","Exporting Image...",true,parentComponent);
 		job.addRunnable(new JobRunnable("Image Export",1.0f){
@@ -143,7 +146,7 @@ public class ImageExport {
     private static SystemFileChooser chooser=null;
     private static FileNameExtensionFilter pdfFilter=null;
     private static FileNameExtensionFilter pngFilter=null;
-    private static File chooseFile(String projectName, Component parentComponent) {
+	private static File chooseFile(String projectName, Component parentComponent) {
     	if (chooser == null){
     		chooser = new SystemFileChooser();
     		chooser.setFileSelectionMode(SystemFileChooser.FILES_ONLY);
@@ -158,10 +161,18 @@ public class ImageExport {
 		chooser.setSelectedFile(new File(projectName+".pdf"));
 		chooser.setFileFilter(pdfFilter);
 		if (chooser.showSaveDialog(parentComponent) == SystemFileChooser.APPROVE_OPTION){
-			File file=chooser.getSelectedFile();
-			if (!file.getName().endsWith(".pdf")/*&&!file.getName().endsWith(".png")*/) file=new File(file.getName()+".pdf"); //add pdf extension if missing
-			return file;
+			return appendPdfExtensionIfMissing(chooser.getSelectedFile());
 		} else return null;
     }
+
+	static File appendPdfExtensionIfMissing(File file) {
+		if (file == null || file.getName().endsWith(".pdf")) {
+			return file;
+		}
+		File parent = file.getParentFile();
+		return parent == null
+			? new File(file.getName()+".pdf")
+			: new File(parent, file.getName()+".pdf");
+	}
 
 }

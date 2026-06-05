@@ -163,19 +163,19 @@ public class ChangeWorkingTimeDialogBox extends AbstractDialog{
 
 
     private void setEditable(boolean editable) {
-    	//TODO this code should be hooked in when calendars are persisted correclty
-//        notEditable.setVisible(!editable);
-//        caution.setVisible(editable);
-//    	sdCalendar.setEnabled(editable);
-//    	unknownWorkingTime.setEnabled(editable);
-//    	defaultWorkingTime.setEnabled(editable);
-//    	nonWorking.setEnabled(editable);
-//    	working.setEnabled(editable);
-//    	for (int i = 0; i < timeStart.length; i++) {
-//    		timeStart[i].setEditable(editable);
-//    		timeEnd[i].setEditable(editable);
-//    	}
-
+    	notEditable.setVisible(!editable);
+    	caution.setVisible(editable);
+    	sdCalendar.setEnabled(editable);
+    	unknownWorkingTime.setEnabled(editable);
+    	defaultWorkingTime.setEnabled(editable);
+    	nonWorking.setEnabled(editable);
+    	working.setEnabled(editable);
+    	for (int i = 0; i < timeStart.length; i++) {
+    		timeStart[i].setEditable(editable);
+    		timeEnd[i].setEditable(editable);
+    		timeStart[i].setEnabled(editable);
+    		timeEnd[i].setEnabled(editable);
+    	}
     }
 	public static ChangeWorkingTimeDialogBox getInstance(Frame owner, Project project, WorkingCalendar cal, List documentCalendars, boolean restrict, UndoController undoController) {
 		return new ChangeWorkingTimeDialogBox(owner, project,cal,documentCalendars, restrict,undoController);
