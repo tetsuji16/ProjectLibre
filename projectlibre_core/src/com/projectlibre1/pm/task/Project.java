@@ -1237,6 +1237,22 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		return fieldContext != null && !isInRange(fieldContext.getStart(),fieldContext.getEnd());
 	}
 
+	private boolean isBaselineFieldHidden(int numBaseline, FieldContext fieldContext) {
+		boolean foundChild = false;
+		Iterator i = childrenToRollup().iterator();
+		while (i.hasNext()) {
+			Object child = i.next();
+			if (!(child instanceof TimeDistributedFields)) {
+				continue;
+			}
+			foundChild = true;
+			if (!((TimeDistributedFields) child).fieldHideBaselineCost(numBaseline, fieldContext)) {
+				return false;
+			}
+		}
+		return !foundChild;
+	}
+
 	public boolean fieldHideCost(FieldContext fieldContext) {
 		return isFieldHidden(fieldContext);
 	}
@@ -1250,10 +1266,10 @@ public class Project implements Document, BelongsToDocument, HasKey, HasPriority
 		return isFieldHidden(fieldContext);
 	}
 	public boolean fieldHideBaselineCost(int numBaseline,FieldContext fieldContext) {
-		return false; //TODO implement
+		return isBaselineFieldHidden(numBaseline,fieldContext);
 	}
 	public boolean fieldHideBaselineWork(int numBaseline,FieldContext fieldContext) {
-		return false; //TODO implement
+		return isBaselineFieldHidden(numBaseline,fieldContext);
 	}
 	public boolean fieldHideAcwp(FieldContext fieldContext) {
 		return isFieldHidden(fieldContext);

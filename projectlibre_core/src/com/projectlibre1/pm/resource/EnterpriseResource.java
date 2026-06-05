@@ -85,6 +85,7 @@ import com.projectlibre1.interval.InvalidValueObjectForIntervalException;
 import com.projectlibre1.pm.assignment.Assignment;
 import com.projectlibre1.pm.assignment.HasAssignments;
 import com.projectlibre1.pm.assignment.HasAssignmentsImpl;
+import com.projectlibre1.pm.assignment.TimeDistributedFields;
 import com.projectlibre1.pm.assignment.timesheet.TimesheetHelper;
 import com.projectlibre1.pm.availability.AvailabilityTable;
 import com.projectlibre1.pm.calendar.CalendarService;
@@ -801,6 +802,22 @@ public class EnterpriseResource implements Resource {
 		return false;
 	}
 
+	private boolean isBaselineFieldHidden(int numBaseline, FieldContext fieldContext) {
+		boolean foundChild = false;
+		Iterator i = childrenToRollup().iterator();
+		while (i.hasNext()) {
+			Object child = i.next();
+			if (!(child instanceof TimeDistributedFields)) {
+				continue;
+			}
+			foundChild = true;
+			if (!((TimeDistributedFields) child).fieldHideBaselineCost(numBaseline, fieldContext)) {
+				return false;
+			}
+		}
+		return !foundChild;
+	}
+
 	public boolean fieldHideCost(FieldContext fieldContext) {
 		return isFieldHidden(fieldContext);
 	}
@@ -814,10 +831,10 @@ public class EnterpriseResource implements Resource {
 		return isFieldHidden(fieldContext);
 	}
 	public boolean fieldHideBaselineCost(int numBaseline,FieldContext fieldContext) {
-		return false; //TODO implement
+		return isBaselineFieldHidden(numBaseline,fieldContext);
 	}
 	public boolean fieldHideBaselineWork(int numBaseline,FieldContext fieldContext) {
-		return false; //TODO implement
+		return isBaselineFieldHidden(numBaseline,fieldContext);
 	}
 	public boolean fieldHideAcwp(FieldContext fieldContext) {
 		return isFieldHidden(fieldContext);
