@@ -91,6 +91,7 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 	private static final String NAME_UNDO_ACTION = "spreadsheet.nameColumnUndo";
 	private static final String NAME_REDO_ACTION = "spreadsheet.nameColumnRedo";
 	protected TableCellEditor editor;
+	private JComponent activeEditorComponent;
 	public SpreadSheetCellEditorAdapter(TableCellEditor editor) {
 		this.editor=editor;
 		
@@ -120,12 +121,17 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 		if (table instanceof SpreadSheet){
 			final SpreadSheet spreadSheet=(SpreadSheet)table;
 			JComponent edit = (component instanceof DateEditor.ExtDateField) ? ((DateEditor.ExtDateField)component).getTextField() : component;
+			activeEditorComponent = edit;
+			installCompositionTracking(edit);
 			installClipboardActions(spreadSheet, edit);
 			if (table.getModel() instanceof SpreadSheetModel && spreadSheet.isNameFieldColumn(column)) {
 				installNameFieldTabActions(spreadSheet, edit);
 			} else {
 				resetNameFieldTabActions(edit);
 			}
+		} else {
+			activeEditorComponent = component;
+			installCompositionTracking(component);
 		}
 		
 		return component;
@@ -265,6 +271,7 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 	 * @see javax.swing.CellEditor#cancelCellEditing()
 	 */
 	public void cancelCellEditing() {
+		activeEditorComponent = null;
 		editor.cancelCellEditing();
 	}
 	/**
@@ -304,6 +311,9 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 	 * @see javax.swing.CellEditor#stopCellEditing()
 	 */
 	public boolean stopCellEditing() {
+		if (activeEditorComponent != null && isCompositionActive(activeEditorComponent))
+			return false;
+		activeEditorComponent = null;
 		return editor.stopCellEditing();
 	}
 	
