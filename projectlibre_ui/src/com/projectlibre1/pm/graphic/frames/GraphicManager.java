@@ -205,6 +205,7 @@ import com.projectlibre1.server.data.DocumentData;
 import com.projectlibre1.session.CreateOptions;
 import com.projectlibre1.session.LoadOptions;
 import com.projectlibre1.session.LocalSession;
+import com.projectlibre1.session.FileHelper;
 import com.projectlibre1.session.SaveOptions;
 import com.projectlibre1.session.Session;
 import com.projectlibre1.session.SessionFactory;
@@ -2063,7 +2064,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 				}
 			});
 
-			if (fileName.endsWith(".pod")){ //$NON-NLS-1$
+			if (FileHelper.isProjectLibreFile(fileName)){ //$NON-NLS-1$
 				boolean localOnlySession = Environment.getStandAlone() || Environment.getUser() == null;
 				opt.setImporter(localOnlySession ? LocalSession.LOCAL_PROJECT_IMPORTER : LocalSession.SERVER_LOCAL_PROJECT_IMPORTER);
 			}else opt.setImporter(LocalSession.MICROSOFT_PROJECT_IMPORTER);
@@ -2131,7 +2132,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 				}
 			});
 		}
-		if (fileName.endsWith(".pod")){ //$NON-NLS-1$
+		if (FileHelper.isProjectLibreFile(fileName)){ //$NON-NLS-1$
 			opt.setFileName(fileName);
 			opt.setImporter(LocalSession.LOCAL_PROJECT_IMPORTER);
 		}

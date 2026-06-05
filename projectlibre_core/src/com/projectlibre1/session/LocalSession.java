@@ -286,7 +286,7 @@ public class LocalSession extends AbstractSession{
     	}
     	opt.setFileName(resolvedFileName);
     	if (opt.getImporter() == null) {
-    		if (resolvedFileName.endsWith(".pod")) {
+    		if (FileHelper.isProjectLibreFile(resolvedFileName)) {
     			opt.setImporter(LOCAL_PROJECT_IMPORTER);
     		} else {
     			opt.setImporter(MICROSOFT_PROJECT_IMPORTER);
@@ -400,7 +400,7 @@ public class LocalSession extends AbstractSession{
 			if (fileName==null) continue;
 			
 			//claur saving mpp as pod was selecting xml exporter
-			if (fileName.endsWith(".pod")){ //$NON-NLS-1$
+			if (FileHelper.isProjectLibreFile(fileName)){ //$NON-NLS-1$
 				opt.setFileName(fileName);
 				opt.setImporter(LocalSession.LOCAL_PROJECT_IMPORTER);
 			}

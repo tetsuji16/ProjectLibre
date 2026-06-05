@@ -60,10 +60,32 @@ public class FileHelper {
 	public static final int PROJECTLIBRE_FILE_TYPE=1;
 	public static final int MSP_FILE_TYPE=101;
 
+	private static boolean hasExtension(String fileName, String extension) {
+		if (fileName == null || extension == null) {
+			return false;
+		}
+		String normalized = fileName.toLowerCase();
+		String suffix = "." + extension.toLowerCase();
+		return normalized.endsWith(suffix);
+	}
+
+	public static boolean isProjectLibreFile(String fileName) {
+		return hasExtension(fileName, DEFAULT_FILE_EXTENSION);
+	}
+
+	public static boolean isMicrosoftProjectFile(String fileName) {
+		return hasExtension(fileName, "xml")
+			|| hasExtension(fileName, "xlsx")
+			|| hasExtension(fileName, "mpp")
+			|| hasExtension(fileName, "mpx")
+			|| hasExtension(fileName, "planner");
+	}
+
     public static boolean isFileNameAllowed(String fileName,boolean save) {
-		String n = fileName.toLowerCase();
-    	if (save) return n.endsWith(".xml")||n.endsWith(".xlsx")||n.endsWith("."+DEFAULT_FILE_EXTENSION);
-		else return n.endsWith(".xml")||n.endsWith(".xlsx")||n.endsWith(".mpp")||n.endsWith(".mpx")||n.endsWith(".planner")||n.endsWith("."+DEFAULT_FILE_EXTENSION) || n.endsWith(".mpx");
+    	if (save) {
+    		return hasExtension(fileName, "xml") || hasExtension(fileName, "xlsx") || isProjectLibreFile(fileName);
+    	}
+		return isMicrosoftProjectFile(fileName) || isProjectLibreFile(fileName);
 	}
 
     public static String getFileExtension(String fileName) {
@@ -93,10 +115,9 @@ public class FileHelper {
 
     public static int getFileType(String fileName){
     	if (fileName==null) return 0;
-    	fileName=fileName.toLowerCase();
-    	if (fileName.endsWith(DEFAULT_FILE_EXTENSION))
+    	if (isProjectLibreFile(fileName))
     		return PROJECTLIBRE_FILE_TYPE;
-    	if (fileName.endsWith("mpp")||fileName.endsWith("mpx")||fileName.endsWith("xml")||fileName.endsWith("xlsx")||fileName.endsWith("planner"))
+    	if (isMicrosoftProjectFile(fileName))
     			return MSP_FILE_TYPE;
     	return 0;
     }

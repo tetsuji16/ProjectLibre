@@ -87,6 +87,20 @@ val windowsExeDir = windowsReleaseRoot.map { it.dir("exe") }
 val docsDownloadsDir = layout.projectDirectory.dir("docs/downloads")
 val jpackageJavaHomeProvider = providers.environmentVariable("JAVA_HOME")
     .orElse("C:\\Program Files\\Java\\jdk-26.0.1")
+val windowsRuntimeModules = listOf(
+    "java.compiler",
+    "java.datatransfer",
+    "java.desktop",
+    "java.logging",
+    "java.naming",
+    "java.prefs",
+    "java.scripting",
+    "java.sql",
+    "java.xml",
+    "java.xml.crypto",
+    "jdk.charsets",
+    "jdk.unsupported"
+)
 
 tasks.register<Sync>("prepareWindowsReleaseInput") {
     group = "distribution"
@@ -157,7 +171,7 @@ tasks.register<Exec>("packageWindowsAppImage") {
             "--main-class", "com.projectlibre1.main.Main",
             "--icon", File(inputDir, "projectlibre.ico").absolutePath,
             "--license-file", File(inputDir, "license.txt").absolutePath,
-            "--add-modules", "java.compiler,java.datatransfer,java.desktop,java.logging,java.naming,java.prefs,java.sql,java.xml,jdk.charsets",
+            "--add-modules", windowsRuntimeModules.joinToString(","),
             "--dest", windowsAppImageDir.get().asFile.absolutePath,
             "--verbose"
         )
@@ -187,7 +201,7 @@ tasks.register<Exec>("packageWindowsMsi") {
             "--main-class", "com.projectlibre1.main.Main",
             "--icon", File(inputDir, "projectlibre.ico").absolutePath,
             "--license-file", File(inputDir, "license.txt").absolutePath,
-            "--add-modules", "java.compiler,java.datatransfer,java.desktop,java.logging,java.naming,java.prefs,java.sql,java.xml,jdk.charsets",
+            "--add-modules", windowsRuntimeModules.joinToString(","),
             "--jlink-options", "--strip-native-commands --strip-debug --no-man-pages --no-header-files --compress zip-9",
             "--dest", windowsMsiDir.get().asFile.absolutePath,
             "--file-associations", File(inputDir, "mpp.properties").absolutePath,
@@ -224,7 +238,7 @@ tasks.register<Exec>("packageWindowsExe") {
             "--main-class", "com.projectlibre1.main.Main",
             "--icon", File(inputDir, "projectlibre.ico").absolutePath,
             "--license-file", File(inputDir, "license.txt").absolutePath,
-            "--add-modules", "java.compiler,java.datatransfer,java.desktop,java.logging,java.naming,java.prefs,java.sql,java.xml,jdk.charsets",
+            "--add-modules", windowsRuntimeModules.joinToString(","),
             "--win-menu",
             "--win-shortcut",
             "--win-dir-chooser",
@@ -232,6 +246,24 @@ tasks.register<Exec>("packageWindowsExe") {
             "--dest", windowsExeDir.get().asFile.absolutePath
         )
     }
+}
+
+tasks.register<JavaExec>("verifyPackagedFileImports") {
+    group = "verification"
+    description = "Loads sample MPP and POD files with the same limited modules as the packaged app."
+    dependsOn(":projectlibre_ui:installDist", ":projectlibre_ui:compileTestJava")
+
+    val uiSourceSets = project(":projectlibre_ui").extensions.getByType<SourceSetContainer>()
+    val uiTestOutput = uiSourceSets.named("test").map { it.output }
+    val uiTestRuntimeClasspath = uiSourceSets.named("test").map { it.runtimeClasspath }
+
+    classpath = files(uiTestOutput, uiTestRuntimeClasspath)
+    mainClass.set("com.projectlibre1.integration.PackagedImportSmokeMain")
+    args(
+        file("sample data/Commercial construction project plan.mpp").absolutePath,
+        file("sample data/Commercial construction project plan.pod").absolutePath
+    )
+    jvmArgs("--limit-modules", windowsRuntimeModules.joinToString(","))
 }
 
 tasks.register<Zip>("packageWindowsZip") {
