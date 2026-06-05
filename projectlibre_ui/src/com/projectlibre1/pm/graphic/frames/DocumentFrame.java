@@ -698,7 +698,7 @@ public class DocumentFrame extends NamedFrame implements
 		try {
 			if (reportView == null) {
 				try {
-					ClassUtils.forName("net.sf.jasperreports.compilers.JRBshCompiler");
+					ClassUtils.forName("net.sf.jasperreports.engine.JasperCompileManager");
 				} catch (ClassNotFoundException missingCompiler) {
 					return null;
 				}

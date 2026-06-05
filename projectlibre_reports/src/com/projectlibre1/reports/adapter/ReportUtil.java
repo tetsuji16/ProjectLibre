@@ -59,8 +59,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import net.sf.jasperreports.compilers.JRBshCompiler;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
@@ -95,12 +95,13 @@ public class ReportUtil {
 	private static InputStream openReport(String fileName) {
 		String urlName = REPORT_ROOT + fileName;
 		URL url = ClassLoaderUtils.getLocalClassLoader().getResource(urlName);
+		if (url == null) {
+			throw new IllegalArgumentException("Report definition not found on classpath: " + urlName);
+		}
 		try {
 			return url.openStream();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
+			throw new IllegalStateException("Unable to open report definition: " + urlName, e);
 		}
 	}
 	
@@ -112,8 +113,13 @@ public class ReportUtil {
 			
 			if(null != reportDefinition.getFile()) {
 				// regular jrxml file
-				InputStream reportDefinitionStream = openReport(reportDefinition.getFile());
-				jasperDesign = JRXmlLoader.load(reportDefinitionStream);
+				try (InputStream reportDefinitionStream = openReport(reportDefinition.getFile())) {
+					jasperDesign = JRXmlLoader.load(reportDefinitionStream);
+				} catch (IllegalArgumentException | IllegalStateException e) {
+					throw new JRException("Unable to load report definition " + reportDefinition.getFile(), e);
+				} catch (IOException e) {
+					throw new JRException("Unable to close report definition " + reportDefinition.getFile(), e);
+				}
 			} else {
 				// jasper design made by ReportAdapter
 				ReportAdapter reportAdapter = new ReportAdapter(reportDefinition);
@@ -129,10 +135,7 @@ public class ReportUtil {
 			//		}
 
 		
-			// for running in webstart, need to use bsh compiler
-			JRBshCompiler theCompiler = new JRBshCompiler();
-			report = theCompiler.compileReport(jasperDesign);
-		//	report = JasperCompileManager.compileReport(reportDefinitionStream);
+			report = JasperCompileManager.compileReport(jasperDesign);
 			
 			reportDefinition.setReportObject(report,columns);
 		}

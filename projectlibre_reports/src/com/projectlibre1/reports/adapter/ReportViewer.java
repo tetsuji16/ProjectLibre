@@ -70,7 +70,6 @@ public class ReportViewer extends JRViewer {
 	 */
 	public ReportViewer(JasperPrint arg0) throws JRException {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

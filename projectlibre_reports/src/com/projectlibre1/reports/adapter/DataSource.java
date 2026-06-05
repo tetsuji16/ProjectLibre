@@ -67,6 +67,7 @@ import com.projectlibre1.field.Field;
 import com.projectlibre1.field.FieldContext;
 import com.projectlibre1.field.ObjectRef;
 import com.projectlibre1.grouping.core.Node;
+import com.projectlibre1.grouping.core.model.NodeModel;
 import com.projectlibre1.grouping.core.model.NodeModelDataFactory;
 import com.projectlibre1.grouping.core.model.WalkersNodeModel;
 import com.projectlibre1.grouping.core.transform.filtering.PredicatedNodeFilterIterator;
@@ -188,7 +189,9 @@ public class DataSource implements JRDataSource, ObjectRef {
 		return null;
 	}
 	public NodeModelDataFactory getDataFactory() {
-		// TODO Auto-generated method stub
+		if (nodeModel instanceof NodeModel) {
+			return ((NodeModel)nodeModel).getDataFactory();
+		}
 		return null;
 	}
 

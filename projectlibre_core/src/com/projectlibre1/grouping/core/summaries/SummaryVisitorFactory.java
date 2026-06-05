@@ -69,12 +69,28 @@ import com.projectlibre1.strings.Messages;
  *
  */
 public class SummaryVisitorFactory implements SummaryNames {
+	private static final SummaryVisitor NULL_SUMMARY_VISITOR = new SummaryVisitor() {
+		public Object getSummary() {
+			return null;
+		}
+
+		public void addToSummary(Object value) {
+		}
+
+		public void reset() {
+		}
+	};
 	
 	public static SummaryVisitor getInstance(int type, Class clazz, boolean forceDeep) {
-		//TODO implement this	
-	    
 		if (type==SAME){
 		    return new ShallowChildWalker(new Same());
+		}
+		if (type == THIS) {
+			return new NodeWalker(new ThisValueSummaryVisitor()) {
+				public void execute(Object arg0) {
+					visitor.execute(arg0);
+				}
+			};
 		}
 
 	    
@@ -94,6 +110,8 @@ public class SummaryVisitorFactory implements SummaryNames {
 					return new LeafWalker(new Minimum());
 				case COUNT_ALL:
 					return new DeepChildWalker(new Count(),true);
+				case COUNT_NONSUMMARIES:
+					return new CountNonsummariesWalker(new Count());
 				case SUM:
 					if (forceDeep)
 						return new DeepChildWalker(new Sum(),true);
@@ -108,11 +126,10 @@ public class SummaryVisitorFactory implements SummaryNames {
 				case LIST:
 					return new LeafWalker(new ConcatTextSummaryVisitor());
 				case NONE:
-				case THIS:
 				default:	
 			}
 		}
-		return null;
+		return NULL_SUMMARY_VISITOR;
 	}
 
 
