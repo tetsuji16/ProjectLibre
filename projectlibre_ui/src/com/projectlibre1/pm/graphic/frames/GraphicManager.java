@@ -152,6 +152,7 @@ import com.projectlibre1.dialog.TaskInformationDialog;
 import com.projectlibre1.dialog.TipOfTheDay;
 import com.projectlibre1.dialog.WelcomeDialog;
 import com.projectlibre1.dialog.assignment.AssignmentDialog;
+import com.projectlibre1.dialog.assignment.TimesheetDialog;
 import com.projectlibre1.dialog.options.CalendarDialogBox;
 import com.projectlibre1.document.Document;
 import com.projectlibre1.document.ObjectEvent;
@@ -1116,6 +1117,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		actionsMap.addHandler(ACTION_INFORMATION, new InformationAction());
 		actionsMap.addHandler(ACTION_NOTES, new NotesAction());
 		actionsMap.addHandler(ACTION_ASSIGN_RESOURCES, new AssignResourcesAction());
+		actionsMap.addHandler(ACTION_TIMESHEET, new TimesheetAction());
 
 		actionsMap.addHandler(ACTION_FIND, new FindAction());
 		actionsMap.addHandler(ACTION_GOTO, new GoToAction());
@@ -1369,6 +1371,14 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		public void actionPerformed(ActionEvent arg0) {
 			setMeAsLastGraphicManager();
 			showAssignmentDialog(getCurrentFrame());
+		}
+	}
+
+	public class TimesheetAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			showTimesheetDialog(getCurrentFrame());
 		}
 	}
 
@@ -2264,6 +2274,28 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
         assignResourcesDialog.setVisible(true);
     }
 
+    public void showTimesheetDialog(DocumentFrame documentFrame) {
+		if (documentFrame == null || documentFrame.getProject() == null)
+			return;
+
+		documentFrame.finishAnyOperations();
+		TimesheetDialog dialog = new TimesheetDialog(documentFrame, getSelectedResourcesForTimesheet(documentFrame));
+		dialog.pack();
+		dialog.setLocationRelativeTo(documentFrame);
+		dialog.setVisible(true);
+    }
+
+    private List getSelectedResourcesForTimesheet(DocumentFrame documentFrame) {
+		ArrayList selectedResources = new ArrayList();
+		List selectedImpls = documentFrame.getSelectedImpls(false);
+		for (int i = 0; i < selectedImpls.size(); i++) {
+			Object impl = selectedImpls.get(i);
+			if (impl instanceof Resource)
+				selectedResources.add(impl);
+		}
+		return selectedResources;
+    }
+
 
 	void doCalendarOptionsDialog() {
 		finishAnyOperations();
@@ -2431,6 +2463,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		getMenuManager().setActionEnabled(ACTION_LINK,isTask);
 		getMenuManager().setActionEnabled(ACTION_UNLINK,isTask);
 		getMenuManager().setActionEnabled(ACTION_ASSIGN_RESOURCES,isTask && writable);
+		getMenuManager().setActionEnabled(ACTION_TIMESHEET,!readOnly && project != null);
 		getMenuManager().setActionEnabled(ACTION_DELEGATE_TASKS,isTask && writable);
 		getMenuManager().setActionEnabled(ACTION_UPDATE_TASKS,!readOnly && isTask);
 

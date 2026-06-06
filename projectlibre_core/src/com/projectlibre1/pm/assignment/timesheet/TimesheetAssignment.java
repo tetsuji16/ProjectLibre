@@ -179,7 +179,7 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 		return taskUniqueId+"";
 	}
 	public String getResourceName() {
-		return null;
+		return assignment == null || assignment.getResource() == null ? null : assignment.getResource().getName();
 	}
 	public String getResourceId() {
 		return resourceUniqueId+"";

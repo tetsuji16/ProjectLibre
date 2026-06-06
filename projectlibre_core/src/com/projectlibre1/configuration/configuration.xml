@@ -509,6 +509,14 @@
 
 
 		</class>
+		<class name="com.projectlibre1.pm.assignment.timesheet.UpdatesFromTimesheet">
+			<field property="lastTimesheetUpdate" id="Field.lastTimesheetUpdate"
+				date="true" readOnly="true" />
+			<field property="pendingTimesheetUpdate" id="Field.pendingTimesheetUpdate"
+				readOnly="true" />
+			<field property="timesheetStatusName" id="Field.timesheetStatus"
+				readOnly="true" />
+		</class>
 
 		<class name="com.projectlibre1.pm.assignment.HasRequestDemandType">
 			<field property="requestDemandType"

@@ -231,6 +231,8 @@ public class SpreadSheetUtils {
 			return FieldDictionary.getInstance().getTaskAndAssignmentFields();
 		} else if (category.equals(SpreadSheetCategories.resourceAssignmentSpreadsheetCategory)) {
 			return FieldDictionary.getInstance().getResourceAndAssignmentFields();
+		} else if (category.equals(SpreadSheetCategories.timesheetSpreadsheetCategory)) {
+			return FieldDictionary.getInstance().getAssignmentFields();
 		} else if (category.equals("assignmentEntrySpreadsheet")) {
 			return FieldDictionary.getInstance().getAssignmentFields();
 		} else if (category.equals(SpreadSheetCategories.dependencySpreadsheetCategory)) {

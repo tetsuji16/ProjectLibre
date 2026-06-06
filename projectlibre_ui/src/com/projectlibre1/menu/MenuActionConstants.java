@@ -136,6 +136,7 @@ public interface MenuActionConstants {
 
 	public static final String ACTION_CHANGE_WORKING_TIME     = "ChangeWorkingTime";
 	public static final String ACTION_ASSIGN_RESOURCES        = "AssignResources";
+	public static final String ACTION_TIMESHEET               = "Timesheet";
 	public static final String ACTION_LEVEL_RESOURCES         = "LevelResources";
 	public static final String ACTION_TRACKING                = "Tracking";
 	public static final String ACTION_OPTIONS                 = "Options";

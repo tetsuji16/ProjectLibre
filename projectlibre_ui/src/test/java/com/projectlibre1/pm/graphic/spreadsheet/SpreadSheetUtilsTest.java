@@ -16,5 +16,7 @@ class SpreadSheetUtilsTest {
 			SpreadSheetUtils.getFieldsForCategory(SpreadSheetCategories.taskAssignmentSpreadsheetCategory));
 		assertSame(dictionary.getResourceAndAssignmentFields(),
 			SpreadSheetUtils.getFieldsForCategory(SpreadSheetCategories.resourceAssignmentSpreadsheetCategory));
+		assertSame(dictionary.getAssignmentFields(),
+			SpreadSheetUtils.getFieldsForCategory(SpreadSheetCategories.timesheetSpreadsheetCategory));
 	}
 }

@@ -784,6 +784,36 @@
 			<column>Field.assignmentEntryName</column>
 		</columns>
 	</spreadsheet>
+	<spreadsheet id="Spreadsheet.Timesheet.completion" category="timesheetSpreadsheet" actionListId="ActionList.resource">
+		<columns>
+			<column>Field.assignmentResourceName</column>
+			<column>Field.assignmentTaskName</column>
+			<column>Field.assignmentProjectName</column>
+			<column>Field.actualWork</column>
+			<column>Field.remainingWork</column>
+			<column>Field.percentComplete</column>
+			<column>Field.timesheetStatus</column>
+			<column>Field.lastTimesheetUpdate</column>
+		</columns>
+	</spreadsheet>
+	<spreadsheet id="Spreadsheet.ResourceTimesheet.status" category="timesheetSpreadsheet" actionListId="ActionList.resource">
+		<columns>
+			<column>Field.assignmentResourceName</column>
+			<column>Field.assignmentTaskName</column>
+			<column>Field.assignmentProjectName</column>
+			<column>Field.timesheetStatus</column>
+			<column>Field.lastTimesheetUpdate</column>
+		</columns>
+	</spreadsheet>
+	<spreadsheet id="Spreadsheet.TaskTimesheet.status" category="timesheetSpreadsheet" actionListId="ActionList.task">
+		<columns>
+			<column>Field.assignmentTaskName</column>
+			<column>Field.assignmentResourceName</column>
+			<column>Field.assignmentProjectName</column>
+			<column>Field.timesheetStatus</column>
+			<column>Field.lastTimesheetUpdate</column>
+		</columns>
+	</spreadsheet>
 	<spreadsheet id="Spreadsheet.Project.default" category="projectSpreadsheet" actionListId="ActionList.project">
 		<columns>
 			<column>Field.id</column>
