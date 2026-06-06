@@ -85,6 +85,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
@@ -1737,9 +1738,22 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent arg0) {
 			setMeAsLastGraphicManager();
-			
+			Preferences pref = Preferences.userNodeForPackage(ConfigurationFile.class);
+			String previousLocale = pref.get("locale", "default");
 			LocaleDialog localeDialog = LocaleDialog.getInstance(getGraphicManager());
-			localeDialog.doModal();
+			if (!localeDialog.doModal()) {
+				return;
+			}
+			String currentLocale = pref.get("locale", "default");
+			if (Objects.equals(previousLocale, currentLocale)) {
+				return;
+			}
+			Locale.setDefault(ConfigurationFile.getLocale(currentLocale));
+			Messages.reset();
+			StartupFactory startupFactory = getStartupFactory();
+			if (startupFactory != null) {
+				startupFactory.restart(GraphicManager.this);
+			}
 		}
 	}
 

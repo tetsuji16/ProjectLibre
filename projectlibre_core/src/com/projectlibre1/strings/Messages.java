@@ -177,6 +177,17 @@ public class Messages {
 		return result;
 
 	}
+
+	public static void reset() {
+		lock.lock();
+		try {
+			bundles = null;
+			metaBundle = null;
+			ResourceBundle.clearCache(ClassLoaderUtils.getLocalClassLoader());
+		} finally {
+			lock.unlock();
+		}
+	}
     public static Properties getTipProperties() {
     	return getProperties(bundles.get(1));
     }
