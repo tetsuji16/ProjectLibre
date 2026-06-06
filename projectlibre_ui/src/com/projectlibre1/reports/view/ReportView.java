@@ -282,6 +282,9 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 		documentFrame.showWaitCursor(false);
 
 	}
+	private Float getCurrentZoomRatio() {
+		return (viewer != null) ? Float.valueOf(viewer.getZoomRatio()) : pendingZoomRatio;
+	}
 	
 	private JPanel header() {
 		JPanel panel = new JPanel();
@@ -357,11 +360,13 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 	}
 
 	public void zoomIn() {
-		viewer.zoomIn();
+		if (viewer != null)
+			viewer.zoomIn();
 	}
 
 	public void zoomOut() {
-		viewer.zoomOut();
+		if (viewer != null)
+			viewer.zoomOut();
 	}
 	public boolean canZoomIn() {
 		return true;
@@ -418,7 +423,7 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 			ws.reportName = reportDefinition.getName();
 		if (fieldArray != null)
 			ws.fieldArrayName = fieldArray.toString();
-		ws.zoomRatio = (viewer != null) ? Float.valueOf(viewer.getZoomRatio()) : pendingZoomRatio;
+		ws.zoomRatio = getCurrentZoomRatio();
 		return ws;
 	}
 

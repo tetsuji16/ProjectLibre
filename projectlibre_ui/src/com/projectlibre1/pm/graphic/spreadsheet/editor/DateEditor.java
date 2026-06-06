@@ -63,8 +63,6 @@ import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-
 import net.sf.nachocalendar.components.DateField;
 import net.sf.nachocalendar.table.DateFieldTableEditor;
 
@@ -111,14 +109,7 @@ public class DateEditor extends DateFieldTableEditor {
 		}
 		
 		public void selectAll(boolean keyboard) { // convenience method
-			getTextField().selectAll();
-			if (!keyboard) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						if (getTextField().isFocusOwner())
-							getTextField().selectAll();
-					}});
-			}
+			EditorSelectionSupport.selectAllWithOptionalRefocus(getTextField(), keyboard);
 		}
 		public String toString() {
 			return getTextField().getText();

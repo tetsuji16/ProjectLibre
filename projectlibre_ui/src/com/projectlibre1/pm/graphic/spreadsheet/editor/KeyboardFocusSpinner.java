@@ -82,15 +82,7 @@ public class KeyboardFocusSpinner extends JSpinner  implements KeyboardFocusable
 
 		
 		public void selectAll(boolean keyboard) { // convenience method
-			getTextField().selectAll();
-			if (!keyboard) {
-				javax.swing.SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						if (getTextField().isFocusOwner())
-							getTextField().selectAll();
-					}
-				});
-			}
+			EditorSelectionSupport.selectAllWithOptionalRefocus(getTextField(), keyboard);
 		}
 		
 		JFormattedTextField getTextField() { // convenience method
