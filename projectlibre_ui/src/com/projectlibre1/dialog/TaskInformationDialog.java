@@ -398,7 +398,7 @@ public class TaskInformationDialog extends InformationDialog {
         							,false
 									,"View.TaskInformation.Assignments" //$NON-NLS-1$
 									,UsageDetailView.resourceAssignmentSpreadsheetCategory
-									,"Spreadsheet.Assignment.resourceUsage" //$NON-NLS-1$
+									,UsageDetailView.getUsageAssignmentSpreadsheetId(false)
 									,true
 									//, 0
 									,new String[]{MenuActionConstants.ACTION_DELETE}

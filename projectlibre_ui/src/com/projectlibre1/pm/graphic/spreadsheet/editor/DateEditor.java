@@ -55,9 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.editor;
 
-import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DateFormat;
@@ -65,7 +63,6 @@ import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
 import net.sf.nachocalendar.components.DateField;
@@ -105,15 +102,6 @@ public class DateEditor extends DateFieldTableEditor {
 			});
 			
 		}
-		protected boolean processKeyBinding(KeyStroke arg0, KeyEvent arg1, int arg2, boolean arg3) {
-			char keyChar = arg0.getKeyChar();
-			if (Character.isDefined(keyChar) && keyChar != '\n') {
-				getTextField().dispatchEvent(arg1);
-				return true; // stop routing
-			}
-			return super.processKeyBinding(arg0, arg1, arg2, arg3);
-		}
-
 		public void requestFocus() { // override default needed otherwise key handling is wrong (backspace, arrows
 			getTextField().requestFocus();
 		}
@@ -123,13 +111,12 @@ public class DateEditor extends DateFieldTableEditor {
 		}
 		
 		public void selectAll(boolean keyboard) { // convenience method
-			if (keyboard) { // if user typed something
-				getTextField().selectAll();
-			} else { // select later because popup drawing erases selection
-				//TODO there is currently a bug in that if the cell is the active cell and you click to edit, the next is not getting selected
+			getTextField().selectAll();
+			if (!keyboard) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						getTextField().selectAll();
+						if (getTextField().isFocusOwner())
+							getTextField().selectAll();
 					}});
 			}
 		}

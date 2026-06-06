@@ -55,11 +55,8 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.editor;
 
-import java.awt.event.KeyEvent;
-
 import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
-import javax.swing.KeyStroke;
 import javax.swing.SpinnerModel;
 
 /**
@@ -79,18 +76,6 @@ public class KeyboardFocusSpinner extends JSpinner  implements KeyboardFocusable
 
 		}
 		
-		/**
-		 * There is an annoying problem with the first character not being sent to the editor.  The
-		 * code below sends the first dsplayable chararacter to the editor.  Subsequent characters will
-		 * implicitly go to the editor.
-		 */
-		protected boolean processKeyBinding(KeyStroke arg0, KeyEvent arg1, int arg2, boolean arg3) {
-			if (Character.isDefined(arg0.getKeyChar())) {
-				getTextField().dispatchEvent(arg1);
-				return true; // stop routing
-			}
-			return super.processKeyBinding(arg0, arg1, arg2, arg3);
-		}
 		public void requestFocus() { // override default needed otherwise key handling is wrong (backspace, arrows
 			getTextField().requestFocus();
 		}
@@ -98,6 +83,14 @@ public class KeyboardFocusSpinner extends JSpinner  implements KeyboardFocusable
 		
 		public void selectAll(boolean keyboard) { // convenience method
 			getTextField().selectAll();
+			if (!keyboard) {
+				javax.swing.SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if (getTextField().isFocusOwner())
+							getTextField().selectAll();
+					}
+				});
+			}
 		}
 		
 		JFormattedTextField getTextField() { // convenience method

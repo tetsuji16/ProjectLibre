@@ -227,14 +227,15 @@ public class SpreadSheetUtils {
 			return FieldDictionary.getInstance().getTaskFields();
 		} else if (category.equals(SpreadSheetCategories.resourceSpreadsheetCategory)) {
 			return FieldDictionary.getInstance().getResourceFields();
-		} else if (category.equals(SpreadSheetCategories.taskAssignmentSpreadsheetCategory)||category.equals(SpreadSheetCategories.resourceAssignmentSpreadsheetCategory)) {
+		} else if (category.equals(SpreadSheetCategories.taskAssignmentSpreadsheetCategory)) {
+			return FieldDictionary.getInstance().getTaskAndAssignmentFields();
+		} else if (category.equals(SpreadSheetCategories.resourceAssignmentSpreadsheetCategory)) {
+			return FieldDictionary.getInstance().getResourceAndAssignmentFields();
+		} else if (category.equals("assignmentEntrySpreadsheet")) {
 			return FieldDictionary.getInstance().getAssignmentFields();
 		} else if (category.equals(SpreadSheetCategories.dependencySpreadsheetCategory)) {
 			return FieldDictionary.getInstance().getDependencyFields();
 		}
-		//TODO resource usage should use resource and assignment fields, and task usage should do task and assignment fields
-
-
 		return null;
 
 	}

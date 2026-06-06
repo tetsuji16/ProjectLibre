@@ -83,9 +83,18 @@ public class ReportViewer extends JRViewer {
 	}
 	
 	public void zoomIn() {
-		viewerContext.setZoomRatio(Math.min(viewerContext.getZoom() * 1.1f, 4.0f));
+		viewerContext.setZoomRatio(clampZoomRatio(viewerContext.getZoom() * 1.1f));
 	}
 	public void zoomOut() {
-		viewerContext.setZoomRatio(Math.max(viewerContext.getZoom() / 1.1f, 0.1f));
+		viewerContext.setZoomRatio(clampZoomRatio(viewerContext.getZoom() / 1.1f));
+	}
+	public float getZoomRatio() {
+		return viewerContext.getZoom();
+	}
+	public void setZoomRatio(float zoomRatio) {
+		viewerContext.setZoomRatio(clampZoomRatio(zoomRatio));
+	}
+	static float clampZoomRatio(float zoomRatio) {
+		return Math.max(0.1f, Math.min(zoomRatio, 4.0f));
 	}
 }

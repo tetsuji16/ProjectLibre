@@ -149,6 +149,12 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 		super.init();
 		// cache.update(); //this is not required by certain views
 	}
+	public static String getUsageAssignmentSpreadsheetId(boolean taskUsage) {
+		return taskUsage ? "Spreadsheet.Assignment.taskUsage" : "Spreadsheet.Assignment.resourceUsage";
+	}
+	public static String getUsageDistributionSpreadsheetId(boolean taskUsage) {
+		return taskUsage ? "Spreadsheet.TaskUsage.default" : "Spreadsheet.ResourceUsage.default";
+	}
 	public void cleanUp() {
 		super.cleanUp();
 		if (coord != null && timeScrollPane != null) {
@@ -214,15 +220,13 @@ public class UsageDetailView extends SplittedView implements BaseView, FieldArra
 
 	// spreadsheet fields
 	private SpreadSheetFieldArray getFields() {
-		if (taskUsage) return (SpreadSheetFieldArray) Dictionary.get(taskAssignmentSpreadsheetCategory, Messages
-				.getString("Spreadsheet.Assignment.taskUsage")); // TODO don't hardcode
-		else return (SpreadSheetFieldArray) Dictionary.get(resourceAssignmentSpreadsheetCategory, Messages
-				.getString("Spreadsheet.Assignment.resourceUsage")); // TODO don't hardcode
+		String spreadsheetId = getUsageAssignmentSpreadsheetId(taskUsage);
+		String category = taskUsage ? taskAssignmentSpreadsheetCategory : resourceAssignmentSpreadsheetCategory;
+		return (SpreadSheetFieldArray) Dictionary.get(category, spreadsheetId);
 	}
 
 	private SpreadSheetFieldArray getDistributionFields() {
-		return (SpreadSheetFieldArray) Dictionary.get(timeSpreadsheetCategory, Messages.getString(taskUsage ? "Spreadsheet.TaskUsage.default"
-				: "Spreadsheet.ResourceUsage.default")); // TODO don't hardcode
+		return (SpreadSheetFieldArray) Dictionary.get(timeSpreadsheetCategory, getUsageDistributionSpreadsheetId(taskUsage));
 	}
 
 	/**

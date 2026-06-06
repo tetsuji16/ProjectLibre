@@ -131,6 +131,7 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 	NodeModelCache resourceCache = null;
 	private String viewName = DataSourceProvider.TASK_REPORT_VIEW;// initial report is task based
 	private Closure transformerClosure;
+	private Float pendingZoomRatio;
 	/**
 	 * 
 	 */
@@ -211,6 +212,10 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 			return;
 		
 		documentFrame.showWaitCursor(true);
+		Float zoomToApply = pendingZoomRatio;
+		if (zoomToApply == null && viewer != null) {
+			zoomToApply = Float.valueOf(viewer.getZoomRatio());
+		}
 
 		if (cache != null) { // remove old listener
 		    cache.removeNodeModelListener(this);
@@ -263,6 +268,10 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 		} else {
 			viewer =  new ReportViewer(jasperPrint);
 			add(viewer,BorderLayout.CENTER);
+		}
+		if (zoomToApply != null) {
+			viewer.setZoomRatio(zoomToApply.floatValue());
+			pendingZoomRatio = null;
 		}
 		// add new listener
 		if (cache != null) {
@@ -391,6 +400,7 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 
 	public void restoreWorkspace(WorkspaceSetting w, int context) {
 		Workspace ws = (Workspace)w;
+		pendingZoomRatio = ws.zoomRatio;
 		if (ws.reportName != null) {
 			ReportDefinition def = ReportUtil.getFromName(ws.reportName);
 			if (def != null)
@@ -408,14 +418,15 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 			ws.reportName = reportDefinition.getName();
 		if (fieldArray != null)
 			ws.fieldArrayName = fieldArray.toString();
+		ws.zoomRatio = (viewer != null) ? Float.valueOf(viewer.getZoomRatio()) : pendingZoomRatio;
 		return ws;
 	}
 
 	public static class Workspace implements WorkspaceSetting  {
 		private static final long serialVersionUID = -7768176701769503845L;
-		//TODO Zoom not set - a bit of a pain to do
 		String fieldArrayName = null;
 		String reportName = null;
+		Float zoomRatio = null;
 		public String getFieldArrayName() {
 			return fieldArrayName;
 		}
@@ -427,6 +438,12 @@ public class ReportView extends JPanel implements BaseView, CacheListener {
 		}
 		public void setReportName(String reportName) {
 			this.reportName = reportName;
+		}
+		public Float getZoomRatio() {
+			return zoomRatio;
+		}
+		public void setZoomRatio(Float zoomRatio) {
+			this.zoomRatio = zoomRatio;
 		}
 	}
 

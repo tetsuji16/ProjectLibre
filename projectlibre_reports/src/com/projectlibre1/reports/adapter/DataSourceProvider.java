@@ -265,7 +265,7 @@ public class DataSourceProvider implements JRDataSourceProvider {
 			case ASSIGNMENTS:
 			case PREDECESSORS:
 			case SUCCESSORS:
-				throw new JRException("Supreport collection type " + type + " not yet implemented");
+				throw new JRException("Report collectionType " + type + " is not implemented for desktop reports");
 		}
 		dataSource.setTimeBased(timeBased);
 		dataSource.setProject(project);
@@ -379,8 +379,7 @@ public class DataSourceProvider implements JRDataSourceProvider {
 			}
 
 		} catch (JRException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new IllegalStateException("Unable to add timescale columns to report design", e);
 		}
 		return design;
       
