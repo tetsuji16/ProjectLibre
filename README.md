@@ -9,7 +9,6 @@ Current release in this fork:
 Quick links:
 
 - [ProjectLibre GitHub Pages documentation](https://tetsuji16.github.io/ProjectLibre/docs/)
-- [Buy me a coffee](https://www.buymeacoffee.com/tetsuji16)
 
 ![ProjectLibre Gantt view](docs/images/gantt-view-latest.png)
 
