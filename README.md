@@ -6,6 +6,11 @@ Current release in this fork:
 
 - `v0.0.7`
 
+Quick links:
+
+- [ProjectLibre GitHub Pages documentation](https://tetsuji16.github.io/ProjectLibre/docs/)
+- [Buy me a coffee](https://www.buymeacoffee.com/tetsuji16)
+
 ![ProjectLibre Gantt view](docs/images/gantt-view-latest.png)
 
 ## What This Fork Is For
