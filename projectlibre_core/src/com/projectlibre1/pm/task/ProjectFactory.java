@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.task;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -478,11 +479,23 @@ public class ProjectFactory {
 	}
 
 	public int promptForSave(Project project, boolean allowCancel) {
-		String text = Messages.getString("Message.saveProjectBeforeClosing1")+" "+project.getName()+" "+Messages.getString("Message.saveProjectBeforeClosing2");
+		String text = Messages.getString("Message.saveProjectBeforeClosing1")+" "+getDisplayNameForSavePrompt(project)+" "+Messages.getString("Message.saveProjectBeforeClosing2");
 		if (allowCancel)
 			return Alert.confirm(text);
 		else
 			return Alert.confirmYesNo(text);
+	}
+
+	private String getDisplayNameForSavePrompt(Project project) {
+		if (project == null)
+			return Messages.getString("Text.Untitled");
+		String projectName = project.getName();
+		if (projectName != null && projectName.trim().length() > 0)
+			return projectName;
+		String fileName = project.getFileName();
+		if (fileName != null && fileName.trim().length() > 0)
+			return new File(fileName).getName();
+		return Messages.getString("Text.Untitled");
 	}
 
 	/**

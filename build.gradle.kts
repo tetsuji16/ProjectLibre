@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "com.projectlibre"
-version = "0.0.6"
+version = "0.0.7"
 val minimumJavaRelease = 25
 val activeToolchainVersion = maxOf(minimumJavaRelease, JavaVersion.current().majorVersion.toInt())
 
