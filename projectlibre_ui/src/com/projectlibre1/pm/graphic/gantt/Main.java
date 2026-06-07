@@ -71,6 +71,7 @@ import com.projectlibre1.util.FlatLafSupport;
 /**
  *
  */
+@SuppressWarnings("unchecked")
 public class Main {
 	public static void main(String[] args) {
 		FlatLafSupport.ensureInitialized();
@@ -78,7 +79,7 @@ public class Main {
 		System.setProperty("apple.awt.application.name","ProjectLibre");
 		System.setProperty("apple.laf.useScreenMenuBar","true");
 		Locale.setDefault(ConfigurationFile.getLocale());
-		HashMap opts =ApplicationStartupFactory.extractOpts(args);
+		HashMap<String, Object> opts = ApplicationStartupFactory.extractOpts(args);
 		String osName=System.getProperty("os.name").toLowerCase();
 		if (osName.startsWith("linux")){
 			String javaExec=ConfigurationFile.getRunProperty("JAVA_EXE");

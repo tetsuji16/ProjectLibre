@@ -638,19 +638,10 @@ public class BasicRibbonBandUI extends RibbonBandUI {
 		public static void install() {
 			if (instance == null) {
 				instance = new AWTRibbonEventListener();
-				java.security.AccessController
-						.doPrivileged(new java.security.PrivilegedAction<Object>() {
-							@Override
-                            public Object run() {
-								Toolkit
-										.getDefaultToolkit()
-										.addAWTEventListener(
-												instance,
-												AWTEvent.MOUSE_EVENT_MASK
-														| AWTEvent.MOUSE_WHEEL_EVENT_MASK);
-								return null;
-							}
-						});
+				Toolkit.getDefaultToolkit()
+						.addAWTEventListener(instance,
+								AWTEvent.MOUSE_EVENT_MASK
+										| AWTEvent.MOUSE_WHEEL_EVENT_MASK);
 			}
 			instance.installCount++;
 		}

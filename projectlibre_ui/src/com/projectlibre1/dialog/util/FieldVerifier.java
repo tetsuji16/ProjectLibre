@@ -82,6 +82,7 @@ import com.projectlibre1.util.FlatUiSupport;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public class FieldVerifier extends InputVerifier {
 	protected FieldContext context = null;
 	protected Field field;

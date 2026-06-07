@@ -74,15 +74,16 @@ import com.projectlibre1.configuration.Settings;
 import com.projectlibre1.util.Environment;
 import com.projectlibre1.util.FontUtil;
 
+@SuppressWarnings({"deprecation", "unchecked"})
 public class ApplicationStartupFactory extends StartupFactory {
 	private static final Logger logger = Logger.getLogger(ApplicationStartupFactory.class.getName());
 
 	public ApplicationStartupFactory(String args[]){
 		this(ApplicationStartupFactory.extractOpts(args));
 	}
-	public ApplicationStartupFactory(HashMap opts) {
+	public ApplicationStartupFactory(HashMap<String, Object> opts) {
 		try{
-			Class.forName("java.net.CookieHandler").getMethod("setDefault",new Class[]{CookieHandler.class}).invoke(null,new Object[]{null});
+			CookieHandler.setDefault(null);
 		}catch(Exception e){
 			logger.log(Level.FINE, "Failed to reset CookieHandler", e);
 		}
@@ -114,13 +115,15 @@ public class ApplicationStartupFactory extends StartupFactory {
 		}
 
 		Object o=opts.get("fileNames");
-		List fileNames;
+		List<String> fileNames;
 		if (o==null) fileNames=null;
 		else if (o instanceof List){
-			fileNames=(List)o;
+			@SuppressWarnings("unchecked")
+			List<String> typedFileNames = (List<String>) o;
+			fileNames = typedFileNames;
 		}else{
-			fileNames=new ArrayList(1);
-			fileNames.add(o);
+			fileNames=new ArrayList<>(1);
+			fileNames.add((String) o);
 		}
 
 		if (fileNames!=null) projectUrls=(String[])fileNames.toArray(new String[]{});
@@ -189,9 +192,10 @@ public class ApplicationStartupFactory extends StartupFactory {
 		if (o==null) return null;
 		else if (o instanceof String) return (index==0)?((String)o):null;
 		else if (o instanceof List){
-			List lopt=(List)o;
+			@SuppressWarnings("unchecked")
+			List<String> lopt=(List<String>)o;
 			if (index>=lopt.size()) return null;
-			return (String)lopt.get(index);
+			return lopt.get(index);
 		}
 		else return null;
 	}
@@ -199,8 +203,8 @@ public class ApplicationStartupFactory extends StartupFactory {
 //	private void computeOpts(String args[]){
 //		opts = extractOpts(args);
 //	}
-	public static HashMap extractOpts(String args[]){
-		HashMap opts = new HashMap();
+	public static HashMap<String, Object> extractOpts(String args[]){
+		HashMap<String, Object> opts = new HashMap<>();
 		if (args.length==0) return opts;
 		String arg=args[0];
 		if (arg!=null&&arg.length()>1&&(!arg.startsWith("--"))){
@@ -208,7 +212,7 @@ public class ApplicationStartupFactory extends StartupFactory {
 			if (args.length<4) return opts;
 			opts.put("serverUrl",args[0]);
 			if ("login".equals(args[1])){
-				List lopt=new LinkedList();
+				List<String> lopt=new LinkedList<>();
 				lopt.add(args[1]);
 				lopt.add(args[2]);
 				lopt.add(args[3]);
@@ -216,7 +220,7 @@ public class ApplicationStartupFactory extends StartupFactory {
 			}
 		}else{
 			String opt=null,label=null;
-			List lopt=null;
+			List<String> lopt=null;
 			for (int i=0;i<args.length;i++){
 				arg=args[i];
 				if (arg.length()>2&&arg.startsWith("--")){
@@ -246,8 +250,8 @@ public class ApplicationStartupFactory extends StartupFactory {
 	}
 	public void dumpOpts() {
 		System.out.println("opts:");
-		for (Iterator i=opts.keySet().iterator();i.hasNext();){
-			String opt=(String)i.next();
+		for (Iterator<String> i=opts.keySet().iterator();i.hasNext();){
+			String opt=i.next();
 			System.out.println(opt+":");
 			String arg;
 			int index=0;

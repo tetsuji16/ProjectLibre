@@ -59,8 +59,11 @@ import java.awt.Container;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputMethodEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.im.InputContext;
+import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.EventObject;
@@ -126,6 +129,7 @@ import com.projectlibre1.util.FlatUiSupport;
 /**
  *
  */
+@SuppressWarnings("unchecked")
 public class CommonSpreadSheet extends CommonTable implements CacheListener, SavableToWorkspace, Searchable {
 	/**
 	 *
@@ -153,6 +157,7 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		//setSurrendersFocusOnKeystroke(true); //has the side effect of selecting the first character of cell after ENTER keystroke
 		setAutoCreateColumnsFromModel(false);
+		enableInputMethods(true);
 		rowHeader=new SpreadSheetRowHeader(this);
 		rowHeader.setRowHeight(getRowHeight());
 
@@ -326,9 +331,61 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		}
 	}
 
+	private void startEditingFromInputMethod(InputMethodEvent e) {
+		int row = getCurrentRow();
+		int column = getSelectedColumn();
+		if (row < 0 && getRowCount() > 0)
+			row = 0;
+		if (column < 0 && getColumnCount() > 0)
+			column = 0;
+		if (row < 0 || column < 0)
+			return;
+		if (editCellAt(row, column, new StartEditEvent(this, false, null, true))) {
+			final InputMethodEvent editorEvent = copyInputMethodEventForEditor(e);
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					requestEditorFocus();
+					clearEditorText();
+					Component target = getInputMethodTargetComponent();
+					if (target != null && editorEvent != null) {
+						target.dispatchEvent(editorEvent);
+					}
+				}
+			});
+		}
+	}
+
+	private void startEditingForReconversion(KeyEvent e) {
+		int row = getCurrentRow();
+		int column = getSelectedColumn();
+		if (row < 0 && getRowCount() > 0)
+			row = 0;
+		if (column < 0 && getColumnCount() > 0)
+			column = 0;
+		if (row < 0 || column < 0)
+			return;
+		if (editCellAt(row, column, new StartEditEvent(this, false, null, false))) {
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					JTextComponent text = getEditorTextComponent();
+					if (text == null)
+						return;
+					requestEditorFocus();
+					text.selectAll();
+					requestReconversion(text);
+				}
+			});
+		}
+	}
+
 	@Override
 	protected void processKeyEvent(KeyEvent e) {
 		if (e != null && !isEditing()) {
+			if (e.getID() == KeyEvent.KEY_PRESSED && isReconversionKey(e)) {
+				startEditingForReconversion(e);
+				e.consume();
+				return;
+			}
 			if (e.getID() == KeyEvent.KEY_TYPED && shouldStartTypingEdit(e)) {
 				startEditingFromTypedKey(e);
 				e.consume();
@@ -343,6 +400,16 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 		super.processKeyEvent(e);
 	}
 
+	@Override
+	protected void processInputMethodEvent(InputMethodEvent e) {
+		if (e != null && !isEditing() && shouldStartInputMethodEdit(e)) {
+			startEditingFromInputMethod(e);
+			e.consume();
+			return;
+		}
+		super.processInputMethodEvent(e);
+	}
+
 	private boolean shouldStartTypingEdit(KeyEvent e) {
 		if (e == null)
 			return false;
@@ -350,6 +417,39 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			return false;
 		char c = e.getKeyChar();
 		return c != KeyEvent.CHAR_UNDEFINED && !Character.isISOControl(c);
+	}
+
+	private boolean shouldStartInputMethodEdit(InputMethodEvent e) {
+		return e.getID() == InputMethodEvent.INPUT_METHOD_TEXT_CHANGED && e.getText() != null;
+	}
+
+	private boolean isReconversionKey(KeyEvent e) {
+		return e.getKeyCode() == KeyEvent.VK_CONVERT && !e.isControlDown() && !e.isAltDown() && !e.isMetaDown();
+	}
+
+	private InputMethodEvent copyInputMethodEventForEditor(InputMethodEvent event) {
+		Component target = getInputMethodTargetComponent();
+		if (target == null || event == null)
+			return null;
+		AttributedCharacterIterator text = event.getText();
+		return new InputMethodEvent(target, event.getID(), event.getWhen(), text, event.getCommittedCharacterCount(), event.getCaret(), event.getVisiblePosition());
+	}
+
+	private Component getInputMethodTargetComponent() {
+		JTextComponent text = getEditorTextComponent();
+		if (text != null)
+			return text;
+		return editorComp instanceof Component ? (Component)editorComp : null;
+	}
+
+	private void requestReconversion(JTextComponent text) {
+		try {
+			InputContext inputContext = text.getInputContext();
+			if (inputContext != null)
+				inputContext.reconvert();
+		} catch (RuntimeException ignored) {
+			// Some input methods do not expose reconversion; selection remains active for the user's next IME action.
+		}
 	}
 
 	private void seedEditorWithTypedChar(char c) {

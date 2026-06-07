@@ -100,6 +100,7 @@ import com.projectlibre1.strings.Messages;
 /**
  *
  */
+@SuppressWarnings("unchecked")
 public class AssignmentEntryPane extends JScrollPane implements HierarchyListener {
 	private static final long serialVersionUID = 1L;
 	CommonAssignmentDialog dialog;

@@ -93,6 +93,7 @@ import com.projectlibre1.util.DebugUtils;
 import com.projectlibre1.util.Environment;
 import com.projectlibre1.util.VersionUtils;
 
+@SuppressWarnings("deprecation")
 public abstract class StartupFactory {
 	public static final String defaultServerUrl = Settings.SITE_HOME;
 	private static final int NUM_INVALID_LOGINS = 3;

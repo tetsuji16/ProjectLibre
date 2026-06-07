@@ -198,12 +198,16 @@ public class BarFormat implements NamedItem {
 	public ScheduleIntervalGenerator getScheduleIntervalGenerator() {
 		if (intervalGenerator!=null&&scheduleIntervalGenerator==null){
 			try {
-				scheduleIntervalGenerator=(ScheduleIntervalGenerator)Class.forName(intervalGenerator).newInstance();
+				scheduleIntervalGenerator=(ScheduleIntervalGenerator)Class.forName(intervalGenerator).getDeclaredConstructor().newInstance();
 			} catch (InstantiationException e) {
 				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
 			} catch (IllegalAccessException e) {
 				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
-		} catch (ClassNotFoundException e) {
+			} catch (ClassNotFoundException e) {
+				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
+			} catch (NoSuchMethodException e) {
+				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
+			} catch (java.lang.reflect.InvocationTargetException e) {
 				log.log(Level.WARNING, "Failed to create schedule interval generator", e);
 			}
 		}

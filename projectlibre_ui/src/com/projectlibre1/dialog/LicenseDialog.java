@@ -107,14 +107,10 @@ public final class LicenseDialog extends AbstractDialog {
 	}
 
 
-	private JEditorPane createEditorPane(URL url,final int height) {
+	private JEditorPane createEditorPane(URL url,final int fallbackHeight) {
 		JEditorPane pane = null;
 		try {
-			pane = new JEditorPane(url) {
-			       public Dimension getPreferredSize() {
-			    	   return new Dimension(600,height); //TODO there are issues with the size, so i just make it correct here
-			          }
-			};
+			pane = new JEditorPane(url);
 		} catch (Exception e) {
 			if (!validated) {
 				Alert.error(Messages.getString("LicenseDialog.CouldNotLoadExiting")); //$NON-NLS-1$
@@ -128,6 +124,10 @@ public final class LicenseDialog extends AbstractDialog {
 
 		pane.setEditable(false);
 		pane.setAutoscrolls(true);
+		pane.setSize(new Dimension(600, Short.MAX_VALUE));
+		Dimension preferredSize = pane.getPreferredSize();
+		int preferredHeight = preferredSize.height > 0 ? preferredSize.height : fallbackHeight;
+		pane.setPreferredSize(new Dimension(600, preferredHeight));
 		pane.setBounds(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 		pane.addHyperlinkListener(new HyperlinkListener(){
 			public void hyperlinkUpdate(HyperlinkEvent e) {

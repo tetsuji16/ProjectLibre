@@ -138,6 +138,7 @@ import com.projectlibre1.util.BrowserControl;
 /**
  * 
  */
+@SuppressWarnings("unchecked")
 public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 	private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SpreadSheet.class.getName());
 	private static final long serialVersionUID = 5958334223191182318L;
@@ -886,7 +887,7 @@ public class SpreadSheet extends CommonSpreadSheet implements Cloneable {
 					executeAction(MenuActionConstants.ACTION_DELETE);
 				else if (e.getKeyCode() == KeyEvent.VK_F3)
 					GraphicManager.getInstance().doFind(SpreadSheet.this,null);
-				else if (e.getKeyCode() == KeyEvent.VK_F && e.getModifiers()== KeyEvent.CTRL_MASK)
+				else if (e.getKeyCode() == KeyEvent.VK_F && e.isControlDown())
 					GraphicManager.getInstance().doFind(SpreadSheet.this,null);
 
 

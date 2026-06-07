@@ -57,6 +57,7 @@ package com.projectlibre1.exchange;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import com.projectlibre1.pm.calendar.CalendarService;
 import com.projectlibre1.pm.calendar.WorkCalendar;
@@ -75,7 +76,7 @@ public class ImportedCalendarService {
 			instance = new ImportedCalendarService();
 		return instance;
 	}
-	HashMap importedCalendarMap = new HashMap();
+	private final Map<ProjectCalendar, WorkCalendar> importedCalendarMap = new HashMap<ProjectCalendar, WorkCalendar>();
 	public void addImportedCalendar(WorkingCalendar cal, ProjectCalendar mpxCal) {
 		importedCalendarMap.put(mpxCal,cal);
 		CalendarService calendarService=CalendarService.getInstance();
@@ -88,28 +89,28 @@ public class ImportedCalendarService {
 	}
 
 	public WorkCalendar findImportedCalendar(ProjectCalendar mpxCal) {
-		return (WorkCalendar) importedCalendarMap.get(mpxCal);
+		return importedCalendarMap.get(mpxCal);
 	}
 	public ProjectCalendar findImportedMPXCalendar(String name) {
-		Iterator i = importedCalendarMap.keySet().iterator();
+		Iterator<ProjectCalendar> i = importedCalendarMap.keySet().iterator();
 		ProjectCalendar cal;
 		if (name == null)
 			return null;
 		while (i.hasNext()) {
-			cal = (ProjectCalendar)i.next();
+			cal = i.next();
 			if (name.equals(cal.getName()))
 				return cal;
 		}
 		return null;
 	}
 
-	HashMap exportedCalendarMap = new HashMap();
+	private final Map<WorkCalendar, ProjectCalendar> exportedCalendarMap = new HashMap<WorkCalendar, ProjectCalendar>();
 	public void addExportedCalendar(ProjectCalendar mpxCal,WorkingCalendar cal) {
 		exportedCalendarMap.put(cal,mpxCal);
 	}
 
 	public ProjectCalendar findExportedCalendar(WorkCalendar cal) {
-		return (ProjectCalendar) exportedCalendarMap.get(cal);
+		return exportedCalendarMap.get(cal);
 	}
 
 	public static void cleanUp(){

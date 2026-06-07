@@ -88,6 +88,8 @@ Key Gradle entrypoints:
 - `.\gradlew.bat packageWindowsExe`: build the Windows self-contained EXE
 - `.\gradlew.bat publishReleaseToDocs`: publish the split EXE artifacts into local `docs/downloads` scratch space when needed
 
+When you are manually verifying a UI fix, use the installed app layout created by `stageAppDist` / `installDist`, not an older `build/install` copy. See [docs/build-and-run.md](docs/build-and-run.md) for the exact runbook.
+
 The runnable application layout is generated under:
 
 - `projectlibre_ui\build\install\projectlibre_ui`

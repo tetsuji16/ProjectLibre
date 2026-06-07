@@ -91,6 +91,7 @@ import com.projectlibre1.util.FlatUiSupport;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public class ResourceInformationDialog extends InformationDialog {
 	private static final long serialVersionUID = 1L;
 

@@ -171,6 +171,9 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 		return assignment.getWorkContourType();
 	}
 	public void setWorkContourType(int workContourType) {
+		if (assignment != null) {
+			assignment.setWorkContourType(workContourType);
+		}
 	}
 	public long getResourceAvailability() {
 		return assignment.getResourceAvailability();
@@ -202,7 +205,7 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 		assignment.setWork(work,fieldContext);
 	}
 	public boolean isReadOnlyWork(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.isReadOnlyWork(fieldContext);
 	}
 	public double getActualCost(FieldContext fieldContext) {
 		return assignment.getActualCost(fieldContext);
@@ -215,7 +218,7 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 
 	}
 	public boolean isReadOnlyActualWork(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.isReadOnlyActualWork(fieldContext);
 	}
 	public long getRemainingWork(FieldContext fieldContext) {
 		return assignment.getRemainingWork(fieldContext);
@@ -224,7 +227,7 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 		assignment.setRemainingWork(remainingWork,fieldContext);
 	}
 	public boolean isReadOnlyRemainingWork(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.isReadOnlyRemainingWork(fieldContext);
 	}
 	public double getBaselineCost(int numBaseline, FieldContext fieldContext) {
 		return assignment.getBaselineCost(numBaseline,fieldContext);
@@ -233,22 +236,22 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 		return assignment.getBaselineWork(numBaseline,fieldContext);
 	}
 	public boolean fieldHideCost(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.fieldHideCost(fieldContext);
 	}
 	public boolean fieldHideWork(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.fieldHideWork(fieldContext);
 	}
 	public boolean fieldHideBaselineCost(int numBaseline, FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.fieldHideBaselineCost(numBaseline, fieldContext);
 	}
 	public boolean fieldHideBaselineWork(int numBaseline, FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.fieldHideBaselineWork(numBaseline, fieldContext);
 	}
 	public boolean fieldHideActualCost(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.fieldHideActualCost(fieldContext);
 	}
 	public boolean fieldHideActualWork(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.fieldHideActualWork(fieldContext);
 	}
 	public double getFixedCost(FieldContext fieldContext) {
 		return assignment.getFixedCost(fieldContext);
@@ -257,13 +260,13 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 		assignment.setFixedCost(fixedCost,fieldContext);
 	}
 	public boolean isReadOnlyFixedCost(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.isReadOnlyFixedCost(fieldContext);
 	}
 	public double getActualFixedCost(FieldContext fieldContext) {
 		return assignment.getActualFixedCost(fieldContext);
 	}
 	public boolean fieldHideActualFixedCost(FieldContext fieldContext) {
-		return false;
+		return assignment != null && assignment.fieldHideActualFixedCost(fieldContext);
 	}
 	public double getRemainingCost(FieldContext fieldContext) {
 		return assignment.getRemainingCost(fieldContext);
@@ -353,7 +356,16 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 	}
 
 	public boolean applyTimesheet(Collection fieldArray, long timesheetUpdateDate) {
-		return false;
+		if (assignment == null) {
+			return false;
+		}
+		if (assignment.getTimesheetStatus() != TimesheetStatus.VALIDATED) {
+			return false;
+		}
+		assignment.setTimesheetStatus(TimesheetStatus.INTEGRATED);
+		assignment.setLastTimesheetUpdate(timesheetUpdateDate);
+		dirty = false;
+		return true;
 	}
 
 	public boolean isPendingTimesheetUpdate() {
@@ -442,13 +454,13 @@ public class TimesheetAssignment implements Schedule, AssignmentSpecificFields, 
 	}
 
 	public Object backupDetail() {
-		// TODO Auto-generated method stub
-		return null;
+		return assignment == null ? null : assignment.backupDetail();
 	}
 
 	public void restoreDetail(Object source,Object detail,boolean isChild) {
-		// TODO Auto-generated method stub
-		
+		if (assignment != null) {
+			assignment.restoreDetail(source, detail, isChild);
+		}
 	}
 
 	public long getProjectUniqueId() {

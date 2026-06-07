@@ -348,7 +348,7 @@ public class ClassUtils {
 			Boolean value=null;
 			try {
 				Method m=object.getClass().getMethod("isReadOnly", getterParams);
-				if (m!=null) value=(Boolean)m.invoke(object,null);
+				if (m!=null) value=(Boolean)m.invoke(object,new Object[0]);
 			}
 			catch (IllegalArgumentException e) {}
 			catch (IllegalAccessException e) {}

@@ -79,7 +79,7 @@ public class DynamicSelect extends Select implements Finder {
 	
 	public Object[] getKeyArrayWithoutNull() {
 		try {
-			return (Object[]) listMethod.invoke(null, null);
+			return (Object[]) listMethod.invoke(null, new Object[0]);
 		} catch (Exception e) {
 			Field.log.error("error calling keyArrayFromMethod for:" + listMethod);
 			return null;

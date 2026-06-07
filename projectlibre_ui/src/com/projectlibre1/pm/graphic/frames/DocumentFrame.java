@@ -145,7 +145,7 @@ import com.projectlibre1.workspace.WorkspaceSetting;
 /**
  *
  */
-
+@SuppressWarnings("unchecked")
 public class DocumentFrame extends NamedFrame implements
 		SelectionNodeListener, UndoableEditListener, MenuActionConstants, ObjectEvent.Listener, ProjectListener, SavableToWorkspace, ObjectSelectionListener {
 	private static final long serialVersionUID = 2075764134837908178L;
@@ -915,7 +915,7 @@ public class DocumentFrame extends NamedFrame implements
 		boolean same = viewName.equals(lastBottomButton);
 		if (same)
 			return;
-		if (viewName == ACTION_NO_SUB_WINDOW)
+		if (ACTION_NO_SUB_WINDOW.equals(viewName))
 			deactivateBottomView();
 		else {
 			mainView.removeBottom();
@@ -939,7 +939,7 @@ public class DocumentFrame extends NamedFrame implements
 		menuManager.setActionSelected(ACTION_NO_SUB_WINDOW,true);
 		if (lastBottomButton != null)
 			menuManager.setActionSelected(lastBottomButton,false);
-		activeTopView.onActivate(false);
+		activeBottomView.onActivate(false);
 		lastBottomButton = ACTION_NO_SUB_WINDOW;
 		mainView.removeBottom();
 		activeBottomView = null;

@@ -2818,7 +2818,7 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		RootPaneContainer root = (RootPaneContainer)container;
 		InputMap inputMap = root.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-		KeyStroke key = KeyStroke.getKeyStroke(vk, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()); //claur use getMenuShortcutKeyMask so it work on Mac too.
+		KeyStroke key = KeyStroke.getKeyStroke(vk, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()); // use the platform shortcut modifier on all supported JDKs.
 		inputMap.put(key, actionConstant);
 		if (action == null)
 			action = menuManager.getActionFromId(actionConstant);

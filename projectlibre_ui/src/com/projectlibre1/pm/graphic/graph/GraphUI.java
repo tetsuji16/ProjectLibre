@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.graph;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.geom.Line2D;
 import java.awt.geom.PathIterator;
@@ -157,8 +158,17 @@ public class GraphUI extends ComponentUI implements Serializable {
 	public void updateShapes(List nodes){
     	graphRenderer.updateShapes(nodes);
     }
-	public void updateShapes(){
+    public void updateShapes(){
     	graphRenderer.updateShapes();
+    }
+    public void update(Graphics g, JComponent c) {
+    	if (c != null && c.isOpaque()) {
+    		Color oldColor = g.getColor();
+    		g.setColor(c.getBackground());
+    		g.fillRect(0, 0, c.getWidth(), c.getHeight());
+    		g.setColor(oldColor);
+    	}
+    	paint(g, c);
     }
     public void paint(Graphics g, JComponent c) {
     	graphRenderer.paint(g);

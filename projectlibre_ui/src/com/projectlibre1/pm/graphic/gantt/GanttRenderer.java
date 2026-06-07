@@ -76,10 +76,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.swing.CellRendererPane;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 
 import org.apache.commons.collections.Closure;
 
@@ -521,9 +521,10 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		GraphicNode node;
 		Graphics2D g2;
 		protected int yrow;
-		protected JLabel component=new JLabel();
-		protected CellRendererPane rendererPane;
 		FontMetrics fontMetrics;
+		Font annotationFont;
+		Set<String> renderedAnnotationKeys;
+		boolean annotationRenderedForNode;
 
 		public void initialize(Graphics2D g2, GraphicNode node) {
 			this.g2 = g2;
@@ -531,15 +532,10 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			int rowHeight=((GanttParams)graphInfo).getRowHeight();
 			config=((GanttParams)graphInfo).getConfiguration();
 			yrow=node.getRow()*rowHeight;
-
-			if (container!=null){
-				if (rendererPane==null){
-					rendererPane=new CellRendererPane();
-					container.add(rendererPane);
-				}
-			}
-			component.setFont(FlatUiSupport.uiFont());
-			fontMetrics=component.getFontMetrics(component.getFont());
+			annotationFont = FlatUiSupport.uiFont().deriveFont(Font.PLAIN);
+			fontMetrics = g2.getFontMetrics(annotationFont);
+			renderedAnnotationKeys = new HashSet<String>();
+			annotationRenderedForNode = false;
 		}
 
 		public void execute(Object arg0) {
@@ -548,6 +544,11 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 				return;
 			Field field=format.getField();
 			if (field==null) return;
+			if (annotationRenderedForNode)
+				return;
+			String annotationKey = field.getName() + "|" + (format.getId() == null ? "" : format.getId());
+			if (!renderedAnnotationKeys.add(annotationKey))
+				return;
 			Object value=getAnnotationValue(field);
 			if (value==null) return;
 			CoordinatesConverter coord=((GanttParams)graphInfo).getCoord();
@@ -567,58 +568,80 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			}
 			else s=FieldConverter.toString(value,value.getClass(),null);
 			if (s==null||s.trim().length()==0) return;
-			component.setText(s); //field.getClazz()?
-			component.setForeground(resolveAnnotationColor(format));
 			int y=yrow+config.getGanttBarYOffset();//+config.getGanttBarAnnotationYOffset();
 			double x0=coord.toX(node.getStart());
 			double x1=coord.toX(node.getEnd());
 			x1=CoordinatesConverter.adaptSmallBarEndX(x0,x1,node,config);
 
-			int w=fontMetrics.stringWidth(s);//config.getGanttBarAnnotationMaxWidth();
 			int h=config.getGanttBarHeight();
 			int annotationOffset = config.getGanttBarAnnotationXOffset();
-			int preferredRightX=(int)Math.ceil(x1)+annotationOffset;
-			int preferredLeftX=(int)Math.floor(x0)-annotationOffset-w;
 			Rectangle clipBounds = g2.getClipBounds();
 			if (clipBounds == null)
 				clipBounds = ((GanttParams)graphInfo).getGanttBounds();
 			int clipLeft = clipBounds.x;
 			int clipRight = clipBounds.x + clipBounds.width;
+			int estimatedWidth = fontMetrics.stringWidth(s);
+			int preferredRightX=(int)Math.ceil(x1)+annotationOffset;
+			int preferredLeftX=(int)Math.floor(x0)-annotationOffset-estimatedWidth;
 			boolean barVisible = x1 >= clipLeft && x0 <= clipRight;
-			boolean rightLabelVisible = preferredRightX + w >= clipLeft && preferredRightX <= clipRight;
-			boolean leftLabelVisible = preferredLeftX + w >= clipLeft && preferredLeftX <= clipRight;
+			boolean rightLabelVisible = preferredRightX + estimatedWidth >= clipLeft && preferredRightX <= clipRight;
+			boolean leftLabelVisible = preferredLeftX + estimatedWidth >= clipLeft && preferredLeftX <= clipRight;
 			if (!barVisible && !rightLabelVisible && !leftLabelVisible)
 				return;
 			int minX = clipBounds.x + 4;
-			int maxX = clipBounds.x + clipBounds.width - w - 4;
+			int maxTextWidth = Math.max(64, Math.min(180, clipBounds.width / 5));
+			int rightAvailableWidth = Math.min(maxTextWidth, clipRight - preferredRightX - 4);
 			int x = preferredRightX;
-			if (x > maxX && preferredLeftX >= minX)
+			int availableWidth = rightAvailableWidth;
+			if (availableWidth < 24 && preferredLeftX >= minX) {
 				x = preferredLeftX;
-			if (!barVisible) {
-				if (rightLabelVisible)
-					x = Math.max(minX, Math.min(preferredRightX, maxX));
-				else if (leftLabelVisible)
-					x = Math.max(minX, Math.min(preferredLeftX, maxX));
-				else
-					return;
-			} else if (maxX < minX)
-				x = minX;
-			else if (x < minX || x > maxX)
-				x = Math.max(minX, Math.min(x, maxX));
-
-			if (container==null){
-		    	component.setDoubleBuffered(false);
-		    	component.setOpaque(false);
-		    	component.setSize(w,h);
-		    	g2.translate(x,y);
-		    	component.doLayout();
-		    	component.print(g2);
-		    	g2.translate(-x,-y);
+				availableWidth = Math.min(maxTextWidth, clipRight - preferredLeftX - 4);
 			}
-			else rendererPane.paintComponent(g2,component,container,x,y,w,h,true);
+			if (availableWidth <= 0)
+				return;
+			String clipped = clipAnnotationText(s, availableWidth);
+			if (clipped == null || clipped.isEmpty())
+				return;
+			annotationRenderedForNode = true;
+			int rowHeight = ((GanttParams)graphInfo).getRowHeight();
+			int textTop = yrow + Math.max(0, (rowHeight - fontMetrics.getHeight()) / 2);
+			int textBaseline = textTop + fontMetrics.getAscent();
+			int clipHeight = Math.min(rowHeight, Math.max(fontMetrics.getHeight() + 2, h + 2));
+			Rectangle originalClip = g2.getClipBounds();
+			Font oldFont = g2.getFont();
+			Color oldColor = g2.getColor();
+			g2.setFont(annotationFont);
+			g2.setColor(resolveAnnotationColor(format));
+			g2.clipRect(x, textTop, availableWidth, clipHeight);
+			g2.drawString(clipped, x, textBaseline);
+			if (originalClip != null)
+				g2.setClip(originalClip);
+			g2.setFont(oldFont);
+			g2.setColor(oldColor);
+		}
 
-
-
+		private String clipAnnotationText(String text, int availableWidth) {
+			if (text == null)
+				return null;
+			String normalized = text.trim();
+			if (normalized.isEmpty())
+				return normalized;
+			if (availableWidth <= 0)
+				return null;
+			if (fontMetrics.stringWidth(normalized) <= availableWidth)
+				return normalized;
+			String ellipsis = "...";
+			int ellipsisWidth = fontMetrics.stringWidth(ellipsis);
+			if (ellipsisWidth >= availableWidth)
+				return normalized.substring(0, 1);
+			int end = normalized.length();
+			while (end > 1) {
+				String candidate = normalized.substring(0, end) + ellipsis;
+				if (fontMetrics.stringWidth(candidate) <= availableWidth)
+					return candidate;
+				end--;
+			}
+			return normalized.substring(0, 1);
 		}
 
 		private Object getAnnotationValue(Field field) {
@@ -762,10 +785,11 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		int i1=(int)Math.ceil(bounds.getMaxY()/rowHeight);
 
 		GraphicNode node;
-		ListIterator i=((GanttParams)graphInfo).getCache().getIterator(i0);
+		@SuppressWarnings("unchecked")
+		ListIterator<GraphicNode> i=((GanttParams)graphInfo).getCache().getIterator(i0);
 		while (i.hasNext()&&i.nextIndex()<i1){
 			int row=i.nextIndex();
-			node=(GraphicNode)i.next();
+			node=i.next();
 			node.setRow(row);
 			if (!node.isVoid()) updateShape(node);
 		}
@@ -863,8 +887,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			return;
 		int size = PROGRESS_LINE_POINT_SIZE;
 		int half = size / 2;
-		for (Iterator i=nodeList.iterator(); i.hasNext();) {
-			GraphicNode node = (GraphicNode)i.next();
+		for (Iterator<GraphicNode> i=nodeList.iterator(); i.hasNext();) {
+			GraphicNode node = i.next();
 			if (!shouldIncludeInProgressLine(node))
 				continue;
 			Task task = (Task)node.getNode().getImpl();
@@ -883,8 +907,8 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 			return null;
 
 		GeneralPath path = null;
-		for (Iterator i=nodeList.iterator(); i.hasNext();) {
-			GraphicNode node = (GraphicNode)i.next();
+		for (Iterator<GraphicNode> i=nodeList.iterator(); i.hasNext();) {
+			GraphicNode node = i.next();
 			if (!shouldIncludeInProgressLine(node))
 				continue;
 
@@ -1053,7 +1077,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	}
 
 
-	ArrayList nodeList = new ArrayList();
+	ArrayList<GraphicNode> nodeList = new ArrayList<GraphicNode>();
     public void paint(Graphics g) {
     	paint(g,null);
     }
@@ -1100,9 +1124,11 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 //		} //Because row not initialized for some nodes
 
 		NodeModelCache cache=graphInfo.getCache();
-		for (ListIterator i=cache.getIterator(i0);i.hasNext()&&i.nextIndex()<i1;){
+		@SuppressWarnings("unchecked")
+		ListIterator<GraphicNode> i=cache.getIterator(i0);
+		for (;i.hasNext()&&i.nextIndex()<i1;){
 			int row=i.nextIndex();
-			node=(GraphicNode)i.next();
+			node=i.next();
 			node.setRow(row);
 			if (!node.isSchedule()) continue;
 			nodeList.add(node);
@@ -1112,14 +1138,16 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		}
 
 		GraphicDependency dependency;
-		for (Iterator i=cache.getVisibleDependencies().getIterator();i.hasNext();){
-			dependency=(GraphicDependency)i.next();
+		@SuppressWarnings("unchecked")
+		Iterator<GraphicDependency> dependencyIterator = cache.getVisibleDependencies().getIterator();
+		for (;dependencyIterator.hasNext();){
+			dependency=dependencyIterator.next();
 			//if (nodeList.contains(dependency.getPredecessor())||nodeList.contains(dependency.getSuccessor()))
 				paintLink(g2,dependency);
 		}
 
-		for (ListIterator i=nodeList.listIterator();i.hasNext();){
-			node=(GraphicNode)i.next();
+		for (ListIterator<GraphicNode> nodeIterator=nodeList.listIterator();nodeIterator.hasNext();){
+			node=nodeIterator.next();
 			paintNode(g2,node,false);
 		}
 		paintProgressLine(g2);

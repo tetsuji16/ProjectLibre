@@ -97,6 +97,7 @@ import com.projectlibre1.util.Alert;
 import com.projectlibre1.util.DataUtils;
 import com.projectlibre1.util.Environment;
 
+@SuppressWarnings("unchecked")
 public final class AssignmentDialog extends AbstractDialog implements DocumentSelectedEvent.Listener, SelectionNodeListener, ResourceAssigner, ObjectEvent.Listener, CommonAssignmentDialog  {
 	private static final long serialVersionUID = 1L;
 	DocumentFrame documentFrame;

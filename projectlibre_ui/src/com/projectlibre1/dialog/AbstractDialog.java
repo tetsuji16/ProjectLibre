@@ -333,9 +333,10 @@ public abstract class AbstractDialog extends JDialog {
 	}
 
 	// see com.projectlibre1.configuration.configuration.xml for available fieldId
-	public static ComboBoxModel getComboBoxModel(String fieldId) {
+	@SuppressWarnings("unchecked")
+	public static ComboBoxModel<Object> getComboBoxModel(String fieldId) {
 		Object[] options = FieldDictionary.getInstance().getFieldFromId(fieldId).getOptions(null);
-		return new DefaultComboBoxModel(options);
+		return new DefaultComboBoxModel<Object>(options);
 	}
 
 	public ReferenceNodeModelCache getReferenceCache(boolean task) {

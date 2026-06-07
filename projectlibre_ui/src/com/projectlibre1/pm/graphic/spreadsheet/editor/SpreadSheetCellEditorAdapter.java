@@ -291,8 +291,13 @@ public class SpreadSheetCellEditorAdapter implements TableCellEditor {
 			return true;
 		if (event instanceof MouseEvent)
 			return ((MouseEvent)event).getClickCount() >= 2;
-		if (event instanceof KeyEvent)
-			return ((KeyEvent)event).getID() == KeyEvent.KEY_TYPED;
+		if (event instanceof InputMethodEvent)
+			return true;
+		if (event instanceof KeyEvent) {
+			KeyEvent keyEvent = (KeyEvent)event;
+			return keyEvent.getID() == KeyEvent.KEY_TYPED
+				|| (keyEvent.getID() == KeyEvent.KEY_PRESSED && keyEvent.getKeyCode() == KeyEvent.VK_CONVERT);
+		}
 		return true;
 	}
 	/**

@@ -24,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 
-import com.projectlibre1.configuration.Dictionary;
 import com.projectlibre1.field.Field;
 import com.projectlibre1.graphic.configuration.GraphicConfiguration;
 import com.projectlibre1.graphic.configuration.SpreadSheetFieldArray;
@@ -158,22 +157,19 @@ public class TimesheetEntryPane extends JScrollPane {
 
 	private void rebuildTimesheetAssignments() {
 		timesheetAssignments.clear();
-		List resources = resolveResources();
-		for (Iterator i = resources.iterator(); i.hasNext();) {
-			Resource resource = (Resource) i.next();
-			for (Iterator j = resource.getAssignments().iterator(); j.hasNext();) {
-				Assignment liveAssignment = (Assignment) j.next();
-				Assignment timesheetSnapshot = prepareTimesheetSnapshot(liveAssignment);
-				TimesheetAssignment entry = new TimesheetAssignment(
-					liveAssignment.getProjectName(),
-					liveAssignment.getTask().getName(),
-					liveAssignment.getOwningProject().getUniqueId(),
-					liveAssignment.getTask().getUniqueId(),
-					resource.getUniqueId(),
-					timesheetSnapshot,
-					null);
-				timesheetAssignments.add(entry);
-			}
+		for (Iterator i = resolveAssignments().iterator(); i.hasNext();) {
+			Assignment liveAssignment = (Assignment) i.next();
+			Assignment timesheetSnapshot = prepareTimesheetSnapshot(liveAssignment);
+			Resource resource = liveAssignment.getResource();
+			TimesheetAssignment entry = new TimesheetAssignment(
+				liveAssignment.getProjectName(),
+				liveAssignment.getTask().getName(),
+				liveAssignment.getOwningProject().getUniqueId(),
+				liveAssignment.getTask().getUniqueId(),
+				resource == null ? 0 : resource.getUniqueId(),
+				timesheetSnapshot,
+				null);
+			timesheetAssignments.add(entry);
 		}
 		Collections.sort(timesheetAssignments, new Comparator() {
 			public int compare(Object o1, Object o2) {
@@ -190,6 +186,15 @@ public class TimesheetEntryPane extends JScrollPane {
 				return Long.compare(left.getCachedStart(), right.getCachedStart());
 			}
 		});
+	}
+
+	private List resolveAssignments() {
+		List assignments = new ArrayList();
+		for (Iterator i = resolveResources().iterator(); i.hasNext();) {
+			Resource resource = (Resource) i.next();
+			assignments.addAll(resource.getAssignments());
+		}
+		return assignments;
 	}
 
 	private static String safe(String value) {
@@ -224,7 +229,9 @@ public class TimesheetEntryPane extends JScrollPane {
 		if (!selectedResources.isEmpty()) {
 			uniqueResources.addAll(selectedResources);
 		} else {
-			uniqueResources.addAll(project.getResourcePool().getResourceList());
+			if (project.getResourcePool() != null) {
+				uniqueResources.addAll(project.getResourcePool().getResourceList());
+			}
 		}
 		List result = new ArrayList();
 		for (Iterator i = uniqueResources.iterator(); i.hasNext();) {
@@ -244,17 +251,9 @@ public class TimesheetEntryPane extends JScrollPane {
 		if (spreadSheet != null && spreadSheet.isEditing() && spreadSheet.getCellEditor() != null) {
 			spreadSheet.getCellEditor().stopCellEditing();
 		}
-		boolean changed = false;
-		for (Iterator i = timesheetAssignments.iterator(); i.hasNext();) {
-			TimesheetAssignment entry = (TimesheetAssignment) i.next();
-			Assignment snapshot = entry.getAssignment();
-			if (snapshot.getTimesheetStatus() == TimesheetStatus.ENTERED) {
-				snapshot.setTimesheetStatus(TimesheetStatus.VALIDATED);
-				changed = true;
-			}
-		}
+		normalizeEnteredTimesheets();
+		boolean changed = project.applyTimesheet(editableTimesheetFields, System.currentTimeMillis());
 		if (changed) {
-			project.applyTimesheet(editableTimesheetFields, System.currentTimeMillis());
 			rebuildTimesheetAssignments();
 			SpreadSheetUtils.updateCollectionSpreadSheet(
 				spreadSheet,
@@ -263,5 +262,15 @@ public class TimesheetEntryPane extends JScrollPane {
 				0);
 		}
 		return changed;
+	}
+
+	private void normalizeEnteredTimesheets() {
+		for (Iterator i = timesheetAssignments.iterator(); i.hasNext();) {
+			TimesheetAssignment entry = (TimesheetAssignment) i.next();
+			Assignment snapshot = entry.getAssignment();
+			if (snapshot.getTimesheetStatus() == TimesheetStatus.ENTERED) {
+				snapshot.setTimesheetStatus(TimesheetStatus.VALIDATED);
+			}
+		}
 	}
 }

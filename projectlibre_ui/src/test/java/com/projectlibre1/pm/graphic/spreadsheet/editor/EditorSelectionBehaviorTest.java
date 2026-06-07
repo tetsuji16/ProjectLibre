@@ -1,9 +1,15 @@
 package com.projectlibre1.pm.graphic.spreadsheet.editor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.awt.event.InputMethodEvent;
+import java.awt.event.KeyEvent;
+import java.text.AttributedString;
 import java.text.SimpleDateFormat;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
@@ -31,6 +37,28 @@ class EditorSelectionBehaviorTest {
 			field.selectAll(false);
 
 			assertEquals("2026/06/06", field.getTextField().getSelectedText());
+		});
+	}
+
+	@Test
+	void spreadsheetEditorAcceptsImeCompositionAsEditStart() throws Exception {
+		SwingUtilities.invokeAndWait(() -> {
+			JTextField field = new JTextField();
+			SpreadSheetCellEditorAdapter adapter = new SpreadSheetCellEditorAdapter(new DefaultCellEditor(field));
+			InputMethodEvent event = new InputMethodEvent(field, InputMethodEvent.INPUT_METHOD_TEXT_CHANGED, new AttributedString("テ").getIterator(), 0, null, null);
+
+			assertTrue(adapter.isCellEditable(event));
+		});
+	}
+
+	@Test
+	void spreadsheetEditorAcceptsConvertKeyForReconversion() throws Exception {
+		SwingUtilities.invokeAndWait(() -> {
+			JTextField field = new JTextField();
+			SpreadSheetCellEditorAdapter adapter = new SpreadSheetCellEditorAdapter(new DefaultCellEditor(field));
+			KeyEvent event = new KeyEvent(field, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_CONVERT, KeyEvent.CHAR_UNDEFINED);
+
+			assertTrue(adapter.isCellEditable(event));
 		});
 	}
 }

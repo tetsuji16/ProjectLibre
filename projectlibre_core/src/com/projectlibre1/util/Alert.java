@@ -136,7 +136,7 @@ public class Alert {
 	private static final String GRAPHIC_MANAGER="com.projectlibre1.pm.graphic.frames.GraphicManager";
 	public static Frame getFrame(){
 		try {
-		    return (Frame)Class.forName(GRAPHIC_MANAGER).getMethod("getFrameInstance",null).invoke(null,null);
+		    return (Frame)Class.forName(GRAPHIC_MANAGER).getMethod("getFrameInstance", new Class<?>[0]).invoke(null, new Object[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -144,7 +144,7 @@ public class Alert {
 	}
 	public static Object getGraphicManager(){
 		try {
-		    return Class.forName(GRAPHIC_MANAGER).getMethod("getInstance",null).invoke(null,null);
+		    return Class.forName(GRAPHIC_MANAGER).getMethod("getInstance", new Class<?>[0]).invoke(null, new Object[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -155,7 +155,7 @@ public class Alert {
 	}
 	public static Object getGraphicManagerMethod(String method) {
 		try {
-			return Class.forName(GRAPHIC_MANAGER).getMethod(method,null).invoke(null,null);
+			return Class.forName(GRAPHIC_MANAGER).getMethod(method, new Class<?>[0]).invoke(null, new Object[0]);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

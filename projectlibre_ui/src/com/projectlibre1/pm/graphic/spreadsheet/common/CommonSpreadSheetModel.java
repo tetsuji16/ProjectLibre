@@ -84,6 +84,7 @@ import com.projectlibre1.pm.assignment.Assignment;
 /**
  *  
  */
+@SuppressWarnings("unchecked")
 public class CommonSpreadSheetModel extends AbstractTableModel implements CacheListener/*implements ObjectEvent.Listener*/ {
 	protected NodeModelCache cache = null;
 	protected FieldContext fieldContext = null; // only used if a field context is set
@@ -161,10 +162,10 @@ public class CommonSpreadSheetModel extends AbstractTableModel implements CacheL
 //	public CommonSpreadSheetModel(NodeModel model, ArrayList fieldArray,CellStyle cellStyle,String viewName) {
 //		this(NodeModelCacheFactory.getInstance().createDefaultCache(model,viewName),fieldArray,cellStyle);
 //	}
-	public ArrayList getFieldArray() {
+	public ArrayList<Field> getFieldArray() {
 		return colModel.getFieldArray();
 	}
-	public void setFieldArray(ArrayList fieldArray) {
+	public void setFieldArray(ArrayList<Field> fieldArray) {
 		colModel.setFieldArray(fieldArray);
 	}
 

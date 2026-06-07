@@ -137,6 +137,7 @@ import com.projectlibre1.util.Alert;
 
 import net.sf.mpxj.common.RtfHelper;
 
+@SuppressWarnings("deprecation")
 public final class LocaleDialog extends AbstractDialog {
 	private static final long serialVersionUID = 1L;
 

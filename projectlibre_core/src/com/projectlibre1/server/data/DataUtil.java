@@ -65,12 +65,18 @@ import com.projectlibre1.session.Session;
 
 public class DataUtil {
 	protected Object obj;
-	protected Class clazz;
+	protected Class<?> clazz;
 	public DataUtil(){
 		try {
-			clazz=Class.forName("com.projectlibre1.server.data.Serializer");
-			obj=clazz.newInstance();
+			clazz = Class.forName("com.projectlibre1.server.data.Serializer");
+			obj = clazz.getDeclaredConstructor().newInstance();
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InstantiationException e) {
@@ -84,7 +90,7 @@ public class DataUtil {
 	
     public DocumentData serializeDocument(Project project) throws Exception{
 		try {
-			return (DocumentData)clazz.getMethod("serializeDocument", new Class[]{Project.class}).invoke(obj, new Object[]{project});
+			return (DocumentData) clazz.getMethod("serializeDocument", Project.class).invoke(obj, project);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -106,7 +112,7 @@ public class DataUtil {
     }
     public Project deserializeLocalDocument(DocumentData documentData) throws IOException, ClassNotFoundException {
 		try {
-			return (Project)clazz.getMethod("deserializeLocalDocument", new Class[]{DocumentData.class}).invoke(obj, new Object[]{documentData});
+			return (Project) clazz.getMethod("deserializeLocalDocument", DocumentData.class).invoke(obj, documentData);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -128,7 +134,9 @@ public class DataUtil {
 	
 	public static void setEnterpriseResources(Collection resources,ResourcePool resourcePool) throws IOException, ClassNotFoundException{
 		try {
-			Class.forName("com.projectlibre1.server.data.Serializer").getMethod("setEnterpriseResources", new Class[]{Collection.class,ResourcePool.class, Session.class}).invoke(null, new Object[]{resources,resourcePool,null});
+			Class.forName("com.projectlibre1.server.data.Serializer")
+				.getMethod("setEnterpriseResources", Collection.class, ResourcePool.class, Session.class)
+				.invoke(null, resources, resourcePool, null);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -85,6 +85,7 @@ public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, 
 	protected CoordinatesConverter coord;
 	protected ScaledComponent main;
 	protected DocumentFrame documentFrame;
+	private Point lastViewportPosition = new Point();
 
 	
 	
@@ -108,6 +109,7 @@ public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, 
 	public void createLayout(){
 		setPreferredSize(new Dimension(300, 250));
 		FlatUiSupport.applyViewportSurface(getViewport());
+		getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
 		
 	    //JViewport mainVP=new JViewport();
 		//mainVP.setView((JComponent)main);
@@ -123,6 +125,11 @@ public class ScaledScrollPane extends JScrollPane implements TimeScaleListener, 
 		getViewport().addChangeListener(new ChangeListener(){
 			public void stateChanged(ChangeEvent e){
 			    updateTimeScaleComponentSize();
+			    Point position = getViewport().getViewPosition();
+			    if (!position.equals(lastViewportPosition)) {
+					lastViewportPosition = new Point(position);
+					((JComponent)main).repaint();
+			    }
 			}
 		});
 		

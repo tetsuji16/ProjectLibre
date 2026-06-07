@@ -68,7 +68,7 @@ import com.projectlibre1.pm.calendar.WorkCalendar;
  */
 public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 	static final long serialVersionUID = 8900927827L;
-	ArrayList values = new ArrayList(); //(x,y pairs) //TODO a set would be better because this is often sparse
+	ArrayList<Point> values = new ArrayList<Point>(); //(x,y pairs) //TODO a set would be better because this is often sparse
 	double yScale;
 	private static final Double ZERO = Double.valueOf(0.0D);
 //	boolean dayByDay;
@@ -95,7 +95,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 //			System.out.println("add index " + index + new java.util.Date(date) + " - " + new java.util.Date(endDate) + " value " + value);
 			values.add(index, new Point(date,value));
 		} else {
-			point = (Point) values.get(index);
+			point = values.get(index);
 			if (point == null) {
 				values.set(index, new Point(date,value));
 //				System.out.println("add indexb " + index + new java.util.Date(date) + " - " + new java.util.Date(endDate) + " value " + value);
@@ -107,14 +107,14 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 	}
 
 	public Long getDate(int index) {
-		Point point = (Point) values.get(index);
+		Point point = values.get(index);
 		if (point == null)
 			return null;
 		return Long.valueOf(point.date);
 	}
 	
 	public void setValue(int index, double value) {
-		Point point = (Point) values.get(index);
+		Point point = values.get(index);
 		if (point == null)
 			return;
 		point.value = value;
@@ -128,7 +128,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 			System.out.println("index out of bounds in GroupedCalculatedValues " + index);
 			return 0;
 		}
-		Point point = (Point) values.get(index);
+		Point point = values.get(index);
 		if (point == null)
 			return 0;
 		return point.value;
@@ -142,7 +142,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 			System.out.println("index out of bounds in GroupedCalculatedValues " + index);
 			return ZERO;
 		}
-		Point point = (Point) values.get(index);
+		Point point = values.get(index);
 		if (point == null)
 			return null;
 		return Double.valueOf(point.value / yScale);
@@ -158,7 +158,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 		double sum = 0;
 		//int deltai=0;
 		for (int i = 0; i < values.size(); i++) {
-			point = (Point) values.get(i);
+			point = values.get(i);
 //			lc hack to enable day by day values
 //			if (dayByDay&&point.date-lastDate>DateUtils.MILLIS_PER_DAY+12*DateUtils.MILLIS_PER_HOUR){
 //				if (lastDate>0L&&point.date-lastDate>2*DateUtils.MILLIS_PER_DAY+12*DateUtils.MILLIS_PER_HOUR)
@@ -176,7 +176,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 		double previous = 0.0D;
 		Point point;
 		for (int i = 0; i < values.size(); i++) {
-			point = (Point) values.get(i);
+			point = values.get(i);
 			callback.add(2*i,point.getDate(),previous);
 			previous = point.getValue();
 			callback.add(2*i+1,point.getDate(),previous);
@@ -203,12 +203,12 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
 		
 	}
  
- 	public void dump() {
+	public void dump() {
 		for (int i = 0; i < values.size(); i++)
 			System.out.println(i + " " +  new java.util.Date(getDate(i).longValue()) +" "+ getValue(i));
- 	}
+	}
 	
- 	public ListIterator iterator(int index){
+ 	public ListIterator<Point> iterator(int index){
  		return values.listIterator(index);
  	}
  	public static GroupedCalculatedValues union(GroupedCalculatedValues values1,GroupedCalculatedValues values2){
@@ -221,13 +221,13 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
  			c2=values1;
  		}
  		GroupedCalculatedValues c=new GroupedCalculatedValues();
- 		ListIterator i1=c1.values.listIterator();
- 		ListIterator i2=c2.values.listIterator();
+ 		ListIterator<Point> i1=c1.values.listIterator();
+ 		ListIterator<Point> i2=c2.values.listIterator();
 	 	Point p1,p2=null;
  		while(i1.hasNext()){
- 			p1=(Point)i1.next();
+ 			p1=i1.next();
  	 		while(i2.hasNext()){
- 	 			p2=(Point)i2.next();
+ 	 			p2=i2.next();
  	 			if (p2.date<p1.date){
  	 				c.values.add(p2);
  	 			}else if (p2.date>p1.date){
@@ -245,12 +245,12 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
  	}
  	
  	public void mergeIn(GroupedCalculatedValues add){
- 		ListIterator baseIterator = values.listIterator();
-		ListIterator addIterator = add.values.listIterator();
- 		Point basePoint = baseIterator.hasNext() ? (Point)baseIterator.next() : null;
+ 		ListIterator<Point> baseIterator = values.listIterator();
+		ListIterator<Point> addIterator = add.values.listIterator();
+ 		Point basePoint = baseIterator.hasNext() ? baseIterator.next() : null;
  		long start = basePoint.date;
  		Point previousAddPoint = null;
- 		Point addPoint = addIterator.hasNext() ? (Point)addIterator.next() : null;
+ 		Point addPoint = addIterator.hasNext() ? addIterator.next() : null;
  		while (basePoint != null && addPoint != null) {
  			//TODO handle overlaps
  			if (basePoint.compareTo(addPoint) >= 0) {
@@ -271,7 +271,7 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
  			
  			
  			if (baseIterator.hasNext()) {
- 				basePoint = (Point)baseIterator.next();
+ 				basePoint = baseIterator.next();
  			} else { 
  				if (previousAddPoint != null) {// handle end boundary
  					double proratedAmount = 
@@ -287,14 +287,14 @@ public class GroupedCalculatedValues implements CalculatedValues, Serializable {
  	public GroupedCalculatedValues dayByDayConvert(){
  		GroupedCalculatedValues c=new GroupedCalculatedValues();
 		//c.setDayByDay(true);
- 		for (Iterator i=values.iterator();i.hasNext();){
- 			Point p=(Point)i.next();
+ 		for (Iterator<Point> i=values.iterator();i.hasNext();){
+ 			Point p=i.next();
  			c.values.add(new Point(p.date,p.value*DateUtils.MILLIS_PER_HOUR));
  		}
  		return c;
  	}
 
-	public ArrayList getValues() {
+	public ArrayList<Point> getValues() {
 		return values;
 	}
 	

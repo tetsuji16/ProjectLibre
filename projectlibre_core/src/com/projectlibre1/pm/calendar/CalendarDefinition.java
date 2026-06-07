@@ -77,7 +77,7 @@ import com.projectlibre1.util.DateTime;
  */
 public class CalendarDefinition implements WorkCalendar, Cloneable {
 	static final long serialVersionUID = 73883742020831L;
-	TreeSet dayExceptions = null;
+	TreeSet<WorkDay> dayExceptions = null;
 	WorkDay[] exceptions = null;
 	WorkWeek week = new WorkWeek();
 	protected long id=-1L;
@@ -90,7 +90,7 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 	 */
 	public CalendarDefinition() {
 		super();
-		dayExceptions = new TreeSet();
+		dayExceptions = new TreeSet<WorkDay>();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -102,7 +102,9 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 		}
 		week.addDaysFrom(differences.week); // Now replace any special weekdays
 
-		dayExceptions = (TreeSet) differences.dayExceptions.clone(); // copy from differences
+		@SuppressWarnings("unchecked")
+		TreeSet<WorkDay> clonedExceptions = (TreeSet<WorkDay>) differences.dayExceptions.clone();
+		dayExceptions = clonedExceptions; // copy from differences
 		if (base != null)
 			dayExceptions.addAll( base.dayExceptions); // add in base days. If day is already present it will not be added
 		addSentinelsAndMakeArray();
@@ -149,11 +151,11 @@ public class CalendarDefinition implements WorkCalendar, Cloneable {
 	public Object clone() throws CloneNotSupportedException {
 		CalendarDefinition newOne = (CalendarDefinition) super.clone();
 		newOne.week = (WorkWeek) week.clone();
-		newOne.dayExceptions = new TreeSet();
+		newOne.dayExceptions = new TreeSet<WorkDay>();
 
-		Iterator i = dayExceptions.iterator();
+		Iterator<WorkDay> i = dayExceptions.iterator();
 		while (i.hasNext())
-			newOne.dayExceptions.add(((WorkDay)i.next()).clone());
+			newOne.dayExceptions.add((WorkDay) i.next().clone());
 		return newOne;
 	}
 

@@ -58,6 +58,7 @@ package com.projectlibre1.reports.adapter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import net.sf.jasperreports.engine.JRBand;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -132,7 +133,7 @@ public class DataSourceProvider implements JRDataSourceProvider {
 		return instance;
 	}
 	
-	HashMap map = new HashMap();
+	private final Map<JRField, Field> map = new HashMap<JRField, Field>();
 	
 	
 	/* (non-Javadoc)
@@ -141,22 +142,22 @@ public class DataSourceProvider implements JRDataSourceProvider {
 	public boolean supportsGetFieldsOperation() {
 		return true;
 	}
+	@SuppressWarnings("unchecked")
 	private void initFields() {
-		Collection allFields = Configuration.getAllFields();
+		Collection<Field> allFields = (Collection<Field>) Configuration.getAllFields();
 		reportFields = new JRField[allFields.size()];
 		int index = 0;
-		Iterator i = allFields.iterator();
+		Iterator<Field> i = allFields.iterator();
 		JRDesignField newOne;
-		Field field;
-		JRField f;
 		while (i.hasNext()) {
-			field = (Field)i.next();
+			Field field = i.next();
 			newOne = new JRDesignField();
 			newOne.setName(field.getId());
 			newOne.setDescription(field.getName());
 			newOne.setValueClass(field.getClazz());
 			newOne.setValueClassName(field.getDisplayType().getName()); //TODO what should this be?
-			map.put(newOne,field);
+			reportFields[index++] = newOne;
+			map.put(newOne, field);
 		}
 	}
 	public JRField[] getFields(JasperReport arg0) throws JRException, UnsupportedOperationException {
@@ -207,6 +208,7 @@ public class DataSourceProvider implements JRDataSourceProvider {
 
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static DataSource createDataSource(JasperReport report, Project project, PredicatedNodeFilterIterator cacheIterator, WalkersNodeModel walkersNodeModel) throws JRException {
 		DataSource dataSource = new DataSource();
 		boolean timeBased = report.getProperty(TIME_BASED) != null;

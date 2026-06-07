@@ -56,7 +56,6 @@
 package com.projectlibre1.pm.graphic.spreadsheet.common;
 
 import java.util.Date;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.ListSelectionModel;
@@ -130,9 +129,10 @@ public class CommonTable extends Outline {
      * @param rowData
      * @param columnNames
      */
-    public CommonTable(Vector rowData, Vector columnNames) {
+    @SuppressWarnings("unchecked")
+    public CommonTable(Vector<?> rowData, Vector<?> columnNames) {
         super();
-        setModel(new javax.swing.table.DefaultTableModel(rowData, columnNames));
+        setModel(new javax.swing.table.DefaultTableModel((Vector) rowData, (Vector) columnNames));
         FlatUiSupport.applyDataSurface(this);
         setRootVisible(false);
     }

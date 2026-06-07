@@ -232,18 +232,21 @@ public class DateTime {
 	public static long gmt(Date date) {
 		if (date==null) 
 			return 0;
-		return date.getTime() - (isGmtConvertion()? 60000L * date.getTimezoneOffset() : 0);
+		long offsetMinutes = calendarInstance().getTimeZone().getOffset(date.getTime()) / 60000L;
+		return date.getTime() - (isGmtConvertion()? 60000L * offsetMinutes : 0);
 	}
 	public static Date fromGmt(Date date) {
 		if (date==null) 
 			return null;
-		return new Date(date.getTime() + (isGmtConvertion()? 60000L * date.getTimezoneOffset() : 0));
+		long offsetMinutes = calendarInstance().getTimeZone().getOffset(date.getTime()) / 60000L;
+		return new Date(date.getTime() + (isGmtConvertion()? 60000L * offsetMinutes : 0));
 	}
 	public static long fromGmt(long d) {
 		if (d==0) 
 			return 0;
 		Date date = new Date(d);
-		return new Date(date.getTime() + (isGmtConvertion()? 60000L * date.getTimezoneOffset(): 0)).getTime();
+		long offsetMinutes = calendarInstance().getTimeZone().getOffset(date.getTime()) / 60000L;
+		return new Date(date.getTime() + (isGmtConvertion()? 60000L * offsetMinutes: 0)).getTime();
 		
 	}
 	public static Date gmtDate(Date date) {

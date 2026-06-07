@@ -119,6 +119,7 @@ import com.projectlibre1.workspace.WorkspaceSetting;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public class ChartLegend  implements SelectionNodeListener, Serializable , SavableToWorkspace{
 	private static final long serialVersionUID = 5098599798868391983L;
 

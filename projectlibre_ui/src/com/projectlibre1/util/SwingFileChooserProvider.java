@@ -88,6 +88,9 @@ public final class SwingFileChooserProvider implements UiServices.FileChooserPro
 		}
 		SystemFileChooser chooser = getFileChooser();
 		ensureFileChooserConfigured(save);
+		if (save) {
+			applySaveFileFilterDefaults(chooser);
+		}
 		if (selectedFileName != null) {
 			chooser.setSelectedFile(new File(getSuggestedSaveFileName(selectedFileName, chooser.getFileFilter())));
 		}
@@ -230,6 +233,11 @@ public final class SwingFileChooserProvider implements UiServices.FileChooserPro
 			return DEFAULT_FILE_EXTENSION;
 		}
 		return null;
+	}
+
+	private void applySaveFileFilterDefaults(SystemFileChooser chooser) {
+		String extension = getSaveExtension(chooser.getFileFilter());
+		chooser.putPlatformProperty(SystemFileChooser.WINDOWS_DEFAULT_EXTENSION, extension);
 	}
 
 	private String changeFileExtension(String fileName, String extension) {

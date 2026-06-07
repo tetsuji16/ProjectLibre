@@ -95,8 +95,8 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 
 	int colWidth = 0;
 
-	private ArrayList fieldArray; //changes when columns are moved - needed to update the current definition
-	private ArrayList originalFieldArray; // will not change
+	private ArrayList<Field> fieldArray; //changes when columns are moved - needed to update the current definition
+	private ArrayList<Field> originalFieldArray; // will not change
 	private Map<String,Integer> colWidthMap;
 
 	boolean svg;
@@ -105,11 +105,11 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 	 *            TODO
 	 *
 	 */
-	public SpreadSheetColumnModel(final ArrayList fieldArray) {
+	public SpreadSheetColumnModel(final ArrayList<Field> fieldArray) {
 		this(fieldArray,null);
 
 	}
-	public SpreadSheetColumnModel(ArrayList fieldArray,List<Integer> colWidthList) {
+	public SpreadSheetColumnModel(ArrayList<Field> fieldArray,List<Integer> colWidthList) {
 		super();
 		setFieldArray(fieldArray);
 		colWidthMap=new HashMap<String, Integer>();
@@ -119,7 +119,7 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 				colWidthList=sa.getWidths();
 			}
 			if (colWidthList==null) return;
-			Iterator<Field> a=(Iterator<Field>)sa.iterator();
+			Iterator<Field> a = sa.iterator();
 			Iterator<Integer> s=colWidthList.iterator();
 			while (a.hasNext()&&s.hasNext()){
 				String f=a.next().getId();
@@ -163,7 +163,7 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 					tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new SimpleRenderer()));
 					// note that in Spreadsheet, there getCellEditor() is
 					// overridden and dynamic combos are filled there
-					tc.setCellEditor(new SpreadSheetCellEditorAdapter(new SimpleComboBoxEditor(new DefaultComboBoxModel(field.getOptions(null)))));
+					tc.setCellEditor(new SpreadSheetCellEditorAdapter(new SimpleComboBoxEditor(new DefaultComboBoxModel<>(field.getOptions(null)))));
 				} else if (field.getRange() != null) {
 					if (field.isPercent()) {
 						tc.setCellRenderer(new SpreadSheetCellRendererAdapter(new PercentRenderer()));
@@ -219,13 +219,13 @@ public class SpreadSheetColumnModel extends DefaultTableColumnModel {
 		fieldArray = f.move(columnIndex+1, newIndex+1);
 	}
 
-	public ArrayList getFieldArray() {
+	public ArrayList<Field> getFieldArray() {
 		return fieldArray;
 	}
 
-	public void setFieldArray(ArrayList fieldArray) {
+	public void setFieldArray(ArrayList<Field> fieldArray) {
 		this.fieldArray = fieldArray;
-		originalFieldArray = (ArrayList) fieldArray.clone();
+		originalFieldArray = new ArrayList<>(fieldArray);
 	}
 
 	public int getColWidth() {

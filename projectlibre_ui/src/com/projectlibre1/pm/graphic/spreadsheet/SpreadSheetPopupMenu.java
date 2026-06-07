@@ -98,10 +98,10 @@ public class SpreadSheetPopupMenu extends JPopupMenu {
 			}
 		}
 	    
-	    private Map menuActionMap=null;
+    private Map<String, String> menuActionMap = null;
 	    protected String getMenuAction(String action){
 	    	if (menuActionMap==null){
-	    		menuActionMap=new HashMap();
+                menuActionMap = new HashMap<>();
 	    		if (Environment.isNewLook()) {
 		    		menuActionMap.put(MenuActionConstants.ACTION_NEW,"menu24.insertTask");
 		    		menuActionMap.put(MenuActionConstants.ACTION_DELETE,"menu24.delete");
@@ -124,8 +124,8 @@ public class SpreadSheetPopupMenu extends JPopupMenu {
 		    		menuActionMap.put(MenuActionConstants.ACTION_COLLAPSE,"menu.collapse");
 	    		}
 	    	}
-	    	return (String)menuActionMap.get(action);
-	    }
+            return menuActionMap.get(action);
+        }
 
 	    protected String getInsertPasteMenuIcon() {
 	    	return Environment.isNewLook() ? "menu24.insertTask" : "menu.insertTask";

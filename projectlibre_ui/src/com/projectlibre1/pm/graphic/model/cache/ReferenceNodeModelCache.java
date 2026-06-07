@@ -92,6 +92,7 @@ import com.projectlibre1.pm.task.Task;
  * The level is not a view state but it is calculated and cached for performance purposes.
  */
 
+@SuppressWarnings("unchecked")
 public class ReferenceNodeModelCache implements ObjectEvent.Listener, HierarchyListener, /*TreeModel,*/ ScheduleEventListener {
 	private NodeModel model;
 	

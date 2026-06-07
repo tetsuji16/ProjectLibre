@@ -152,7 +152,8 @@ public class WorkingHours implements Cloneable, Serializable {
 	synchronized private static long getHoursAndMinutes(Date date) {
 		helper.setTime(date);
 		// the date needs to be normalized for GMT.  because can wrap around, use modulus
-		long minutes = 60L *  (24 + helper.get(GregorianCalendar.HOUR_OF_DAY)) + helper.get(GregorianCalendar.MINUTE) - date.getTimezoneOffset();
+		long timeZoneOffsetMinutes = helper.getTimeZone().getOffset(date.getTime()) / 60000L;
+		long minutes = 60L *  (24 + helper.get(GregorianCalendar.HOUR_OF_DAY)) + helper.get(GregorianCalendar.MINUTE) - timeZoneOffsetMinutes;
 		minutes = minutes % (24 * 60);
 		return 60000L * minutes;
 	}

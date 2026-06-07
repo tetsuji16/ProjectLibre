@@ -89,6 +89,7 @@ import com.projectlibre1.util.DataUtils;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public abstract class FieldDialog extends AbstractDialog  implements ObjectEvent.Listener,ScheduleEventListener,SelectionNodeListener, DocumentSelectedEvent.Listener {
 	private boolean multipleObjects;
 	private Class objectClass;
