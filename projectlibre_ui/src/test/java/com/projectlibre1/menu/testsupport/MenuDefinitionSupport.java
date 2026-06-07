@@ -2,9 +2,12 @@ package com.projectlibre1.menu.testsupport;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -48,6 +51,41 @@ public final class MenuDefinitionSupport {
 			}
 		}
 		return ids;
+	}
+
+	public static List<String> ribbonTaskIds() {
+		return Collections.unmodifiableList(tokens(menuInternalBundle(), "StandardRibbon"));
+	}
+
+	public static List<String> ribbonBandIds(String taskId) {
+		return Collections.unmodifiableList(tokens(menuInternalBundle(), taskId));
+	}
+
+	public static List<String> ribbonButtonIds(String bandId) {
+		List<String> ids = new ArrayList<>();
+		for (String token : tokens(menuInternalBundle(), bandId)) {
+			String normalized = normalizeButtonToken(token);
+			if (normalized != null) {
+				ids.add(normalized);
+			}
+		}
+		return Collections.unmodifiableList(ids);
+	}
+
+	public static Set<String> ribbonButtonIdsForTask(String taskId) {
+		Set<String> ids = new LinkedHashSet<>();
+		for (String bandId : ribbonBandIds(taskId)) {
+			ids.addAll(ribbonButtonIds(bandId));
+		}
+		return Collections.unmodifiableSet(ids);
+	}
+
+	public static Map<String, List<String>> ribbonBandsByTask() {
+		Map<String, List<String>> result = new LinkedHashMap<>();
+		for (String taskId : ribbonTaskIds()) {
+			result.put(taskId, ribbonBandIds(taskId));
+		}
+		return Collections.unmodifiableMap(result);
 	}
 
 	public static Set<String> toolBarButtonIds(String toolbarId) {

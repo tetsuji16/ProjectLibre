@@ -58,6 +58,8 @@ package com.projectlibre1.reports.adapter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -75,7 +77,9 @@ import com.projectlibre1.util.ClassLoaderUtils;
  *
  */
 public class ReportUtil {
-	private static final String REPORT_ROOT = "com/projectlibre1/reports/definition/";	
+	private static final String REPORT_ROOT = "com/projectlibre1/reports/definition/";
+	private static final String JASPER_XML_LOGGER_NAME = "net.sf.jasperreports.engine.xml";
+	private static final Object JASPER_XML_LOGGER_LOCK = new Object();
 	
 /*
  * 
@@ -104,6 +108,26 @@ public class ReportUtil {
 			throw new IllegalStateException("Unable to open report definition: " + urlName, e);
 		}
 	}
+
+	private static JasperDesign loadBundledJrxml(String fileName) throws JRException {
+		try (InputStream reportDefinitionStream = openReport(fileName)) {
+			synchronized (JASPER_XML_LOGGER_LOCK) {
+				Logger xmlLogger = Logger.getLogger(JASPER_XML_LOGGER_NAME);
+				Level previousLevel = xmlLogger.getLevel();
+				try {
+					// Bundled reports still use legacy JRXML attributes that JasperReports logs as warnings.
+					xmlLogger.setLevel(Level.SEVERE);
+					return JRXmlLoader.load(reportDefinitionStream);
+				} finally {
+					xmlLogger.setLevel(previousLevel);
+				}
+			}
+		} catch (IllegalArgumentException | IllegalStateException e) {
+			throw new JRException("Unable to load report definition " + fileName, e);
+		} catch (IOException e) {
+			throw new JRException("Unable to close report definition " + fileName, e);
+		}
+	}
 	
 	public static JasperReport getReport(ReportDefinition reportDefinition, TimeIterator iterator, SpreadSheetFieldArray columns) throws JRException {
 	    JasperReport report = (JasperReport) reportDefinition.getReportObject(columns); // if it is already compiled, reuse it
@@ -113,13 +137,7 @@ public class ReportUtil {
 			
 			if(null != reportDefinition.getFile()) {
 				// regular jrxml file
-				try (InputStream reportDefinitionStream = openReport(reportDefinition.getFile())) {
-					jasperDesign = JRXmlLoader.load(reportDefinitionStream);
-				} catch (IllegalArgumentException | IllegalStateException e) {
-					throw new JRException("Unable to load report definition " + reportDefinition.getFile(), e);
-				} catch (IOException e) {
-					throw new JRException("Unable to close report definition " + reportDefinition.getFile(), e);
-				}
+				jasperDesign = loadBundledJrxml(reportDefinition.getFile());
 			} else {
 				// jasper design made by ReportAdapter
 				ReportAdapter reportAdapter = new ReportAdapter(reportDefinition);

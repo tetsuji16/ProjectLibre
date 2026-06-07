@@ -61,6 +61,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.prefs.Preferences;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
 
@@ -75,6 +77,7 @@ import com.projectlibre1.util.FlatLafSupport;
  */
 public class Main {
 	public static void main(String[] args) {
+		configureRuntimeLogging();
 		FlatLafSupport.initialize();
 
 		int runNumber=getRunNumber()+1;
@@ -165,6 +168,13 @@ public class Main {
 	}
 	public static String getRunSinceMessage() {
 		return MessageFormat.format(Messages.getString("Text.runsSinceMessage"),new Object[] {getRunNumber(),new Date(getFirstRun())});
+	}
+
+	private static void configureRuntimeLogging() {
+		Logger.getLogger("com.projectlibre1.pm.calendar.WorkWeek").setLevel(Level.WARNING);
+		Logger.getLogger("org.openide.util").setLevel(Level.SEVERE);
+		Logger.getLogger("org.openide.util.ImageUtilities").setLevel(Level.SEVERE);
+		Logger.getLogger("org.openide.util.ImageUtilities$CachedLookupLoader").setLevel(Level.SEVERE);
 	}
 
 }

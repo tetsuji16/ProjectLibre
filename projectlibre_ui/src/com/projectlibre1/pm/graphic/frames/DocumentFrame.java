@@ -286,6 +286,13 @@ public class DocumentFrame extends NamedFrame implements
 		List nodes = null;
 		if (spreadSheet != null) {
 			nodes = spreadSheet.getSelectedNodes();
+			if (nodes != null && nodes.size() == 0) {
+				Node currentNode = spreadSheet.getCurrentRowNode();
+				if (currentNode != null) {
+					nodes = new ArrayList(1);
+					nodes.add(currentNode);
+				}
+			}
 		} else if (activeTopView instanceof TreeView) {
 			nodes = ((TreeView) activeTopView).getSelectedNodes();
 		}
@@ -928,9 +935,26 @@ public class DocumentFrame extends NamedFrame implements
 		menuManager.setActionSelected(viewName,true);
 		refreshUndoButtons();
 
-		if (lastSelectionEvent!=null && view != null && view instanceof SelectionNodeListener)
-			((SelectionNodeListener) view).selectionChanged(lastSelectionEvent);
+		if (view instanceof SelectionNodeListener selectionListener)
+			pushCurrentSelectionToBottomView(selectionListener);
 
+	}
+
+	private void pushCurrentSelectionToBottomView(SelectionNodeListener selectionListener) {
+		if (selectionListener == null)
+			return;
+		CommonSpreadSheet topSpreadSheet = getTopSpreadSheet();
+		if (topSpreadSheet != null) {
+			selectionListener.selectionChanged(new SelectionNodeEvent(
+				topSpreadSheet,
+				SelectionNodeEvent.SELECTION_CHANGED,
+				topSpreadSheet.getSelectedNodes(),
+				topSpreadSheet.getCurrentRowNode(),
+				topSpreadSheet.getSpreadSheetCategory()));
+			return;
+		}
+		if (lastSelectionEvent != null)
+			selectionListener.selectionChanged(lastSelectionEvent);
 	}
 
 	public void deactivateBottomView() {

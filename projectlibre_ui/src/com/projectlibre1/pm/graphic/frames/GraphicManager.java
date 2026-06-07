@@ -190,6 +190,7 @@ import com.projectlibre1.pm.graphic.spreadsheet.common.CommonSpreadSheet;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeEvent;
 import com.projectlibre1.pm.graphic.spreadsheet.selection.event.SelectionNodeListener;
 import com.projectlibre1.pm.graphic.views.BaseView;
+import com.projectlibre1.pm.graphic.views.GanttView;
 import com.projectlibre1.pm.graphic.views.ProjectsDialog;
 import com.projectlibre1.pm.graphic.views.Searchable;
 import com.projectlibre1.pm.resource.Resource;
@@ -1151,6 +1152,9 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		actionsMap.addHandler(ACTION_ZOOM_IN, new ZoomInAction());
 		actionsMap.addHandler(ACTION_ZOOM_OUT, new ZoomOutAction());
 		actionsMap.addHandler(ACTION_SCROLL_TO_TASK, new ScrollToTaskAction());
+		actionsMap.addHandler(ACTION_TOGGLE_PROGRESS_LINE, new ToggleProgressLineAction());
+		actionsMap.addHandler(ACTION_LABEL_RESOURCE_NAMES, new LabelResourceNamesAction());
+		actionsMap.addHandler(ACTION_LABEL_TASK_NAME, new LabelTaskNameAction());
 		actionsMap.addHandler(ACTION_INDENT, new IndentAction());
 		actionsMap.addHandler(ACTION_OUTDENT, new OutdentAction());
 		actionsMap.addHandler(ACTION_COLLAPSE, new CollapseAction());
@@ -1733,6 +1737,40 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 			return isDocumentWritable();
 		}
 	}
+
+	public class ToggleProgressLineAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			if (!isActiveGanttView())
+				return;
+			var ganttView = getCurrentFrame().getGanttView();
+			ganttView.setProgressLineEnabled(!ganttView.isProgressLineEnabled());
+			syncGanttViewRibbonState();
+		}
+	}
+
+	public class LabelResourceNamesAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			if (!isActiveGanttView())
+				return;
+			getCurrentFrame().getGanttView().setCurrentAnnotationFieldId(GanttView.ANNOTATION_FIELD_RESOURCE_NAMES);
+			syncGanttViewRibbonState();
+		}
+	}
+
+	public class LabelTaskNameAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			if (!isActiveGanttView())
+				return;
+			getCurrentFrame().getGanttView().setCurrentAnnotationFieldId(GanttView.ANNOTATION_FIELD_TASK_NAME);
+			syncGanttViewRibbonState();
+		}
+	}
 	
 	public class LocaleAction extends MenuActionsMap.DocumentMenuAction {
 		private static final long serialVersionUID = 1L;
@@ -2008,6 +2046,7 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
         }
         if (topTabs != null)
         	topTabs.setTrackingEnabled(enable && isDocumentWritable());
+		syncGanttViewRibbonState();
 	}
 
 	protected Document loadMasterProject() {
@@ -2516,6 +2555,33 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		getMenuManager().setActionEnabled(ACTION_ZOOM_IN,currentFrame != null && currentFrame.canZoomIn());
 		getMenuManager().setActionEnabled(ACTION_ZOOM_OUT,currentFrame != null && currentFrame.canZoomOut());
 
+	}
+
+	private boolean isActiveGanttView() {
+		if (currentFrame == null)
+			return false;
+		String topViewId = currentFrame.getTopViewId();
+		return ACTION_GANTT.equals(topViewId) || ACTION_TRACKING_GANTT.equals(topViewId);
+	}
+
+	private void syncGanttViewRibbonState() {
+		boolean ganttActive = isActiveGanttView();
+		getMenuManager().setActionEnabled(ACTION_TOGGLE_PROGRESS_LINE, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_LABEL_RESOURCE_NAMES, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_LABEL_TASK_NAME, ganttActive);
+
+		boolean progressSelected = false;
+		boolean resourceLabelSelected = false;
+		boolean taskLabelSelected = false;
+		if (ganttActive) {
+			GanttView ganttView = currentFrame.getGanttView();
+			progressSelected = ganttView.isProgressLineEnabled();
+			resourceLabelSelected = ganttView.isResourceNameAnnotationSelected();
+			taskLabelSelected = ganttView.isTaskNameAnnotationSelected();
+		}
+		getMenuManager().setActionSelected(ACTION_TOGGLE_PROGRESS_LINE, progressSelected);
+		getMenuManager().setActionSelected(ACTION_LABEL_RESOURCE_NAMES, resourceLabelSelected);
+		getMenuManager().setActionSelected(ACTION_LABEL_TASK_NAME, taskLabelSelected);
 	}
 	/**
 	 * React to selection changed events and forward them on to any bottom window

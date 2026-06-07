@@ -66,6 +66,10 @@ import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.apache.commons.collections.Closure;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+
 import com.projectlibre1.help.HelpUtil;
 import com.projectlibre1.menu.MenuActionConstants;
 import com.projectlibre1.menu.MenuManager;
@@ -104,6 +108,8 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	 */
 	private static final long serialVersionUID = 514828655690086836L;
 	private static final String DEFAULT_GANTT_BAR_STYLE = "standard";
+	public static final String ANNOTATION_FIELD_RESOURCE_NAMES = "Field.resourceNames";
+	public static final String ANNOTATION_FIELD_TASK_NAME = "Field.name";
 	protected SpreadSheet spreadSheet;
 	protected Gantt gantt;
     protected SortedSet<Integer> baseLines = new TreeSet<>();
@@ -346,6 +352,34 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	public void zoomOut() {
 		coord.zoomOut();
 	}
+	public boolean isProgressLineEnabled() {
+		return gantt != null && gantt.isProgressLineEnabled();
+	}
+	public void setProgressLineEnabled(boolean progressLineEnabled) {
+		if (tracking)
+			trackingProgressLineEnabled = progressLineEnabled;
+		else
+			standardProgressLineEnabled = progressLineEnabled;
+		if (gantt != null)
+			gantt.setProgressLineEnabled(progressLineEnabled);
+	}
+	public String getCurrentAnnotationFieldId() {
+		if (gantt == null || gantt.getBarStyles() == null)
+			return ANNOTATION_FIELD_RESOURCE_NAMES;
+		return getAnnotationFieldId(gantt.getBarStyles());
+	}
+	public void setCurrentAnnotationFieldId(String fieldId) {
+		if (gantt == null || gantt.getBarStyles() == null)
+			return;
+		applyAnnotationField(gantt.getBarStyles(), fieldId);
+		gantt.getModel().updateAll(true);
+	}
+	public boolean isResourceNameAnnotationSelected() {
+		return ANNOTATION_FIELD_RESOURCE_NAMES.equals(getCurrentAnnotationFieldId());
+	}
+	public boolean isTaskNameAnnotationSelected() {
+		return ANNOTATION_FIELD_TASK_NAME.equals(getCurrentAnnotationFieldId());
+	}
 	public boolean canZoomIn() {
 		return coord.canZoomIn();
 	}
@@ -501,6 +535,30 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		ganttView.setPreferredSize(new Dimension(viewport.getViewSize().width, height));
 		ganttView.clampViewportPosition(viewport, height);
 		viewport.revalidate();
+	}
+
+	private String getAnnotationFieldId(BarStyles barStyles) {
+		Object firstAnnotationField = CollectionUtils.find(barStyles.getRows(), new Predicate() {
+			public boolean evaluate(Object object) {
+				return object instanceof com.projectlibre1.graphic.configuration.BarStyle
+					&& ((com.projectlibre1.graphic.configuration.BarStyle) object).isAnnotation();
+			}
+		});
+		if (!(firstAnnotationField instanceof com.projectlibre1.graphic.configuration.BarStyle))
+			return ANNOTATION_FIELD_RESOURCE_NAMES;
+		String fieldId = ((com.projectlibre1.graphic.configuration.BarStyle) firstAnnotationField).getBarFormat().getFieldId();
+		return fieldId == null ? ANNOTATION_FIELD_RESOURCE_NAMES : fieldId;
+	}
+
+	private void applyAnnotationField(BarStyles barStyles, final String fieldId) {
+		CollectionUtils.forAllDo(barStyles.getRows(), new Closure() {
+			public void execute(Object object) {
+				com.projectlibre1.graphic.configuration.BarStyle style =
+					(com.projectlibre1.graphic.configuration.BarStyle) object;
+				if (style.isAnnotation())
+					style.getBarFormat().setFieldId(fieldId);
+			}
+		});
 	}
 
 }
