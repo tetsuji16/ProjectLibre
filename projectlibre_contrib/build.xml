@@ -56,7 +56,7 @@
 <project name="projectlibre_contrib" default="dist" basedir=".">
 
 	<property file="build.properties"/>
-	<!-- ProjectLibre requires JDK 21 for compilation and runtime. -->
+	<!-- Legacy Ant build file retained for historical reference. -->
 	<property name="java.release" value="21"/>
 
 	<path id="compile.class.path">

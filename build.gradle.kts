@@ -20,6 +20,8 @@ plugins {
 
 group = "com.projectlibre"
 version = "0.0.5"
+val minimumJavaRelease = 25
+val activeToolchainVersion = maxOf(minimumJavaRelease, JavaVersion.current().majorVersion.toInt())
 
 subprojects {
     apply(plugin = "java-library")
@@ -30,7 +32,7 @@ subprojects {
 
     extensions.configure<JavaPluginExtension> {
         toolchain {
-            languageVersion.set(JavaLanguageVersion.of(26))
+            languageVersion.set(JavaLanguageVersion.of(activeToolchainVersion))
         }
         withSourcesJar()
     }
@@ -51,7 +53,7 @@ subprojects {
 
     tasks.withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
-        options.release.set(26)
+        options.release.set(minimumJavaRelease)
     }
 
     tasks.withType<ProcessResources>().configureEach {
@@ -86,7 +88,7 @@ val windowsMsiDir = windowsReleaseRoot.map { it.dir("msi") }
 val windowsExeDir = windowsReleaseRoot.map { it.dir("exe") }
 val docsDownloadsDir = layout.projectDirectory.dir("docs/downloads")
 val jpackageJavaHomeProvider = providers.environmentVariable("JAVA_HOME")
-    .orElse("C:\\Program Files\\Java\\jdk-26.0.1")
+    .orElse("C:\\Program Files\\Java\\jdk-25")
 val windowsRuntimeModules = listOf(
     "java.compiler",
     "java.datatransfer",

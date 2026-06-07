@@ -50,19 +50,20 @@ The figures below describe cumulative change volume since that baseline commit.
 ## Requirements
 
 - Windows with a full JDK that includes `jpackage`
-- JDK 26 recommended
+- Java 25+ required
 - Gradle Wrapper support files are included in this repository
 - WiX Toolset on `PATH` for MSI packaging
 
-If `JAVA_HOME` is not set, the Gradle release tasks fall back to `C:\Program Files\Java\jdk-26.0.1`.
+If `JAVA_HOME` is not set, the Gradle release tasks fall back to `C:\Program Files\Java\jdk-25`.
 
 ## Build System Status
 
 - `Gradle` is the supported build and release entrypoint for this repository
 - `build.gradle.kts` drives module compilation, installable app layout generation, and Windows `jpackage` packaging
 - `projectlibre_build` remains the source of packaging assets, icons, notices, and Windows file-association metadata consumed by the Gradle tasks
-- `projectlibre_build/build.xml` is retained only as a legacy compatibility path and should not be used for normal day-to-day builds or releases
+- Ant build files are legacy-only repository artifacts and are not a supported build or release path
 - Keep `projectlibre_contrib` jars lean when updating dependencies so the packaged app size does not grow unnecessarily
+- CI is aligned to the Gradle flow and validates the installable desktop layout on JDK 25
 
 ## Build The App
 
@@ -134,11 +135,11 @@ If WiX was installed per-user rather than system-wide, keep its `bin` directory 
 %LOCALAPPDATA%\Programs\WiX Toolset v7.0\bin
 ```
 
-## Legacy Ant Compatibility
+## Legacy Build Artifacts
 
-- `projectlibre_build/build.xml` still exists for compatibility with older local workflows
-- It is not the primary release path anymore
-- New build and release fixes should target the Gradle flow first
+- `projectlibre_build/build.xml` and related Ant files remain in the repository as historical compatibility artifacts
+- They are not part of the supported build, release, or CI path
+- New build and release fixes should target the Gradle flow
 
 ## Screenshot Procedure Used In This Repository
 
