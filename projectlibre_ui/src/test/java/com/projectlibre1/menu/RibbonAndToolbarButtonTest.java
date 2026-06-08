@@ -9,6 +9,7 @@ import static com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonBan
 import static com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonButtonIdsForTask;
 import static com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonBundles;
 import static com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonButtonIds;
+import static com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonTaskIds;
 import static com.projectlibre1.menu.testsupport.MenuDefinitionSupport.stubActionMap;
 import static com.projectlibre1.menu.testsupport.MenuDefinitionSupport.toolBarButtonIds;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -116,58 +117,90 @@ class RibbonAndToolbarButtonTest {
 	}
 
 	@Test
-	void viewRibbonTaskOwnsItsViewAndZoomButtonsExclusively() {
+	void standardRibbonUsesMsProjectStyleTaskOrder() {
+		assertEquals(
+			java.util.List.of(
+				"FileRibbonTask",
+				"TaskRibbonTask",
+				"ResourceRibbonTask",
+				"ReportRibbonTask",
+				"ProjectRibbonTask",
+				"ViewRibbonTask",
+				"FormatRibbonTask"),
+			ribbonTaskIds());
+	}
+
+	@Test
+	void viewRibbonTaskOwnsItsViewButtonsExclusively() {
 		Set<String> viewButtons = ribbonButtonIdsForTask("ViewRibbonTask");
 		Set<String> taskButtons = ribbonButtonIdsForTask("TaskRibbonTask");
 		Set<String> resourceButtons = ribbonButtonIdsForTask("ResourceRibbonTask");
+		Set<String> reportButtons = ribbonButtonIdsForTask("ReportRibbonTask");
 
 		for (String buttonId : viewButtons) {
 			assertFalse(taskButtons.contains(buttonId), () -> "View button leaked into TaskRibbonTask: " + buttonId);
 			assertFalse(resourceButtons.contains(buttonId), () -> "View button leaked into ResourceRibbonTask: " + buttonId);
+			assertFalse(reportButtons.contains(buttonId), () -> "View button leaked into ReportRibbonTask: " + buttonId);
 		}
 	}
 
 	@Test
-	void preferencesRibbonBandAppearsOnlyInProjectRibbonTask() {
+	void preferencesRibbonBandAppearsOnlyInFileRibbonTask() {
 		var owners = new ArrayList<String>();
 		for (Map.Entry<String, java.util.List<String>> entry : ribbonBandsByTask().entrySet()) {
 			if (entry.getValue().contains("PreferencesRibbonBand")) {
 				owners.add(entry.getKey());
 			}
 		}
-		assertEquals(java.util.List.of("ProjectRibbonTask"), owners);
+		assertEquals(java.util.List.of("FileRibbonTask"), owners);
 	}
 
 	@Test
-	void taskAndResourceRibbonTasksDoNotContainViewBands() {
-		Set<String> viewBands = new HashSet<>();
-		for (String bandId : ribbonBandIds("ViewRibbonTask")) {
-			if (bandId.contains("Views") || bandId.contains("SubViews")) {
-				viewBands.add(bandId);
-			}
-		}
-
-		for (String taskBand : ribbonBandIds("TaskRibbonTask")) {
-			assertFalse(viewBands.contains(taskBand), () -> "TaskRibbonTask still contains view band " + taskBand);
-		}
-		for (String resourceBand : ribbonBandIds("ResourceRibbonTask")) {
-			assertFalse(viewBands.contains(resourceBand), () -> "ResourceRibbonTask still contains view band " + resourceBand);
-		}
+	void reportButtonsDoNotRemainInViewRibbonTask() {
+		Set<String> reportButtons = ribbonButtonIdsForTask("ReportRibbonTask");
+		Set<String> viewButtons = ribbonButtonIdsForTask("ViewRibbonTask");
+		assertTrue(reportButtons.contains("RibbonReport"));
+		assertTrue(reportButtons.contains("RibbonHistogram"));
+		assertTrue(reportButtons.contains("RibbonCharts"));
+		assertFalse(viewButtons.contains("RibbonReport"));
+		assertFalse(viewButtons.contains("RibbonHistogram"));
+		assertFalse(viewButtons.contains("RibbonCharts"));
 	}
 
 	@Test
-	void viewRibbonIncludesDisplaySettingsBand() {
-		assertTrue(ribbonBandIds("ViewRibbonTask").contains("ViewSettingsRibbonBand"));
+	void formatRibbonIncludesDisplayAndBarBands() {
+		assertTrue(ribbonBandIds("FormatRibbonTask").contains("FormatDisplayRibbonBand"));
+		assertTrue(ribbonBandIds("FormatRibbonTask").contains("FormatBarRibbonBand"));
+		assertTrue(ribbonBandIds("FormatRibbonTask").contains("FormatLayoutRibbonBand"));
 		assertEquals(
-			java.util.List.of("RibbonToggleProgressLine", "RibbonLabelResourceNames", "RibbonLabelTaskName"),
-			com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonButtonIds("ViewSettingsRibbonBand"));
+			java.util.List.of("RibbonToggleProgressLine", "RibbonLabelResourceNames", "RibbonLabelTaskName", "RibbonGridlines"),
+			com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonButtonIds("FormatDisplayRibbonBand"));
+		assertEquals(
+			java.util.List.of("RibbonTimescale", "RibbonBar", "RibbonBarStyles", "RibbonTextStyles"),
+			com.projectlibre1.menu.testsupport.MenuDefinitionSupport.ribbonButtonIds("FormatBarRibbonBand"));
 	}
 
 	@Test
-	void viewSettingsButtonsHaveBackingMenuItems() {
+	void newRibbonButtonsHaveBackingMenuItems() {
 		ResourceBundle internal = com.projectlibre1.menu.testsupport.MenuDefinitionSupport.menuInternalBundle();
 		ResourceBundle labels = menuBundle(Locale.ROOT);
-		for (String id : java.util.List.of("ToggleProgressLine", "LabelResourceNames", "LabelTaskName")) {
+		for (String id : java.util.List.of(
+			"ToggleProgressLine",
+			"LabelResourceNames",
+			"LabelTaskName",
+			"InsertRecurring",
+			"LevelResources",
+			"CalendarOptions",
+			"Expand",
+			"Collapse",
+			"ChooseFilter",
+			"ChooseSort",
+			"ChooseGroup",
+			"Timescale",
+			"Gridlines",
+			"TextStyles",
+			"BarStyles",
+			"Layout")) {
 			assertTrue(internal.containsKey(id + ".action"), () -> id + " is missing an internal action mapping");
 			assertTrue(labels.containsKey(id + ".text"), () -> id + " is missing menu text");
 		}

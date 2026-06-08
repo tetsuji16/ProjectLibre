@@ -110,6 +110,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	private static final String DEFAULT_GANTT_BAR_STYLE = "standard";
 	public static final String ANNOTATION_FIELD_RESOURCE_NAMES = "Field.resourceNames";
 	public static final String ANNOTATION_FIELD_TASK_NAME = "Field.name";
+	private String currentBarStyleName = DEFAULT_GANTT_BAR_STYLE;
 	protected SpreadSheet spreadSheet;
 	protected Gantt gantt;
     protected SortedSet<Integer> baseLines = new TreeSet<>();
@@ -229,6 +230,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	public void setBarStyles(String styleName) {
 		if (gantt == null)
 			return;
+		currentBarStyleName = styleName == null ? DEFAULT_GANTT_BAR_STYLE : styleName;
 		gantt.setBarStyles((BarStyles) Dictionary.get(BarStyles.category, styleName));
     }
 
@@ -388,6 +390,33 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	}
 	public int getScale() {
 		return coord.getTimescaleManager().getCurrentScaleIndex();
+	}
+	public int getScaleCount() {
+		return coord.getTimescaleManager().getScaleCount();
+	}
+	public void setScale(int scaleIndex) {
+		if (coord == null)
+			return;
+		int boundedScale = Math.max(0, Math.min(scaleIndex, getScaleCount() - 1));
+		while (getScale() < boundedScale && canZoomOut()) {
+			zoomOut();
+		}
+		while (getScale() > boundedScale && canZoomIn()) {
+			zoomIn();
+		}
+	}
+	public String getCurrentBarStyleName() {
+		return currentBarStyleName;
+	}
+	public boolean isSpreadsheetGridVisible() {
+		return spreadSheet != null && spreadSheet.getShowHorizontalLines() && spreadSheet.getShowVerticalLines();
+	}
+	public void setSpreadsheetGridVisible(boolean visible) {
+		if (spreadSheet == null)
+			return;
+		spreadSheet.setShowHorizontalLines(visible);
+		spreadSheet.setShowVerticalLines(visible);
+		spreadSheet.repaint();
 	}
 	public boolean hasNormalMinWidth() {
 		return true;

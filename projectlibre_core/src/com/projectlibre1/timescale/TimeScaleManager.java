@@ -115,6 +115,10 @@ public class TimeScaleManager {
 		if (currentScaleIndex==-1) currentScaleIndex=defaultIndex;
 		return currentScaleIndex;
 	}
+
+	public int getScaleCount() {
+		return scales == null ? 0 : scales.size();
+	}
 	
 	
     public boolean toggleMinWidth(boolean normal){

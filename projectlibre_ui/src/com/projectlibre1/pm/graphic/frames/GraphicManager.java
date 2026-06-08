@@ -97,6 +97,7 @@ import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -215,6 +216,7 @@ import com.projectlibre1.session.SessionFactory;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.toolbar.FilterToolBarManager;
 import com.projectlibre1.toolbar.TransformComboBox;
+import com.projectlibre1.toolbar.TransformComboBoxModel;
 import com.projectlibre1.undo.CommandInfo;
 import com.projectlibre1.undo.UndoController;
 import com.projectlibre1.util.Alert;
@@ -1140,6 +1142,11 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		actionsMap.addHandler(ACTION_UPDATE_TASKS, new UpdateTasksAction());
 		actionsMap.addHandler(ACTION_UPDATE_PROJECT, new UpdateProjectAction());
 		actionsMap.addHandler(ACTION_BAR, new BarAction());
+		actionsMap.addHandler(ACTION_TIMESCALE, new TimescaleAction());
+		actionsMap.addHandler(ACTION_GRIDLINES, new GridlinesAction());
+		actionsMap.addHandler(ACTION_TEXT_STYLES, new TextStylesAction());
+		actionsMap.addHandler(ACTION_BAR_STYLES, new BarStylesAction());
+		actionsMap.addHandler(ACTION_LAYOUT, new LayoutAction());
 		actionsMap.addHandler(ACTION_INSERT_RECURRING, new RecurringTaskAction());
 		actionsMap.addHandler(ACTION_SORT, new SortAction());
 		actionsMap.addHandler(ACTION_GROUP, new GroupAction());
@@ -1183,9 +1190,9 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		actionsMap.addHandler(ACTION_RESOURCE_USAGE, new ViewAction(ACTION_RESOURCE_USAGE));
 		actionsMap.addHandler(ACTION_NO_SUB_WINDOW, new ViewAction(ACTION_NO_SUB_WINDOW));
 
-		actionsMap.addHandler(ACTION_CHOOSE_FILTER, new TransformAction());
-		actionsMap.addHandler(ACTION_CHOOSE_SORT, new TransformAction());
-		actionsMap.addHandler(ACTION_CHOOSE_GROUP, new TransformAction());
+		actionsMap.addHandler(ACTION_CHOOSE_FILTER, new TransformAction(TransformComboBoxModel.FILTER));
+		actionsMap.addHandler(ACTION_CHOOSE_SORT, new TransformAction(TransformComboBoxModel.SORTER));
+		actionsMap.addHandler(ACTION_CHOOSE_GROUP, new TransformAction(TransformComboBoxModel.GROUPER));
 
 		actionsMap.addHandler(ACTION_PALETTE, new PaletteAction());
 		actionsMap.addHandler(ACTION_LOOK_AND_FEEL, new LookAndFeelAction());
@@ -1684,8 +1691,42 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 		private static final long serialVersionUID = 1L;
 		public void actionPerformed(ActionEvent arg0) {
 			setMeAsLastGraphicManager();
-			if (isDocumentActive())
-				getCurrentFrame().doBarDialog();
+			showBarStyleChooser();
+		}
+	}
+	public class TimescaleAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			showTimescaleChooser();
+		}
+	}
+	public class GridlinesAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			toggleGridlines();
+		}
+	}
+	public class TextStylesAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			showTextStyleChooser();
+		}
+	}
+	public class BarStylesAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			showBarStyleChooser();
+		}
+	}
+	public class LayoutAction extends MenuActionsMap.DocumentMenuAction {
+		private static final long serialVersionUID = 1L;
+		public void actionPerformed(ActionEvent arg0) {
+			setMeAsLastGraphicManager();
+			showLayoutChooser();
 		}
 	}
 	public class RecurringTaskAction extends MenuActionsMap.DocumentMenuAction {
@@ -1972,6 +2013,10 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 
 	public class TransformAction extends MenuActionsMap.DocumentMenuAction {
 		private static final long serialVersionUID = 1L;
+		private final int type;
+		public TransformAction(int type) {
+			this.type = type;
+		}
 		public void actionPerformed(ActionEvent e) {
 			setMeAsLastGraphicManager();
 			if (!isDocumentActive())
@@ -1982,8 +2027,11 @@ public class GraphicManager implements  FrameHolder, NamedFrameListener, WindowS
 	            	spreadSheet.getCellEditor().stopCellEditing();//.cancelCellEditing();
 	            spreadSheet.clearSelection();
 	        }
-	        TransformComboBox combo = (TransformComboBox) e.getSource();
-	        combo.transformBasedOnValue();
+	        if (e.getSource() instanceof TransformComboBox combo) {
+	        	combo.transformBasedOnValue();
+	        	return;
+	        }
+	        showTransformChooser(type);
 		}
 	}
 
@@ -2355,6 +2403,146 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		CalendarDialogBox.getInstance(getFrame(), null).doModal();
 	}
 
+	private GanttView getActiveGanttView() {
+		if (!isActiveGanttView() || currentFrame == null)
+			return null;
+		return currentFrame.getGanttView();
+	}
+
+	private void showTransformChooser(int type) {
+		if (!isDocumentActive())
+			return;
+		String actionId = switch (type) {
+		case TransformComboBoxModel.SORTER -> ACTION_CHOOSE_SORT;
+		case TransformComboBoxModel.GROUPER -> ACTION_CHOOSE_GROUP;
+		default -> ACTION_CHOOSE_FILTER;
+		};
+		TransformComboBox combo = new TransformComboBox(getMenuManager(), actionId, type);
+		combo.setView(com.projectlibre1.grouping.core.transform.ViewConfiguration.getView(getTopViewId()));
+		if (combo.getItemCount() == 0)
+			return;
+		if (combo.getSelectedIndex() < 0)
+			combo.setSelectedIndex(0);
+		int choice = JOptionPane.showConfirmDialog(getFrame(), combo,
+				getMenuManager().getString(actionId + ".text"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (choice == JOptionPane.OK_OPTION) {
+			combo.transformBasedOnValue();
+		}
+	}
+
+	private void showTimescaleChooser() {
+		GanttView ganttView = getActiveGanttView();
+		if (ganttView == null)
+			return;
+		MenuManager manager = getMenuManager();
+		int scaleCount = ganttView.getScaleCount();
+		String[] labels = new String[scaleCount];
+		for (int i = 0; i < scaleCount; i++) {
+			labels[i] = manager.getString("RibbonTimescale.text") + " " + (i + 1);
+		}
+		JComboBox<String> combo = new JComboBox<>(labels);
+		combo.setSelectedIndex(ganttView.getScale());
+		int choice = JOptionPane.showConfirmDialog(getFrame(), combo,
+				manager.getString("RibbonTimescale.text"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (choice == JOptionPane.OK_OPTION) {
+			ganttView.setScale(combo.getSelectedIndex());
+			setZoomButtons();
+		}
+	}
+
+	private void showBarStyleChooser() {
+		GanttView ganttView = getActiveGanttView();
+		if (ganttView == null)
+			return;
+		MenuManager manager = getMenuManager();
+		String[] styles = { "standard", "Tracking" };
+		JComboBox<String> combo = new JComboBox<>(styles);
+		combo.setSelectedItem(ganttView.getCurrentBarStyleName());
+		int choice = JOptionPane.showConfirmDialog(getFrame(), combo,
+				manager.getString("RibbonBarStyles.text"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (choice == JOptionPane.OK_OPTION) {
+			ganttView.setBarStyles((String) combo.getSelectedItem());
+			ganttView.getGantt().repaint();
+		}
+	}
+
+	private void toggleGridlines() {
+		GanttView ganttView = getActiveGanttView();
+		if (ganttView == null)
+			return;
+		ganttView.setSpreadsheetGridVisible(!ganttView.isSpreadsheetGridVisible());
+	}
+
+	private void showTextStyleChooser() {
+		GanttView ganttView = getActiveGanttView();
+		if (ganttView == null)
+			return;
+		MenuManager manager = getMenuManager();
+		String[] labels = {
+			manager.getString("RibbonLabelResourceNames.text"),
+			manager.getString("RibbonLabelTaskName.text")
+		};
+		JComboBox<String> combo = new JComboBox<>(labels);
+		combo.setSelectedIndex(ganttView.isTaskNameAnnotationSelected() ? 1 : 0);
+		int choice = JOptionPane.showConfirmDialog(getFrame(), combo,
+				manager.getString("RibbonTextStyles.text"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (choice == JOptionPane.OK_OPTION) {
+			ganttView.setCurrentAnnotationFieldId(combo.getSelectedIndex() == 1
+				? GanttView.ANNOTATION_FIELD_TASK_NAME
+				: GanttView.ANNOTATION_FIELD_RESOURCE_NAMES);
+			syncGanttViewRibbonState();
+		}
+	}
+
+	private void showLayoutChooser() {
+		GanttView ganttView = getActiveGanttView();
+		if (ganttView == null)
+			return;
+		MenuManager manager = getMenuManager();
+		int scaleCount = ganttView.getScaleCount();
+		String[] scaleLabels = new String[scaleCount];
+		for (int i = 0; i < scaleCount; i++) {
+			scaleLabels[i] = manager.getString("RibbonTimescale.text") + " " + (i + 1);
+		}
+		JComboBox<String> timescaleCombo = new JComboBox<>(scaleLabels);
+		timescaleCombo.setSelectedIndex(ganttView.getScale());
+		JComboBox<String> barStyleCombo = new JComboBox<>(new String[] { "standard", "Tracking" });
+		barStyleCombo.setSelectedItem(ganttView.getCurrentBarStyleName());
+		JComboBox<String> labelCombo = new JComboBox<>(new String[] {
+			manager.getString("RibbonLabelResourceNames.text"),
+			manager.getString("RibbonLabelTaskName.text")
+		});
+		labelCombo.setSelectedIndex(ganttView.isTaskNameAnnotationSelected() ? 1 : 0);
+		JCheckBox progressLine = new JCheckBox(manager.getString("RibbonToggleProgressLine.text"), ganttView.isProgressLineEnabled());
+		JCheckBox gridlines = new JCheckBox(manager.getString("RibbonGridlines.text"), ganttView.isSpreadsheetGridVisible());
+
+		JPanel panel = new JPanel(new GridLayout(0, 1, 0, 8));
+		panel.setBorder(new EmptyBorder(8, 8, 8, 8));
+		panel.add(new JLabel(manager.getString("RibbonTimescale.text")));
+		panel.add(timescaleCombo);
+		panel.add(new JLabel(manager.getString("RibbonBarStyles.text")));
+		panel.add(barStyleCombo);
+		panel.add(new JLabel(manager.getString("RibbonTextStyles.text")));
+		panel.add(labelCombo);
+		panel.add(progressLine);
+		panel.add(gridlines);
+
+		int choice = JOptionPane.showConfirmDialog(getFrame(), panel,
+				manager.getString("RibbonLayout.text"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		if (choice == JOptionPane.OK_OPTION) {
+			ganttView.setScale(timescaleCombo.getSelectedIndex());
+			ganttView.setBarStyles((String) barStyleCombo.getSelectedItem());
+			ganttView.setCurrentAnnotationFieldId(labelCombo.getSelectedIndex() == 1
+				? GanttView.ANNOTATION_FIELD_TASK_NAME
+				: GanttView.ANNOTATION_FIELD_RESOURCE_NAMES);
+			ganttView.setProgressLineEnabled(progressLine.isSelected());
+			ganttView.setSpreadsheetGridVisible(gridlines.isSelected());
+			ganttView.getGantt().repaint();
+			setZoomButtons();
+			syncGanttViewRibbonState();
+		}
+	}
+
 
 
 	void print(){
@@ -2501,7 +2689,8 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		getMenuManager().setActionEnabled(ACTION_INFORMATION,infoEnabled);
 		getMenuManager().setActionEnabled(ACTION_NOTES,infoEnabled);
 		getMenuManager().setActionEnabled(ACTION_INSERT_TASK, !readOnly && (taskType || resourceType)&&(actions==null||actions.contains(ACTION_INSERT_TASK)));
-		getMenuManager().setActionEnabled(ACTION_INSERT_RESOURCE, !readOnly && (taskType || resourceType)&&(actions==null||actions.contains(ACTION_INSERT_TASK)));
+		getMenuManager().setActionEnabled(ACTION_INSERT_RESOURCE, !readOnly && resourceType && (actions==null||actions.contains(ACTION_INSERT_RESOURCE)));
+		getMenuManager().setActionEnabled(ACTION_INSERT_RECURRING, !readOnly && taskType);
 		getMenuManager().setActionEnabled(ACTION_CUT,!readOnly &&notVoid&&(actions==null||actions.contains(ACTION_CUT)));
 		getMenuManager().setActionEnabled(ACTION_COPY,notVoid&&(actions==null||actions.contains(ACTION_COPY)));
 		getMenuManager().setActionEnabled(ACTION_PASTE,!readOnly && (actions==null||actions.contains(ACTION_PASTE)));
@@ -2513,12 +2702,16 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		boolean writable = (currentImpl != null && !ClassUtils.isObjectReadOnly(currentImpl));
 		getMenuManager().setActionEnabled(ACTION_INDENT,!readOnly &&(isTask || isResource)&&(actions==null||actions.contains(ACTION_INDENT)));
 		getMenuManager().setActionEnabled(ACTION_OUTDENT,!readOnly &&(isTask || isResource)&&(actions==null||actions.contains(ACTION_OUTDENT)));
+		getMenuManager().setActionEnabled(ACTION_EXPAND,!readOnly && notVoid && (actions==null||actions.contains(ACTION_EXPAND)));
+		getMenuManager().setActionEnabled(ACTION_COLLAPSE,!readOnly && notVoid && (actions==null||actions.contains(ACTION_COLLAPSE)));
 		getMenuManager().setActionEnabled(ACTION_LINK,isTask);
 		getMenuManager().setActionEnabled(ACTION_UNLINK,isTask);
 		getMenuManager().setActionEnabled(ACTION_ASSIGN_RESOURCES,isTask && writable);
 		getMenuManager().setActionEnabled(ACTION_TIMESHEET,!readOnly && project != null);
+		getMenuManager().setActionEnabled(ACTION_LEVEL_RESOURCES,!readOnly && project != null);
 		getMenuManager().setActionEnabled(ACTION_DELEGATE_TASKS,isTask && writable);
 		getMenuManager().setActionEnabled(ACTION_UPDATE_TASKS,!readOnly && isTask);
+		getMenuManager().setActionEnabled(ACTION_CALENDAR_OPTIONS,currentFrame != null);
 
 
 		boolean insertProject = getCurrentFrame().isCurrentRowInMainProject();
@@ -2533,6 +2726,10 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 			view=(BaseView)frame.getMainView().getTopComponent();
 		}
 		getMenuManager().setActionEnabled(ACTION_SCROLL_TO_TASK,isHasStartAndEnd&&view.canScrollToTask());
+		boolean hasDocument = currentFrame != null;
+		getMenuManager().setActionEnabled(ACTION_CHOOSE_FILTER, hasDocument);
+		getMenuManager().setActionEnabled(ACTION_CHOOSE_SORT, hasDocument);
+		getMenuManager().setActionEnabled(ACTION_CHOOSE_GROUP, hasDocument);
 
 		if (currentFrame != null) {
 			currentFrame.refreshUndoButtons();
@@ -2569,6 +2766,12 @@ protected boolean loadLocalDocument(String fileName,boolean merge){ //uses serve
 		getMenuManager().setActionEnabled(ACTION_TOGGLE_PROGRESS_LINE, ganttActive);
 		getMenuManager().setActionEnabled(ACTION_LABEL_RESOURCE_NAMES, ganttActive);
 		getMenuManager().setActionEnabled(ACTION_LABEL_TASK_NAME, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_BAR, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_TIMESCALE, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_GRIDLINES, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_TEXT_STYLES, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_BAR_STYLES, ganttActive);
+		getMenuManager().setActionEnabled(ACTION_LAYOUT, ganttActive);
 
 		boolean progressSelected = false;
 		boolean resourceLabelSelected = false;

@@ -345,9 +345,11 @@ public class CommonSpreadSheet extends CommonTable implements CacheListener, Sav
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					requestEditorFocus();
-					clearEditorText();
 					Component target = getInputMethodTargetComponent();
 					if (target != null && editorEvent != null) {
+						// Keep the existing selection in place so the input method can
+						// replace it naturally. Clearing the text here interferes with
+						// composed input and can leave only the first committed character.
 						target.dispatchEvent(editorEvent);
 					}
 				}
