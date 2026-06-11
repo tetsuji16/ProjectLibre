@@ -205,4 +205,12 @@ class RibbonAndToolbarButtonTest {
 			assertTrue(labels.containsKey(id + ".text"), () -> id + " is missing menu text");
 		}
 	}
+
+	@Test
+	void transformChooserButtonsMapToTheirOwnActions() {
+		ResourceBundle internal = com.projectlibre1.menu.testsupport.MenuDefinitionSupport.menuInternalBundle();
+		assertEquals("ChooseFilter", internal.getString("ChooseFilter.action"));
+		assertEquals("ChooseSort", internal.getString("ChooseSort.action"));
+		assertEquals("ChooseGroup", internal.getString("ChooseGroup.action"));
+	}
 }
