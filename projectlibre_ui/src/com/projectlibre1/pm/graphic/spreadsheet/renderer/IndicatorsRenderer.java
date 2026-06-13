@@ -68,6 +68,7 @@ import com.projectlibre1.pm.graphic.IconManager;
 import com.projectlibre1.pm.graphic.model.cache.GraphicNode;
 import com.projectlibre1.pm.graphic.spreadsheet.SpreadSheetParams;
 import com.projectlibre1.field.Field;
+import com.projectlibre1.util.FlatUiSupport;
 
 public class IndicatorsRenderer extends DefaultTableCellRenderer implements OfflineRenderer{
 	private static final long serialVersionUID = 190987129201L;
@@ -91,6 +92,7 @@ public class IndicatorsRenderer extends DefaultTableCellRenderer implements Offl
 			//label=(JComponent)super.getTableCellRendererComponent(table,"",isSelected,hasFocus,row,column);
 			//indicatorsComponent.setLook(label,isSelected,hasFocus);
 			if (table!=null) label.setBackground(table.getBackground());
+			label.setBorder(isSelected || hasFocus ? FlatUiSupport.focusBorder() : FlatUiSupport.tableRowSeparatorBorder());
 			label.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 			StringBuilder text = new StringBuilder();
 			
@@ -103,8 +105,13 @@ public class IndicatorsRenderer extends DefaultTableCellRenderer implements Offl
 			if (text.length() == 0){
 				if (table==null){
 					this.setText("");
+					setBorder(isSelected || hasFocus ? FlatUiSupport.focusBorder() : FlatUiSupport.tableRowSeparatorBorder());
 					return this;
-				}else return super.getTableCellRendererComponent(table,"",isSelected,hasFocus,row,column);//empty;
+				}else {
+					JComponent empty = (JComponent)super.getTableCellRendererComponent(table,"",isSelected,hasFocus,row,column);//empty;
+					empty.setBorder(isSelected || hasFocus ? FlatUiSupport.focusBorder() : FlatUiSupport.tableRowSeparatorBorder());
+					return empty;
+				}
 			}
 			text.insert(0,"<html>");
 			text.append("</html>");
@@ -113,8 +120,13 @@ public class IndicatorsRenderer extends DefaultTableCellRenderer implements Offl
 		} else {
 			if (table==null){
 				this.setText("");
+				setBorder(isSelected || hasFocus ? FlatUiSupport.focusBorder() : FlatUiSupport.tableRowSeparatorBorder());
 				return this;
-			}else return super.getTableCellRendererComponent(table,"",isSelected,hasFocus,row,column);//empty;
+			}else {
+				JComponent empty = (JComponent)super.getTableCellRendererComponent(table,"",isSelected,hasFocus,row,column);//empty;
+				empty.setBorder(isSelected || hasFocus ? FlatUiSupport.focusBorder() : FlatUiSupport.tableRowSeparatorBorder());
+				return empty;
+			}
 		}
 	}
 	

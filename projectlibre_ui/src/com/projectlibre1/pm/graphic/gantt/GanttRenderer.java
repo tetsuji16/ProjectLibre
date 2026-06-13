@@ -129,6 +129,7 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 	private static final Stroke PROGRESS_LINE_STROKE = new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 	private static final Stroke PROGRESS_LINE_HALO_STROKE = new BasicStroke(4.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 	private static final int PROGRESS_LINE_POINT_SIZE = 6;
+	private static final Color LINK_ARROW_COLOR = new Color(0x5F, 0x64, 0x6D);
 	protected NodeRenderer nodeRenderer = new NodeRenderer();
 	protected LinkRenderer linkRenderer = new LinkRenderer();
 	protected HorizontalLineRenderer horizontalLineRenderer = new HorizontalLineRenderer();
@@ -762,17 +763,13 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 		private void drawLinkArrows(Dependency dep, AffineTransform transform, TexturedShape shape) {
 			Paint oldPaint = shape.getPaint();
 			Color oldEndColor = shape.getColor();
-			if (dep.isCrossProject()) {
-				shape.setPaint(palette.getExternalLinkColor());
-				shape.setColor(palette.getExternalLinkColor());
-			}
-			g2.setColor(shape.getColor());
+			shape.setPaint(LINK_ARROW_COLOR);
+			shape.setColor(LINK_ARROW_COLOR);
+			g2.setColor(LINK_ARROW_COLOR);
 			LinkRouting routing=((GanttParams)graphInfo).getRouting();
 			shape.draw(g2,routing.getLastX(),routing.getLastY(),transform,useTextures());
-			if (dep.isCrossProject()) {
-				shape.setPaint(oldPaint);
-				shape.setColor(oldEndColor);
-			}
+			shape.setPaint(oldPaint);
+			shape.setColor(oldEndColor);
 		}
 	}
 
