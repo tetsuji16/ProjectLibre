@@ -204,7 +204,8 @@ public class SpreadSheetRenderer extends Renderer{
 
 	private void paintGridLine(Graphics2D g2, Line2D line) {
 		Color oldColor = g2.getColor();
-		g2.setColor(FlatUiSupport.tableGridColor());
+		Color gridLineColor = params.getGridLineColor();
+		g2.setColor(gridLineColor == null ? FlatUiSupport.tableGridColor() : gridLineColor);
 		g2.draw(line);
 		g2.setColor(oldColor);
 	}

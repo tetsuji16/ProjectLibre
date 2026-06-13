@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.gantt;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
 
@@ -69,4 +70,8 @@ public interface GanttParams extends GraphParams{
 	public Font getColumnHeaderFont();
 	public void setColumnHeaderFont(Font columnHeaderFont);
 	public Rectangle getGanttBounds();
+	public boolean isGridLinesVisible();
+	public void setGridLinesVisible(boolean visible);
+	public Color getGridLineColor();
+	public void setGridLineColor(Color color);
 }

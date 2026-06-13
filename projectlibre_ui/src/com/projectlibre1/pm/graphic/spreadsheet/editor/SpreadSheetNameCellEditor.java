@@ -98,6 +98,7 @@ public class SpreadSheetNameCellEditor extends SpreadSheetCellEditorAdapter{
 		if (textComponent instanceof JTextField) {
 			((JTextField)textComponent).setScrollOffset(0);
 		}
+		prepareEditorComponent(textComponent);
 		component = new NameCellComponent(textComponent);
 		component.init();
 		CellUtility.setAppearance(table, value, isSelected, true, row, column, component);

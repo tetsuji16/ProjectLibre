@@ -59,6 +59,7 @@ import java.util.Date;
 import java.util.Vector;
 
 import javax.swing.ListSelectionModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
@@ -89,7 +90,7 @@ public class CommonTable extends Outline {
      */
     public CommonTable() {
         super();
-        FlatUiSupport.applyDataSurface(this);
+        FlatUiSupport.applySpreadsheetTableStyle(this);
         setRootVisible(false);
     }
 
@@ -100,7 +101,7 @@ public class CommonTable extends Outline {
     public CommonTable(int numRows, int numColumns) {
         super();
         setModel(new javax.swing.table.DefaultTableModel(numRows, numColumns));
-        FlatUiSupport.applyDataSurface(this);
+        FlatUiSupport.applySpreadsheetTableStyle(this);
         setRootVisible(false);
     }
 
@@ -110,7 +111,7 @@ public class CommonTable extends Outline {
     public CommonTable(TableModel dm) {
         super();
         setModel(dm);
-        FlatUiSupport.applyDataSurface(this);
+        FlatUiSupport.applySpreadsheetTableStyle(this);
         setRootVisible(false);
     }
 
@@ -121,7 +122,7 @@ public class CommonTable extends Outline {
     public CommonTable(Object[][] rowData, Object[] columnNames) {
         super();
         setModel(new javax.swing.table.DefaultTableModel(rowData, columnNames));
-        FlatUiSupport.applyDataSurface(this);
+        FlatUiSupport.applySpreadsheetTableStyle(this);
         setRootVisible(false);
     }
 
@@ -133,7 +134,7 @@ public class CommonTable extends Outline {
     public CommonTable(Vector<?> rowData, Vector<?> columnNames) {
         super();
         setModel(new javax.swing.table.DefaultTableModel((Vector) rowData, (Vector) columnNames));
-        FlatUiSupport.applyDataSurface(this);
+        FlatUiSupport.applySpreadsheetTableStyle(this);
         setRootVisible(false);
     }
 
@@ -145,7 +146,7 @@ public class CommonTable extends Outline {
         super();
         setModel(dm);
         setColumnModel(cm);
-        FlatUiSupport.applyDataSurface(this);
+        FlatUiSupport.applySpreadsheetTableStyle(this);
         setRootVisible(false);
     }
 
@@ -159,8 +160,19 @@ public class CommonTable extends Outline {
         setModel(dm);
         setColumnModel(cm);
         setSelectionModel(sm);
-        FlatUiSupport.applyDataSurface(this);
+        FlatUiSupport.applySpreadsheetTableStyle(this);
         setRootVisible(false);
+    }
+
+    @Override
+    protected JTableHeader createDefaultTableHeader() {
+        return new CommonTableHeader(getColumnModel());
+    }
+
+    @Override
+    public void updateUI() {
+        super.updateUI();
+        FlatUiSupport.applySpreadsheetTableStyle(this);
     }
     public boolean editorsRegistered;
 	protected void registerEditors(){

@@ -55,11 +55,13 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.views;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
@@ -98,6 +100,7 @@ import com.projectlibre1.pm.time.HasStartAndEnd;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.undo.UndoController;
 import com.projectlibre1.workspace.WorkspaceSetting;
+import com.projectlibre1.util.FlatUiSupport;
 
 /**
  *
@@ -107,6 +110,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	 *
 	 */
 	private static final long serialVersionUID = 514828655690086836L;
+	private static final Logger logger = Logger.getLogger(GanttView.class.getName());
 	private static final String DEFAULT_GANTT_BAR_STYLE = "standard";
 	public static final String ANNOTATION_FIELD_RESOURCE_NAMES = "Field.resourceNames";
 	public static final String ANNOTATION_FIELD_TASK_NAME = "Field.name";
@@ -126,6 +130,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 	private boolean tracking = false;
 	private boolean standardProgressLineEnabled = false;
 	private boolean trackingProgressLineEnabled = true;
+	private boolean spreadsheetGridVisible = true;
 	public static final String spreadsheetCategory=taskSpreadsheetCategory;
 
 
@@ -161,6 +166,9 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 
 		};*/
 		super.init();
+		setSpreadsheetGridVisible(true);
+		logger.info(() -> "GanttView init spreadsheetGridVisible=" + spreadsheetGridVisible
+				+ " rowHeight=" + project.getRowHeight(baseLines));
 		updateHeight(project);
 		updateSize();
 
@@ -170,10 +178,11 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 
 			public void stateChanged(ChangeEvent e){
 				Dimension dl = leftScrollPane.getViewport().getViewSize();
-				if (dl.equals(olddl)) {
+				if (olddl != null && dl.height == olddl.height) {
 					return;
 				}
 				olddl = dl;
+				logger.info(() -> "left viewport size changed width=" + dl.width + " height=" + dl.height);
 				synchronizeGanttHeightWithSpreadsheet(dl);
 			}
 		});
@@ -234,7 +243,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		gantt.setBarStyles((BarStyles) Dictionary.get(BarStyles.category, styleName));
     }
 
-    protected JScrollPane createLeftScrollPane() {
+	protected JScrollPane createLeftScrollPane() {
         spreadSheet = new SpreadSheet();
         spreadSheet.setName(project.getName());
 		spreadSheet.setSpreadSheetCategory(spreadsheetCategory); // for columns.  Must do first
@@ -249,7 +258,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		if (project.isReadOnly()) {
 			spreadSheet.setReadOnly(true);
 		}
-
+		applySpreadsheetGridStyle();
 		return SpreadSheetUtils.makeSpreadsheetScrollPane(spreadSheet);
    }
    protected JScrollPane createRightScrollPane() {
@@ -258,6 +267,7 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		gantt.setBarStyles((BarStyles) Dictionary.get(BarStyles.category, DEFAULT_GANTT_BAR_STYLE));
 		ganttScrollPane = new ScaledScrollPane(gantt, coord, documentFrame, spreadSheet.getRowHeight());
 		ganttScrollPane.getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+		applySpreadsheetGridStyle();
 		return ganttScrollPane;
     }
 
@@ -409,14 +419,15 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		return currentBarStyleName;
 	}
 	public boolean isSpreadsheetGridVisible() {
-		return spreadSheet != null && spreadSheet.getShowHorizontalLines() && spreadSheet.getShowVerticalLines();
+		return spreadsheetGridVisible;
 	}
 	public void setSpreadsheetGridVisible(boolean visible) {
-		if (spreadSheet == null)
-			return;
-		spreadSheet.setShowHorizontalLines(visible);
-		spreadSheet.setShowVerticalLines(visible);
-		spreadSheet.repaint();
+		logger.info(() -> "setSpreadsheetGridVisible " + spreadsheetGridVisible + " -> " + visible);
+		spreadsheetGridVisible = visible;
+		if (gantt != null) {
+			gantt.setGridLinesVisible(visible);
+		}
+		applySpreadsheetGridStyle();
 	}
 	public boolean hasNormalMinWidth() {
 		return true;
@@ -554,6 +565,32 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		}
 	}
 
+	private void applySpreadsheetGridStyle() {
+		Color gridLineColor = getSpreadsheetGridLineColor();
+		logger.info(() -> "applySpreadsheetGridStyle visible=" + spreadsheetGridVisible
+				+ " gridColor=" + gridLineColor);
+		if (spreadSheet != null) {
+			spreadSheet.setGridColor(gridLineColor);
+			spreadSheet.setShowHorizontalLines(spreadsheetGridVisible);
+			spreadSheet.setShowVerticalLines(spreadsheetGridVisible);
+			if (spreadSheet.getRowHeader() != null) {
+				spreadSheet.getRowHeader().setGridColor(gridLineColor);
+				spreadSheet.getRowHeader().repaint();
+			}
+			spreadSheet.repaint();
+		}
+		if (gantt != null) {
+			gantt.setGridLinesVisible(spreadsheetGridVisible);
+		}
+	}
+
+	private Color getSpreadsheetGridLineColor() {
+		if (gantt != null) {
+			return gantt.getGridLineColor();
+		}
+		return FlatUiSupport.tableGridColor();
+	}
+
 	private void synchronizeGanttHeightWithSpreadsheet(Dimension spreadsheetSize) {
 		if (spreadsheetSize == null || rightScrollPane == null || rightScrollPane.getViewport() == null)
 			return;
@@ -561,6 +598,10 @@ public class GanttView extends SplittedView implements BaseView, ScheduleEventLi
 		if (!(viewport.getView() instanceof Gantt ganttView))
 			return;
 		int height = Math.min(spreadsheetSize.height, ganttView.getScrollableHeight(viewport.getExtentSize().height));
+		logger.info(() -> "synchronizeGanttHeightWithSpreadsheet spreadsheet=" + spreadsheetSize.width + "x" + spreadsheetSize.height
+				+ " viewportExtent=" + viewport.getExtentSize().width + "x" + viewport.getExtentSize().height
+				+ " ganttCurrent=" + ganttView.getPreferredSize().width + "x" + ganttView.getPreferredSize().height
+				+ " targetHeight=" + height);
 		ganttView.setPreferredSize(new Dimension(viewport.getViewSize().width, height));
 		ganttView.clampViewportPosition(viewport, height);
 		viewport.revalidate();

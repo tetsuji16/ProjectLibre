@@ -1,6 +1,7 @@
 package com.projectlibre1.util;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Insets;
@@ -10,6 +11,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
@@ -77,11 +79,14 @@ public final class FlatUiSupport {
 	}
 
 	public static Color tableBackground() {
-		return dataSurfaceBackground();
+		Color color = UIManager.getColor("Table.background");
+		if (color == null)
+			color = dataSurfaceBackground();
+		return color;
 	}
 
 	public static Color tableContentBackground() {
-		return FlatUiTheme.TABLE_CONTENT_BACKGROUND;
+		return tableBackground();
 	}
 
 	public static Color tableForeground() {
@@ -237,7 +242,39 @@ public final class FlatUiSupport {
 	}
 
 	public static Border tableCellBorder() {
-		return BorderFactory.createEmptyBorder(2, 4, 2, 4);
+		Border border = UIManager.getBorder("Table.cellNoFocusBorder");
+		if (border == null)
+			border = BorderFactory.createEmptyBorder(2, 4, 2, 4);
+		return border;
+	}
+
+	public static Color spreadsheetAlternateRowBackground(int row) {
+		Color alternate = UIManager.getColor("Table.alternateRowColor");
+		if (alternate != null)
+			return alternate;
+		if ((row & 1) == 0)
+			return tableBackground();
+		return blend(tableBackground(), headerBackground(), 0.96f);
+	}
+
+	public static Border spreadsheetCellBorder() {
+		return tableCellBorder();
+	}
+
+	public static void applySpreadsheetTableStyle(JTable table) {
+		if (table == null)
+			return;
+		table.setOpaque(true);
+		table.setBackground(tableBackground());
+		table.setForeground(tableForeground());
+		table.setSelectionBackground(tableSelectionBackground());
+		table.setSelectionForeground(tableSelectionForeground());
+		table.setGridColor(tableGridColor());
+		table.setIntercellSpacing(new Dimension(0, 0));
+		table.setShowHorizontalLines(true);
+		table.setShowVerticalLines(false);
+		table.setRowMargin(0);
+		table.setFillsViewportHeight(true);
 	}
 
 	public static Border tableEditorBorder() {

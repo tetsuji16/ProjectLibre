@@ -55,6 +55,7 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.gantt;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.io.Serializable;
@@ -82,6 +83,8 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 	protected Rectangle printBounds;
 	protected boolean rightPartVisible=true,leftPartVisible=true;
 	protected int rowHeight;
+	protected boolean gridLinesVisible = true;
+	protected Color gridLineColor = FlatUiSupport.tableGridColor();
 
 	public GanttParamsImpl(){
 		configuration = GraphicConfiguration.getInstance();
@@ -185,6 +188,22 @@ public class GanttParamsImpl implements GanttParams, Serializable,Cloneable {
 	}
 	public void setSupportLeftAndRightParts(boolean supports){
 		this.supportLeftAndRightParts = supports;
+	}
+
+	public boolean isGridLinesVisible() {
+		return gridLinesVisible;
+	}
+
+	public void setGridLinesVisible(boolean visible) {
+		this.gridLinesVisible = visible;
+	}
+
+	public Color getGridLineColor() {
+		return gridLineColor;
+	}
+
+	public void setGridLineColor(Color color) {
+		this.gridLineColor = color == null ? FlatUiSupport.tableGridColor() : color;
 	}
 
 	public Object clone(){

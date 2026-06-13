@@ -57,6 +57,8 @@ package com.projectlibre1.pm.graphic.spreadsheet.renderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -98,6 +100,8 @@ public class NameCellComponent extends JPanel {
 	protected ImageIcon fetchedLazyExpandedIcon = null;
 	protected ImageIcon fetchedLazyCollapsedIcon = null;
 	protected boolean offline;
+	protected boolean rowSeparatorVisible;
+	protected Color rowSeparatorColor = FlatUiSupport.tableGridColor();
 	/**
 	 *
 	 */
@@ -149,6 +153,12 @@ public class NameCellComponent extends JPanel {
 	public void setOffline(boolean offline) {
 		this.offline = offline;
 	}
+	public void setRowSeparatorVisible(boolean visible) {
+		this.rowSeparatorVisible = visible;
+	}
+	public void setRowSeparatorColor(Color color) {
+		this.rowSeparatorColor = color == null ? FlatUiSupport.tableGridColor() : color;
+	}
 	/**
 	 * @return Returns the text component.
 	 */
@@ -182,6 +192,21 @@ public class NameCellComponent extends JPanel {
 		super.setFont(font);
 		if (textComponent != null)
 			textComponent.setFont(font);
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if (!rowSeparatorVisible) {
+			return;
+		}
+		Graphics2D g2 = (Graphics2D) g.create();
+		try {
+			g2.setColor(rowSeparatorColor);
+			g2.drawLine(0, getHeight() - 1, getWidth(), getHeight() - 1);
+		} finally {
+			g2.dispose();
+		}
 	}
 	public void setLeaf(boolean empty) {
 		ImageIcon askedIcon = (empty) ? emptyLeafIcon : leafIcon;
@@ -289,6 +314,8 @@ public class NameCellComponent extends JPanel {
 		component.setOffline(false);
 		CellUtility.setAppearance(table, value, isSelected, hasFocus, row,
 				column, component);
+		component.setRowSeparatorVisible(table != null && table.getShowHorizontalLines());
+		component.setRowSeparatorColor(table == null ? FlatUiSupport.tableGridColor() : table.getGridColor());
 		CommonSpreadSheetModel model = (CommonSpreadSheetModel) table.getModel();
 		GraphicNode node = model.getNode(row);
 		component.setText(value == null ? "" : value.toString());
@@ -311,6 +338,8 @@ public class NameCellComponent extends JPanel {
 		CellFormat format=params.getFieldArray().getCellStyle().getCellFormat(node);
 		component.getTextComponent().setBorder(null);
 		component.setOffline(true);
+		component.setRowSeparatorVisible(params != null && params.isGridLinesVisible());
+		component.setRowSeparatorColor(params == null ? FlatUiSupport.tableGridColor() : params.getGridLineColor());
 		CellUtility.setAppearance(format,component);
 		String valueS=value == null? " " : value.toString();//to avoid void textComponents with no height
 		if (valueS.length()==0) valueS=" ";
@@ -355,12 +384,22 @@ public class NameCellComponent extends JPanel {
 
 
 	public void requestFocus() {
+		requestTextComponentFocus();
+	}
+
+	@Override
+	public boolean requestFocusInWindow() {
+		return requestTextComponentFocus();
+	}
+
+	private boolean requestTextComponentFocus() {
 		if (textComponent != null) {
 			textComponent.setVisible(true);
 			textComponent.setEnabled(true);
 			textComponent.setFocusable(true);
-			textComponent.requestFocusInWindow();
+			return textComponent.requestFocusInWindow();
 		}
+		return false;
 	}
 	/*public boolean requestFocus(boolean temporary) {
 		return textComponent.requestFocus(temporary);

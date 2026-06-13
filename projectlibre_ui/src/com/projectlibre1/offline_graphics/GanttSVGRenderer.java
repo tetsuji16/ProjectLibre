@@ -113,6 +113,7 @@ public class GanttSVGRenderer implements SVGRenderer,Cloneable{
 		params.setCache(cache);
 		params.setCoord(coord);
 		ganttRenderer=new GanttRenderer(params);
+		params.setGridLineColor(ganttRenderer.getPalette().getGridLine());
 		spreadSheetRenderer=new SpreadSheetRenderer(params);
 		footerRenderer=new FooterRenderer(params);
 		cache.update();
@@ -131,6 +132,7 @@ public class GanttSVGRenderer implements SVGRenderer,Cloneable{
 		GanttSVGRenderer c=(GanttSVGRenderer)clone();
 		c.params=(SpreadSheetParamsImpl)c.params.createSafePrintCopy();
 		c.ganttRenderer=new GanttRenderer(c.params);
+		c.params.setGridLineColor(c.ganttRenderer.getPalette().getGridLine());
 		c.spreadSheetRenderer=new SpreadSheetRenderer(c.params);
 		c.footerRenderer=new FooterRenderer(c.params);
 

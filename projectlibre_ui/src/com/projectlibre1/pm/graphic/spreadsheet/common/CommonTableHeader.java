@@ -55,8 +55,13 @@
  *******************************************************************************/
 package com.projectlibre1.pm.graphic.spreadsheet.common;
 
+import java.awt.Component;
+
+import javax.swing.JLabel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.plaf.UIResource;
 
 import com.projectlibre1.util.FlatUiSupport;
 
@@ -68,13 +73,29 @@ public class CommonTableHeader extends JTableHeader {
 
 	public CommonTableHeader(TableColumnModel cm) {
 		super(cm);
-		// TODO Auto-generated constructor stub
-	}
+		setDefaultRenderer(new SafeHeaderRenderer());
+    }
     public void updateUI(){
     	super.updateUI();
+    	if (!(getDefaultRenderer() instanceof SafeHeaderRenderer)) {
+    		setDefaultRenderer(new SafeHeaderRenderer());
+    	}
     	FlatUiSupport.applyTableHeaderStyle(this);
     	resizeAndRepaint();
     	invalidate();//PENDING
         }
+
+    private static final class SafeHeaderRenderer extends DefaultTableCellRenderer implements UIResource {
+    	private static final long serialVersionUID = 1L;
+
+    	@Override
+    	public Component getTableCellRendererComponent(javax.swing.JTable table, Object value, boolean isSelected,
+    			boolean hasFocus, int row, int column) {
+    		JLabel label = (JLabel) super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    		FlatUiSupport.applyTableHeaderCellStyle(label, isSelected);
+    		label.setHorizontalAlignment(CENTER);
+    		return label;
+    	}
+    }
 
 }

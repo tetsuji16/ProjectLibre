@@ -56,6 +56,7 @@
 package com.projectlibre1.pm.graphic.gantt;
 
 import java.awt.Component;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
@@ -63,6 +64,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
@@ -85,6 +87,8 @@ import com.projectlibre1.pm.time.HasStartAndEnd;
 import com.projectlibre1.strings.Messages;
 import com.projectlibre1.timescale.TimeScaleEvent;
 import com.projectlibre1.timescale.TimeScaleListener;
+import com.projectlibre1.util.FlatUiSupport;
+import com.projectlibre1.util.GanttColorPalette;
 
 /**
  *
@@ -102,7 +106,9 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 	private static final int AUTO_SCROLL_START_THRESHOLD = 150;
 	private static final int AUTO_SCROLL_LEFT_PADDING = 50;
 	private static final int BOTTOM_SCROLL_BUFFER_ROWS = 5;
+	private static final Logger logger = Logger.getLogger(Gantt.class.getName());
 	private boolean progressLineEnabled = false;
+	private boolean gridLinesVisible = true;
 	public Gantt(Project project,String viewName) {
 		this(new GanttModel(project,viewName),project);
 	}
@@ -202,6 +208,29 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 		repaint();
 	}
 
+	public boolean isGridLinesVisible() {
+		return gridLinesVisible;
+	}
+
+	public void setGridLinesVisible(boolean visible) {
+		this.gridLinesVisible = visible;
+		repaint();
+	}
+
+	public Color getGridLineColor() {
+		if (getUI() != null && getUI().getGraphRenderer() instanceof GanttRenderer ganttRenderer) {
+			GanttColorPalette palette = ganttRenderer.getPalette();
+			if (palette != null) {
+				return palette.getGridLine();
+			}
+		}
+		return FlatUiSupport.tableGridColor();
+	}
+
+	public void setGridLineColor(Color color) {
+		// The live gantt grid color is derived from the renderer palette.
+	}
+
 	private void installKeyboardActions() {
 		var inputMap = getInputMap(WHEN_IN_FOCUSED_WINDOW);
 		var actionMap = getActionMap();
@@ -264,11 +293,15 @@ public class Gantt extends Graph implements ScaledComponent, TimeScaleListener, 
 		var parent = getParent();
 		if (parent instanceof JViewport viewport) {
 			int height = getScrollableHeight(viewport.getExtentSize().height);
+			logger.info(() -> "synchronizeViewportSize viewportExtent=" + viewport.getExtentSize().width + "x" + viewport.getExtentSize().height
+					+ " current=" + getPreferredSize().width + "x" + getPreferredSize().height
+					+ " target=" + getDrawingWidth() + "x" + height);
 			viewport.setViewSize(new Dimension(getDrawingWidth(), height));
 			setPreferredSize(new Dimension(getDrawingWidth(), height));
 			clampViewportPosition(viewport, height);
 			return;
 		}
+		logger.info(() -> "synchronizeViewportSize no-viewport visibleRect=" + getVisibleRect().width + "x" + getVisibleRect().height);
 		setPreferredSize(new Dimension(getDrawingWidth(), getScrollableHeight(getVisibleRect().height)));
 	}
 

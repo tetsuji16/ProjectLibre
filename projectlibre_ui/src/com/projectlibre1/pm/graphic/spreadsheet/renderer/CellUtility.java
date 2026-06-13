@@ -77,7 +77,7 @@ public class CellUtility {
 		Color foreground=cellFormat.getForegroundObject();
 		Color background=cellFormat.getBackgroundObject();
 		Color resolvedForeground=resolveTableForeground(foreground);
-		Color resolvedBackground=resolveTableBackground(background);
+		Color resolvedBackground=resolveTableBackground(background, row, isSelected || hasFocus || editingThisCell);
 		component.setForeground(resolvedForeground);
 		component.setBackground(resolvedBackground);
 		//component.setFont(table.getFont());
@@ -116,6 +116,14 @@ public class CellUtility {
 
 	private static Color resolveTableBackground(Color background) {
 		return background == null ? FlatUiSupport.tableBackground() : background;
+	}
+
+	private static Color resolveTableBackground(Color background, int row, boolean selected) {
+		if (background != null)
+			return background;
+		if (selected)
+			return FlatUiSupport.tableBackground();
+		return FlatUiSupport.spreadsheetAlternateRowBackground(row);
 	}
 
 	private static Color resolveSelectionForeground(Color foreground) {

@@ -57,6 +57,7 @@ package com.projectlibre1.pm.graphic.views;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Logger;
 
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -70,6 +71,7 @@ import com.projectlibre1.util.FlatUiSupport;
  * 
  */
 public abstract class SplittedView extends JSplitPane {
+	private static final Logger logger = Logger.getLogger(SplittedView.class.getName());
 	protected JScrollPane leftScrollPane;
 	protected JScrollPane rightScrollPane;
 	protected MainView parentView;	
@@ -115,6 +117,8 @@ public abstract class SplittedView extends JSplitPane {
 							return;
 						}
 						int dividerLocation = ((Integer) e.getNewValue()).intValue();
+						logger.info(() -> getClass().getSimpleName() + " divider changed to " + dividerLocation
+							+ " source=" + (e.getSource() == null ? "null" : e.getSource().getClass().getSimpleName()));
 						if (parentView != null)
 							parentView.setChildrenDividerLocation(e.getSource(),dividerLocation);
 					}

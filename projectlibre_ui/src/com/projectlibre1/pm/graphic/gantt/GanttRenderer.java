@@ -673,6 +673,9 @@ public class GanttRenderer extends GraphRenderer implements Serializable {
 
 		public void execute(Object arg0) {
 			format = (BarFormat)arg0;
+			if (!((GanttParams)graphInfo).isGridLinesVisible()) {
+				return;
+			}
 			Rectangle bounds = g2.getClipBounds();
 			Stroke oldStroke = g2.getStroke();
 			Color oldColor = g2.getColor();

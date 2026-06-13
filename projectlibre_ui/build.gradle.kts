@@ -23,6 +23,14 @@ tasks.processResources {
     }
 }
 
+tasks.register<JavaExec>("imeSandbox") {
+    group = "application"
+    description = "Launch the spreadsheet IME sandbox."
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.projectlibre1.pm.graphic.spreadsheet.common.SpreadsheetImeSandbox")
+    dependsOn(tasks.classes)
+}
+
 sourceSets {
     named("test") {
         java.setSrcDirs(listOf("src/test/java"))

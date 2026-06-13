@@ -2,8 +2,10 @@ package com.projectlibre1.pm.graphic.spreadsheet.editor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
 import java.awt.event.KeyEvent;
 import java.text.AttributedString;
 import java.text.SimpleDateFormat;
@@ -60,5 +62,43 @@ class EditorSelectionBehaviorTest {
 
 			assertTrue(adapter.isCellEditable(event));
 		});
+	}
+
+	@Test
+	void spreadsheetNameCellEditorTracksImeCompositionOnInnerTextField() throws Exception {
+		SwingUtilities.invokeAndWait(() -> {
+			SpreadSheetNameCellEditor adapter = new SpreadSheetNameCellEditor(new SimpleEditor(String.class));
+			JTextField textField = new JTextField();
+
+			adapter.prepareEditorComponent(textField);
+			assertTrue(hasCompositionListener(textField));
+			assertEquals(Boolean.FALSE, textField.getClientProperty("projectlibre.input.composing"));
+
+			fireInputMethodState(textField, "テ", 0);
+			assertEquals(Boolean.TRUE, textField.getClientProperty("projectlibre.input.composing"));
+			assertFalse(adapter.stopCellEditing());
+
+			fireInputMethodState(textField, "テ", 1);
+			assertEquals(Boolean.FALSE, textField.getClientProperty("projectlibre.input.composing"));
+			assertTrue(adapter.stopCellEditing());
+		});
+	}
+
+	private static void fireInputMethodState(JTextField textField, String text, int committedCharacters) {
+		InputMethodEvent event = new InputMethodEvent(textField, InputMethodEvent.INPUT_METHOD_TEXT_CHANGED, new AttributedString(text).getIterator(), committedCharacters, null, null);
+		for (InputMethodListener listener : textField.getInputMethodListeners()) {
+			if (listener.getClass().getName().contains("SpreadSheetCellEditorAdapter")) {
+				listener.inputMethodTextChanged(event);
+			}
+		}
+	}
+
+	private static boolean hasCompositionListener(JTextField textField) {
+		for (InputMethodListener listener : textField.getInputMethodListeners()) {
+			if (listener.getClass().getName().contains("SpreadSheetCellEditorAdapter")) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
