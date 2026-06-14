@@ -1,4 +1,4 @@
-package com.projectlibre1.pm.graphic.gantt;
+package com.projectlibre1.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -13,26 +13,26 @@ import org.junit.jupiter.api.Test;
 import com.projectlibre1.pm.scheduling.Schedule;
 import com.projectlibre1.pm.scheduling.ScheduleInterval;
 
-class GanttRendererProgressTest {
+class DisplayMathTest {
 	@Test
-	void progressRatioUsesSchedulePercentForSummaryOverlay() {
-		assertEquals(0.44d, GanttRenderer.progressRatioForSchedule(schedule(0.44d)), 0.00001d);
+	void clampProgressRatioUsesSchedulePercentComplete() {
+		assertEquals(0.44d, DisplayMath.clampProgressRatio(schedule(0.44d)), 0.00001d);
 	}
 
 	@Test
-	void progressRatioClampsOutOfRangeValues() {
-		assertEquals(0.0d, GanttRenderer.progressRatioForSchedule(schedule(-0.20d)), 0.00001d);
-		assertEquals(1.0d, GanttRenderer.progressRatioForSchedule(schedule(1.50d)), 0.00001d);
+	void clampProgressRatioClampsOutOfRangeValues() {
+		assertEquals(0.0d, DisplayMath.clampProgressRatio(schedule(-0.20d)), 0.00001d);
+		assertEquals(1.0d, DisplayMath.clampProgressRatio(schedule(1.50d)), 0.00001d);
 	}
 
 	@Test
-	void progressRatioFallsBackToZeroWhenScheduleIsMissing() {
-		assertEquals(0.0d, GanttRenderer.progressRatioForSchedule(null), 0.00001d);
+	void clampProgressRatioFallsBackToZeroWhenScheduleIsMissing() {
+		assertEquals(0.0d, DisplayMath.clampProgressRatio(null), 0.00001d);
 	}
 
 	@Test
-	void mergeIntervalsForDisplayReturnsSingleEnvelopeBar() {
-		ScheduleInterval merged = GanttRenderer.mergeIntervalsForDisplay(List.of(
+	void mergeIntervalsReturnsSingleEnvelopeBar() {
+		ScheduleInterval merged = DisplayMath.mergeIntervals(List.of(
 				new ScheduleInterval(30L, 50L),
 				new ScheduleInterval(10L, 20L),
 				new ScheduleInterval(70L, 90L)));
@@ -41,8 +41,8 @@ class GanttRendererProgressTest {
 	}
 
 	@Test
-	void mergeIntervalsForDisplayReturnsNullWhenEmpty() {
-		assertNull(GanttRenderer.mergeIntervalsForDisplay(List.of()));
+	void mergeIntervalsReturnsNullWhenEmpty() {
+		assertNull(DisplayMath.mergeIntervals(List.of()));
 	}
 
 	private static Schedule schedule(final double percentComplete) {
@@ -71,7 +71,7 @@ class GanttRendererProgressTest {
 			}
 		};
 		return (Schedule) Proxy.newProxyInstance(
-				GanttRendererProgressTest.class.getClassLoader(),
+				DisplayMathTest.class.getClassLoader(),
 				new Class<?>[] { Schedule.class },
 				handler);
 	}
