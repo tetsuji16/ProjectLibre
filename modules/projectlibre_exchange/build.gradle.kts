@@ -8,4 +8,7 @@ dependencies {
 tasks.test {
     enabled = true
     systemProperty("java.awt.headless", "true")
+    // POD restore walks task and dependency graphs recursively. Do not depend
+    // on the platform-specific default stack size of the test worker.
+    jvmArgs("-Xss2m")
 }
