@@ -60,10 +60,13 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -209,12 +212,23 @@ public class MPXConverter {
 			// base calendars have standard calendar for parent
 			WorkCalendar baseCalendar=workCalendar.getBaseCalendar();
 			ProjectCalendar parent = ImportedCalendarService.getInstance().findExportedCalendar(baseCalendar);
-			if (parent != null && parent != mpx) {
+			if (!createsCalendarCycle(mpx, parent)) {
 				mpx.setParent(parent);
 			}
 		}
 
 	}
+
+	private static boolean createsCalendarCycle(ProjectCalendar calendar, ProjectCalendar parent) {
+		Set<ProjectCalendar> visited = Collections.newSetFromMap(new IdentityHashMap<ProjectCalendar, Boolean>());
+		for (ProjectCalendar current = parent; current != null && visited.add(current); current = current.getParent()) {
+			if (current == calendar) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public static  void toMpxCalendarDay(WorkDay day,ProjectCalendarHours mpxDay) {
 		if  (day==null)
 			return;
