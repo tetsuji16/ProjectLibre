@@ -208,7 +208,10 @@ public class MPXConverter {
 			//claur fix to avoid default hours for bases calendar
 			// base calendars have standard calendar for parent
 			WorkCalendar baseCalendar=workCalendar.getBaseCalendar();
-			mpx.setParent(ImportedCalendarService.getInstance().findExportedCalendar(baseCalendar)); //claur
+			ProjectCalendar parent = ImportedCalendarService.getInstance().findExportedCalendar(baseCalendar);
+			if (parent != null && parent != mpx) {
+				mpx.setParent(parent);
+			}
 		}
 
 	}
