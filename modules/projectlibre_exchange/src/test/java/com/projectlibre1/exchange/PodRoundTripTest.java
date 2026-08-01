@@ -42,7 +42,7 @@ public class PodRoundTripTest {
 		exporter.exportFile();
 
 		Project after = load(saved);
-		assertEquals(sampleName, expected, snapshot(after));
+		assertTaskStatesEqual(sampleName, expected, snapshot(after));
 		assertEquals(Integer.valueOf(0x123456), after.getGanttBarFormatOverrides()
 				.get(GanttBarFormatOverrides.STANDARD_VIEW, formattedTask.getUniqueId())
 				.getMiddleRgb());
@@ -89,6 +89,13 @@ public class PodRoundTripTest {
 		return result;
 	}
 
+	private static void assertTaskStatesEqual(String sampleName, List<TaskState> expected, List<TaskState> actual) {
+		assertEquals(sampleName + " task count", expected.size(), actual.size());
+		for (int index = 0; index < expected.size(); index++) {
+			expected.get(index).assertEquals(sampleName + " task " + index, actual.get(index));
+		}
+	}
+
 	private static final class TaskState {
 		private final String name;
 		private final String parentName;
@@ -107,18 +114,17 @@ public class PodRoundTripTest {
 			this.predecessors = predecessors;
 		}
 
-		@Override
-		public boolean equals(Object value) {
-			if (!(value instanceof TaskState)) return false;
-			TaskState other = (TaskState) value;
-			return name.equals(other.name) && java.util.Objects.equals(parentName, other.parentName)
-					&& start == other.start && end == other.end && duration == other.duration
-					&& predecessors.equals(other.predecessors);
-		}
-
-		@Override
-		public int hashCode() {
-			return name.hashCode();
+		private void assertEquals(String label, TaskState actual) {
+			assertNotNull(label, actual);
+			org.junit.Assert.assertEquals(label + " name", name, actual.name);
+			org.junit.Assert.assertEquals(label + " parent", parentName, actual.parentName);
+			org.junit.Assert.assertEquals(label + " start", start, actual.start);
+			org.junit.Assert.assertEquals(label + " end", end, actual.end);
+			org.junit.Assert.assertEquals(label + " duration", duration, actual.duration);
+			org.junit.Assert.assertEquals(label + " predecessor count", predecessors.size(), actual.predecessors.size());
+			for (int index = 0; index < predecessors.size(); index++) {
+				org.junit.Assert.assertEquals(label + " predecessor " + index, predecessors.get(index), actual.predecessors.get(index));
+			}
 		}
 
 		@Override
