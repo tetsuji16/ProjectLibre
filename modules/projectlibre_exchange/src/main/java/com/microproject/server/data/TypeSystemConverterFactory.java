@@ -22,44 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package test.com.microproject.exchange;
 
-import junit.framework.TestCase;
+package com.projectlibre1.server.data;
 
-import com.microproject.exchange.MicrosoftImporter;
-import com.microproject.job.Job;
-import com.microproject.job.JobQueue;
-import com.microproject.pm.task.ProjectFactory;
-import com.microproject.session.SessionFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-/**
- *
- */
-public class MicrosoftImporterTest extends TestCase {
-	private static String mppFileName = "testdata/New Product.mpp";
-	private static String xmlFileName = "testdata/New Product.xml";	
-	/**
-	 * Main method for testing from command line
-	 * 
-	 * @param args array of command line arguments
-	 */
-	public static void main(String[] args) {
+import com.projectlibre1.strings.Messages;
+
+public class TypeSystemConverterFactory {
+	protected static TypeSystemConverterFactory instance;
+	protected TypeSystemConverter converter;
+	private static final Logger logger = Logger.getLogger(TypeSystemConverterFactory.class.getName());
+	public static TypeSystemConverterFactory getInstance(){
+		if (instance==null){
+			instance=new TypeSystemConverterFactory();
+		}
+		return instance;
 	}
-	
-
-	public void testMppImport() throws Exception {
-		SessionFactory.getInstance().setJobQueue(new JobQueue("test", false));
-		MicrosoftImporter importer = new MicrosoftImporter();
-		importer.setFileName(mppFileName);
-		importer.setProject(ProjectFactory.getInstance().createProject());
-		Job job=importer.getImportFileJob();
-		SessionFactory.getInstance().getJobQueue().schedule(job);
+	public TypeSystemConverter getConverter(){
+		if (converter==null){
+			String className=Messages.getMetaString("TypeSystemConverter");
+			if (className!=null&&className.length()>0){
+				try {
+					converter = Class.forName(className).asSubclass(TypeSystemConverter.class)
+						.getDeclaredConstructor().newInstance();
+				} catch (ReflectiveOperationException | ClassCastException e) {
+					logger.log(Level.WARNING, "Failed to create type system converter " + className, e);
+				}
+			}
+		}
+		return converter;
 	}
-
-	// JAXB is not on classpath yet
-//	public void testXmlImport() throws Exception {
-//		MicrosoftImporter importer = new MicrosoftImporter(xmlFileName,	Document.getTestInstance());
-//		importer.importFile();
-//	}
-	
 }

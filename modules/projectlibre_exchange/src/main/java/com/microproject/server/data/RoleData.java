@@ -22,44 +22,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package test.com.microproject.exchange;
 
-import junit.framework.TestCase;
+package com.projectlibre1.server.data;
 
-import com.microproject.exchange.MicrosoftImporter;
-import com.microproject.job.Job;
-import com.microproject.job.JobQueue;
-import com.microproject.pm.task.ProjectFactory;
-import com.microproject.session.SessionFactory;
+import java.io.Serializable;
+
 
 /**
  *
  */
-public class MicrosoftImporterTest extends TestCase {
-	private static String mppFileName = "testdata/New Product.mpp";
-	private static String xmlFileName = "testdata/New Product.xml";	
+public class RoleData implements Serializable{
+	private static final long serialVersionUID = 882291191911116L;
+	protected long id=-1;
+	protected String name;	
 	/**
-	 * Main method for testing from command line
-	 * 
-	 * @param args array of command line arguments
+	 * @param id
+	 * @param name
 	 */
-	public static void main(String[] args) {
+	public RoleData(long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
 	}
 	
-
-	public void testMppImport() throws Exception {
-		SessionFactory.getInstance().setJobQueue(new JobQueue("test", false));
-		MicrosoftImporter importer = new MicrosoftImporter();
-		importer.setFileName(mppFileName);
-		importer.setProject(ProjectFactory.getInstance().createProject());
-		Job job=importer.getImportFileJob();
-		SessionFactory.getInstance().getJobQueue().schedule(job);
+	public long getId() {
+		return id;
 	}
-
-	// JAXB is not on classpath yet
-//	public void testXmlImport() throws Exception {
-//		MicrosoftImporter importer = new MicrosoftImporter(xmlFileName,	Document.getTestInstance());
-//		importer.importFile();
-//	}
-	
+	public void setId(long id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String toString(){
+//		return name+"("+id+")";
+		return name;
+	}
 }
