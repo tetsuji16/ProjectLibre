@@ -22,44 +22,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package test.com.microproject.exchange;
 
-import junit.framework.TestCase;
+package com.projectlibre1.server.data;
 
-import com.microproject.exchange.MicrosoftImporter;
-import com.microproject.job.Job;
-import com.microproject.job.JobQueue;
-import com.microproject.pm.task.ProjectFactory;
-import com.microproject.session.SessionFactory;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
-/**
- *
- */
-public class MicrosoftImporterTest extends TestCase {
-	private static String mppFileName = "testdata/New Product.mpp";
-	private static String xmlFileName = "testdata/New Product.xml";	
-	/**
-	 * Main method for testing from command line
-	 * 
-	 * @param args array of command line arguments
-	 */
-	public static void main(String[] args) {
-	}
-	
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections.Transformer;
 
-	public void testMppImport() throws Exception {
-		SessionFactory.getInstance().setJobQueue(new JobQueue("test", false));
-		MicrosoftImporter importer = new MicrosoftImporter();
-		importer.setFileName(mppFileName);
-		importer.setProject(ProjectFactory.getInstance().createProject());
-		Job job=importer.getImportFileJob();
-		SessionFactory.getInstance().getJobQueue().schedule(job);
-	}
+import com.projectlibre1.field.Field;
+import com.projectlibre1.grouping.core.model.NodeModel;
 
-	// JAXB is not on classpath yet
-//	public void testXmlImport() throws Exception {
-//		MicrosoftImporter importer = new MicrosoftImporter(xmlFileName,	Document.getTestInstance());
-//		importer.importFile();
-//	}
-	
+public interface TypeSystemConverter {
+	public Map<String,Object> convertFieldsAndCustomAttributes(Object obj, List filtredFieldArray, NodeModel model,Predicate extraFieldFilter, boolean includeNulls);
+	public Map<String,Object> convertFieldsAndCustomAttributes(Object obj, Collection filtredExtraFields, List filtredFieldArray, NodeModel model, boolean includeNulls);
+	public Collection getDirtyExtraFields(Object obj,Predicate fieldFilter);
+	public List getExposedAssignmentFields(Predicate fieldFilter);
+	public List getExposedTaskFields(Predicate fieldFilter);
+	public List getExposedProjectFields(Predicate fieldFilter);
+	public void convertFields(Object obj, Collection fieldArray, boolean shortNames, Map<String,Object> attrs,Transformer typeConverter, NodeModel model, boolean includeNulls);
+	public void convertField(Object obj, Field field, String id, Map<String,Object> attrs, NodeModel model, boolean includeNulls);
+
 }

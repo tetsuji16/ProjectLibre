@@ -22,44 +22,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package test.com.microproject.exchange;
 
-import junit.framework.TestCase;
+package com.projectlibre1.server.data.linker;
 
-import com.microproject.exchange.MicrosoftImporter;
-import com.microproject.job.Job;
-import com.microproject.job.JobQueue;
-import com.microproject.pm.task.ProjectFactory;
-import com.microproject.session.SessionFactory;
-
+import com.projectlibre1.grouping.core.Node;
+import com.projectlibre1.grouping.core.hierarchy.NodeHierarchy;
+import com.projectlibre1.pm.resource.ResourceImpl;
+import com.projectlibre1.pm.task.Project;
 /**
  *
  */
-public class MicrosoftImporterTest extends TestCase {
-	private static String mppFileName = "testdata/New Product.mpp";
-	private static String xmlFileName = "testdata/New Product.xml";	
-	/**
-	 * Main method for testing from command line
-	 * 
-	 * @param args array of command line arguments
-	 */
-	public static void main(String[] args) {
+public abstract class ResourceLinker extends Linker {
+	public void initIterator(){
+		iterator=((Project)getParent()).getResourcePool().getResourceOutline().iterator();
 	}
-	
-
-	public void testMppImport() throws Exception {
-		SessionFactory.getInstance().setJobQueue(new JobQueue("test", false));
-		MicrosoftImporter importer = new MicrosoftImporter();
-		importer.setFileName(mppFileName);
-		importer.setProject(ProjectFactory.getInstance().createProject());
-		Job job=importer.getImportFileJob();
-		SessionFactory.getInstance().getJobQueue().schedule(job);
+	public Object executeNext(){
+        Node  node=(Node)iterator.next();
+        if (!(node.getImpl() instanceof ResourceImpl)) {
+			return null;
+        }
+		
+    	ResourceImpl resource=(ResourceImpl)node.getImpl(); //ResourceImpl to have the EnterpriseResource link
+    	//if (globalIdsOnly) CommonDataObject.makeGlobal(resource); //modify enterprise resource in fact
+    	return resource;
 	}
+    public NodeHierarchy getHierarchy(){return ((Project)getParent()).getResourcePool().getResourceOutline().getHierarchy();}
 
-	// JAXB is not on classpath yet
-//	public void testXmlImport() throws Exception {
-//		MicrosoftImporter importer = new MicrosoftImporter(xmlFileName,	Document.getTestInstance());
-//		importer.importFile();
-//	}
-	
 }

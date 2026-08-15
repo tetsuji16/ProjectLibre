@@ -22,44 +22,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package test.com.microproject.exchange;
 
-import junit.framework.TestCase;
+package com.projectlibre1.server.data;
 
-import com.microproject.exchange.MicrosoftImporter;
-import com.microproject.job.Job;
-import com.microproject.job.JobQueue;
-import com.microproject.pm.task.ProjectFactory;
-import com.microproject.session.SessionFactory;
+import com.projectlibre1.pm.task.Project;
 
 /**
  *
  */
-public class MicrosoftImporterTest extends TestCase {
-	private static String mppFileName = "testdata/New Product.mpp";
-	private static String xmlFileName = "testdata/New Product.xml";	
-	/**
-	 * Main method for testing from command line
-	 * 
-	 * @param args array of command line arguments
-	 */
-	public static void main(String[] args) {
-	}
-	
-
-	public void testMppImport() throws Exception {
-		SessionFactory.getInstance().setJobQueue(new JobQueue("test", false));
-		MicrosoftImporter importer = new MicrosoftImporter();
-		importer.setFileName(mppFileName);
-		importer.setProject(ProjectFactory.getInstance().createProject());
-		Job job=importer.getImportFileJob();
-		SessionFactory.getInstance().getJobQueue().schedule(job);
-	}
-
-	// JAXB is not on classpath yet
-//	public void testXmlImport() throws Exception {
-//		MicrosoftImporter importer = new MicrosoftImporter(xmlFileName,	Document.getTestInstance());
-//		importer.importFile();
-//	}
-	
+public interface ProjectSerializer {
+	boolean saveProject(Project project,String fileName);
 }
