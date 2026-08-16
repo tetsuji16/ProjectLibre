@@ -22,60 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
-
-import java.util.List;
-import java.util.Set;
-
+package com.microproject.core.configuration.adapters;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
-
-/**
- * @author Laurent Chretienneau
- *
- */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
-
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
-	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
-	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-
+import javax.xml.bind.annotation.XmlElement;
+ 
+@XmlAccessorType(XmlAccessType.PROPERTY)
+public class MapAdapterEntry<K, V> { 
+    protected K key;
+    protected V value;
+ 
+    public MapAdapterEntry() { //used by JAXB
+    } 
+    public MapAdapterEntry(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+ 
+    @XmlElement
+    public K getKey() {
+        return key;
+    }
+    public void setKey(K key) {
+        this.key = key;
+    }
+ 
+    @XmlElement
+    public V getValue() {
+        return value;
+    }
+    public void setValue(V value) {
+        this.value = value;
+    }
 }

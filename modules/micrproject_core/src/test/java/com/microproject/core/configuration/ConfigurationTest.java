@@ -22,60 +22,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
+package com.microproject.core.configuration;
 
-import java.util.List;
-import java.util.Set;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.junit.jupiter.api.Test;
 
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
+class ConfigurationTest {
+	@Test
+	void missingClasspathResourceReturnsNull() {
+		Configuration configuration = new Configuration();
 
-/**
- * @author Laurent Chretienneau
- *
- */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
-
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
+		assertNull(configuration.load("missing/projectlibre-configuration.xml", ConfigurationFile.class));
 	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
-	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
-	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-
 }

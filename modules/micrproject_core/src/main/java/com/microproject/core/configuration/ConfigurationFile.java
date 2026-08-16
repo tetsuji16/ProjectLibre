@@ -22,60 +22,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
+package com.microproject.core.configuration;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
-
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
+public class ConfigurationFile {
+	protected String file;
+	protected Class<?>[] classesToBeBound;
+	protected Object root;
+	protected boolean binded;
+	public ConfigurationFile(String file, Class<?>[] classesToBeBound) {
+		super();
+		this.file = file;
+		this.classesToBeBound = classesToBeBound;
 	}
-
-	public void setId(String id) {
-		this.id = id;
+	public String getFile() {
+		return file;
 	}
-
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
+	public void setFile(String file) {
+		this.file = file;
 	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
+	public Class<?>[] getClassesToBeBound() {
+		return classesToBeBound;
 	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
+	public void setClassesToBeBound(Class<?>[] classesToBeBound) {
+		this.classesToBeBound = classesToBeBound;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public Object getRoot() {
+		return root;
 	}
-
-
+	public void setRoot(Object root) {
+		this.root = root;
+	}
+	public boolean isBinded() {
+		return binded;
+	}
+	public void setBinded(boolean binded) {
+		this.binded = binded;
+	}
+	
 }

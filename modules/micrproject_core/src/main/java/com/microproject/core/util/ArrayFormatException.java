@@ -22,60 +22,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
+package com.microproject.core.util;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
+public class ArrayFormatException extends IllegalArgumentException {
+    static final long serialVersionUID = 8383729379911233L;
 
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
-	}
+    /**
+     * Constructs a <code>NumberFormatException</code> with no detail message.
+     */
+    public ArrayFormatException () {
+        super();
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    /**
+     * Constructs a <code>NumberFormatException</code> with the
+     * specified detail message.
+     *
+     * @param   s   the detail message.
+     */
+    public ArrayFormatException (String s) {
+        super (s);
+    }
 
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
-	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
-	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-
+    /**
+     * Factory method for making a <code>NumberFormatException</code>
+     * given the specified input which caused the error.
+     *
+     * @param   s   the input causing the error
+     */
+    static ArrayFormatException forInputString(String s) {
+        return new ArrayFormatException("For input string: \"" + s + "\"");
+    }
 }

@@ -22,60 +22,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
+package com.microproject.core.dictionary;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
-
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
+public class DictionaryCategory {
+	public static final String ALL_CATEGORY="ALL";
+	protected Class<?> classe;
+	protected String category;
+	public DictionaryCategory(Class<?> classe, String category) {
+		this.classe = classe;
+		this.category=category;
 	}
-
-	public void setId(String id) {
-		this.id = id;
+	public DictionaryCategory(Class<?> classe) {
+		this(classe,ALL_CATEGORY);
 	}
-
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
+	public Class<?> getClasse() {
+		return classe;
 	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
+	public void setClasse(Class<?> classe) {
+		this.classe = classe;
 	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
+	public String getCategory() {
+		return category;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public void setCategory(String category) {
+		this.category = category;
 	}
-
-
+	
+	@Override
+	public int hashCode() {
+		return classe.hashCode()+category.hashCode();
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof DictionaryCategory){
+			DictionaryCategory key=(DictionaryCategory)obj;
+			return classe.equals(key.getClasse()) && category.equals(category);
+		}
+		return false;
+	}
+	@Override
+	public String toString() {
+		return classe.getName()+"/"+category;
+	}
+	
 }

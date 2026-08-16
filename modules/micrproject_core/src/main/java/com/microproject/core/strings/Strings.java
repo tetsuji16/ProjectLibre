@@ -22,60 +22,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
+package com.microproject.core.strings;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
-
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
+public class Strings {
+	protected static final String[] BUNDLE_NAMES={"com.microproject.core.strings.client"};
+	protected static ResourceBundle[] bundles;
+	
+	
+	public static String getString(String key) {
+		if (bundles==null){
+			bundles=new ResourceBundle[BUNDLE_NAMES.length];
+			int i=0;
+			for (String bundleName : BUNDLE_NAMES){
+				bundles[i++]=ResourceBundle.getBundle(bundleName,Locale.getDefault(),Strings.class.getClassLoader());
+			}
+		}
+		String s=null;
+		for (ResourceBundle bundle : bundles){
+			s=bundle.getString(key);
+			if (s!=null)
+				break;
+		}
+		return s;
 	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
-	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
-	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
+	
 
 }

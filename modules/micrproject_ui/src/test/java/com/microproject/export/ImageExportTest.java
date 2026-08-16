@@ -22,60 +22,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
+package com.microproject.export;
 
-import java.util.List;
-import java.util.Set;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.File;
 
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
+import org.junit.jupiter.api.Test;
 
-/**
- * @author Laurent Chretienneau
- *
- */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
+import com.microproject.util.PdfExportUtil;
 
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
+public class ImageExportTest {
+	@Test
+	public void keepsExistingPdfExtension() {
+		File input = new File("C:\\temp\\report.pdf");
+
+		File output = PdfExportUtil.appendPdfExtensionIfMissing(input);
+
+		assertEquals(input, output);
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	@Test
+	public void keepsExistingPdfExtensionRegardlessOfCase() {
+		File input = new File("C:\\temp\\report.PDF");
+
+		File output = PdfExportUtil.appendPdfExtensionIfMissing(input);
+
+		assertEquals(input, output);
 	}
 
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
+	@Test
+	public void appendsPdfExtensionWithoutDroppingParentDirectory() {
+		File input = new File("C:\\temp\\report");
+
+		File output = PdfExportUtil.appendPdfExtensionIfMissing(input);
+
+		assertEquals(new File("C:\\temp\\report.pdf"), output);
 	}
 
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
+	@Test
+	public void returnsNullWhenFileIsNull() {
+		assertNull(PdfExportUtil.appendPdfExtensionIfMissing(null));
 	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-
 }

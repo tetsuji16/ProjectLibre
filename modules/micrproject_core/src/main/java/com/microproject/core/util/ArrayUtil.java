@@ -22,60 +22,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.fields;
+package com.microproject.core.util;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.dictionary.HasCategories;
-import com.microproject.core.dictionary.HasStringId;
+import java.util.StringTokenizer;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="fieldList")
-@XmlAccessorType(XmlAccessType.NONE)
-public class FieldList implements HasStringId, HasCategories{
-	protected String id;
-	protected Set<String> categories;
-	protected List<Field> fields;
-
-	@XmlID
-	@XmlAttribute(name="id")
-	public String getId() {
-		return id;
+public class ArrayUtil {
+	public static double[][] stringToPath(String s)  throws ArrayFormatException {
+		s=s.replaceAll("^\\s*,?\\s*[\\(\\{\\[]",""); //trim start
+		s=s.replaceAll("[\\)\\}\\]]\\s*,?\\s*$",""); //trim end
+		String[] coords=s.split("[\\)\\}\\]]\\s*,?\\s*[\\(\\{\\[]");
+		double[][] p=new double[coords.length][2];
+		for (int i=0; i<coords.length; i++){
+			double[] c=stringToCoordinates(coords[i]);
+			p[i]=c;
+		}
+		return p;
 	}
-
-	public void setId(String id) {
-		this.id = id;
+	public static String pathToString(double[][] p){
+		if (p==null)
+			return null;
+		StringBuilder sb=new StringBuilder();
+		for (int i=0; i<p.length; i++){
+			if (i>0) sb.append(", ");
+			coordinatesToString(p[i],sb);	
+		}
+		return sb.toString();
 	}
-
-	@XmlAttribute(name="category")
-	public Set<String> getCategories() {
-		return categories;
+	public static double[] stringToCoordinates(String s) throws ArrayFormatException {
+		StringTokenizer st=new StringTokenizer(s.trim(),",");
+		if (st.countTokens() != 2)
+			throw ArrayFormatException.forInputString(s);
+		return new double[]{Double.parseDouble(st.nextToken().trim()), Double.parseDouble(st.nextToken().trim())};
 	}
-
-	public void setCategories(Set<String> categories) {
-		this.categories = categories;
+	public static String coordinatesToString(double[] c) {
+		return coordinatesToString(c,new StringBuilder()).toString();
 	}
-
-	@XmlIDREF
-	@XmlAttribute(name="fields")
-	public List<Field> getFields() {
-		return fields;
+	private static StringBuilder coordinatesToString(double[] c, StringBuilder sb) {
+		return sb.append('{').append(c[0]).append(", ").append(c[1]).append("}");
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
 
 }
