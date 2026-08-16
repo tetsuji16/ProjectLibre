@@ -53,66 +53,61 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package com.microproject.pm.tasks;
+package com.microproject.core.id;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-import com.microproject.core.time.Duration;
-import com.microproject.pm.assignment.Assignment;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-public class TaskSnapshot {
-	protected List<Assignment> assignments=new ArrayList<Assignment>();
-	protected Date start,finish;
-	protected Duration duration;
-	
-	public List<Assignment> getAssignments() {
-		return assignments;
-	}
-	public void addAssignment(Assignment assignment){
-		assignments.add(assignment);
-	}	
+public class UniqueId {
+	protected long id;
 
-	public Date getStart() {
-		return start;
+	public UniqueId() {
+		super();
 	}
-	public void setStart(Date start) {
-		this.start = start;
+
+	public UniqueId(long id) {
+		super();
+		this.id = id;
 	}
-	
-	public Date getFinish() {
-		return finish;
+	public long getId() {
+		return id;
 	}
-	public void setFinish(Date finish) {
-		this.finish = finish;
-	}
-	
-	public Duration getDuration() {
-		return duration;
-	}
-	public void setDuration(Duration duration) {
-		this.duration = duration;
+
+	public void setId(long id) {
+		this.id = id;
 	}
 	
-	public String toString(String tab){
-		StringBuilder s = new StringBuilder();
-		s.append(tab).append("TaskSnapshot\n");
-		
-		s.append(tab).append("\t").append("assignments=\n");
-		for (Assignment assignment : assignments)
-			s.append(assignment.toString());
-		
-		
-		return s.toString();
-	}
+	
 
 	@Override
-	public String toString(){
-		return toString("");
+	public int hashCode() {
+		//return id.hashCode();
+		return (int)(id ^ (id >>> 32));
 	}
+
+//	public UUID getId() {
+//		return id;
+//	}
+//
+//	public void setId(UUID id) {
+//		this.id = id;
+//	}
+
+	@Override
+	public String toString() {
+		//return id.toString();
+		return ""+id;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj==null || !(obj instanceof UniqueId))
+			return false;
+		return id==((UniqueId)obj).getId();
+	}
+
+	
 }
