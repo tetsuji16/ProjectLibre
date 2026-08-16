@@ -53,47 +53,30 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
-
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+package com.microproject.core.nodes;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class DefaultNode implements Node{
+	protected NodeId id=new NodeId();
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	@Override
+	public NodeId getId() {
+		return id;
 	}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	@Override
+	public void setId(NodeId id) {
+		this.id=id;
 	}
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	public void setContainer(NodeContainer container) {
 	}
 
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	public NodeContainer getContainer() {
+		return null;
 	}
-
-	
 
 }
-

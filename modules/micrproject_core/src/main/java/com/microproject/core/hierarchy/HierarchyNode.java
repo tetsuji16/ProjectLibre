@@ -53,47 +53,30 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.hierarchy;
 
-import java.util.List;
+import java.util.LinkedList;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import com.microproject.core.nodes.Node;
 
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+public interface HierarchyNode {
 
-/**
- * @author Laurent Chretienneau
- *
- */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+	public abstract Node getNode();
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
+	public abstract void setNode(Node node);
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
+	public abstract HierarchyNode getParent();
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
+	public abstract void setParent(HierarchyNode parent);
 	
+	public abstract boolean isRoot();
+
+	public abstract LinkedList<DefaultHierarchyNode> getChildren();
+
+	public abstract boolean hasChildren();
+
+	public abstract int getChildrenCount();
+	
+	public abstract HierarchyNode add(Node node);
 
 }
-

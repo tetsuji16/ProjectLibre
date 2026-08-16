@@ -53,47 +53,70 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.nodes;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.projectlibre.core.configuration.Configuration;
+import org.projectlibre.core.dictionary.DictionaryCategory;
 
 import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.fields.FieldUtil;
+import com.microproject.core.fields.HasFields;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
+public class AbstractNode implements Node, HasFields{
+	protected NodeId id;
+	protected Map<String, Object> fieldValues=new HashMap<String, Object>();
+	protected NodeContainer container;
 	
+	@Override
+	public NodeId getId() {
+		return id;
+	}
+	@Override
+	public void setId(NodeId id) {
+		this.id = id;
+	}
+	
+	@Override
+	public NodeContainer getContainer() {
+		return container;
+	}
+	@Override
+	public void setContainer(NodeContainer container) {
+		this.container = container;
+	}
+	@Override
+	public Object getPropertyValue(String property) {
+		return fieldValues.get("Field."+property);
+	}
+	@Override
+	public void setPropertyValue(String property, Object value) {
+		fieldValues.put("Field."+property,value);
+	}
+	@Override
+	public Object getFieldValue(String fieldId) {
+		return fieldValues.get(fieldId);
+	}
+	@Override
+	public void setFieldValue(String fieldId, Object value) {
+		fieldValues.put(fieldId,value);
+	}
+	
+	public String toString(String tab){
+		StringBuilder s = new StringBuilder();
+		s.append(tab).append("id=").append(id).append('\n');
+		for (String fieldId : fieldValues.keySet())
+			s.append(tab).append('*').append(fieldId).append('=').append(fieldValues.get(fieldId)).append('\n');
+		return s.toString();		
+	}
+	public String toString(){
+		return toString("");
+	}
 
 }
-

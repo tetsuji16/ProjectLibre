@@ -53,47 +53,43 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.time;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public enum WorkContour {
+	//same constants as mpxj to simplify
+	FLAT(0),
+	BACK_LOADED(1),
+	FRONT_LOADED(2),
+	DOUBLE_PEAK(3),
+	EARLY_PEAK(4),
+	LATE_PEAK(5),
+	BELL(6),
+	TURTLE(7),
+	CONTOURED(8);
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	protected int id;
+	protected static Map<Integer,WorkContour> reverseMap;
+
+	private WorkContour(int id){
+		this.id=id;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public int getId() {
+		return id;
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	public static WorkContour getInstance(int id){
+		if (reverseMap==null){
+			reverseMap=new HashMap<Integer, WorkContour>();
+			for (WorkContour ct : values())
+				reverseMap.put(ct.getId(),ct);
+		}
+		return reverseMap.get(id);
 	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

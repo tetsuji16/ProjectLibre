@@ -53,47 +53,105 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.fields;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import org.projectlibre.core.configuration.Configuration;
+import org.projectlibre.core.dictionary.HasCategories;
+import org.projectlibre.core.dictionary.HasStringId;
+import org.projectlibre.strings.Strings;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
+@XmlRootElement(name="field")
 @XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class Field implements HasStringId, HasCategories{
+	protected String id;
+	protected String property,confProperty;
+	protected Set<String> categories;
+	protected boolean readOnly;
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	@XmlID
+	@XmlAttribute(name="id")
+	public String getId() {
+		return id;
 	}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	@XmlAttribute(name="category")
+	public Set<String> getCategories() {
+		return categories;
 	}
 
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	public void setCategories(Set<String> categories) {
+		this.categories = categories;
+	}
+
+	@XmlAttribute(name="property")
+	protected String getConfProperty() {
+		return confProperty;
+	}
+
+	protected void setConfProperty(String confProperty) {
+		this.confProperty = confProperty;
+	}
+	
+	public String getProperty() {
+		if (property==null){
+			if (confProperty==null){
+				int i=id.indexOf('.');
+				property=id.substring(i+1);
+			} else property=confProperty;
+		}
+		return property;
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
+		confProperty=property;
+	}
+	
+	
+	@XmlAttribute(name="readOnly")
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 	
+	
+	
+	
+
+	public String getStringValue(Object value){
+		return value==null?"":value.toString();
+	}
+
+	public String getName(){
+		return Strings.getString(id);
+	}
+	
+	
+	public static Field getField(String fieldId){
+		return (Field)Configuration.getInstance().getDictionary().get(Field.class, fieldId);
+	}
+
+
+
 
 }
-

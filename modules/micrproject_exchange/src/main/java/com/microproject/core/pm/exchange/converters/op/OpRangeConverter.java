@@ -53,47 +53,38 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.time.TimeInterval;
+import com.microproject.pm.calendar.WorkRange;
+import com.microproject.pm.calendar.WorkDay;
+import com.microproject.pm.calendar.WorkRangeException;
+import com.microproject.pm.calendar.WorkingHours;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class OpRangeConverter {
+	private static final Logger logger = Logger.getLogger(OpRangeConverter.class.getName());
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	public void to(WorkDay opDay, WorkRange range) {
+		if (range == null)
+			return;
+		WorkingHours workingHours = new WorkingHours();
+		if (opDay!= null){
+			int i=0;
+			for (TimeInterval interval : range.getIntervals()){
+					try {
+						workingHours.setInterval(i++,interval.getStart(), interval.getEnd());
+					} catch (WorkRangeException e) {
+						logger.log(Level.WARNING, "Failed to map work range interval", e);
+					}
+			}
+			opDay.setWorkingHours(workingHours);
+		}
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
 }
-

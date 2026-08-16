@@ -53,47 +53,55 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
-
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+package com.microproject.pm.calendar;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class CalendarOptions {
+	protected double hoursPerDay = 8.0D;
+	protected double hoursPerWeek = 40.0D;
+	protected double daysPerMonth = 20.0D;
+	protected long defaultStart;
+	protected long defaultEnd;
+	public double getHoursPerDay() {
+		return hoursPerDay;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public void setHoursPerDay(double hoursPerDay) {
+		this.hoursPerDay = hoursPerDay;
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	public double getHoursPerWeek() {
+		return hoursPerWeek;
 	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	public void setHoursPerWeek(double hoursPerWeek) {
+		this.hoursPerWeek = hoursPerWeek;
 	}
-
+	public double getDaysPerMonth() {
+		return daysPerMonth;
+	}
+	public void setDaysPerMonth(double daysPerMonth) {
+		this.daysPerMonth = daysPerMonth;
+	}
+	public long getDefaultStart() {
+		return defaultStart;
+	}
+	public void setDefaultStart(long defaultStart) {
+		this.defaultStart = defaultStart;
+	}
+	public long getDefaultEnd() {
+		return defaultEnd;
+	}
+	public void setDefaultEnd(long defaultEnd) {
+		this.defaultEnd = defaultEnd;
+	}
+	@Override
+	public String toString() {
+		return "CalendarOptions [hoursPerDay=" + hoursPerDay
+				+ ", hoursPerWeek=" + hoursPerWeek + ", daysPerMonth="
+				+ daysPerMonth + ", defaultStart=" + defaultStart
+				+ ", defaultEnd=" + defaultEnd + "]";
+	}
 	
-
+	
 }
-

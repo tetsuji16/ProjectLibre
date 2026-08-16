@@ -53,47 +53,13 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.hierarchy;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
-
-/**
- * @author Laurent Chretienneau
- *
- */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
+public interface HasHierarchies {
+	public Hierarchy getHierarchy();
+	public List<Hierarchy> getHierarchies();
+	public void addHierarchy(Hierarchy hierarchy);
 }
-

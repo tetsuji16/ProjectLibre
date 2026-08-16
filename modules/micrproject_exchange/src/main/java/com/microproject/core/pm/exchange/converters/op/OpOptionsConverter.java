@@ -53,47 +53,30 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
+import java.util.GregorianCalendar;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.pm.calendar.CalendarOptions;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class OpOptionsConverter {
+	public static void to(com.microproject.options.CalendarOption opCalendarOptions, CalendarOptions calendarOptions, OpImportState state) {
+		opCalendarOptions.setHoursPerDay(calendarOptions.getHoursPerDay());
+		opCalendarOptions.setHoursPerWeek(calendarOptions.getHoursPerWeek());
+		opCalendarOptions.setDaysPerMonth(calendarOptions.getDaysPerMonth());
+		if (calendarOptions.getDefaultStart()>0){
+			GregorianCalendar defaultStart = new GregorianCalendar();
+			defaultStart.setTimeInMillis(calendarOptions.getDefaultStart());
+			opCalendarOptions.setDefaultStartTime(defaultStart);			
+		}
+		if (calendarOptions.getDefaultEnd()>0){
+			GregorianCalendar defaultEnd = new GregorianCalendar();
+			defaultEnd.setTimeInMillis(calendarOptions.getDefaultEnd());
+			opCalendarOptions.setDefaultEndTime(defaultEnd);			
+		}
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
 }
-

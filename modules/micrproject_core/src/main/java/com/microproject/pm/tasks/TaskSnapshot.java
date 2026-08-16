@@ -53,47 +53,66 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.pm.tasks;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.time.Duration;
+import com.microproject.pm.scheduling.Schedule;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
+public class TaskSnapshot implements Schedule{
+	protected List<Assignment> assignments=new ArrayList<Assignment>();
+	protected Date start,finish;
+	protected Duration duration;
 	
+	public List<Assignment> getAssignments() {
+		return assignments;
+	}
+	public void addAssignment(Assignment assignment){
+		assignments.add(assignment);
+	}	
 
+	public Date getStart() {
+		return start;
+	}
+	public void setStart(Date start) {
+		this.start = start;
+	}
+	
+	public Date getFinish() {
+		return finish;
+	}
+	public void setFinish(Date finish) {
+		this.finish = finish;
+	}
+	
+	public Duration getDuration() {
+		return duration;
+	}
+	public void setDuration(Duration duration) {
+		this.duration = duration;
+	}
+	
+	public String toString(String tab){
+		StringBuilder s = new StringBuilder();
+		s.append(tab).append("TaskSnapshot\n");
+		
+		s.append(tab).append("\t").append("assignments=\n");
+		for (Assignment assignment : assignments)
+			s.append(assignment.toString(tab+"\t\t"));
+		
+		
+		return s.toString();
+	}
+
+	@Override
+	public String toString(){
+		return toString("");
+	}
 }
-

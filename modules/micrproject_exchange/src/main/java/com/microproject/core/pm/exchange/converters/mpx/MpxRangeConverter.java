@@ -53,47 +53,36 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.mpx;
 
-import java.util.List;
+import com.microproject.core.pm.exchange.converters.type.DateHoursMinsConverter;
+import com.microproject.core.time.TimeIntervals;
+import com.microproject.pm.calendar.WorkRange;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import net.sf.mpxj.DateRange;
+import net.sf.mpxj.ProjectCalendarHours;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class MpxRangeConverter {
+	public void from(ProjectCalendarHours mpxRange, WorkRange range) {
+		if (mpxRange == null)
+			return;
+		TimeIntervals intervals=range.getIntervals();
+		DateHoursMinsConverter converter=new DateHoursMinsConverter();
+		for (DateRange mpxDateRange:mpxRange)
+			if (mpxDateRange!=null){
+				long start=(Long)converter.from(mpxDateRange.getStart());
+				long end=(Long)converter.from(mpxDateRange.getEnd());
+				if (end==0) end=24*3600000L;
+				if (end < start) {
+					intervals.union(start, 24L * 3600000L);
+					intervals.union(0L, end);
+					continue;
+				}
+				intervals.union(start, end);
+			}
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
 }
-

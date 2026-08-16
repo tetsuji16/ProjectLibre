@@ -53,47 +53,154 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.time;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class DefaultTimeIntervals implements TimeIntervals {
+	protected static long EMPTY_START=-1L;
+	protected static long EMPTY_END=-1L;
+	protected TreeSet<TimeInterval> intervals;
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	public DefaultTimeIntervals(){
+		intervals=new TreeSet<TimeInterval>(new Comparator<TimeInterval>() {
+			@Override
+			public int compare(TimeInterval t1, TimeInterval t2) {
+				if (t1.getStart() < t2.getStart())
+					return -1;
+				if (t1.getStart() == t2.getStart()) 
+					return 0;
+				else return 1;
+			}
+		});
+	}
+	public DefaultTimeIntervals(long start,long end){
+		this();
+		intervals.add(new DefaultTimeInterval(start, end));
+	}
+	
+	
+	@Override
+	public long getStart() {
+		return intervals.isEmpty()?EMPTY_START:intervals.first().getStart();
 	}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	@Override
+	public void setStart(long start) {
+		TimeInterval t;
+		if (isEmpty()) t=new DefaultTimeInterval();
+		else t=intervals.first();
+		t.setStart(start);
 	}
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	@Override
+	public long getEnd() {
+		return isEmpty()?EMPTY_END:intervals.last().getEnd();
 	}
 
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	@Override
+	public void setEnd(long end) {
+		TimeInterval t;
+		if (isEmpty()) t=new DefaultTimeInterval();
+		else t=intervals.last();
+		t.setEnd(end);
+	}
+
+	@Override
+	public Collection<TimeInterval> getIntervals() {
+		return intervals;
+	}
+
+	@Override
+	public void addInterval(TimeInterval interval) {
+		intervals.add(interval);
+	}
+	@Override
+	public Iterator<TimeInterval> iterator() {
+		return intervals.iterator();
+	}
+
+	@Override
+	public void clear() {
+		intervals.clear();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return intervals.isEmpty();
+	}
+
+	@Override
+	public int size() {
+		return intervals.size();
+	}
+	
+	@Override
+	public void union(TimeInterval interval) {
+		//intersection start
+		TimeInterval before=intervals.lower(interval);
+		if (before!=null && interval.getStart()<=before.getEnd()) 
+			interval=new DefaultTimeInterval(before.getStart(),interval.getEnd());
+		
+		//intersection end
+		NavigableSet<TimeInterval> inter=intervals.subSet(interval, true, new DefaultTimeInterval(interval.getEnd(),interval.getEnd()), true);
+		if (!inter.isEmpty()){
+			TimeInterval after=inter.last();
+			if (after!=null && interval.getEnd()<=after.getEnd())
+				interval=new DefaultTimeInterval(interval.getStart(),after.getEnd());
+		}
+		
+		intervals.removeAll(inter);	
+		intervals.add(interval);
+	}
+
+	@Override
+	public void inter(TimeInterval interval) {
+	}
+	
+	@Override
+	public void union(long start, long end) {
+		union(new DefaultTimeInterval(start, end));		
+	}
+	@Override
+	public void inter(long start, long end) {
+		inter(new DefaultTimeInterval(start, end));
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj==null || ! (obj instanceof DefaultTimeIntervals))
+			return false;
+		DefaultTimeIntervals i=(DefaultTimeIntervals)obj;
+		if (size()!=i.size())
+			return false;
+		Iterator<TimeInterval> i1=iterator();
+		Iterator<TimeInterval> i2=i.iterator();
+		while (i1.hasNext()){
+			if (!i1.next().equals(i2.next()))
+				return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		int i=0;
+		for (TimeInterval interval : intervals){
+			if (!(i++ == 0)) s.append(", ");
+			s.append(interval);
+		}
+		return s.toString();
 	}
 
 	
-
 }
-

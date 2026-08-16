@@ -53,47 +53,30 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
-
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+package com.microproject.core.time;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class Rate {
+	protected double value;
+	protected TimeUnit unit;
+	public Rate(double value, TimeUnit unit) {
+		super();
+		this.value = value;
+		this.unit = unit;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public double getValue() {
+		return value;
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	public void setValue(double value) {
+		this.value = value;
 	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	public TimeUnit getUnit() {
+		return unit;
 	}
-
-	
-
+	public void setUnit(TimeUnit unit) {
+		this.unit = unit;
+	}
 }
-

@@ -53,47 +53,28 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.time;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import java.util.Collection;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
+public interface TimeIntervals extends Iterable<TimeInterval>{
+	public long getStart();
+	public void setStart(long start);
+	public long getEnd();
+	public void setEnd(long end);
+	public int size();
+	public void clear();
+	public boolean isEmpty();
 
 	
-
+	public Collection<TimeInterval> getIntervals();
+	public void addInterval(TimeInterval interval);
+	public void union(TimeInterval interval);
+	public void inter(TimeInterval interval);
+	public void union(long start, long end);
+	public void inter(long start, long end);
 }
-

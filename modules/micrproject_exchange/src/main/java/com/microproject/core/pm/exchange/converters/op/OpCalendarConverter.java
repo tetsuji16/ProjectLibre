@@ -53,47 +53,95 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.pm.calendar.WorkCalendar;
+import com.microproject.pm.calendar.WorkCalendarException;
+import com.microproject.pm.calendar.WorkDay;
+import com.microproject.pm.calendar.WorkWeek;
+import com.microproject.configuration.CircularDependencyException;
+import com.microproject.pm.calendar.CalendarService;
+import com.microproject.pm.calendar.WorkingCalendar;
+import com.microproject.util.DateTime;
+import java.util.logging.Level;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class OpCalendarConverter {
+	private static final Logger logger = Logger.getLogger(OpCalendarConverter.class.getName());
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
+	public void to(WorkingCalendar opCalendar, WorkCalendar calendar, OpImportState state){
+		opCalendar.setId(calendar.getId().getLocalId());
+		String name=calendar.getName();
+		opCalendar.setName(calendar.getName());
+		
+		//base calendar
+		WorkingCalendar opStandardCalendar=CalendarService.getInstance().getStandardInstance();
+		WorkingCalendar baseCalendar = null;
+		if (calendar.getBase()!=null){
+			baseCalendar=state.getMappedOpBaseCalendar(calendar.getId());
+			if (baseCalendar==null)
+				baseCalendar=opStandardCalendar;
+			try {
+				opCalendar.setBaseCalendar(baseCalendar);
+			} catch (CircularDependencyException e) {
+				logger.log(Level.WARNING, "Failed to set calendar base", e);
+			}
+		}		
+		
+		//work weeks
+		OpRangeConverter rangeConverter=new OpRangeConverter();
+		WorkWeek week=calendar.getWeek();
+		WorkDay day;
+		com.microproject.pm.calendar.WorkDay opDay;
+		for (int i=0; i<7; i++){
+			day=week.getDay(i);
+			if (day==null){
+				opDay=null;
+				if (calendar.getBase()==null &&
+						opStandardCalendar.getWeekDay(i).isWorking())
+					opDay=com.microproject.pm.calendar.WorkDay.getNonWorkingDay();				
+			}else{
+				switch (day.getType()) {
+				case NON_WORKING:
+					opDay=com.microproject.pm.calendar.WorkDay.getNonWorkingDay();
+					break;
+//				case DEFAULT:
+//					opDay=com.microproject.pm.calendar.WorkDay.getDefaultWorkDay();
+//					break;
+				default:
+					opDay=new com.microproject.pm.calendar.WorkDay();
+					rangeConverter.to(opDay,day);
+					if (calendar.getBase()==null) {
+						if (opStandardCalendar.getWeekDay(i).hasSameWorkHours(opDay))
+							opDay = null;
+					}
+					break;
+				}
+			}
+			opCalendar.setWeekDay(i,opDay);
+		}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
+		//exceptions
+		for (WorkCalendarException exception : calendar.getExceptions()){
+			for (long time=exception.getStart(); time<exception.getEnd(); time=DateTime.nextDay(time)) {
+				com.microproject.pm.calendar.WorkDay opExceptionDay = new com.microproject.pm.calendar.WorkDay(time,time);
+				rangeConverter.to(opExceptionDay,exception);
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
+				opCalendar.addOrReplaceException(opExceptionDay);
+			}
+		}
+		
+		opCalendar.removeEmptyDays();
+		for (int i=0;i<7;i++) {
+			logger.log(Level.FINE, "Calendar weekday {0}: {1}", new Object[] { i, opCalendar.getWeekDay(i) });
+		}
 	
+	}	
 
 }
-

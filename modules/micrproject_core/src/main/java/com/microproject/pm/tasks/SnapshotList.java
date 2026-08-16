@@ -53,47 +53,58 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.pm.tasks;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class SnapshotList {
+	public static final int BASELINE_COUNT=11;
+	public static final int DEFAULT_SNAPSHOT=11;
+	protected TaskSnapshot[] snapshots=new TaskSnapshot[BASELINE_COUNT+1];
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	public SnapshotList(){
+		snapshots[DEFAULT_SNAPSHOT]=new TaskSnapshot();
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
 	
+	public TaskSnapshot getSnapshot(int index){
+		return snapshots[index];
+	}
+
+	public TaskSnapshot getSnapshot(int index, boolean create){
+		TaskSnapshot snapshot=snapshots[index];
+		if (create && snapshot==null){
+			snapshot=new TaskSnapshot();
+			snapshots[index]=snapshot;
+		}
+		return snapshot;
+	}
+
+	public TaskSnapshot getSnapshot(){
+		return getSnapshot(DEFAULT_SNAPSHOT);
+	}
+	
+	public String toString(String tab){
+		StringBuilder s = new StringBuilder();
+		s.append(tab).append("SnapshotList\n");
+		int i=0;
+		for (TaskSnapshot snapshot : snapshots){
+			if (snapshot!=null){
+				s.append(tab).append("\t").append("snapshot[").append(i).append("]=\n");
+				s.append(snapshot.toString(tab+"\t\t"));
+			}
+		}
+		
+		
+		return s.toString();
+	}
+
+	@Override
+	public String toString(){
+		return toString("");
+	}
+
 
 }
-

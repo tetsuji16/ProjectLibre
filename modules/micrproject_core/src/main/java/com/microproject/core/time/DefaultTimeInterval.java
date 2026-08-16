@@ -53,47 +53,102 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.time;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import java.util.Date;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class DefaultTimeInterval implements TimeInterval {
+	protected static long EMPTY_START=-1L;
+	protected static long EMPTY_END=-1L;
+	protected long start=EMPTY_START;
+	protected long end=EMPTY_END;
+	
+	public DefaultTimeInterval(){
+		
+	}
+	public DefaultTimeInterval(long start,long end){
+		this.start=start;
+		this.end=end;
+	}
+	
+	@Override
+	public long getStart() {
+		return start;
 	}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	@Override
+	public void setStart(long start) {
+		this.start = start;
 	}
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	@Override
+	public long getEnd() {
+		return end;
 	}
 
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	@Override
+	public void setEnd(long end) {
+		this.end = end;
 	}
 
+	@Override
+	public void union(TimeInterval interval) { 
+		if (start > interval.getStart())
+			start=interval.getStart();
+		if (end < interval.getEnd())
+			end=interval.getEnd();
+	}
+
+	@Override
+	public void inter(TimeInterval interval) {
+		if (start < interval.getStart())
+			start=interval.getStart();
+		if (interval.getEnd() < end)
+			end=interval.getEnd();
+		if (start > end)
+			clear();
+	}
+
+	@Override
+	public void clear() {
+		start=EMPTY_START;
+		end=EMPTY_END;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return start==EMPTY_START || end==EMPTY_END ;
+	}
+
+	@Override
+	public int compareTo(TimeInterval o) {
+		if (isEmpty())
+			return -1;
+		if (start<o.getStart() ||
+				 (start==o.getStart() && end<o.getEnd()))
+			return -1;
+		if (start==o.getStart() && end==o.getEnd()) 
+			return 0;
+		else return 1;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj==null || ! (obj instanceof DefaultTimeInterval))
+			return false;
+		DefaultTimeInterval i=(DefaultTimeInterval)obj;
+		return start==i.getStart() && end==i.getEnd();
+	}
+	
+	@Override
+	public String toString() {
+		return "["+new Date(start)+","+new Date(end)+"]";
+	}
+	
 	
 
 }
-

@@ -53,47 +53,79 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.mpx;
 
-import java.util.List;
+import com.microproject.pm.calendar.CalendarId;
+import com.microproject.pm.calendar.DayType;
+import com.microproject.pm.calendar.WorkCalendar;
+import com.microproject.pm.calendar.WorkCalendarException;
+import com.microproject.pm.calendar.WorkDay;
+import com.microproject.pm.calendar.WorkWeek;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import net.sf.mpxj.Day;
+import net.sf.mpxj.ProjectCalendar;
+import net.sf.mpxj.ProjectCalendarException;
+import net.sf.mpxj.ProjectCalendarHours;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class MpxCalendarConverter {
+	public void from(ProjectCalendar mpxCalendar, WorkCalendar calendar, MpxImportState state){	
+		calendar.setName(mpxCalendar.getName());
+		state.getCalendarManager().fixBaseCalendar(calendar, state.getProjectTitle());
+		calendar.setId(new CalendarId(mpxCalendar.getUniqueID()));
+		
+		
+		//base calendar
+		WorkCalendar standardCalendar = state.getCalendarManager().getStandardBaseCalendar();
+		ProjectCalendar mpxBaseCalendar=null;
+		WorkCalendar baseCalendar=null;
+		if (mpxCalendar.isDerived()) {
+			mpxBaseCalendar = mpxCalendar.getParent();
+			if (mpxBaseCalendar==null){
+				mpxBaseCalendar=state.getMpxStandardBaseCalendar();
+			}
+			baseCalendar=state.getCalendarManager().getCalendar(new CalendarId(mpxBaseCalendar.getUniqueID()));
+			if (baseCalendar == null) 
+				baseCalendar = standardCalendar;
+			calendar.setBase(baseCalendar);
+		}
+		
+		
+		//work weeks
+		WorkWeek week=new WorkWeek();
+		calendar.setWeek(week);
+		MpxRangeConverter rangeConverter=new MpxRangeConverter();
+		for (int i=0; i<7; i++) {
+			Day mpxDayId=Day.getInstance(i+1);
+			ProjectCalendarHours mpxDay=mpxCalendar.getCalendarHours(mpxDayId);
+			net.sf.mpxj.DayType mpxDayType=mpxCalendar.getDayType(mpxDayId);
+			WorkDay day=null;
+			if (mpxDay == null) {
+				if (mpxCalendar.isDerived() &&
+							mpxBaseCalendar!=null){
+					if (mpxDayType==net.sf.mpxj.DayType.DEFAULT)
+						day=calendar.getBase().getWeek().getDay(i);
+//						day = WorkDay.getDefaultDay();
+					else if (mpxBaseCalendar.isWorkingDay(mpxDayId)) // Keep the working-day mapping aligned with MPX's day mask.
+						day = WorkDay.getNonWorkingDay();
+				}
+			} else {
+				day=new WorkDay(DayType.getInstance(mpxDayType.getValue()));
+				rangeConverter.from(mpxDay,day);
+			}
+			week.setDay(i,day);
+		}
+		
+		//exceptions
+		MpxExceptionConverter exceptionConverter=new MpxExceptionConverter();
+		for (ProjectCalendarException mpxException : mpxCalendar.getCalendarExceptions()){
+			WorkCalendarException exception=new WorkCalendarException();
+			exceptionConverter.from(mpxException,exception);
+			calendar.addException(exception);
+		}
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

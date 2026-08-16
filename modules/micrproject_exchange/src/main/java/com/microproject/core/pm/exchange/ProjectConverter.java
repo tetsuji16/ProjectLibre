@@ -53,47 +53,80 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import java.lang.reflect.Method;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class ProjectConverter {
+	public static enum Type{
+		OPTIONS("Options"),
+		CALENDAR("Calendar"),
+		PROJECT("Project"),
+		TASK("Task"),
+		RESOURCE("Resource"),
+		ASSIGNMENT("Assignment"),
+		DEPENDENCY("Dependency"),
+		TIMEPHASED("Timephased");
+		
+		protected String name;
+		private Type(String name){
+			this.name=name;
+		}
+		public String getName(){
+			return name;
+		}
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
 	
+	protected static ProjectConverter instance;
+	public static ProjectConverter getInstance(){
+		if (instance==null)
+			instance=new ProjectConverter();
+		return instance;
+	}
+	
+	public Object convert(String format, Type type, boolean from, Object externalObject, Object projectlibreObject, Object state) throws Exception{
+		String converterName = resolveConverterName(format, type);
+		Class<?> converterClass;
+		try {
+			converterClass = Class.forName(converterName);
+		} catch (ClassNotFoundException e) {
+			throw new IllegalArgumentException("Unsupported converter for format " + format + " and type " + type.getName(), e);
+		}
+		Method method = resolveConverterMethod(converterClass, converterName, from);
+		Object converter = converterClass.getDeclaredConstructor().newInstance();
+		if (method.getReturnType().equals(Void.TYPE)) {
+			method.invoke(converter, new Object[] { externalObject, projectlibreObject, state });
+			return from ? projectlibreObject : externalObject;
+		}
+		return method.invoke(converter, new Object[] { from ? externalObject : projectlibreObject, state });
+	}
 
+	private String resolveConverterName(String format, Type type) {
+		if (format == null) {
+			throw new IllegalArgumentException("Unsupported import/export format: null");
+		}
+		String converterName;
+		if (format.equalsIgnoreCase("mpx")) {
+			converterName = "com.microproject.core.pm.exchange.converters.mpx.Mpx";
+		} else if (format.equalsIgnoreCase("op")) {
+			converterName = "com.microproject.core.pm.exchange.converters.op.Op";
+		} else {
+			throw new IllegalArgumentException("Unsupported import/export format: " + format);
+		}
+		return converterName + type.getName() + "Converter";
+	}
+
+	private Method resolveConverterMethod(Class<?> converterClass, String converterName, boolean from) {
+		for (Method method : converterClass.getMethods()) {
+			if ((from && "from".equals(method.getName())) || (!from && "to".equals(method.getName()))) {
+				return method;
+			}
+		}
+		throw new IllegalStateException("No suitable converter method found on " + converterName);
+	}
+	
 }
-

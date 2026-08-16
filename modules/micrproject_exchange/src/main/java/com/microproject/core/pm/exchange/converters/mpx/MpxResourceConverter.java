@@ -53,47 +53,75 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.mpx;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.fields.FieldUtil;
+import com.microproject.pm.calendar.CalendarId;
+import com.microproject.pm.calendar.DefaultWorkCalendar;
+import com.microproject.pm.calendar.WorkCalendar;
+import com.microproject.pm.resources.Resource;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class MpxResourceConverter {
+	protected String[] fieldsToConvert=new String[]{
+			//ProjectLibre, mpx, converter (mpx-> ProjectLibre
+		"name", "name", null,
+		"notes", "notes", null,
+		"generic", "generic", null,
+		"group", "group", null,
+		"initials", "initials", null,
+		"emailAddress", "emailAddress", null,
+		"id", "iD", null,
+		"externalId", "uniqueID", null,
+		"accrueAt", "accrueAt", "com.microproject.core.pm.exchange.converters.mpx.type.MpxAccrueTypeConverter",
+		"costPerUse", "costPerUse", "com.microproject.core.pm.exchange.converters.type.NumberDoubleConverter",
+		"standardRate", "standardRate", "com.microproject.core.pm.exchange.converters.mpx.type.MpxRateConverter",
+		"overtimeRate", "overtimeRate", "com.microproject.core.pm.exchange.converters.mpx.type.MpxRateConverter",
+		"maximumUnits", "maxUnits", "com.microproject.core.pm.exchange.converters.type.PercentNumberRatioDoubleConverter",
+		
+		"cost", "cost", "com.microproject.core.pm.exchange.converters.type.NumberDoubleConverter",
+		"cost:1:10", "cost:1:10", "com.microproject.core.pm.exchange.converters.type.NumberDoubleConverter",
+		
+		"start", "start", "com.microproject.core.pm.exchange.converters.type.DateUTCConverter",
+		"start:1:10", "start:1:10", "com.microproject.core.pm.exchange.converters.type.DateUTCConverter",
+		
+		"finish", "finish", "com.microproject.core.pm.exchange.converters.type.DateUTCConverter",
+		"finish:1:10", "finish:1:10", "com.microproject.core.pm.exchange.converters.type.DateUTCConverter",
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+		"date:1:10", "date:1:10", "com.microproject.core.pm.exchange.converters.type.DateUTCConverter",
+		
+//		"duration", "duration", "com.microproject.core.pm.exchange.converters.mpx.type.MpxDurationConverter",
+		"duration:1:10", "duration:1:10", "com.microproject.core.pm.exchange.converters.mpx.type.MpxDurationConverter",
+
+		"text:1:30", "text:1:30", null,
+		"flag:1:20", "flag:1:20", null,
+		"number:1:20", "number:1:20", "com.microproject.core.pm.exchange.converters.type.NumberDoubleConverter",
+		
+	};
+
+	public void from(net.sf.mpxj.Resource mpxResource, Resource resource, MpxImportState state) {
+		//convert fields
+		FieldUtil.convertFields(resource, net.sf.mpxj.Resource.class, mpxResource, fieldsToConvert, true);
+		
+		//convert calendar
+		WorkCalendar calendar;
+		net.sf.mpxj.ProjectCalendar mpxCalendar = mpxResource.getCalendar();
+		if (mpxCalendar==null){
+			calendar=state.getProjectBaseCalendar();
+		}else{
+			calendar=state.getCalendarManager().getCalendar(new CalendarId(mpxCalendar.getUniqueID()));
+			if (calendar == null) {
+				calendar=new DefaultWorkCalendar();
+				calendar.setName(mpxResource.getName());
+				MpxCalendarConverter calendarConverter=new MpxCalendarConverter();
+				calendarConverter.from(mpxCalendar, calendar, state);
+				state.registerImportedCalendar(calendar, mpxCalendar);
+			}
+		}
+		resource.setCalendar(calendar);
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

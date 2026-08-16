@@ -53,47 +53,27 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.mpx.type;
 
-import java.util.List;
+import com.microproject.core.fields.FieldTypeConverter;
+import com.microproject.pm.scheduling.AccrueType;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class MpxAccrueTypeConverter extends FieldTypeConverter {
+	@Override
+	public Object from(Object o) {
+		net.sf.mpxj.AccrueType a=(net.sf.mpxj.AccrueType)o;
+		return AccrueType.getInstance(a.getValue());
 	}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	@Override
+	public Object to(Object o) {
+		AccrueType a=(AccrueType)o;
+		return net.sf.mpxj.AccrueType.getInstance(a.getId());
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

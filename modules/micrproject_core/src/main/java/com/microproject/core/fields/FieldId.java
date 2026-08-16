@@ -53,47 +53,42 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
-
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+package com.microproject.core.fields;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
-}
-
+//public class FieldId {
+//	protected String id;
+//
+//	public FieldId(String id) {
+//		super();
+//		this.id = id;
+//	}
+//
+//	public String getId() {
+//		return id;
+//	}
+//
+//	public void setId(String id) {
+//		this.id = id;
+//	}
+//
+//	@Override
+//	public int hashCode() {
+//		return id.hashCode();
+//	}
+//
+//	@Override
+//	public String toString() {
+//		return id.toString();
+//	}
+//
+//	@Override
+//	public boolean equals(Object obj) {
+//		if (obj==null || !(obj instanceof FieldId))
+//			return false;
+//		return id.equals(((FieldId)obj).getId());
+//	}
+//}

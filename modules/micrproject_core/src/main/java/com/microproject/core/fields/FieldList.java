@@ -53,29 +53,53 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.fields;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import org.projectlibre.core.dictionary.HasCategories;
+import org.projectlibre.core.dictionary.HasStringId;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
+@XmlRootElement(name="fieldList")
 @XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
+public class FieldList implements HasStringId, HasCategories{
+	protected String id;
+	protected Set<String> categories;
 	protected List<Field> fields;
-	protected List<FieldList> fieldList;
 
-	@XmlElement(name="field")
+	@XmlID
+	@XmlAttribute(name="id")
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	@XmlAttribute(name="category")
+	public Set<String> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(Set<String> categories) {
+		this.categories = categories;
+	}
+
+	@XmlIDREF
+	@XmlAttribute(name="fields")
 	public List<Field> getFields() {
 		return fields;
 	}
@@ -84,16 +108,5 @@ public class CoreConfiguration {
 		this.fields = fields;
 	}
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

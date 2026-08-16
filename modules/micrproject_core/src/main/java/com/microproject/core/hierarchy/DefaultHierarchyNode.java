@@ -53,47 +53,71 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.hierarchy;
 
-import java.util.List;
+import java.util.LinkedList;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.nodes.Node;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
+public class DefaultHierarchyNode implements HierarchyNode {
+	protected Node node;
+	protected HierarchyNode parent;
+	protected LinkedList<DefaultHierarchyNode> children=new LinkedList<DefaultHierarchyNode>();
 	
+	public DefaultHierarchyNode(){
+		
+	}
+	
+	public DefaultHierarchyNode(Node node){
+		this.node=node;
+	}
+	
+	@Override
+	public Node getNode() {
+		return node;
+	}
+	@Override
+	public void setNode(Node node) {
+		this.node = node;
+	}
+	@Override
+	public HierarchyNode getParent() {
+		return parent;
+	}
+	@Override
+	public void setParent(HierarchyNode parent) {
+		this.parent = parent;
+	}
+	@Override
+	public boolean isRoot() {
+		return parent==null;
+	}
 
+	@Override
+	public LinkedList<DefaultHierarchyNode> getChildren() {
+		return children;
+	}
+	
+	@Override
+	public boolean hasChildren() {
+		return !children.isEmpty();
+	}
+
+	@Override
+	public int getChildrenCount() {
+		return children.size();
+	}
+
+	@Override
+	public HierarchyNode add(Node node) {
+		DefaultHierarchyNode n=new DefaultHierarchyNode(node);
+		n.setParent(this);
+		children.add(n);
+		return n;
+	}
+		
 }
-

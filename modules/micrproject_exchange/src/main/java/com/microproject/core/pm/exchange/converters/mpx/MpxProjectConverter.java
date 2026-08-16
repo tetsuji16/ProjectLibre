@@ -53,47 +53,36 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.mpx;
 
-import java.util.List;
+import com.microproject.core.fields.FieldUtil;
+import com.microproject.pm.calendar.WorkCalendar;
+import com.microproject.pm.tasks.Project;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import net.sf.mpxj.ProjectProperties;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class MpxProjectConverter {
+	protected String[] fieldsToConvert=new String[]{
+			//ProjectLibre, mpx, converter (mpx-> ProjectLibre
+		"name", "name", null,
+		"mamager", "manager", null,
+		"notes", "comments", null,
+		"start", "startDate", "com.microproject.core.pm.exchange.converters.type.DateUTCConverter",
+		"statusDate", "statusDate", "com.microproject.core.pm.exchange.converters.type.DateUTCConverter",
+		"scheduleFrom","scheduleFrom", "com.microproject.core.pm.exchange.converters.mpx.type.MpxScheduleFromConverter",
+	};
+	public void from(ProjectProperties mpxProjectHeader, Project project, MpxImportState state) {
+		FieldUtil.convertFields(project, net.sf.mpxj.ProjectProperties.class, mpxProjectHeader, fieldsToConvert, true);
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+		WorkCalendar calendar=null;;
+		if (mpxProjectHeader.getDefaultCalendar()!=null)
+			calendar=state.getMappedBaseCalendar(mpxProjectHeader.getDefaultCalendar().getName());
+		if (calendar==null) calendar=state.getCalendarManager().getStandardBaseCalendar();
+		project.setCalendar(calendar);
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

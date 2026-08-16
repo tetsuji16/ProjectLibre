@@ -53,47 +53,40 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.fields;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
+public class FieldManager {
+//	protected Map<String, Map<String, Field>> fields=new HashMap<String, Map<String,Field>>();
+//	protected Map<String, String[]> fieldCategories=new HashMap<String, String[]>();
+//
+//	
+//	public Field getField(Class<?> classe, String fieldId) {
+//		Map<String, Field> classFields=getFieldMap(classe);
+//		return classFields.get(fieldId);
+//	}
+//
+//	private Map<String, Field> getFieldMap(Class<?> classe) {
+//		Map<String, Field> classFields=fields.get(classe.getName());
+//		if (classFields==null)
+//			classFields=FieldUtil.getFields(getFieldCategories(classe));
+//		return classFields;
+//	}
+//
+//	
+//	public String[] getFieldCategories(Class<?> classe){
+//		String[] categories=fieldCategories.get(classe.getName());
+//		if (categories==null){
+//			categories=FieldUtil.getCategories(classe);
+//			fieldCategories.put(classe.getName(),categories);
+//		}
+//		return categories;
+//	}
 
 }
-

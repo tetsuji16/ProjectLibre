@@ -53,47 +53,23 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.mpx;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.pm.calendar.CalendarOptions;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class MpxOptionsConverter {
+	public void from(net.sf.mpxj.ProjectProperties projectHeader, CalendarOptions calendarOptions, MpxImportState state) {
+		calendarOptions.setDaysPerMonth(projectHeader.getDaysPerMonth().doubleValue());
+		calendarOptions.setHoursPerWeek(projectHeader.getMinutesPerWeek().doubleValue()/60.0D);
+		calendarOptions.setHoursPerDay(projectHeader.getMinutesPerDay().doubleValue()/60.0D);
+		calendarOptions.setDefaultStart(projectHeader.getDefaultStartTime() == null ? 
+				0L : projectHeader.getDefaultStartTime().getTime());
+		calendarOptions.setDefaultEnd(projectHeader.getDefaultEndTime() == null ? 
+				0L : projectHeader.getDefaultEndTime().getTime());
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
+		
 }
-

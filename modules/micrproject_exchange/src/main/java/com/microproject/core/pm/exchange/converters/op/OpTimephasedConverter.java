@@ -53,47 +53,37 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
+import com.microproject.core.pm.exchange.converters.mpx.MpxImportState;
+import com.microproject.core.pm.exchange.converters.mpx.MpxUtils;
+import com.microproject.core.pm.exchange.converters.op.type.OpDurationConverter;
+import com.microproject.core.pm.exchange.converters.type.DateLongConverter;
+import com.microproject.core.time.DefaultTimephasedValue;
+import com.microproject.core.time.Duration;
+import com.microproject.core.time.TimephasedType;
+import com.microproject.core.time.TimephasedValue;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import net.sf.mpxj.mspdi.DatatypeConverter;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+public class OpTimephasedConverter {
+	public TimephasedValue<?> from(net.sf.mpxj.mspdi.schema.TimephasedDataType mpxTimephased, MpxImportState state) {
+		TimephasedType type=MpxUtils.safeGetTimephasedType(mpxTimephased.getType());
+		if (type == null || !type.isWork())
+			return null;
+		DateLongConverter dateConverter=new DateLongConverter();
+		long start=(Long)dateConverter.from(mpxTimephased.getStart());
+		long finish=(Long)dateConverter.from(mpxTimephased.getFinish());
+		OpDurationConverter durationConverter=new OpDurationConverter();
+		net.sf.mpxj.Duration mpxDuration=DatatypeConverter.parseDuration(state.getMpxProjectFile(),null,mpxTimephased.getValue());
+		Duration value=(Duration)durationConverter.from(mpxDuration);
+		TimephasedValue<Duration> timephased=new DefaultTimephasedValue<Duration>(start,finish,value,type);
+		return timephased;
 	}
 
 	
-
 }
-

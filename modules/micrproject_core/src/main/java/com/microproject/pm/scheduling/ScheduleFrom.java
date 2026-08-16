@@ -53,47 +53,36 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.pm.scheduling;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public enum ScheduleFrom {
+	//same constants as mpxj to simplify
+	   START(0),
+	   FINISH(1);
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	protected int id;
+	protected static Map<Integer,ScheduleFrom> reverseMap;
+
+	private ScheduleFrom(int id){
+		this.id=id;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public int getId() {
+		return id;
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	public static ScheduleFrom getInstance(int id){
+		if (reverseMap==null){
+			reverseMap=new HashMap<Integer, ScheduleFrom>();
+			for (ScheduleFrom ct : values())
+				reverseMap.put(ct.getId(),ct);
+		}
+		return reverseMap.get(id);
 	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

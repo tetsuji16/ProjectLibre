@@ -53,47 +53,131 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.time;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+// 
 
 /**
  * @author Laurent Chretienneau
- *
+ * 
+ * contants from mpxj with 2 additional ones from ProjectLibre
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public enum TimeUnit{
+	
+	/**
+	 * projectlibre specific to indicate the value is not temporal
+	 */
+	NON_TEMPORAL(-2,""), //-2 in ProjectLibre
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	/**
+	 * projectlibre specific to indicate no value entered
+	 */
+	NONE(-1,""), //-1 in ProjectLibre
+	
+	/**
+	 * Constant representing Minutes.
+	 */
+	MINUTES(0, "m"),
+
+	/**
+	 * Constant representing Hours.
+	 */
+	HOURS(1, "h"),
+
+	/**
+	 * Constant representing Days.
+	 */
+	DAYS(2, "d"),
+
+	/**
+	 * Constant representing Weeks.
+	 */
+	WEEKS(3, "w"),
+
+	/**
+	 * Constant representing Months.
+	 */
+	MONTHS(4, "mo"),
+
+	/**
+	 * Constant representing Percent.
+	 */
+	PERCENT(5, "%"),
+
+	/**
+	 * Constant representing Years.
+	 */
+	YEARS(6, "y"),
+
+	/**
+	 * Constant representing Elapsed Minutes.
+	 */
+	ELAPSED_MINUTES(7, "em"),
+
+	/**
+	 * Constant representing Elapsed Hours.
+	 */
+	ELAPSED_HOURS(8, "eh"),
+
+	/**
+	 * Constant representing Elapsed Days.
+	 */
+	ELAPSED_DAYS(9, "ed"),
+
+	/**
+	 * Constant representing Elapsed Weeks.
+	 */
+	ELAPSED_WEEKS(10, "ew"),
+
+	/**
+	 * Constant representing Elapsed Months.
+	 */
+	ELAPSED_MONTHS(11, "emo"),
+
+	/**
+	 * Constant representing Elapsed Years.
+	 */
+	ELAPSED_YEARS(12, "ey"),
+
+	/**
+	 * Constant representing Elapsed Percent.
+	 */
+	ELAPSED_PERCENT(13, "e%");
+
+
+	protected int id;
+	protected String symbol;
+	protected static Map<Integer,TimeUnit> reverseMap;
+	
+	private TimeUnit(int id, String symbol) {
+		this.id=id;
+		this.symbol=symbol;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public int getId() {
+		return id;
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	public void setId(int id) {
+		this.id = id;
 	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	public String getSymbol() {
+		return symbol;
 	}
-
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
+	}
+	public static TimeUnit getInstance(int id){
+		//not using values()[id] because type can be negative
+		if (reverseMap==null){
+			reverseMap=new HashMap<Integer, TimeUnit>();
+			for (TimeUnit unit : values())
+				reverseMap.put(unit.getId(),unit);
+		}
+		return reverseMap.get(id);
+	}	
 	
 
 }
-

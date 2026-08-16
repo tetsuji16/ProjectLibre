@@ -53,47 +53,50 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.fields.FieldUtil;
+import com.microproject.pm.calendar.WorkCalendar;
+import com.microproject.pm.tasks.Project;
+import com.microproject.configuration.CircularDependencyException;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class OpProjectConverter {
+	protected static Logger log = Logger.getLogger("OpTaskConverter");
+	protected String[] fieldsToConvert=new String[]{
+			//ProjectLibre, mpx, converter (mpx-> ProjectLibre
+		"name", "name", null,
+		"mamager", "manager", null,
+		"notes", "notes", null,
+		"start", "startDate", "com.microproject.core.pm.exchange.converters.type.LongDateConverter",
+		"statusDate", "statusDate", "com.microproject.core.pm.exchange.converters.type.LongDateConverter",
+	};
+	public void to(com.microproject.pm.task.Project opProject, Project project, OpImportState state) {
+		FieldUtil.convertFields(project, com.microproject.pm.task.Project.class, opProject, fieldsToConvert, false);
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+		//find calendar
+		WorkCalendar calendar=project.getCalendar();
+		if (calendar!=null){
+			com.microproject.pm.calendar.WorkCalendar opCalendar=state.getMappedOpBaseCalendar(calendar.getId());
+			if (opCalendar==null)
+				log.warning("Calendar "+calendar.getId()+" for task "+project.getId()+" not found");
+			else {
+				try {
+					opProject.setBaseCalendar(opCalendar);
+				} catch (CircularDependencyException e) {
+					log.log(Level.WARNING, "Failed to set base calendar", e);
+				}
+				//opProject.setWorkCalendar(opCalendar);
+			}
+		}
+
+		
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

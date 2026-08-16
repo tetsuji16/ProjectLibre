@@ -53,47 +53,38 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.pm.exchange.converters.op.type.OpDependencyTypeConverter;
+import com.microproject.core.pm.exchange.converters.op.type.OpDurationConverter;
+import com.microproject.pm.tasks.Dependency;
+import com.microproject.association.InvalidAssociationException;
+import com.microproject.pm.dependency.DependencyService;
+import com.microproject.pm.task.NormalTask;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class OpDependencyConverter {
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
-	}
+	public com.microproject.pm.dependency.Dependency to(Dependency dependency, OpImportState state) {
+		NormalTask predecessor=state.getOpTask(dependency.getPredecessor());
+		NormalTask successor=state.getOpTask(dependency.getSuccessor());
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
+		com.microproject.pm.dependency.Dependency opDependency=null;
+		try {
+			OpDurationConverter durationConverter=new OpDurationConverter();
+			Long opDuration=(Long)durationConverter.to(dependency.getLag());
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
+			OpDependencyTypeConverter dependencyTypeConverter=new OpDependencyTypeConverter();
+			int opDependencyType=(Integer)dependencyTypeConverter.to(dependency.getType());
+			
+			opDependency = DependencyService.getInstance().newDependency(
+					predecessor, successor, opDependencyType, opDuration, null); //claur, mpxj classes have changed
+		} catch (InvalidAssociationException e) {
+			opDependency=null;
+		}
+		return opDependency;
+	}	
 }
-

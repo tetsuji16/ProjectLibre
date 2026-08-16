@@ -53,47 +53,22 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.hierarchy;
 
-import java.util.List;
+import com.microproject.core.nodes.Node;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
-
-/**
- * @author Laurent Chretienneau
- *
- */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public interface Hierarchy {
+	public enum VisitType{
+		PRE_ORDER, POST_ORDER;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public static interface Visitor{
+		public void visit(HierarchyNode hierarchyNode);
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
-
+	public void add(Node node);
+	public void add(Node node,Node parent);
+	public void add(Node node,HierarchyNode parentHierarchyNode);
+	public void visit(Visitor visitor);
+	public void visit(Visitor visitor,VisitType visitType);
+	public void visit(Visitor visitor,VisitType visitType, HierarchyNode parent);
+	public HierarchyNode findHierarchyNode(Node node);
 }
-

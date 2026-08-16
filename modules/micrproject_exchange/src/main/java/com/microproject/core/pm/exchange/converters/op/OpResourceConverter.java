@@ -53,47 +53,67 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
+import java.util.logging.Logger;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.fields.FieldUtil;
+import com.microproject.pm.calendar.WorkCalendar;
+import com.microproject.pm.resources.Resource;
+import com.microproject.field.CustomFields;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
+public class OpResourceConverter {
+	protected static Logger log = Logger.getLogger("OpTaskConverter");
+	protected String[] fieldsToConvert=new String[]{
+			//ProjectLibre, OP , converter (OP -> ProjectLibre)
+		"name", "name", null,
+		"notes", "notes", null,
+		"generic", "generic", null,
+		"group", "group", null,
+		"initials", "initials", null,
+		"emailAddress", "emailAddress", null,
+		"id", "id", null,
+		"externalId", "externalId", null,
+		"accrueAt", "accrueAt", "com.microproject.core.pm.exchange.converters.op.type.OpAccrueTypeConverter",
+		"costPerUse", "costPerUse", "com.microproject.core.pm.exchange.converters.type.NumberDoubleConverter",
+		"standardRate", "standardRate", "com.microproject.core.pm.exchange.converters.op.type.OpRateConverter",
+		"overtimeRate", "overtimeRate", "com.microproject.core.pm.exchange.converters.op.type.OpRateConverter",
+		"maximumUnits", "maximumUnits", "com.microproject.core.pm.exchange.converters.type.NumberDoubleConverter",
+	};
+	protected String[] customFieldsToConvert=new String[]{
+			//ProjectLibre, OP, converter (OP -> ProjectLibre)
+			"cost:1:10", "customCost,0,9", null,
+			"start:1:10", "customStart,0,9", "com.microproject.core.pm.exchange.converters.type.LongDateConverter",		
+			"finish:1:10", "customFinish,0,9", "com.microproject.core.pm.exchange.converters.type.LongDateConverter",		
+			"date:1:10", "customDate,0,9", "com.microproject.core.pm.exchange.converters.type.LongDateConverter",	
+			"duration:1:10", "customDuration,0,9", "com.microproject.core.pm.exchange.converters.op.type.OpDurationConverter",
+			"text:1:30", "customText,0,29", null,
+			"flag:1:20", "customFlag,0,19", null,
+			"number:1:20", "customNumber,0,19", null,
+		
+	};
 
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+	public void to(com.microproject.pm.resource.ResourceImpl opResource, Resource resource, OpImportState state) {
+		//convert fields
+		FieldUtil.convertFields(resource, com.microproject.pm.resource.ResourceImpl.class, opResource, fieldsToConvert, false);
+		FieldUtil.convertFields(resource, CustomFields.class, opResource.getCustomFields(), customFieldsToConvert, false);
+		
+		
+		//find calendar
+		WorkCalendar calendar=resource.getCalendar();
+		if (calendar!=null){
+			com.microproject.pm.calendar.WorkCalendar opCalendar=state.getMappedOpBaseCalendar(calendar.getId());
+			if (opCalendar==null)
+				log.warning("Calendar "+calendar.getId()+" for resource "+resource.getId()+" not found");
+			else
+				opResource.setWorkCalendar(opCalendar);
+		}
+
+		
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
-	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
-	
 
 }
-

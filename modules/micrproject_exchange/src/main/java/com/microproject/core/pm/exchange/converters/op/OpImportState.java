@@ -53,47 +53,73 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.pm.exchange.converters.op;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.pm.calendar.CalendarId;
+import com.microproject.pm.calendar.CalendarManager;
+import com.microproject.pm.calendar.WorkCalendar;
+import com.microproject.pm.resources.Resource;
+import com.microproject.pm.tasks.Task;
+import com.microproject.grouping.core.Node;
+import com.microproject.pm.calendar.WorkingCalendar;
+import com.microproject.pm.task.NormalTask;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class OpImportState {
+//	protected ProjectCalendar mpxDefaultBaseCalendar;
+	protected Map<CalendarId,WorkingCalendar> opBaseCalendarMap=new HashMap<CalendarId, WorkingCalendar>();
+	protected Map<CalendarId,WorkCalendar> baseCalendarMap=new HashMap<CalendarId, WorkCalendar>();
+	protected Map<Task,NormalTask> opTaskMap=new HashMap<Task, NormalTask>();
+	protected Map<NormalTask,Node> opTaskNodeMap=new HashMap<NormalTask, Node>();
+	protected Map<Resource,com.microproject.pm.resource.Resource> opResourceMap=new HashMap<Resource, com.microproject.pm.resource.Resource>();
+	protected Map<com.microproject.pm.resource.Resource,Node> opResourceNodeMap=new HashMap<com.microproject.pm.resource.Resource, Node>();
+	protected CalendarManager calendarManager;
+	public CalendarManager getCalendarManager() {
+		return calendarManager;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	public void setCalendarManager(CalendarManager calendarManager) {
+		this.calendarManager = calendarManager;
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	public void mapBaseCalendar(WorkCalendar calendar,WorkingCalendar opCalendar){
+		opBaseCalendarMap.put(calendar.getId(),opCalendar);
+		baseCalendarMap.put(calendar.getId(),calendar);
 	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	public WorkingCalendar getMappedOpBaseCalendar(CalendarId id){
+		return opBaseCalendarMap.get(id);
 	}
-
+	public WorkCalendar getMappedBaseCalendar(CalendarId id){
+		return baseCalendarMap.get(id);
+	}
 	
+	public void mapOpTask(Task task, NormalTask opTask){
+		opTaskMap.put(task,opTask);
+	}
+	public NormalTask getOpTask(Task task){
+		return opTaskMap.get(task);
+	}
+	public void mapOpTaskNode(NormalTask task, Node taskNode){
+		opTaskNodeMap.put(task,taskNode);
+	}
+	public Node getOpTaskNode(NormalTask task){
+		return opTaskNodeMap.get(task);
+	}
+	public void mapOpResource(Resource resource, com.microproject.pm.resource.Resource opResource){
+		opResourceMap.put(resource,opResource);
+	}
+	public com.microproject.pm.resource.Resource getOpResource(Resource resource){
+		return opResourceMap.get(resource);
+	}
+	public void mapOpResourceNode(com.microproject.pm.resource.Resource resource, Node resourceNode){
+		opResourceNodeMap.put(resource,resourceNode);
+	}
+	public Node getOpResourceNode(com.microproject.pm.resource.Resource resource){
+		return opResourceNodeMap.get(resource);
+	}
 
 }
-

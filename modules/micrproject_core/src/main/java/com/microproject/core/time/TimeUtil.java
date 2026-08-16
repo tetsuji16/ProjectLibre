@@ -53,47 +53,67 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.time;
 
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class TimeUtil { //not thread safe
+	protected static long MINUTE=60000L;
+	protected static long HOUR=60*MINUTE;
+	protected static long DAY=24*HOUR;
+	protected static Calendar calendar;
+	protected static Calendar localCalendar;
+	protected static DateFormat format;
+	protected static Calendar getCalendar(){
+		if (calendar==null)
+			calendar=Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		return calendar;
 	}
-
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	protected static Calendar getLocalCalendar(){
+		if (localCalendar==null)
+			localCalendar=Calendar.getInstance();
+		return localCalendar;
 	}
-
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
-	}
-
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
-	}
-
 	
-
+	protected static int getTimeZoneOffset(long t){ 
+		Calendar c=getLocalCalendar();
+		c.setTimeInMillis(t);
+		return c.get(Calendar.ZONE_OFFSET) + c.get(Calendar.DST_OFFSET);
+	}
+	public static long removeTimeZoneOffset(long t){
+		return t-getTimeZoneOffset(t);
+	}
+	public static long addTimeZoneOffset(long t){
+		return t+getTimeZoneOffset(t);
+	}
+	
+	public static String toUTCString(long t){
+		if (format==null){
+			format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
+		}
+		return format.format(new Date(t));
+	}
+	
+	public static long toHoursAndMinutes(long date) { //corrects the problem of mpx giving hours in local timezone not utc
+		Calendar calendar=getCalendar();
+		calendar.setTimeInMillis(date);
+		int tz=getTimeZoneOffset(date);
+		long t=(60L * calendar.get(Calendar.HOUR_OF_DAY) + calendar.get(Calendar.MINUTE)) * MINUTE + tz;
+		//t can be negative because of timezone adjustment
+		t=(t+DAY)%DAY; 
+		return t;
+	}
+	
 }
 

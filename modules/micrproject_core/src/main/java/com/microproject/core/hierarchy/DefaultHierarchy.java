@@ -53,47 +53,108 @@
  * logo must be at least 144 x 31 pixels. When users click on the "ProjectLibre" 
  * logo it must direct them back to http://www.projectlibre.com. 
  *******************************************************************************/
-package org.projectlibre.core.configuration;
+package com.microproject.core.hierarchy;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.microproject.core.fields.Field;
-import com.microproject.core.fields.FieldList;
+import com.microproject.core.nodes.DefaultNode;
+import com.microproject.core.nodes.Node;
 
 /**
  * @author Laurent Chretienneau
  *
  */
-@XmlRootElement(name="configuration")
-@XmlAccessorType(XmlAccessType.NONE)
-public class CoreConfiguration {
-	protected List<Field> fields;
-	protected List<FieldList> fieldList;
-
-	@XmlElement(name="field")
-	public List<Field> getFields() {
-		return fields;
+public class DefaultHierarchy implements Hierarchy{
+	protected HierarchyNode root;
+	protected Map<Node,HierarchyNode> reverseIndex=new HashMap<Node, HierarchyNode>();
+	public DefaultHierarchy(){
+		root=new DefaultHierarchyNode(new DefaultNode());
+	}
+	
+	//find
+	protected void addIndexEntry(HierarchyNode node){
+		reverseIndex.put(node.getNode(),node);
+	}
+	protected HierarchyNode removeIndexEntry(Node node){
+		return reverseIndex.remove(node);
 	}
 
-	public void setFields(List<Field> fields) {
-		this.fields = fields;
+	@Override
+	public HierarchyNode findHierarchyNode(Node node) {
+		return reverseIndex.get(node);		
+	}
+	
+	
+	//add
+	@Override
+	public void add(Node node) {
+		root.add(node);
+	}	
+
+	@Override
+	public void add(Node node, Node parent) {
+		HierarchyNode hparent;
+		if (parent==null)
+			hparent=root;
+		else hparent=findHierarchyNode(parent);
+		add(node,hparent);
 	}
 
-	@XmlElement(name="fieldList")
-	public List<FieldList> getFieldList() {
-		return fieldList;
+	@Override
+	public void add(Node node, HierarchyNode parentHierarchyNode) {
+		if (parentHierarchyNode==null)
+			parentHierarchyNode=root;
+		addIndexEntry((parentHierarchyNode==null ? root : parentHierarchyNode).add(node));
+	}
+	
+	
+	//visit
+	@Override
+	public void visit(Visitor visitor) {
+		visit(visitor,VisitType.PRE_ORDER);
 	}
 
-	public void setFieldList(List<FieldList> fieldList) {
-		this.fieldList = fieldList;
+	@Override
+	public void visit(Visitor visitor,VisitType visitType) {
+		visit(visitor,visitType,root);
+	}
+
+	@Override
+	public void visit(Visitor visitor, VisitType visitType, HierarchyNode parent) {
+		visitChildren(visitor,parent,visitType);
+	}
+	
+	protected void visitChildren(Visitor visitor, HierarchyNode parent, VisitType visitType){ //iterative post-order more efficient than recursive version
+		if (parent==null)
+			parent=root;
+		
+		HierarchyNode c=parent;
+		Stack<Integer> position=new Stack<Integer>();
+		int pos;
+		do {
+			//down to the lower left leaf
+			while(c.hasChildren()){  //visit down
+				c=c.getChildren().getFirst();
+				if (visitType==VisitType.PRE_ORDER) visitor.visit(c);
+				position.push(1);
+			}
+			//up and right
+			while (c!=parent){ //visit up
+				if (visitType==VisitType.POST_ORDER) visitor.visit(c); 
+				c=c.getParent();
+				pos=position.pop();
+				if (pos<c.getChildrenCount()){
+					c=c.getChildren().get(pos);
+					if (visitType==VisitType.PRE_ORDER) visitor.visit(c); 
+					position.push(pos+1);
+					break;
+				}
+			}
+
+		} while (c!=parent);
 	}
 
 	
-
 }
-
