@@ -1,7 +1,6 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2012-2019 ProjectLibre, Inc.  (Previous Copyright Holder)
  * Copyright (c) 2026 microProject
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,44 +23,23 @@
  *******************************************************************************/
 package com.microproject.grouping.core.transform.grouping;
 
-import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.util.List;
 
-import com.microproject.field.InvalidFormulaException;
-import com.microproject.grouping.core.transform.CommonTransform;
-import com.microproject.grouping.core.transform.CommonTransformFactory;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class NodeGrouper extends CommonTransformFactory{
-//	static Log log = LogFactory.getLog(NodeGrouper.class);
-	protected String type = null; 
-	protected List<NodeGroup> groups = new ArrayList<>();
-	
-	private static int count=0;
-	
-	
-	
-	public CommonTransform getTransform() throws InvalidFormulaException{
-	    if (groups.size()==0) return null;
-		return this;
+class NodeGrouperTest {
+	@Test
+	void groupsRetainTypedXmlInsertionOrder() throws Exception {
+		NodeGrouper grouper = new NodeGrouper();
+		NodeGroup first = new NodeGroup();
+		NodeGroup second = new NodeGroup();
+		grouper.addGroup(first);
+		grouper.addGroup(second);
+
+		assertEquals(List.of(first, second), grouper.getGroups());
+		assertSame(grouper, grouper.getTransform());
 	}
-	
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
-    }
-    
-	public void addGroup(NodeGroup group){
-		groups.add(group);
-	}
-    
-	public List<NodeGroup> getGroups(){
-		return groups;
-    }
-    
-   
 }
