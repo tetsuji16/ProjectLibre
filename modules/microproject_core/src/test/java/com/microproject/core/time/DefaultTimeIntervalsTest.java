@@ -1,7 +1,6 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2012-2019 ProjectLibre, Inc.  (Previous Copyright Holder)
  * Copyright (c) 2026 microProject
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,17 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.core.nodes;
+package com.microproject.core.time;
 
-import com.microproject.core.id.UniqueId;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-/**
- * @author Laurent Chretienneau
- *
- */
-public class NodeId extends UniqueId{
+import org.junit.jupiter.api.Test;
 
-	public NodeId() {
-		super();
+class DefaultTimeIntervalsTest {
+	@Test
+	void settingStartOnEmptyCollectionCreatesAnOpenEndedInterval() {
+		DefaultTimeIntervals intervals = new DefaultTimeIntervals();
+
+		intervals.setStart(12);
+
+		assertEquals(1, intervals.size());
+		assertEquals(12, intervals.getStart());
+		assertEquals(-1, intervals.getEnd());
+	}
+
+	@Test
+	void settingEndOnEmptyCollectionCreatesAnOpenStartedInterval() {
+		DefaultTimeIntervals intervals = new DefaultTimeIntervals();
+
+		intervals.setEnd(34);
+
+		assertEquals(1, intervals.size());
+		assertEquals(-1, intervals.getStart());
+		assertEquals(34, intervals.getEnd());
+	}
+
+	@Test
+	void settingBothBoundsOnEmptyCollectionKeepsTheNewIntervalInTheSet() {
+		DefaultTimeIntervals intervals = new DefaultTimeIntervals();
+
+		intervals.setStart(12);
+		intervals.setEnd(34);
+
+		assertEquals(1, intervals.size());
+		assertEquals(12, intervals.getStart());
+		assertEquals(34, intervals.getEnd());
+		assertEquals(new DefaultTimeInterval(12, 34), intervals.getIntervals().iterator().next());
 	}
 }
