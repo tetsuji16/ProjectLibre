@@ -1,7 +1,6 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2012-2019 ProjectLibre, Inc.  (Previous Copyright Holder)
  * Copyright (c) 2026 microProject
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,70 +23,19 @@
  *******************************************************************************/
 package com.microproject.algorithm.buffer;
 
-import java.io.Serializable;
-import java.util.Comparator;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.microproject.algorithm.DoubleValue;
-import com.microproject.pm.time.HasStartAndEnd;
+import org.junit.jupiter.api.Test;
 
+class PointComparisonTest {
+	@Test
+	void comparesExtremeDatesWithoutOverflowAndKeepsComparatorConsistent() {
+		Point earliest = new Point(Long.MIN_VALUE, 0);
+		Point latest = new Point(Long.MAX_VALUE, 0);
 
-/**
- * Used to hold a point in Calculated values arrays
- */
-public class Point implements Comparable<Point>, Comparator<Point>, Serializable, HasStartAndEnd, DoubleValue {
-	static final long serialVersionUID = 629828246846L;
-	public Point(long date, double value) {
-		this.date = date;
-		this.value = value;
-	}
-	
-	void addValue(double v) {
-		value += v;
-	}
-	long date;
-	double value;
-	
-	public String toString() {
-		return new java.util.Date(date) + " " + value;
-	}
-
-	public int compareTo(Point other) {
-		return Long.compare(date, other.date);
-	}
-	/**
-	 * @return Returns the date.
-	 */
-	public long getDate() {
-		return date;
-	}
-	/**
-	 * @param date The date to set.
-	 */
-	public void setDate(long date) {
-		this.date = date;
-	}
-	/**
-	 * @return Returns the value.
-	 */
-	public double getValue() {
-		return value;
-	}
-	/**
-	 * @param value The value to set.
-	 */
-	public void setValue(double value) {
-		this.value = value;
-	}
-
-	public int compare(Point first, Point second) {
-		return first.compareTo(second);
-	}
-
-	public long getStart() {
-		return date;
-	}
-
-	public long getEnd() {
-		return date;
+		assertTrue(earliest.compareTo(latest) < 0);
+		assertTrue(latest.compareTo(earliest) > 0);
+		assertEquals(earliest.compareTo(latest), earliest.compare(earliest, latest));
 	}
 }
