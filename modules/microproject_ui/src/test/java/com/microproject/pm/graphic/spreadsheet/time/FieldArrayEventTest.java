@@ -1,7 +1,6 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2012-2019 ProjectLibre, Inc.  (Previous Copyright Holder)
  * Copyright (c) 2026 microProject
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,32 +23,25 @@
  *******************************************************************************/
 package com.microproject.pm.graphic.spreadsheet.time;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+
 import java.util.ArrayList;
-import java.util.EventObject;
+
+import org.junit.jupiter.api.Test;
 
 import com.microproject.field.Field;
 
-/**
- *
- */
-public class FieldArrayEvent extends EventObject {
-	protected ArrayList<Field> fieldArray;
-	
-	/**
-	 * @param source
-	 * @param fieldArray
-	 */
-	public FieldArrayEvent(Object source, ArrayList<Field> fieldArray) {
-		super(source);
-		this.fieldArray = fieldArray;
-	}
-	
-	
-	public ArrayList<Field> getFieldArray() {
-		return fieldArray;
-	}
-	public void setFieldArray(ArrayList<Field> fieldArray) {
-		this.fieldArray = fieldArray;
+class FieldArrayEventTest {
+	@Test
+	void keepsTheSelectedFieldArrayReference() {
+		ArrayList<Field> fields = new ArrayList<>();
+		FieldArrayEvent event = new FieldArrayEvent(this, fields);
+
+		assertSame(fields, event.getFieldArray());
+
+		ArrayList<Field> replacement = new ArrayList<>();
+		event.setFieldArray(replacement);
+
+		assertSame(replacement, event.getFieldArray());
 	}
 }
-
