@@ -1,7 +1,6 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2012-2019 ProjectLibre, Inc.  (Previous Copyright Holder)
  * Copyright (c) 2026 microProject
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,28 +23,22 @@
  *******************************************************************************/
 package com.microproject.pm.graphic.graph.event;
 
+import static org.junit.jupiter.api.Assertions.assertSame;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import com.microproject.pm.graphic.event.GraphicEvent;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
-public class GraphEvent extends GraphicEvent {
-	private static final long serialVersionUID = -299188704449031480L;
-	protected List<?> nodes;
-	/**
-     * @param source
-     */
-    public GraphEvent(Object source, List<?> nodes) {
-        super(source);
-        this.nodes=nodes;
-    }
-	public List<?> getNodes() {
-		return nodes;
+class GraphEventTest {
+	@Test
+	void keepsTheSuppliedNodeListReference() {
+		List<Object> nodes = new ArrayList<>();
+		GraphEvent event = new GraphEvent(this, nodes);
+		assertSame(nodes, event.getNodes());
+
+		List<Object> replacement = new ArrayList<>();
+		event.setNodes(replacement);
+		assertSame(replacement, event.getNodes());
 	}
-	public void setNodes(List<?> nodes) {
-		this.nodes = nodes;
-	}
-    
 }
