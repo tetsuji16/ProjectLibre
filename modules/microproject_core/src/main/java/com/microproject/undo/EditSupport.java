@@ -1,7 +1,6 @@
 /*******************************************************************************
  * MIT License
  *
- * Copyright (c) 2012-2019 ProjectLibre, Inc.  (Previous Copyright Holder)
  * Copyright (c) 2026 microProject
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,25 +21,54 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-package com.microproject.pm.graphic.frames;
+package com.microproject.undo;
 
-import java.awt.Frame;
-import java.awt.HeadlessException;
+import java.util.Vector;
 
-import com.microproject.util.Environment;
+import javax.swing.undo.CompoundEdit;
+import javax.swing.undo.UndoableEdit;
 
-/**
- * @author Laurent Chretienneau
- *
- */
-public class MainFrameFactory {
-	protected static Frame mainFrame;
-	public static Frame getMainFrame(){
-		return mainFrame;
+/** Core-owned publisher for undo edits, including nested compound batches. */
+public final class EditSupport {
+	private final Vector<EditListener> listeners = new Vector<>();
+	private int updateLevel;
+	private CompoundEdit compoundEdit;
+
+	public synchronized void addEditListener(EditListener listener) {
+		listeners.addElement(listener);
 	}
-	public static Frame creareMainFrame(String name, String projectUrl) throws HeadlessException {
-			mainFrame=Environment.isRibbonUI()? new MainRibbonFrame(name, projectUrl): new MainFrame(name, projectUrl);
-			return mainFrame;
+
+	public synchronized void removeEditListener(EditListener listener) {
+		listeners.removeElement(listener);
+	}
+
+	public synchronized void postEdit(UndoableEdit edit) {
+		if (updateLevel > 0) {
+			compoundEdit.addEdit(edit);
+			return;
+		}
+		fire(edit);
+	}
+
+	public synchronized void beginUpdate() {
+		if (updateLevel == 0)
+			compoundEdit = new CompoundEdit();
+		updateLevel++;
+	}
+
+	public synchronized void endUpdate() {
+		updateLevel--;
+		if (updateLevel != 0)
+			return;
+		CompoundEdit completed = compoundEdit;
+		completed.end();
+		fire(completed);
+		compoundEdit = null;
+	}
+
+	private void fire(UndoableEdit edit) {
+		EditListener[] snapshot = listeners.toArray(new EditListener[0]);
+		for (EditListener listener : snapshot)
+			listener.editPosted(edit);
 	}
 }
-
